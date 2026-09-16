@@ -46,53 +46,69 @@ export class ChangePassword {
 
   onSubmit() {
 
-    this.errorMessage.set('');
+  this.errorMessage.set('');
 
-    if (
-      !this.currentPassword ||
-      !this.newPassword ||
-      !this.confirmPassword
-    ) {
-      this.errorMessage.set('CHANGE_PASSWORD.REQUIRED');
-      return;
-    }
-
-    if (this.newPassword !== this.confirmPassword) {
-      this.errorMessage.set('CHANGE_PASSWORD.PASSWORD_MISMATCH');
-      return;
-    }
-
-    const data: ChangePasswordRequest = {
-      currentPassword: this.currentPassword,
-      newPassword: this.newPassword,
-      confirmPassword: this.confirmPassword
-    };
-
-    this.isLoading.set(true);
-
-    this.auth.changePassword(data).subscribe({
-      next: (response) => {
-
-        this.isLoading.set(false);
-
-        if (!response.success || !response.data) {
-          this.errorMessage.set('CHANGE_PASSWORD.ERROR');
-          return;
-        }
-
-        this.user.setUser(response.data);
-
-        this.router.navigate(['/dashboard']);
-      },
-
-      error: (error) => {
-
-        this.isLoading.set(false);
-
-        console.error('Change password error:', error);
-
-        this.errorMessage.set('CHANGE_PASSWORD.ERROR');
-      }
-    });
+  if (
+    !this.currentPassword ||
+    !this.newPassword ||
+    !this.confirmPassword
+  ) {
+    this.errorMessage.set('CHANGE_PASSWORD.REQUIRED');
+    return;
   }
+
+  const data: ChangePasswordRequest = {
+    currentPassword: this.currentPassword,
+    newPassword: this.newPassword,
+    confirmPassword: this.confirmPassword
+  };
+
+  this.isLoading.set(true);
+
+  this.auth.changePassword(data).subscribe({
+
+    next: (response) => {
+
+      this.isLoading.set(false);
+
+      if (!response.success || !response.data) {
+        this.errorMessage.set('CHANGE_PASSWORD.ERROR');
+        return;
+      }
+
+      this.user.setUser(response.data);
+
+      this.router.navigate(['/dashboard']);
+    },
+
+    error: (error) => {
+
+      this.isLoading.set(false);
+
+      console.error('Change password error:', error);
+
+      // كلمة المرور الحالية غير صحيحة
+      if (
+        error.error?.message === 'Current password is incorrect'
+      ) {
+        this.errorMessage.set(
+          'CHANGE_PASSWORD.CURRENT_PASSWORD_INCORRECT'
+        );
+        return;
+      }
+
+      // إذا الـ Backend رجع خطأ آخر
+      if (
+        error.error?.message === 'Passwords do not match'
+      ) {
+        this.errorMessage.set(
+          'CHANGE_PASSWORD.PASSWORD_MISMATCH'
+        );
+        return;
+      }
+
+      this.errorMessage.set('CHANGE_PASSWORD.ERROR');
+    }
+  });
+}
 }
