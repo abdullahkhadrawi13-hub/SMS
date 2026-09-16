@@ -48,7 +48,11 @@ export class ChangePassword {
 
     this.errorMessage.set('');
 
-    if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
+    if (
+      !this.currentPassword ||
+      !this.newPassword ||
+      !this.confirmPassword
+    ) {
       this.errorMessage.set('CHANGE_PASSWORD.REQUIRED');
       return;
     }
@@ -69,9 +73,14 @@ export class ChangePassword {
     this.auth.changePassword(data).subscribe({
       next: (response) => {
 
-        this.user.setUser(response);
-
         this.isLoading.set(false);
+
+        if (!response.success || !response.data) {
+          this.errorMessage.set('CHANGE_PASSWORD.ERROR');
+          return;
+        }
+
+        this.user.setUser(response.data);
 
         this.router.navigate(['/dashboard']);
       },

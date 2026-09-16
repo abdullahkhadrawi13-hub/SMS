@@ -2,9 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
+import { ApiResponse } from '../models/api-response';
 import { LoginRequest } from '../models/login-request';
-import { ChangePasswordRequest } from '../models/change-password-request';
 import { LoginResponse } from '../models/login-response';
+import { ChangePasswordRequest } from '../models/change-password-request';
 
 @Injectable({
   providedIn: 'root',
@@ -15,20 +16,27 @@ export class Auth {
 
   private readonly baseUrl = 'http://localhost:5253/api/Auth';
 
-  login(data: LoginRequest): Observable<LoginResponse> {
+  login(data: LoginRequest): Observable<ApiResponse<LoginResponse>> {
+
     return this.http
-      .post<LoginResponse>(`${this.baseUrl}/Login`, data)
+      .post<ApiResponse<LoginResponse>>(
+        `${this.baseUrl}/Login`,
+        data
+      )
       .pipe(
         tap(response => {
-          localStorage.setItem('token', response.token);
+          if (response.success && response.data) {
+            localStorage.setItem('token', response.data.token);
+          }
         })
       );
   }
 
   changePassword(
     data: ChangePasswordRequest
-  ): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(
+  ): Observable<ApiResponse<LoginResponse>> {
+
+    return this.http.post<ApiResponse<LoginResponse>>(
       `${this.baseUrl}/changePassword`,
       data
     );

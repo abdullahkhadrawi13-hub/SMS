@@ -58,11 +58,18 @@ export class Login {
     this.auth.login(data).subscribe({
       next: (response) => {
 
-        this.user.setUser(response);
-
         this.isLoading.set(false);
 
-        if (response.mustChangePassword) {
+        if (!response.success || !response.data) {
+          this.errorMessage.set('LOGIN.ERROR');
+          return;
+        }
+
+        const userData = response.data;
+
+        this.user.setUser(userData);
+
+        if (userData.mustChangePassword) {
           this.router.navigate(['/change-password']);
         } else {
           this.router.navigate(['/dashboard']);
