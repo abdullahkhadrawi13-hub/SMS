@@ -6,7 +6,10 @@
     "USERNAME_PLACEHOLDER": "أدخل اسم المستخدم",
     "PASSWORD": "كلمة المرور",
     "PASSWORD_PLACEHOLDER": "أدخل كلمة المرور",
-    "BUTTON": "دخول"
+    "BUTTON": "دخول",
+    "REQUIRED": "يرجى إدخال اسم المستخدم وكلمة المرور",
+    "ERROR": "اسم المستخدم أو كلمة المرور غير صحيحة",
+    "LOADING": "جاري تسجيل الدخول..."
   },
 
   "CHANGE_PASSWORD": {
@@ -18,6 +21,10 @@
     "NEW_PASSWORD_PLACEHOLDER": "أدخل كلمة المرور الجديدة",
     "CONFIRM_PASSWORD": "تأكيد كلمة المرور",
     "CONFIRM_PASSWORD_PLACEHOLDER": "أعد إدخال كلمة المرور الجديدة",
-    "BUTTON": "تغيير كلمة المرور"
+    "BUTTON": "تغيير كلمة المرور",
+    "REQUIRED": "يرجى تعبئة جميع الحقول",
+    "PASSWORD_MISMATCH": "كلمتا المرور غير متطابقتين",
+    "ERROR": "حدث خطأ أثناء تغيير كلمة المرور",
+    "LOADING": "جاري تغيير كلمة المرور..."
   }
 }

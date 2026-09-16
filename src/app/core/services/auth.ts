@@ -6,6 +6,7 @@ import { ApiResponse } from '../models/api-response';
 import { LoginRequest } from '../models/login-request';
 import { LoginResponse } from '../models/login-response';
 import { ChangePasswordRequest } from '../models/change-password-request';
+import { User } from './user';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ import { ChangePasswordRequest } from '../models/change-password-request';
 export class Auth {
 
   private http = inject(HttpClient);
+  private user = inject(User);
 
   private readonly baseUrl = 'http://localhost:5253/api/Auth';
 
@@ -44,6 +46,7 @@ export class Auth {
 
   logout(): void {
     localStorage.removeItem('token');
+    this.user.clearUser();
   }
 
   getToken(): string | null {

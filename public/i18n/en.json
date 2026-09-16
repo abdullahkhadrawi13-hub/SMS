@@ -6,7 +6,10 @@
     "USERNAME_PLACEHOLDER": "Enter your username",
     "PASSWORD": "Password",
     "PASSWORD_PLACEHOLDER": "Enter your password",
-    "BUTTON": "Login"
+    "BUTTON": "Login",
+    "REQUIRED": "Please enter username and password",
+    "ERROR": "Invalid username or password",
+    "LOADING": "Logging in..."
   },
 
   "CHANGE_PASSWORD": {
@@ -18,6 +21,10 @@
     "NEW_PASSWORD_PLACEHOLDER": "Enter your new password",
     "CONFIRM_PASSWORD": "Confirm Password",
     "CONFIRM_PASSWORD_PLACEHOLDER": "Re-enter your new password",
-    "BUTTON": "Change Password"
+    "BUTTON": "Change Password",
+    "REQUIRED": "Please fill in all fields",
+    "PASSWORD_MISMATCH": "Passwords do not match",
+    "ERROR": "An error occurred while changing the password",
+    "LOADING": "Changing password..."
   }
 }
