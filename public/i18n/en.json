@@ -1,0 +1,23 @@
+{
+  "LOGIN": {
+    "TITLE": "Login",
+    "SUBTITLE": "Sign in to the School Management System",
+    "USERNAME": "Username",
+    "USERNAME_PLACEHOLDER": "Enter your username",
+    "PASSWORD": "Password",
+    "PASSWORD_PLACEHOLDER": "Enter your password",
+    "BUTTON": "Login"
+  },
+
+  "CHANGE_PASSWORD": {
+    "TITLE": "Change Password",
+    "SUBTITLE": "You must change your password before continuing",
+    "CURRENT_PASSWORD": "Current Password",
+    "CURRENT_PASSWORD_PLACEHOLDER": "Enter your current password",
+    "NEW_PASSWORD": "New Password",
+    "NEW_PASSWORD_PLACEHOLDER": "Enter your new password",
+    "CONFIRM_PASSWORD": "Confirm Password",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Re-enter your new password",
+    "BUTTON": "Change Password"
+  }
+}

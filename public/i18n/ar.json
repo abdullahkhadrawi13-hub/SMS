@@ -1,0 +1,23 @@
+{
+  "LOGIN": {
+    "TITLE": "تسجيل الدخول",
+    "SUBTITLE": "قم بتسجيل الدخول إلى نظام إدارة المدرسة",
+    "USERNAME": "اسم المستخدم",
+    "USERNAME_PLACEHOLDER": "أدخل اسم المستخدم",
+    "PASSWORD": "كلمة المرور",
+    "PASSWORD_PLACEHOLDER": "أدخل كلمة المرور",
+    "BUTTON": "دخول"
+  },
+
+  "CHANGE_PASSWORD": {
+    "TITLE": "تغيير كلمة المرور",
+    "SUBTITLE": "يجب عليك تغيير كلمة المرور قبل المتابعة",
+    "CURRENT_PASSWORD": "كلمة المرور الحالية",
+    "CURRENT_PASSWORD_PLACEHOLDER": "أدخل كلمة المرور الحالية",
+    "NEW_PASSWORD": "كلمة المرور الجديدة",
+    "NEW_PASSWORD_PLACEHOLDER": "أدخل كلمة المرور الجديدة",
+    "CONFIRM_PASSWORD": "تأكيد كلمة المرور",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "أعد إدخال كلمة المرور الجديدة",
+    "BUTTON": "تغيير كلمة المرور"
+  }
+}
