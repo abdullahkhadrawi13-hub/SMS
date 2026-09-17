@@ -1,15 +1,26 @@
 <div class="dashboard-layout">
 
-  <app-sidebar></app-sidebar>
+  <app-navbar></app-navbar>
 
-  <div class="main-area">
+  <mat-sidenav-container class="dashboard-container">
 
-    <app-navbar></app-navbar>
+    <mat-sidenav
+      mode="side"
+      opened
+      class="sidebar-container">
 
-    <main class="content">
-      <router-outlet></router-outlet>
-    </main>
+      <app-sidebar></app-sidebar>
 
-  </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+
+      <main class="content-area">
+        Main Content
+      </main>
+
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
 
 </div>

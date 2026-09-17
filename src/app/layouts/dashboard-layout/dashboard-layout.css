@@ -1,18 +1,24 @@
 .dashboard-layout {
-  min-height: 100vh;
-  display: flex;
-  background: #f5f7fb;
-}
+  width: 100%;
+  height: 100vh;
 
-.main-area {
-  flex: 1;
-  min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
-.content {
+.dashboard-container {
+  width: 100%;
   flex: 1;
+  min-height: 0;
+}
+
+.sidebar-container {
+  width: 240px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.content-area {
   padding: 24px;
-  overflow-x: auto;
+  box-sizing: border-box;
 }

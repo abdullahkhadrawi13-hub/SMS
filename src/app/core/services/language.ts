@@ -9,7 +9,7 @@ export class Language {
   private translate = inject(TranslateService);
 
   constructor() {
-    this.setLanguage('ar');
+    this.setLanguage('en');
   }
 
   setLanguage(language: 'ar' | 'en') {

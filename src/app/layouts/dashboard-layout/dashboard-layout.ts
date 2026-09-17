@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Sidebar } from '../../shared/components/sidebar/sidebar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+
 import { Navbar } from '../../shared/components/navbar/navbar';
+import { Sidebar } from '../../shared/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-dashboard-layout',
   imports: [
-    RouterOutlet,
-    Sidebar,
-    Navbar
+    MatSidenavModule,
+    Navbar,
+    Sidebar
   ],
   templateUrl: './dashboard-layout.html',
   styleUrl: './dashboard-layout.css'
 })
-export class DashboardLayout {
-
-}
+export class DashboardLayout {}

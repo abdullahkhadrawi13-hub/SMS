@@ -1,11 +1,14 @@
-.language-switcher {
+.language-button {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 4px;
 }
 
-button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.language-icon {
+  color: #1976d2;
+}
+
+.icon-placeholder {
+  width: 24px;
+  display: inline-block;
 }

@@ -26,5 +26,30 @@
     "PASSWORD_MISMATCH": "Passwords do not match",
     "ERROR": "Current password is incorrect",
     "LOADING": "Changing password..."
+  },
+  "SIDEBAR": {
+    "MENU": "Menu",
+    "DASHBOARD": "Dashboard",
+    "STUDENTS": "Students",
+    "TEACHERS": "Teachers",
+    "PARENTS": "Parents",
+    "CLASSES": "Classes",
+    "SECTIONS": "Sections",
+    "SUBJECTS": "Subjects",
+    "TIMETABLE": "Timetable",
+    "ATTENDANCE": "Attendance",
+    "GRADES": "Grades",
+    "RESULTS": "Results",
+    "ACADEMIC_HISTORY": "Academic History",
+    "REPORTS": "Reports",
+    "SETTINGS": "Settings"
+  },
+
+  "NAVBAR": {
+    "TITLE": "School Management System",
+    "USER": "User",
+    "PROFILE": "Profile",
+    "SETTINGS": "Settings",
+    "LOGOUT": "Logout"
   }
 }

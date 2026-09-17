@@ -1,1 +1,26 @@
-<p>sidebar works!</p>
+<div class="sidebar">
+
+  <div class="sidebar-header">
+    <span>{{ 'SIDEBAR.MENU' | translate }}</span>
+  </div>
+
+  <nav class="sidebar-menu">
+
+    @for (item of visibleMenuItems; track item.route) {
+
+      <a
+        class="menu-item"
+        [routerLink]="item.route"
+        routerLinkActive="active">
+
+        <mat-icon>{{ item.icon }}</mat-icon>
+
+        <span>{{ item.label | translate }}</span>
+
+      </a>
+
+    }
+
+  </nav>
+
+</div>
