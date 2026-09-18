@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Language } from './core/services/language';
 import { RouterOutlet } from '@angular/router';
 
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],

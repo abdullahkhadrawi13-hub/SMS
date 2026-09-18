@@ -24,7 +24,7 @@ export class Sidebar {
   menuItems = SIDEBAR_MENU;
 
   get visibleMenuItems() {
-    const role = 4
+    const role =this.userService.getRole();
 
     if (role === null) {
       return [];

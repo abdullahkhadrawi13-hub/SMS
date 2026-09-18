@@ -52,5 +52,26 @@
     "PROFILE": "الملف الشخصي",
     "SETTINGS": "الإعدادات",
     "LOGOUT": "تسجيل الخروج"
-  }
+  },
+
+  "ADMIN_DASHBOARD": {
+  "TITLE": "لوحة تحكم المدير",
+  "WELCOME": "مرحبًا بعودتك،",
+  "SUBTITLE": "إليك ملخصًا لما يحدث في مدرستك اليوم.",
+  "TOTAL_STUDENTS": "إجمالي الطلاب",
+  "TOTAL_TEACHERS": "إجمالي المعلمين",
+  "TOTAL_PARENTS": "إجمالي أولياء الأمور",
+  "TOTAL_CLASSES": "إجمالي الصفوف",
+  "ATTENDANCE_OVERVIEW": "ملخص الحضور",
+  "PRESENT": "الحاضرون",
+  "ABSENT": "الغائبون",
+  "ATTENDANCE_RATE": "نسبة الحضور",
+  "QUICK_ACTIONS": "إجراءات سريعة",
+  "STUDENTS": "الطلاب",
+  "TEACHERS": "المعلمون",
+  "PARENTS": "أولياء الأمور",
+  "REPORTS": "التقارير",
+  "RECENT_ACTIVITY": "آخر النشاطات",
+  "NO_RECENT_ACTIVITY": "لا توجد نشاطات حديثة"
+}
 }

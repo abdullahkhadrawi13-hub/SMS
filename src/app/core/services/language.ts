@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
@@ -7,6 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class Language {
 
   private translate = inject(TranslateService);
+
+  private currentDirection = signal<'ltr' | 'rtl'>('ltr');
 
   constructor() {
     const savedLanguage = localStorage.getItem('language');
@@ -26,8 +28,13 @@ export class Language {
     // حفظ اللغة المختارة
     localStorage.setItem('language', language);
 
+    // تحديد الاتجاه
+    const direction = language === 'ar' ? 'rtl' : 'ltr';
+
+    this.currentDirection.set(direction);
+
     // تغيير اتجاه الصفحة
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = direction;
 
     // تحديد اللغة على مستوى HTML
     document.documentElement.lang = language;
@@ -35,5 +42,9 @@ export class Language {
 
   getCurrentLanguage() {
     return this.translate.getCurrentLang();
+  }
+
+  getDirection() {
+    return this.currentDirection();
   }
 }

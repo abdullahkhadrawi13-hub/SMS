@@ -1,0 +1,240 @@
+<div class="admin-dashboard">
+
+  <!-- Header -->
+  <section class="dashboard-header">
+    <div>
+      <h1>
+        {{ 'ADMIN_DASHBOARD.WELCOME' | translate }}
+        {{ adminName }}
+      </h1>
+
+      <p>
+        {{ 'ADMIN_DASHBOARD.SUBTITLE' | translate }}
+      </p>
+    </div>
+  </section>
+
+
+  <!-- Statistics -->
+  <section class="statistics">
+
+    <!-- Students -->
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        <mat-icon>school</mat-icon>
+      </div>
+
+      <div class="stat-info">
+        <h3>
+          {{ 'ADMIN_DASHBOARD.TOTAL_STUDENTS' | translate }}
+        </h3>
+
+        <span>850</span>
+      </div>
+
+    </div>
+
+
+    <!-- Teachers -->
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        <mat-icon>person</mat-icon>
+      </div>
+
+      <div class="stat-info">
+        <h3>
+          {{ 'ADMIN_DASHBOARD.TOTAL_TEACHERS' | translate }}
+        </h3>
+
+        <span>45</span>
+      </div>
+
+    </div>
+
+
+    <!-- Parents -->
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        <mat-icon>groups</mat-icon>
+      </div>
+
+      <div class="stat-info">
+        <h3>
+          {{ 'ADMIN_DASHBOARD.TOTAL_PARENTS' | translate }}
+        </h3>
+
+        <span>720</span>
+      </div>
+
+    </div>
+
+
+    <!-- Classes -->
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        <mat-icon>meeting_room</mat-icon>
+      </div>
+
+      <div class="stat-info">
+        <h3>
+          {{ 'ADMIN_DASHBOARD.TOTAL_CLASSES' | translate }}
+        </h3>
+
+        <span>24</span>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Main Dashboard Content -->
+  <section class="dashboard-content">
+
+    <!-- Attendance Overview -->
+    <div class="dashboard-card">
+
+      <div class="card-header">
+
+        <h2>
+          {{ 'ADMIN_DASHBOARD.ATTENDANCE_OVERVIEW' | translate }}
+        </h2>
+
+        <mat-icon>event_available</mat-icon>
+
+      </div>
+
+
+      <div class="attendance-summary">
+
+        <!-- Present -->
+        <div class="attendance-item">
+
+          <span>
+            {{ 'ADMIN_DASHBOARD.PRESENT' | translate }}
+          </span>
+
+          <strong>780</strong>
+
+        </div>
+
+
+        <!-- Absent -->
+        <div class="attendance-item">
+
+          <span>
+            {{ 'ADMIN_DASHBOARD.ABSENT' | translate }}
+          </span>
+
+          <strong>70</strong>
+
+        </div>
+
+
+        <!-- Attendance Rate -->
+        <div class="attendance-item">
+
+          <span>
+            {{ 'ADMIN_DASHBOARD.ATTENDANCE_RATE' | translate }}
+          </span>
+
+          <strong>91.8%</strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Quick Actions -->
+    <div class="dashboard-card">
+
+      <div class="card-header">
+
+        <h2>
+          {{ 'ADMIN_DASHBOARD.QUICK_ACTIONS' | translate }}
+        </h2>
+
+        <mat-icon>bolt</mat-icon>
+
+      </div>
+
+
+      <div class="quick-actions">
+
+        <button type="button">
+
+          <mat-icon>school</mat-icon>
+
+          <span>
+            {{ 'ADMIN_DASHBOARD.STUDENTS' | translate }}
+          </span>
+
+        </button>
+
+
+        <button type="button">
+
+          <mat-icon>person</mat-icon>
+
+          <span>
+            {{ 'ADMIN_DASHBOARD.TEACHERS' | translate }}
+          </span>
+
+        </button>
+
+
+        <button type="button">
+
+          <mat-icon>groups</mat-icon>
+
+          <span>
+            {{ 'ADMIN_DASHBOARD.PARENTS' | translate }}
+          </span>
+
+        </button>
+
+
+        <button type="button">
+
+          <mat-icon>assessment</mat-icon>
+
+          <span>
+            {{ 'ADMIN_DASHBOARD.REPORTS' | translate }}
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Recent Activity -->
+  <section class="dashboard-card recent-activity">
+
+    <div class="card-header">
+
+      <h2>
+        {{ 'ADMIN_DASHBOARD.RECENT_ACTIVITY' | translate }}
+      </h2>
+
+      <mat-icon>history</mat-icon>
+
+    </div>
+
+
+    <p>
+      {{ 'ADMIN_DASHBOARD.NO_RECENT_ACTIVITY' | translate }}
+    </p>
+
+  </section>
+
+</div>

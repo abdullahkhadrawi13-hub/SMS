@@ -51,5 +51,26 @@
     "PROFILE": "Profile",
     "SETTINGS": "Settings",
     "LOGOUT": "Logout"
-  }
+  },
+
+  "ADMIN_DASHBOARD": {
+  "TITLE": "Admin Dashboard",
+  "WELCOME": "Welcome back,",
+  "SUBTITLE": "Here's what's happening in your school today.",
+  "TOTAL_STUDENTS": "Total Students",
+  "TOTAL_TEACHERS": "Total Teachers",
+  "TOTAL_PARENTS": "Total Parents",
+  "TOTAL_CLASSES": "Total Classes",
+  "ATTENDANCE_OVERVIEW": "Attendance Overview",
+  "PRESENT": "Present",
+  "ABSENT": "Absent",
+  "ATTENDANCE_RATE": "Attendance Rate",
+  "QUICK_ACTIONS": "Quick Actions",
+  "STUDENTS": "Students",
+  "TEACHERS": "Teachers",
+  "PARENTS": "Parents",
+  "REPORTS": "Reports",
+  "RECENT_ACTIVITY": "Recent Activity",
+  "NO_RECENT_ACTIVITY": "No recent activity"
+}
 }
