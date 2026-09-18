@@ -24,6 +24,7 @@
     "BUTTON": "Change Password",
     "REQUIRED": "Please fill in all fields",
     "PASSWORD_MISMATCH": "Passwords do not match",
+    "SAME_PASSWORD": "You cannot use your current password as your new password.",
     "ERROR": "Current password is incorrect",
     "LOADING": "Changing password..."
   },

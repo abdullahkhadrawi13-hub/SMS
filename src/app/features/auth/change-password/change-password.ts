@@ -48,12 +48,19 @@ export class ChangePassword {
 
   this.errorMessage.set('');
 
+  // 1. التأكد من تعبئة جميع الحقول
   if (
     !this.currentPassword ||
     !this.newPassword ||
     !this.confirmPassword
   ) {
     this.errorMessage.set('CHANGE_PASSWORD.REQUIRED');
+    return;
+  }
+
+  // 2. منع استخدام كلمة المرور الحالية ككلمة مرور جديدة
+  if (this.currentPassword === this.newPassword) {
+    this.errorMessage.set('CHANGE_PASSWORD.SAME_PASSWORD');
     return;
   }
 
@@ -87,7 +94,7 @@ export class ChangePassword {
 
       console.error('Change password error:', error);
 
-      // كلمة المرور الحالية غير صحيحة
+      // 3. كلمة المرور الحالية غير صحيحة
       if (
         error.error?.message === 'Current password is incorrect'
       ) {
@@ -97,7 +104,7 @@ export class ChangePassword {
         return;
       }
 
-      // إذا الـ Backend رجع خطأ آخر
+      // 4. كلمة المرور الجديدة والتأكيد غير متطابقين
       if (
         error.error?.message === 'Passwords do not match'
       ) {
