@@ -56,23 +56,63 @@
   },
 
   "ADMIN_DASHBOARD": {
-  "TITLE": "لوحة تحكم المدير",
-  "WELCOME": "مرحبًا بعودتك،",
-  "SUBTITLE": "إليك ملخصًا لما يحدث في مدرستك اليوم.",
-  "TOTAL_STUDENTS": "إجمالي الطلاب",
-  "TOTAL_TEACHERS": "إجمالي المعلمين",
-  "TOTAL_PARENTS": "إجمالي أولياء الأمور",
-  "TOTAL_CLASSES": "إجمالي الصفوف",
-  "ATTENDANCE_OVERVIEW": "ملخص الحضور",
-  "PRESENT": "الحاضرون",
-  "ABSENT": "الغائبون",
-  "ATTENDANCE_RATE": "نسبة الحضور",
-  "QUICK_ACTIONS": "إجراءات سريعة",
-  "STUDENTS": "الطلاب",
-  "TEACHERS": "المعلمون",
-  "PARENTS": "أولياء الأمور",
-  "REPORTS": "التقارير",
-  "RECENT_ACTIVITY": "آخر النشاطات",
-  "NO_RECENT_ACTIVITY": "لا توجد نشاطات حديثة"
-}
+    "TITLE": "لوحة تحكم المدير",
+    "WELCOME": "مرحبًا بعودتك،",
+    "SUBTITLE": "إليك ملخصًا لما يحدث في مدرستك اليوم.",
+    "TOTAL_STUDENTS": "إجمالي الطلاب",
+    "TOTAL_TEACHERS": "إجمالي المعلمين",
+    "TOTAL_PARENTS": "إجمالي أولياء الأمور",
+    "TOTAL_CLASSES": "إجمالي الصفوف",
+    "ATTENDANCE_OVERVIEW": "ملخص الحضور",
+    "PRESENT": "الحاضرون",
+    "ABSENT": "الغائبون",
+    "ATTENDANCE_RATE": "نسبة الحضور",
+    "QUICK_ACTIONS": "إجراءات سريعة",
+    "STUDENTS": "الطلاب",
+    "TEACHERS": "المعلمون",
+    "PARENTS": "أولياء الأمور",
+    "REPORTS": "التقارير",
+    "RECENT_ACTIVITY": "آخر النشاطات",
+    "NO_RECENT_ACTIVITY": "لا توجد نشاطات حديثة"
+  },
+  "ASSISTANT_PRINCIPAL_DASHBOARD": {
+    "WELCOME": "مرحبًا بعودتك،",
+    "SUBTITLE": "نظرة عامة على أنشطة المدرسة",
+    "STUDENTS": "الطلاب",
+    "TEACHERS": "المعلمون",
+    "CLASSES": "الصفوف",
+    "SECTIONS": "الشُعب",
+    "ATTENDANCE_STATISTICS": "إحصائيات الحضور",
+    "RESULTS": "النتائج",
+    "ADMINISTRATIVE_INFORMATION": "المعلومات الإدارية"
+  },
+  "TEACHER_DASHBOARD": {
+    "WELCOME": "مرحبًا بعودتك،",
+    "SUBTITLE": "نظرة عامة على أنشطتك التعليمية",
+    "MY_CLASSES": "صفوفي",
+    "MY_SECTIONS": "شُعبي",
+    "MY_SUBJECTS": "موادي",
+    "STUDENTS": "الطلاب",
+    "GRADES": "العلامات",
+    "TIMETABLE": "الجدول الدراسي"
+  },
+  "STUDENT_DASHBOARD": {
+    "WELCOME": "مرحبًا بعودتك،",
+    "SUBTITLE": "نظرة عامة على معلوماتك الأكاديمية",
+    "PROFILE": "الملف الشخصي",
+    "SUBJECTS": "المواد",
+    "GRADES": "العلامات",
+    "ATTENDANCE": "الحضور",
+    "TIMETABLE": "الجدول الدراسي",
+    "ACADEMIC_INFORMATION": "المعلومات الأكاديمية"
+  },
+  "PARENT_DASHBOARD": {
+    "WELCOME": "مرحبًا بعودتك،",
+    "SUBTITLE": "نظرة عامة على المعلومات الأكاديمية لأبنائك",
+    "CHILDREN": "الأبناء",
+    "GRADES": "العلامات",
+    "ATTENDANCE": "الحضور",
+    "ACADEMIC_INFORMATION": "المعلومات الأكاديمية",
+    "TIMETABLE": "الجدول الدراسي"
+  }
 }

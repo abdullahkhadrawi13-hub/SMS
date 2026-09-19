@@ -1,1 +1,146 @@
-<p>teacher-dashboard works!</p>
+<div class="teacher-dashboard">
+
+  <!-- Header -->
+  <section class="dashboard-header">
+
+    <h1>
+      {{ 'TEACHER_DASHBOARD.WELCOME' | translate }}
+      {{ teacherName }}
+    </h1>
+
+    <p>
+      {{ 'TEACHER_DASHBOARD.SUBTITLE' | translate }}
+    </p>
+
+  </section>
+
+
+  <!-- Teacher Information -->
+  <section class="dashboard-statistics">
+
+    <!-- My Classes -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>meeting_room</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'TEACHER_DASHBOARD.MY_CLASSES' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- My Sections -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>groups</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'TEACHER_DASHBOARD.MY_SECTIONS' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- My Subjects -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>menu_book</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'TEACHER_DASHBOARD.MY_SUBJECTS' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Students -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>school</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'TEACHER_DASHBOARD.STUDENTS' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Grades -->
+  <section class="dashboard-section">
+
+    <div class="section-header">
+
+      <h2>
+        {{ 'TEACHER_DASHBOARD.GRADES' | translate }}
+      </h2>
+
+      <mat-icon>assessment</mat-icon>
+
+    </div>
+
+    <div class="section-content">
+
+      <span>--</span>
+
+    </div>
+
+  </section>
+
+
+  <!-- Timetable -->
+  <section class="dashboard-section">
+
+    <div class="section-header">
+
+      <h2>
+        {{ 'TEACHER_DASHBOARD.TIMETABLE' | translate }}
+      </h2>
+
+      <mat-icon>calendar_month</mat-icon>
+
+    </div>
+
+    <div class="section-content">
+
+      <span>--</span>
+
+    </div>
+
+  </section>
+
+</div>

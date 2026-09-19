@@ -1,1 +1,124 @@
-<p>parent-dashboard works!</p>
+<div class="parent-dashboard">
+
+  <!-- Header -->
+  <section class="dashboard-header">
+
+    <h1>
+      {{ 'PARENT_DASHBOARD.WELCOME' | translate }}
+      {{ parentName }}
+    </h1>
+
+    <p>
+      {{ 'PARENT_DASHBOARD.SUBTITLE' | translate }}
+    </p>
+
+  </section>
+
+
+  <!-- Parent Information -->
+  <section class="dashboard-statistics">
+
+    <!-- Children -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>family_restroom</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'PARENT_DASHBOARD.CHILDREN' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Grades -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>assessment</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'PARENT_DASHBOARD.GRADES' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Attendance -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>event_available</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'PARENT_DASHBOARD.ATTENDANCE' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Academic Information -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>school</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'PARENT_DASHBOARD.ACADEMIC_INFORMATION' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Timetable -->
+  <section class="dashboard-section">
+
+    <div class="section-header">
+
+      <h2>
+        {{ 'PARENT_DASHBOARD.TIMETABLE' | translate }}
+      </h2>
+
+      <mat-icon>calendar_month</mat-icon>
+
+    </div>
+
+    <div class="section-content">
+
+      <span>--</span>
+
+    </div>
+
+  </section>
+
+</div>

@@ -1,1 +1,146 @@
-<p>student-dashboard works!</p>
+<div class="student-dashboard">
+
+  <!-- Header -->
+  <section class="dashboard-header">
+
+    <h1>
+      {{ 'STUDENT_DASHBOARD.WELCOME' | translate }}
+      {{ studentName }}
+    </h1>
+
+    <p>
+      {{ 'STUDENT_DASHBOARD.SUBTITLE' | translate }}
+    </p>
+
+  </section>
+
+
+  <!-- Student Information -->
+  <section class="dashboard-statistics">
+
+    <!-- Profile -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>person</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'STUDENT_DASHBOARD.PROFILE' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Subjects -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>menu_book</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'STUDENT_DASHBOARD.SUBJECTS' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Grades -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>assessment</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'STUDENT_DASHBOARD.GRADES' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Attendance -->
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        <mat-icon>event_available</mat-icon>
+      </div>
+
+      <div class="card-content">
+
+        <h2>
+          {{ 'STUDENT_DASHBOARD.ATTENDANCE' | translate }}
+        </h2>
+
+        <span>--</span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Timetable -->
+  <section class="dashboard-section">
+
+    <div class="section-header">
+
+      <h2>
+        {{ 'STUDENT_DASHBOARD.TIMETABLE' | translate }}
+      </h2>
+
+      <mat-icon>calendar_month</mat-icon>
+
+    </div>
+
+    <div class="section-content">
+
+      <span>--</span>
+
+    </div>
+
+  </section>
+
+
+  <!-- Academic Information -->
+  <section class="dashboard-section">
+
+    <div class="section-header">
+
+      <h2>
+        {{ 'STUDENT_DASHBOARD.ACADEMIC_INFORMATION' | translate }}
+      </h2>
+
+      <mat-icon>school</mat-icon>
+
+    </div>
+
+    <div class="section-content">
+
+      <span>--</span>
+
+    </div>
+
+  </section>
+
+</div>
