@@ -50,6 +50,7 @@
     "TITLE": "School Management System",
     "USER": "User",
     "PROFILE": "Profile",
+    "CHANGE_PASSWORD": "Change Password",
     "SETTINGS": "Settings",
     "LOGOUT": "Logout"
   },
@@ -104,13 +105,14 @@
     "ATTENDANCE": "Attendance",
     "TIMETABLE": "Timetable",
     "ACADEMIC_INFORMATION": "Academic Information"
-  },"PARENT_DASHBOARD": {
-  "WELCOME": "Welcome back,",
-  "SUBTITLE": "Overview of your children's academic information",
-  "CHILDREN": "Children",
-  "GRADES": "Grades",
-  "ATTENDANCE": "Attendance",
-  "ACADEMIC_INFORMATION": "Academic Information",
-  "TIMETABLE": "Timetable"
-}
+  },
+  "PARENT_DASHBOARD": {
+    "WELCOME": "Welcome back,",
+    "SUBTITLE": "Overview of your children's academic information",
+    "CHILDREN": "Children",
+    "GRADES": "Grades",
+    "ATTENDANCE": "Attendance",
+    "ACADEMIC_INFORMATION": "Academic Information",
+    "TIMETABLE": "Timetable"
+  }
 }
