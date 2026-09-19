@@ -1,6 +1,6 @@
 const http = require('http');
 
-const PORT = 5253;
+const PORT = 3000;
 
 const users = [
   {

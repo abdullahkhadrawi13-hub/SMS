@@ -16,7 +16,12 @@ export class Auth {
   private http = inject(HttpClient);
   private user = inject(User);
 
-  private readonly baseUrl = 'http://localhost:5253/api/Auth';
+// Mock
+// private readonly baseUrl = 'http://localhost:3000/api/Auth';
+
+// Real
+private readonly baseUrl = 'http://localhost:5253/api/Auth';
+
 
   login(data: LoginRequest): Observable<ApiResponse<LoginResponse>> {
 
