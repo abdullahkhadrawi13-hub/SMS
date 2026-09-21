@@ -1,1 +1,564 @@
-<p>student-form works!</p>
+<div class="student-form">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div class="title-section">
+
+      <h1>
+        {{
+          isEditMode()
+            ? ('STUDENTS_FORM.EDIT_TITLE' | translate)
+            : ('STUDENTS_FORM.ADD_TITLE' | translate)
+        }}
+      </h1>
+
+      <p>
+        {{
+          isEditMode()
+            ? ('STUDENTS_FORM.EDIT_SUBTITLE' | translate)
+            : ('STUDENTS_FORM.ADD_SUBTITLE' | translate)
+        }}
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (isLoading()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>
+        {{ 'STUDENTS_FORM.LOADING' | translate }}
+      </p>
+
+    </div>
+
+  }
+
+  @else {
+
+    <form
+      [formGroup]="studentForm"
+      (ngSubmit)="onSubmit()"
+      novalidate>
+
+
+      <!-- Error -->
+      @if (errorMessage()) {
+
+        <div class="message-card error-message">
+
+          <mat-icon>error_outline</mat-icon>
+
+          <span>
+            {{ errorMessage() | translate }}
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- Success -->
+      @if (successMessage()) {
+
+        <div class="message-card success-message">
+
+          <mat-icon>check_circle</mat-icon>
+
+          <span>
+            {{ successMessage() | translate }}
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- Arabic Information -->
+      <section class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-icon">
+            <mat-icon>translate</mat-icon>
+          </div>
+
+          <div>
+
+            <h2>
+              {{ 'STUDENTS_FORM.ARABIC_INFORMATION' | translate }}
+            </h2>
+
+            <p>
+              {{ 'STUDENTS_FORM.ARABIC_INFORMATION_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- First Name -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.FIRST_NAME_AR' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="firstNameAr"
+              dir="rtl"
+              autocomplete="off">
+
+            @if (isFieldInvalid('firstNameAr')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          <!-- Father Name -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.FATHER_NAME_AR' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="fatherNameAr"
+              dir="rtl"
+              autocomplete="off">
+
+            @if (isFieldInvalid('fatherNameAr')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          <!-- Grand Father Name -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.GRAND_FATHER_NAME_AR' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="grandFatherNameAr"
+              dir="rtl"
+              autocomplete="off">
+
+            @if (isFieldInvalid('grandFatherNameAr')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          <!-- Family Name -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.FAMILY_NAME_AR' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="familyNameAr"
+              dir="rtl"
+              autocomplete="off">
+
+            @if (isFieldInvalid('familyNameAr')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        </div>
+
+      </section>
+
+
+      <!-- English Information -->
+      <section class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-icon">
+            <mat-icon>language</mat-icon>
+          </div>
+
+          <div>
+
+            <h2>
+              {{ 'STUDENTS_FORM.ENGLISH_INFORMATION' | translate }}
+            </h2>
+
+            <p>
+              {{ 'STUDENTS_FORM.ENGLISH_INFORMATION_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- First Name -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.FIRST_NAME_EN' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="firstNameEn"
+              dir="ltr"
+              autocomplete="off">
+
+            @if (isFieldInvalid('firstNameEn')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          <!-- Father Name -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.FATHER_NAME_EN' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="fatherNameEn"
+              dir="ltr"
+              autocomplete="off">
+
+            @if (isFieldInvalid('fatherNameEn')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          <!-- Grand Father Name -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.GRAND_FATHER_NAME_EN' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="grandFatherNameEn"
+              dir="ltr"
+              autocomplete="off">
+
+            @if (isFieldInvalid('grandFatherNameEn')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          <!-- Family Name -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.FAMILY_NAME_EN' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="familyNameEn"
+              dir="ltr"
+              autocomplete="off">
+
+            @if (isFieldInvalid('familyNameEn')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        </div>
+
+      </section>
+
+
+      <!-- Account Information -->
+      <section class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-icon">
+            <mat-icon>manage_accounts</mat-icon>
+          </div>
+
+          <div>
+
+            <h2>
+              {{ 'STUDENTS_FORM.ACCOUNT_INFORMATION' | translate }}
+            </h2>
+
+            <p>
+              {{ 'STUDENTS_FORM.ACCOUNT_INFORMATION_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- Login ID -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.LOGIN_ID' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="loginId"
+              dir="ltr"
+              autocomplete="username">
+
+            @if (isFieldInvalid('loginId')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.LOGIN_ID' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          <!-- Temporary Password -->
+          @if (!isEditMode()) {
+
+            <mat-form-field appearance="outline">
+
+              <mat-label>
+                {{ 'STUDENTS_FORM.TEMPORARY_PASSWORD' | translate }}
+              </mat-label>
+
+              <input
+                matInput
+                type="password"
+                formControlName="temporaryPassword"
+                dir="ltr"
+                autocomplete="new-password">
+
+              @if (isFieldInvalid('temporaryPassword')) {
+
+                <mat-error>
+                  {{ 'STUDENTS_FORM.VALIDATION.PASSWORD' | translate }}
+                </mat-error>
+
+              }
+
+            </mat-form-field>
+
+          }
+
+
+          <!-- Phone -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.PHONE_NUMBER' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              formControlName="phoneNumber"
+              type="tel"
+              dir="ltr"
+              autocomplete="tel">
+
+            @if (isFieldInvalid('phoneNumber')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        </div>
+
+      </section>
+
+
+      <!-- Academic Information -->
+      <section class="form-card">
+
+        <div class="card-header">
+
+          <div class="card-icon">
+            <mat-icon>school</mat-icon>
+          </div>
+
+          <div>
+
+            <h2>
+              {{ 'STUDENTS_FORM.ACADEMIC_INFORMATION' | translate }}
+            </h2>
+
+            <p>
+              {{ 'STUDENTS_FORM.ACADEMIC_INFORMATION_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- Class -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.CLASS_ID' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              type="number"
+              formControlName="classId"
+              min="1">
+
+            @if (isFieldInvalid('classId')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.CLASS' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          <!-- Section -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'STUDENTS_FORM.SECTION_ID' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              type="number"
+              formControlName="sectionId"
+              min="1">
+
+            @if (isFieldInvalid('sectionId')) {
+
+              <mat-error>
+                {{ 'STUDENTS_FORM.VALIDATION.SECTION' | translate }}
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        </div>
+
+      </section>
+
+
+      <!-- Actions -->
+      <div class="form-actions">
+
+        <button
+          mat-button
+          type="button"
+          [disabled]="isSubmitting()"
+          (click)="cancel()">
+
+          {{ 'STUDENTS_FORM.CANCEL' | translate }}
+
+        </button>
+
+
+        <button
+  mat-flat-button
+  color="primary"
+  type="submit"
+  [disabled]="isSubmitting()">
+
+  <mat-icon>
+    {{ isEditMode() ? 'save' : 'person_add' }}
+  </mat-icon>
+
+  {{
+    isSubmitting()
+      ? ('STUDENTS_FORM.SAVING' | translate)
+      : (
+          isEditMode()
+            ? ('STUDENTS_FORM.UPDATE' | translate)
+            : ('STUDENTS_FORM.CREATE' | translate)
+        )
+  }}
+
+</button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

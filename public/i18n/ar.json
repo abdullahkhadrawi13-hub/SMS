@@ -115,5 +115,140 @@
     "ATTENDANCE": "الحضور",
     "ACADEMIC_INFORMATION": "المعلومات الأكاديمية",
     "TIMETABLE": "الجدول الدراسي"
+  },
+  "STUDENTS": {
+
+  "TITLE": "الطلاب",
+
+  "SUBTITLE": "إدارة وعرض بيانات الطلاب",
+
+  "ADD_STUDENT": "إضافة طالب",
+
+  "SEARCH": "البحث",
+
+  "SEARCH_PLACEHOLDER": "ابحث بالرقم المدرسي أو الاسم أو اسم المستخدم",
+
+  "CLEAR_SEARCH": "مسح البحث",
+
+  "SEARCH_BUTTON": "بحث",
+
+  "STATUS": "الحالة",
+
+  "ALL_STATUSES": "جميع الحالات",
+
+  "ACTIVE": "فعال",
+
+  "INACTIVE": "غير فعال",
+
+  "ACTIVATE": "تفعيل",
+
+  "DEACTIVATE": "تعطيل",
+
+  "STUDENT_NUMBER": "الرقم المدرسي",
+
+  "NAME": "الاسم",
+
+  "CLASS": "الصف",
+
+  "SECTION": "الشعبة",
+
+  "LOGIN_ID": "اسم المستخدم",
+
+  "ACTIONS": "الإجراءات",
+
+  "VIEW": "عرض",
+
+  "EDIT": "تعديل",
+
+  "LOADING": "جاري تحميل الطلاب...",
+
+  "NO_STUDENTS": "لا يوجد طلاب",
+
+  "NO_STUDENTS_DESCRIPTION": "لا يوجد طلاب يطابقون البحث أو الفلاتر الحالية.",
+
+  "RETRY": "إعادة المحاولة",
+
+  "PAGINATION": "التنقل بين صفحات الطلاب",
+
+  "ERROR": {
+
+    "LOAD_FAILED": "فشل في تحميل الطلاب. يرجى المحاولة مرة أخرى.",
+
+    "STATUS_UPDATE_FAILED": "فشل في تحديث حالة الطالب. يرجى المحاولة مرة أخرى."
+
   }
+
+},
+  "STUDENTS_DETAILS": {
+    "TITLE": "بيانات الطالب",
+    "SUBTITLE": "عرض معلومات الطالب وبيانات الحساب",
+    "BACK": "العودة إلى الطلاب",
+    "EDIT": "تعديل الطالب",
+    "LOADING": "جاري تحميل بيانات الطالب...",
+    "ERROR_TITLE": "تعذر تحميل بيانات الطالب",
+    "INVALID_ID": "معرف الطالب غير صالح.",
+    "LOAD_FAILED": "فشل في تحميل بيانات الطالب. يرجى المحاولة مرة أخرى.",
+    "PERSONAL_INFORMATION": "المعلومات الشخصية",
+    "PERSONAL_INFORMATION_DESCRIPTION": "المعلومات الشخصية والأكاديمية للطالب",
+    "ACCOUNT_INFORMATION": "معلومات الحساب",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "معلومات حساب الطالب والوصول إلى النظام",
+    "PHONE": "رقم الهاتف",
+    "PASSWORD_STATUS": "حالة كلمة المرور",
+    "MUST_CHANGE_PASSWORD": "يجب تغيير كلمة المرور",
+    "PASSWORD_NORMAL": "كلمة المرور محدثة",
+    "ROLE": "الدور",
+    "ACCOUNT_STATUS": "حالة الحساب",
+    "CLOSE": "إغلاق"
+  },
+  "STUDENTS_FORM": {
+  "ADD_TITLE": "إضافة طالب",
+  "EDIT_TITLE": "تعديل طالب",
+
+  "ADD_SUBTITLE": "إنشاء حساب طالب جديد وسجله الأكاديمي",
+  "EDIT_SUBTITLE": "تحديث بيانات الطالب وتعيينه الأكاديمي",
+
+  "ARABIC_INFORMATION": "المعلومات باللغة العربية",
+  "ARABIC_INFORMATION_DESCRIPTION": "أدخل اسم الطالب باللغة العربية",
+
+  "ENGLISH_INFORMATION": "المعلومات باللغة الإنجليزية",
+  "ENGLISH_INFORMATION_DESCRIPTION": "أدخل اسم الطالب باللغة الإنجليزية",
+
+  "ACCOUNT_INFORMATION": "معلومات الحساب",
+  "ACCOUNT_INFORMATION_DESCRIPTION": "أدخل معلومات تسجيل دخول الطالب",
+
+  "ACADEMIC_INFORMATION": "المعلومات الأكاديمية",
+  "ACADEMIC_INFORMATION_DESCRIPTION": "قم بتعيين الطالب إلى الصف والشعبة",
+
+  "FIRST_NAME_AR": "الاسم الأول",
+  "FATHER_NAME_AR": "اسم الأب",
+  "GRAND_FATHER_NAME_AR": "اسم الجد",
+  "FAMILY_NAME_AR": "اسم العائلة",
+
+  "FIRST_NAME_EN": "الاسم الأول (بالإنجليزية)",
+  "FATHER_NAME_EN": "اسم الأب (بالإنجليزية)",
+  "GRAND_FATHER_NAME_EN": "اسم الجد (بالإنجليزية)",
+  "FAMILY_NAME_EN": "اسم العائلة (بالإنجليزية)",
+
+  "LOGIN_ID": "اسم المستخدم",
+  "TEMPORARY_PASSWORD": "كلمة المرور المؤقتة",
+  "PHONE_NUMBER": "رقم الهاتف",
+
+  "CLASS_ID": "الصف",
+  "SECTION_ID": "الشعبة",
+
+  "CANCEL": "إلغاء",
+  "CREATE": "إضافة الطالب",
+  "UPDATE": "تحديث الطالب",
+  "SAVING": "جاري الحفظ...",
+
+  "LOADING": "جاري تحميل بيانات الطالب...",
+
+  "VALIDATION": {
+    "REQUIRED": "هذا الحقل مطلوب.",
+    "LOGIN_ID": "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل.",
+    "PASSWORD": "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
+    "CLASS": "يرجى إدخال صف صالح.",
+    "SECTION": "يرجى إدخال شعبة صالحة."
+  }
+}
 }

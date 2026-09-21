@@ -114,5 +114,136 @@
     "ATTENDANCE": "Attendance",
     "ACADEMIC_INFORMATION": "Academic Information",
     "TIMETABLE": "Timetable"
+  },
+  "STUDENTS": {
+    "TITLE": "Students",
+
+    "SUBTITLE": "Manage and view student information",
+
+    "ADD_STUDENT": "Add Student",
+
+    "SEARCH": "Search",
+
+    "SEARCH_PLACEHOLDER": "Search by student number, name, or login ID",
+
+    "CLEAR_SEARCH": "Clear search",
+
+    "SEARCH_BUTTON": "Search",
+
+    "STATUS": "Status",
+
+    "ALL_STATUSES": "All statuses",
+
+    "ACTIVE": "Active",
+
+    "INACTIVE": "Inactive",
+
+    "ACTIVATE": "Activate",
+
+    "DEACTIVATE": "Deactivate",
+
+    "STUDENT_NUMBER": "Student Number",
+
+    "NAME": "Name",
+
+    "CLASS": "Class",
+
+    "SECTION": "Section",
+
+    "LOGIN_ID": "Login ID",
+
+    "ACTIONS": "Actions",
+
+    "VIEW": "View",
+
+    "EDIT": "Edit",
+
+    "LOADING": "Loading students...",
+
+    "NO_STUDENTS": "No students found",
+
+    "NO_STUDENTS_DESCRIPTION": "There are no students matching the current search or filters.",
+
+    "RETRY": "Retry",
+
+    "PAGINATION": "Students pagination",
+
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load students. Please try again.",
+
+      "STATUS_UPDATE_FAILED": "Failed to update student status. Please try again."
+    }
+  },
+  "STUDENTS_DETAILS": {
+    "TITLE": "Student Details",
+    "SUBTITLE": "View student information and account details",
+    "BACK": "Back to Students",
+    "EDIT": "Edit Student",
+    "LOADING": "Loading student...",
+    "ERROR_TITLE": "Unable to load student",
+    "INVALID_ID": "Invalid student ID.",
+    "LOAD_FAILED": "Failed to load student. Please try again.",
+    "PERSONAL_INFORMATION": "Personal Information",
+    "PERSONAL_INFORMATION_DESCRIPTION": "Student personal and academic information",
+    "ACCOUNT_INFORMATION": "Account Information",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "Student account and access information",
+    "PHONE": "Phone Number",
+    "PASSWORD_STATUS": "Password Status",
+    "MUST_CHANGE_PASSWORD": "Must change password",
+    "PASSWORD_NORMAL": "Password is up to date",
+    "ROLE": "Role",
+    "ACCOUNT_STATUS": "Account Status",
+    "CLOSE": "Close"
+  },
+  "STUDENTS_FORM": {
+    "ADD_TITLE": "Add Student",
+    "EDIT_TITLE": "Edit Student",
+
+    "ADD_SUBTITLE": "Create a new student account and academic record",
+    "EDIT_SUBTITLE": "Update student information and academic assignment",
+
+    "ARABIC_INFORMATION": "Arabic Information",
+    "ARABIC_INFORMATION_DESCRIPTION": "Enter the student's name in Arabic",
+
+    "ENGLISH_INFORMATION": "English Information",
+    "ENGLISH_INFORMATION_DESCRIPTION": "Enter the student's name in English",
+
+    "ACCOUNT_INFORMATION": "Account Information",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "Enter the student's login information",
+
+    "ACADEMIC_INFORMATION": "Academic Information",
+    "ACADEMIC_INFORMATION_DESCRIPTION": "Assign the student to a class and section",
+
+    "FIRST_NAME_AR": "First Name (Arabic)",
+    "FATHER_NAME_AR": "Father Name (Arabic)",
+    "GRAND_FATHER_NAME_AR": "Grandfather Name (Arabic)",
+    "FAMILY_NAME_AR": "Family Name (Arabic)",
+
+    "FIRST_NAME_EN": "First Name (English)",
+    "FATHER_NAME_EN": "Father Name (English)",
+    "GRAND_FATHER_NAME_EN": "Grandfather Name (English)",
+    "FAMILY_NAME_EN": "Family Name (English)",
+
+    "LOGIN_ID": "Login ID",
+    "TEMPORARY_PASSWORD": "Temporary Password",
+    "PHONE_NUMBER": "Phone Number",
+
+    "CLASS_ID": "Class",
+    "SECTION_ID": "Section",
+
+    "CANCEL": "Cancel",
+    "CREATE": "Create Student",
+    "UPDATE": "Update Student",
+    "SAVING": "Saving...",
+
+    "LOADING": "Loading student information...",
+
+    "VALIDATION": {
+      "REQUIRED": "This field is required.",
+      "LOGIN_ID": "Login ID must contain at least 3 characters.",
+      "PASSWORD": "Password must contain at least 6 characters.",
+      "CLASS": "Please enter a valid class.",
+      "SECTION": "Please enter a valid section."
+    }
   }
 }
