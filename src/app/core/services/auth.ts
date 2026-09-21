@@ -16,10 +16,6 @@ export class Auth {
   private http = inject(HttpClient);
   private user = inject(User);
 
-// Mock
-//private readonly baseUrl = 'http://localhost:3000/api/Auth';
-
-// Real
 private readonly baseUrl = 'http://localhost:5253/api/Auth';
 
 
