@@ -1,6 +1,6 @@
 const http = require('http');
 
-const PORT =3000;//5253;
+const PORT =3000// 5253//3000;//;
 
 const users = [
   {
@@ -133,6 +133,39 @@ const users = [
     token: 'mock-parent-token'
   }
 ];
+const students = [
+  {
+    studentId: 1,
+    studentNumber: 'STU001',
+
+    userId: 10,
+
+    firstNameAr: 'محمد',
+    fatherNameAr: 'أحمد',
+    grandFatherNameAr: 'علي',
+    familyNameAr: 'حسن',
+
+    firstNameEn: 'Mohammad',
+    fatherNameEn: 'Ahmad',
+    grandFatherNameEn: 'Ali',
+    familyNameEn: 'Hassan',
+
+    loginId: 'student001',
+    phoneNumber: '0791111111',
+
+    isActive: true,
+    mustChangePassword: true,
+
+    classId: 1,
+    sectionId: 1,
+
+    role: 3
+  }
+];
+
+
+
+
 
 const server = http.createServer((req, res) => {
 
@@ -146,6 +179,32 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   }
+
+    if (
+    req.method === 'GET' &&
+    req.url.startsWith('/api/Students')
+  ) {
+
+    res.writeHead(200);
+
+    res.end(
+      JSON.stringify({
+        success: true,
+        message: 'Students retrieved successfully.',
+        data: {
+          items: students,
+          totalCount: students.length,
+          pageNumber: 1,
+          pageSize: 10,
+          totalPages: 1
+        }
+      })
+    );
+
+    return;
+  }
+
+
 
   if (
     req.method === 'POST' &&
@@ -265,3 +324,5 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`Mock API running on http://localhost:${PORT}`);
 });
+
+

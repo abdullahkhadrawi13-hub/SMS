@@ -3,9 +3,19 @@
    ================================ */
 
 .student-form {
+  width: 100%;
   padding: 24px;
   background: #ffffff;
   box-sizing: border-box;
+  text-align: start;
+}
+
+.student-form[dir='rtl'] {
+  direction: rtl;
+}
+
+.student-form[dir='ltr'] {
+  direction: ltr;
 }
 
 

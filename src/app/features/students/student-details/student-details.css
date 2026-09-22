@@ -6,6 +6,15 @@
   width: 100%;
   box-sizing: border-box;
   background: #ffffff;
+  text-align: start;
+}
+
+.student-dialog[dir='rtl'] {
+  direction: rtl;
+}
+
+.student-dialog[dir='ltr'] {
+  direction: ltr;
 }
 
 

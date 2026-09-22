@@ -49,6 +49,7 @@ export class StudentDetails {
   private readonly dialogRef =
     inject(MatDialogRef<StudentDetails>);
 
+  readonly direction = signal(document.documentElement.dir);
   readonly student = signal<Student | null>(null);
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');

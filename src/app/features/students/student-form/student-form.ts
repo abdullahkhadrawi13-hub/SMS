@@ -64,6 +64,8 @@ export class StudentForm {
   private readonly dialogRef = inject(MatDialogRef<StudentForm>);
   private readonly destroyRef = inject(DestroyRef);
 
+  readonly direction = signal(document.documentElement.dir);
+
   private readonly dialogData =
     inject<StudentFormDialogData>(MAT_DIALOG_DATA);
 
