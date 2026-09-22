@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
-import { LanguageSwitcher } from '../../../shared/components/language-switcher/language-switcher';
+
 import { Auth } from '../../../core/services/auth';
 import { User } from '../../../core/services/user';
 import { LoginRequest } from '../../../core/models/login-request';
@@ -16,7 +16,6 @@ import { LoginRequest } from '../../../core/models/login-request';
     FormsModule,
     TranslatePipe,
     MatIconModule,
-    LanguageSwitcher
   ],
   templateUrl: './login.html',
   styleUrl: './login.css'

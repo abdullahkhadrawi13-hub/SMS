@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
-import { LanguageSwitcher } from '../../../shared/components/language-switcher/language-switcher';
 import { Auth } from '../../../core/services/auth';
 import { User } from '../../../core/services/user';
 import { ChangePasswordRequest } from '../../../core/models/change-password-request';
@@ -16,7 +15,6 @@ import { ChangePasswordRequest } from '../../../core/models/change-password-requ
     FormsModule,
     TranslatePipe,
     MatIconModule,
-    LanguageSwitcher
   ],
   templateUrl: './change-password.html',
   styleUrl: './change-password.css'

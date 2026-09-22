@@ -1,72 +1,96 @@
-<div class="login-page">
-  <div class="login-card">
-    <!-- Header -->
-    <div class="login-header">
-      <img src="/images/sms-logo.jpg" alt="School Management System Logo" class="school-logo" />
+<div class="login-content">
 
-      <h1>
-        {{ 'LOGIN.TITLE' | translate }}
-      </h1>
+  <!-- Login Header -->
+  <div class="login-header">
 
-      <p>
-        {{ 'LOGIN.SUBTITLE' | translate }}
-      </p>
+    <div class="login-icon">
+      <mat-icon>account_circle</mat-icon>
     </div>
 
-    <!-- Login Form -->
-    <form (ngSubmit)="onSubmit()">
-      <!-- Username -->
-      <div class="form-group">
-        <label for="username">
-          {{ 'LOGIN.USERNAME' | translate }}
-        </label>
+    <h1>
+      {{ 'LOGIN.TITLE' | translate }}
+    </h1>
+
+    <p>
+      {{ 'LOGIN.SUBTITLE' | translate }}
+    </p>
+
+  </div>
+
+  <!-- Login Form -->
+  <form (ngSubmit)="onSubmit()">
+
+    <!-- Username -->
+    <div class="form-group">
+
+      <label for="username">
+        {{ 'LOGIN.USERNAME' | translate }}
+      </label>
+
+      <input
+        id="username"
+        type="text"
+        name="loginId"
+        [(ngModel)]="loginId"
+        [placeholder]="'LOGIN.USERNAME_PLACEHOLDER' | translate"
+      />
+
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+
+      <label for="password">
+        {{ 'LOGIN.PASSWORD' | translate }}
+      </label>
+
+      <div class="password-input">
 
         <input
-          id="username"
-          type="text"
-          name="loginId"
-          [(ngModel)]="loginId"
-          [placeholder]="'LOGIN.USERNAME_PLACEHOLDER' | translate"
+          id="password"
+          name="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          [(ngModel)]="password"
+          [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
         />
+
+        <button
+          type="button"
+          class="password-toggle"
+          (click)="togglePassword()">
+
+          <mat-icon>
+            {{ showPassword() ? 'visibility' : 'visibility_off' }}
+          </mat-icon>
+
+        </button>
+
       </div>
 
-      <!-- Password -->
-      <div class="form-group">
-        <label for="password">
-          {{ 'LOGIN.PASSWORD' | translate }}
-        </label>
-
-        <div class="password-input">
-          <input
-            id="password"
-            name="password"
-            [type]="showPassword() ? 'text' : 'password'"
-            [(ngModel)]="password"
-            [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
-          />
-
-          <button type="button" class="password-toggle" (click)="togglePassword()">
-            <mat-icon>
-              {{ showPassword() ? 'visibility' : 'visibility_off' }}
-            </mat-icon>
-          </button>
-        </div>
-      </div>
-      @if (errorMessage()) {
-        <p class="error-message">
-          {{ errorMessage() | translate }}
-        </p>
-      }
-
-      <!-- Login Button -->
-      <button type="submit" class="login-button" [disabled]="isLoading()">
-        {{ isLoading() ? ('LOGIN.LOADING' | translate) : ('LOGIN.BUTTON' | translate) }}
-      </button>
-    </form>
-
-    <!-- Language Switcher -->
-    <div class="language-container">
-      <app-language-switcher />
     </div>
-  </div>
+
+    <!-- Error -->
+    @if (errorMessage()) {
+
+      <p class="error-message">
+        {{ errorMessage() | translate }}
+      </p>
+
+    }
+
+    <!-- Login Button -->
+    <button
+      type="submit"
+      class="login-button"
+      [disabled]="isLoading()">
+
+      {{ isLoading()
+        ? ('LOGIN.LOADING' | translate)
+        : ('LOGIN.BUTTON' | translate)
+      }}
+
+    </button>
+
+  </form>
+
 </div>

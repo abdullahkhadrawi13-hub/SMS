@@ -1,1 +1,37 @@
-<p>auth-layout works!</p>
+<div class="auth-page">
+
+  <!-- School Header -->
+  <header class="auth-header">
+
+    <img
+      src="/images/sms-logo.jpg"
+      alt="School Management System Logo"
+      class="school-logo">
+
+    <h1>
+      {{ 'AUTH.SYSTEM_NAME' | translate }}
+    </h1>
+
+    <p>
+      {{ 'AUTH.DESCRIPTION' | translate }}
+    </p>
+
+  </header>
+
+
+  <!-- Auth Content -->
+  <main class="auth-card">
+
+    <router-outlet />
+
+  </main>
+
+
+  <!-- Language -->
+  <div class="language-container">
+
+    <app-language-switcher />
+
+  </div>
+
+</div>

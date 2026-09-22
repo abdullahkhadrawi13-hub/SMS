@@ -1,4 +1,9 @@
 {
+  "AUTH": {
+  "SYSTEM_NAME": "School Management System",
+  "DESCRIPTION": "A centralized system for managing school administration and academic processes"
+},
+
   "LOGIN": {
     "TITLE": "Login",
     "SUBTITLE": "Sign in to the School Management System",

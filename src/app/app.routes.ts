@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+
+import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { Login } from './features/auth/login/login';
 import { ChangePassword } from './features/auth/change-password/change-password';
 
@@ -12,8 +14,6 @@ import { DASHBOARD_ROUTES } from './features/dashboard/dashboard.routes';
 
 export const routes: Routes = [
 
-  // عندما يفتح المستخدم الموقع بدون كتابة أي مسار، ينقله النظام تلقائيًا لصفحة تسجيل الدخول
-  // (لازم يكون قبل الـ layout)
   {
     path: '',
     redirectTo: 'login',
@@ -21,14 +21,22 @@ export const routes: Routes = [
   },
 
   {
-    path: 'login',
-    component: Login
-  },
+    path: '',
+    component: AuthLayout,
+    children: [
 
-  {
-    path: 'change-password',
-    component: ChangePassword,
-    canActivate: [authGuard]
+      {
+        path: 'login',
+        component: Login
+      },
+
+      {
+        path: 'change-password',
+        component: ChangePassword,
+        canActivate: [authGuard]
+      }
+
+    ]
   },
 
   // كل الصفحات المحمية داخل الـ Layout (navbar + sidebar)
