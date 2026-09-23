@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { User } from '../../../core/services/user';
-import { SIDEBAR_MENU } from '../../config/sidebar-menu';
+import { SIDEBAR_MENU } from './sidebar-menu';
 
 @Component({
   selector: 'app-sidebar',

@@ -1,8 +1,8 @@
 {
   "AUTH": {
-  "SYSTEM_NAME": "School Management System",
-  "DESCRIPTION": "A centralized system for managing school administration and academic processes"
-},
+    "SYSTEM_NAME": "School Management System",
+    "DESCRIPTION": "A centralized system for managing school administration and academic processes"
+  },
 
   "LOGIN": {
     "TITLE": "Login",
@@ -200,6 +200,18 @@
     "ACCOUNT_STATUS": "Account Status",
     "CLOSE": "Close"
   },
+
+
+  "ROLES": {
+  "ADMIN": "Admin",
+  "ASSISTANT_PRINCIPAL": "Assistant Principal",
+  "TEACHER": "Teacher",
+  "STUDENT": "Student",
+  "PARENT": "Parent",
+  "UNKNOWN": "Unknown"
+},
+
+
   "STUDENTS_FORM": {
     "ADD_TITLE": "Add Student",
     "EDIT_TITLE": "Edit Student",
@@ -242,11 +254,17 @@
     "SAVING": "Saving...",
 
     "LOADING": "Loading student information...",
+    "ERROR": {
+      "CREATE_FAILED": "Failed to create student. Please try again.",
+      "UPDATE_FAILED": "Failed to update student. Please try again.",
+      "LOAD_FAILED": "Failed to load student. Please try again.",
+      "INVALID_ID": "Invalid student ID."
+    },
 
     "VALIDATION": {
       "REQUIRED": "This field is required.",
       "LOGIN_ID": "Login ID must contain at least 3 characters.",
-      "PASSWORD": "Password must contain at least 6 characters.",
+      "PASSWORD": "Password must contain at least 8 characters.",
       "CLASS": "Please enter a valid class.",
       "SECTION": "Please enter a valid section."
     }

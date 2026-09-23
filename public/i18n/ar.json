@@ -1,8 +1,8 @@
 {
   "AUTH": {
-  "SYSTEM_NAME": "نظام إدارة المدرسة",
-  "DESCRIPTION": "نظام مركزي لإدارة العمليات الإدارية والأكاديمية في المدرسة"
-},
+    "SYSTEM_NAME": "نظام إدارة المدرسة",
+    "DESCRIPTION": "نظام مركزي لإدارة العمليات الإدارية والأكاديمية في المدرسة"
+  },
 
   "LOGIN": {
     "TITLE": "تسجيل الدخول",
@@ -122,68 +122,64 @@
     "TIMETABLE": "الجدول الدراسي"
   },
   "STUDENTS": {
+    "TITLE": "الطلاب",
 
-  "TITLE": "الطلاب",
+    "SUBTITLE": "إدارة وعرض بيانات الطلاب",
 
-  "SUBTITLE": "إدارة وعرض بيانات الطلاب",
+    "ADD_STUDENT": "إضافة طالب",
 
-  "ADD_STUDENT": "إضافة طالب",
+    "SEARCH": "البحث",
 
-  "SEARCH": "البحث",
+    "SEARCH_PLACEHOLDER": "ابحث بالرقم المدرسي أو الاسم أو اسم المستخدم",
 
-  "SEARCH_PLACEHOLDER": "ابحث بالرقم المدرسي أو الاسم أو اسم المستخدم",
+    "CLEAR_SEARCH": "مسح البحث",
 
-  "CLEAR_SEARCH": "مسح البحث",
+    "SEARCH_BUTTON": "بحث",
 
-  "SEARCH_BUTTON": "بحث",
+    "STATUS": "الحالة",
 
-  "STATUS": "الحالة",
+    "ALL_STATUSES": "جميع الحالات",
 
-  "ALL_STATUSES": "جميع الحالات",
+    "ACTIVE": "فعال",
 
-  "ACTIVE": "فعال",
+    "INACTIVE": "غير فعال",
 
-  "INACTIVE": "غير فعال",
+    "ACTIVATE": "تفعيل",
 
-  "ACTIVATE": "تفعيل",
+    "DEACTIVATE": "تعطيل",
 
-  "DEACTIVATE": "تعطيل",
+    "STUDENT_NUMBER": "الرقم المدرسي",
 
-  "STUDENT_NUMBER": "الرقم المدرسي",
+    "NAME": "الاسم",
 
-  "NAME": "الاسم",
+    "CLASS": "الصف",
 
-  "CLASS": "الصف",
+    "SECTION": "الشعبة",
 
-  "SECTION": "الشعبة",
+    "LOGIN_ID": "اسم المستخدم",
 
-  "LOGIN_ID": "اسم المستخدم",
+    "ACTIONS": "الإجراءات",
 
-  "ACTIONS": "الإجراءات",
+    "VIEW": "عرض",
 
-  "VIEW": "عرض",
+    "EDIT": "تعديل",
 
-  "EDIT": "تعديل",
+    "LOADING": "جاري تحميل الطلاب...",
 
-  "LOADING": "جاري تحميل الطلاب...",
+    "NO_STUDENTS": "لا يوجد طلاب",
 
-  "NO_STUDENTS": "لا يوجد طلاب",
+    "NO_STUDENTS_DESCRIPTION": "لا يوجد طلاب يطابقون البحث أو الفلاتر الحالية.",
 
-  "NO_STUDENTS_DESCRIPTION": "لا يوجد طلاب يطابقون البحث أو الفلاتر الحالية.",
+    "RETRY": "إعادة المحاولة",
 
-  "RETRY": "إعادة المحاولة",
+    "PAGINATION": "التنقل بين صفحات الطلاب",
 
-  "PAGINATION": "التنقل بين صفحات الطلاب",
+    "ERROR": {
+      "LOAD_FAILED": "فشل في تحميل الطلاب. يرجى المحاولة مرة أخرى.",
 
-  "ERROR": {
-
-    "LOAD_FAILED": "فشل في تحميل الطلاب. يرجى المحاولة مرة أخرى.",
-
-    "STATUS_UPDATE_FAILED": "فشل في تحديث حالة الطالب. يرجى المحاولة مرة أخرى."
-
-  }
-
-},
+      "STATUS_UPDATE_FAILED": "فشل في تحديث حالة الطالب. يرجى المحاولة مرة أخرى."
+    }
+  },
   "STUDENTS_DETAILS": {
     "TITLE": "بيانات الطالب",
     "SUBTITLE": "عرض معلومات الطالب وبيانات الحساب",
@@ -205,55 +201,72 @@
     "ACCOUNT_STATUS": "حالة الحساب",
     "CLOSE": "إغلاق"
   },
+
+  "ROLES": {
+  "ADMIN": "مدير النظام",
+  "ASSISTANT_PRINCIPAL": "مساعد المدير",
+  "TEACHER": "معلم",
+  "STUDENT": "طالب",
+  "PARENT": "ولي أمر",
+  "UNKNOWN": "غير معروف"
+},
+
+
   "STUDENTS_FORM": {
-  "ADD_TITLE": "إضافة طالب",
-  "EDIT_TITLE": "تعديل طالب",
+    "ADD_TITLE": "إضافة طالب",
+    "EDIT_TITLE": "تعديل طالب",
 
-  "ADD_SUBTITLE": "إنشاء حساب طالب جديد وسجله الأكاديمي",
-  "EDIT_SUBTITLE": "تحديث بيانات الطالب وتعيينه الأكاديمي",
+    "ADD_SUBTITLE": "إنشاء حساب طالب جديد وسجله الأكاديمي",
+    "EDIT_SUBTITLE": "تحديث بيانات الطالب وتعيينه الأكاديمي",
 
-  "ARABIC_INFORMATION": "المعلومات باللغة العربية",
-  "ARABIC_INFORMATION_DESCRIPTION": "أدخل اسم الطالب باللغة العربية",
+    "ARABIC_INFORMATION": "المعلومات باللغة العربية",
+    "ARABIC_INFORMATION_DESCRIPTION": "أدخل اسم الطالب باللغة العربية",
 
-  "ENGLISH_INFORMATION": "المعلومات باللغة الإنجليزية",
-  "ENGLISH_INFORMATION_DESCRIPTION": "أدخل اسم الطالب باللغة الإنجليزية",
+    "ENGLISH_INFORMATION": "المعلومات باللغة الإنجليزية",
+    "ENGLISH_INFORMATION_DESCRIPTION": "أدخل اسم الطالب باللغة الإنجليزية",
 
-  "ACCOUNT_INFORMATION": "معلومات الحساب",
-  "ACCOUNT_INFORMATION_DESCRIPTION": "أدخل معلومات تسجيل دخول الطالب",
+    "ACCOUNT_INFORMATION": "معلومات الحساب",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "أدخل معلومات تسجيل دخول الطالب",
 
-  "ACADEMIC_INFORMATION": "المعلومات الأكاديمية",
-  "ACADEMIC_INFORMATION_DESCRIPTION": "قم بتعيين الطالب إلى الصف والشعبة",
+    "ACADEMIC_INFORMATION": "المعلومات الأكاديمية",
+    "ACADEMIC_INFORMATION_DESCRIPTION": "قم بتعيين الطالب إلى الصف والشعبة",
 
-  "FIRST_NAME_AR": "الاسم الأول",
-  "FATHER_NAME_AR": "اسم الأب",
-  "GRAND_FATHER_NAME_AR": "اسم الجد",
-  "FAMILY_NAME_AR": "اسم العائلة",
+    "FIRST_NAME_AR": "الاسم الأول",
+    "FATHER_NAME_AR": "اسم الأب",
+    "GRAND_FATHER_NAME_AR": "اسم الجد",
+    "FAMILY_NAME_AR": "اسم العائلة",
 
-  "FIRST_NAME_EN": "الاسم الأول (بالإنجليزية)",
-  "FATHER_NAME_EN": "اسم الأب (بالإنجليزية)",
-  "GRAND_FATHER_NAME_EN": "اسم الجد (بالإنجليزية)",
-  "FAMILY_NAME_EN": "اسم العائلة (بالإنجليزية)",
+    "FIRST_NAME_EN": "الاسم الأول (بالإنجليزية)",
+    "FATHER_NAME_EN": "اسم الأب (بالإنجليزية)",
+    "GRAND_FATHER_NAME_EN": "اسم الجد (بالإنجليزية)",
+    "FAMILY_NAME_EN": "اسم العائلة (بالإنجليزية)",
 
-  "LOGIN_ID": "اسم المستخدم",
-  "TEMPORARY_PASSWORD": "كلمة المرور المؤقتة",
-  "PHONE_NUMBER": "رقم الهاتف",
+    "LOGIN_ID": "اسم المستخدم",
+    "TEMPORARY_PASSWORD": "كلمة المرور المؤقتة",
+    "PHONE_NUMBER": "رقم الهاتف",
 
-  "CLASS_ID": "الصف",
-  "SECTION_ID": "الشعبة",
+    "CLASS_ID": "الصف",
+    "SECTION_ID": "الشعبة",
 
-  "CANCEL": "إلغاء",
-  "CREATE": "إضافة الطالب",
-  "UPDATE": "تحديث الطالب",
-  "SAVING": "جاري الحفظ...",
+    "CANCEL": "إلغاء",
+    "CREATE": "إضافة الطالب",
+    "UPDATE": "تحديث الطالب",
+    "SAVING": "جاري الحفظ...",
 
-  "LOADING": "جاري تحميل بيانات الطالب...",
+    "LOADING": "جاري تحميل بيانات الطالب...",
+    "ERROR": {
+      "CREATE_FAILED": "فشل في إضافة الطالب. يرجى المحاولة مرة أخرى.",
+      "UPDATE_FAILED": "فشل في تحديث بيانات الطالب. يرجى المحاولة مرة أخرى.",
+      "LOAD_FAILED": "فشل في تحميل بيانات الطالب. يرجى المحاولة مرة أخرى.",
+      "INVALID_ID": "معرف الطالب غير صالح."
+    },
 
-  "VALIDATION": {
-    "REQUIRED": "هذا الحقل مطلوب.",
-    "LOGIN_ID": "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل.",
-    "PASSWORD": "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
-    "CLASS": "يرجى إدخال صف صالح.",
-    "SECTION": "يرجى إدخال شعبة صالحة."
+    "VALIDATION": {
+      "REQUIRED": "هذا الحقل مطلوب.",
+      "LOGIN_ID": "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل.",
+      "PASSWORD": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل.",
+      "CLASS": "يرجى إدخال صف صالح.",
+      "SECTION": "يرجى إدخال شعبة صالحة."
+    }
   }
-}
 }

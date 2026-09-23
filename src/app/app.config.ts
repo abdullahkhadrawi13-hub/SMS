@@ -13,8 +13,11 @@ import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
+import { Directionality } from '@angular/cdk/bidi';
+
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { AppDirectionality } from './core/services/app-directionality';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,7 +37,9 @@ export const appConfig: ApplicationConfig = {
         prefix: './i18n/',
         suffix: '.json'
       })
-    })
+    }),
+
+    { provide: Directionality, useClass: AppDirectionality }
 
   ]
 };

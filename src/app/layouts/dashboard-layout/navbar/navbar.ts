@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { LanguageSwitcher } from '../language-switcher/language-switcher';
+import { LanguageSwitcher } from '../../../shared/components/language-switcher/language-switcher';
 
 @Component({
   selector: 'app-navbar',

@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   DestroyRef,
   inject,
   signal
@@ -34,6 +35,7 @@ import {
   CreateStudentRequest,
   StudentRequest
 } from '../../../core/services/students';
+import { Language } from '../../../core/services/language';
 
 export interface StudentFormDialogData {
   studentId?: number;
@@ -64,7 +66,11 @@ export class StudentForm {
   private readonly dialogRef = inject(MatDialogRef<StudentForm>);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly direction = signal(document.documentElement.dir);
+ private readonly language = inject(Language);
+
+readonly direction = computed(
+  () => this.language.currentDirection()
+);
 
   private readonly dialogData =
     inject<StudentFormDialogData>(MAT_DIALOG_DATA);
@@ -161,7 +167,7 @@ export class StudentForm {
       '',
       [
         Validators.required,
-        Validators.minLength(6)
+        Validators.minLength(8)
       ]
     ],
 

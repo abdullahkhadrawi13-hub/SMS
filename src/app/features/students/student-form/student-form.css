@@ -18,6 +18,14 @@
   direction: ltr;
 }
 
+.student-form[dir='rtl'] mat-form-field {
+  direction: rtl;
+}
+
+.student-form[dir='ltr'] mat-form-field {
+  direction: ltr;
+}
+
 
 /* ================================
    Page Header
@@ -258,7 +266,7 @@ input[dir='ltr'] {
 }
 
 .form-actions mat-icon {
-  margin-right: 6px;
+  margin-inline-end: 6px;
 }
 
 

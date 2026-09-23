@@ -8,7 +8,7 @@ export class Language {
 
   private translate = inject(TranslateService);
 
-  private currentDirection = signal<'ltr' | 'rtl'>('ltr');
+   currentDirection = signal<'ltr' | 'rtl'>('ltr');
 
   constructor() {
     const savedLanguage = localStorage.getItem('language');

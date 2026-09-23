@@ -1,9 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  inject,
-  signal
-} from '@angular/core';
+import {Component,DestroyRef,inject,signal} from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
@@ -14,19 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
-import {
-  MatPaginatorModule,
-  PageEvent
-} from '@angular/material/paginator';
+import {MatPaginatorModule,PageEvent} from '@angular/material/paginator';
 
 import { MatMenuModule } from '@angular/material/menu';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import {
-  MatDialog,
-  MatDialogModule
-} from '@angular/material/dialog';
+import {MatDialog,MatDialogModule} from '@angular/material/dialog';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -60,7 +49,6 @@ import { StudentForm } from '../student-form/student-form';
     MatMenuModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-
     TranslatePipe
   ],
 

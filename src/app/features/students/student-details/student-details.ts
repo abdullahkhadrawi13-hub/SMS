@@ -139,6 +139,23 @@ export class StudentDetails {
       .join(' ');
   }
 
+  getRoleTranslationKey(role: number): string {
+  switch (role) {
+    case 0:
+      return 'ROLES.ADMIN';
+    case 1:
+      return 'ROLES.ASSISTANT_PRINCIPAL';
+    case 2:
+      return 'ROLES.TEACHER';
+    case 3:
+      return 'ROLES.STUDENT';
+    case 4:
+      return 'ROLES.PARENT';
+    default:
+      return 'ROLES.UNKNOWN';
+  }
+}
+
   close(): void {
     this.dialogRef.close();
   }
