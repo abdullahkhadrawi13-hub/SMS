@@ -1,0 +1,151 @@
+<div class="class-form">
+
+  <!-- Header -->
+  <div class="form-header">
+    <div class="title-section">
+      <h2>
+        {{
+          isEditMode
+            ? ('CLASS_FORM.EDIT_TITLE' | translate)
+            : ('CLASS_FORM.ADD_TITLE' | translate)
+        }}
+      </h2>
+
+      <p>
+        {{
+          isEditMode
+            ? ('CLASS_FORM.EDIT_SUBTITLE' | translate)
+            : ('CLASS_FORM.ADD_SUBTITLE' | translate)
+        }}
+      </p>
+    </div>
+
+    <button
+      mat-icon-button
+      type="button"
+      [attr.aria-label]="'CLASS_FORM.CLOSE' | translate"
+      (click)="cancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Form -->
+  <form
+    [formGroup]="form"
+    (ngSubmit)="save()">
+
+    <!-- Arabic Name -->
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'CLASS_FORM.CLASS_NAME_AR' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="classNameAr"
+        [placeholder]="'CLASS_FORM.CLASS_NAME_AR_PLACEHOLDER' | translate">
+
+      @if (
+        form.controls.classNameAr.touched &&
+        form.controls.classNameAr.hasError('required')
+      ) {
+        <mat-error>
+          {{ 'CLASS_FORM.CLASS_NAME_AR_REQUIRED' | translate }}
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- English Name -->
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'CLASS_FORM.CLASS_NAME_EN' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="classNameEn"
+        [placeholder]="'CLASS_FORM.CLASS_NAME_EN_PLACEHOLDER' | translate">
+
+      @if (
+        form.controls.classNameEn.touched &&
+        form.controls.classNameEn.hasError('required')
+      ) {
+        <mat-error>
+          {{ 'CLASS_FORM.CLASS_NAME_EN_REQUIRED' | translate }}
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Level -->
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'CLASS_FORM.LEVEL' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="number"
+        formControlName="level"
+        min="1">
+
+      @if (
+        form.controls.level.touched &&
+        form.controls.level.hasError('required')
+      ) {
+        <mat-error>
+          {{ 'CLASS_FORM.LEVEL_REQUIRED' | translate }}
+        </mat-error>
+      }
+
+      @if (
+        form.controls.level.touched &&
+        form.controls.level.hasError('min')
+      ) {
+        <mat-error>
+          {{ 'CLASS_FORM.LEVEL_MIN' | translate }}
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Graduation Grade -->
+    <mat-checkbox formControlName="isGraduationGrade">
+      {{ 'CLASS_FORM.GRADUATION_GRADE' | translate }}
+    </mat-checkbox>
+
+    <!-- Actions -->
+    <div class="form-actions">
+
+      <button
+        mat-button
+        type="button"
+        [disabled]="isSaving"
+        (click)="cancel()">
+        {{ 'CLASS_FORM.CANCEL' | translate }}
+      </button>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="isSaving">
+
+        @if (isSaving) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          <mat-icon>save</mat-icon>
+        }
+
+        {{
+          isEditMode
+            ? ('CLASS_FORM.SAVE_CHANGES' | translate)
+            : ('CLASS_FORM.SAVE' | translate)
+        }}
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

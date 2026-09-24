@@ -41,7 +41,6 @@
     "TEACHERS": "المعلمين",
     "PARENTS": "أولياء الأمور",
     "CLASSES": "الصفوف",
-    "SECTIONS": "الشُعب",
     "SUBJECTS": "المواد الدراسية",
     "TIMETABLE": "الجدول الدراسي",
     "ATTENDANCE": "الحضور والغياب",
@@ -203,14 +202,13 @@
   },
 
   "ROLES": {
-  "ADMIN": "مدير النظام",
-  "ASSISTANT_PRINCIPAL": "مساعد المدير",
-  "TEACHER": "معلم",
-  "STUDENT": "طالب",
-  "PARENT": "ولي أمر",
-  "UNKNOWN": "غير معروف"
-},
-
+    "ADMIN": "مدير النظام",
+    "ASSISTANT_PRINCIPAL": "مساعد المدير",
+    "TEACHER": "معلم",
+    "STUDENT": "طالب",
+    "PARENT": "ولي أمر",
+    "UNKNOWN": "غير معروف"
+  },
 
   "STUDENTS_FORM": {
     "ADD_TITLE": "إضافة طالب",
@@ -268,5 +266,67 @@
       "CLASS": "يرجى إدخال صف صالح.",
       "SECTION": "يرجى إدخال شعبة صالحة."
     }
-  }
+  },
+
+  "CLASSES": {
+    "TITLE": "الصفوف",
+    "SUBTITLE": "إدارة الصفوف والشعب المدرسية",
+    "ADD_CLASS": "إضافة صف",
+
+    "SEARCH": "بحث",
+    "SEARCH_PLACEHOLDER": "ابحث عن الصفوف...",
+    "SEARCH_BUTTON": "بحث",
+
+    "CLASS_FILTER": "الصف",
+    "ALL_CLASSES": "جميع الصفوف",
+
+    "SECTION_FILTER": "الشعبة",
+    "SELECT_CLASS_FIRST": "اختر الصف أولاً",
+
+    "STATUS": "الحالة",
+    "ALL_STATUSES": "جميع الحالات",
+    "ACTIVE": "نشط",
+    "INACTIVE": "غير نشط",
+
+    "LOADING": "جاري التحميل...",
+
+    "CLASS": "الصف",
+    "SECTION": "الشعبة",
+    "ACTIONS": "الإجراءات",
+
+    "VIEW_DETAILS": "عرض التفاصيل",
+    "EDIT": "تعديل",
+    "DEACTIVATE": "إلغاء التفعيل",
+    "ACTIVATE": "تفعيل",
+
+    "NO_CLASSES": "لا توجد صفوف",
+    "NO_CLASSES_DESCRIPTION": "لا توجد صفوف أو شعب لعرضها."
+  },
+
+  "CLASS_FORM": {
+  "ADD_TITLE": "إضافة صف",
+  "EDIT_TITLE": "تعديل الصف",
+
+  "ADD_SUBTITLE": "أدخل معلومات الصف",
+  "EDIT_SUBTITLE": "تعديل معلومات الصف",
+
+  "CLASS_NAME_AR": "اسم الصف بالعربي",
+  "CLASS_NAME_AR_PLACEHOLDER": "أدخل اسم الصف بالعربي",
+  "CLASS_NAME_AR_REQUIRED": "اسم الصف بالعربي مطلوب",
+
+  "CLASS_NAME_EN": "اسم الصف بالإنجليزي",
+  "CLASS_NAME_EN_PLACEHOLDER": "أدخل اسم الصف بالإنجليزي",
+  "CLASS_NAME_EN_REQUIRED": "اسم الصف بالإنجليزي مطلوب",
+
+  "LEVEL": "المستوى",
+  "LEVEL_REQUIRED": "المستوى مطلوب",
+  "LEVEL_MIN": "يجب أن يكون المستوى 1 على الأقل",
+
+  "GRADUATION_GRADE": "صف التخرج",
+
+  "CANCEL": "إلغاء",
+  "SAVE": "حفظ",
+  "SAVE_CHANGES": "حفظ التغييرات",
+  "CLOSE": "إغلاق"
+}
 }

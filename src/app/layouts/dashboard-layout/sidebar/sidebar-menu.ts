@@ -43,13 +43,6 @@ export const SIDEBAR_MENU: MenuItem[] = [
   },
 
   {
-    label: 'SIDEBAR.SECTIONS',
-    icon: 'groups',
-    route: '/sections',
-    roles: [0, 1, 2]
-  },
-
-  {
     label: 'SIDEBAR.SUBJECTS',
     icon: 'menu_book',
     route: '/subjects',

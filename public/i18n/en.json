@@ -40,7 +40,6 @@
     "TEACHERS": "Teachers",
     "PARENTS": "Parents",
     "CLASSES": "Classes",
-    "SECTIONS": "Sections",
     "SUBJECTS": "Subjects",
     "TIMETABLE": "Timetable",
     "ATTENDANCE": "Attendance",
@@ -201,16 +200,14 @@
     "CLOSE": "Close"
   },
 
-
   "ROLES": {
-  "ADMIN": "Admin",
-  "ASSISTANT_PRINCIPAL": "Assistant Principal",
-  "TEACHER": "Teacher",
-  "STUDENT": "Student",
-  "PARENT": "Parent",
-  "UNKNOWN": "Unknown"
-},
-
+    "ADMIN": "Admin",
+    "ASSISTANT_PRINCIPAL": "Assistant Principal",
+    "TEACHER": "Teacher",
+    "STUDENT": "Student",
+    "PARENT": "Parent",
+    "UNKNOWN": "Unknown"
+  },
 
   "STUDENTS_FORM": {
     "ADD_TITLE": "Add Student",
@@ -268,5 +265,67 @@
       "CLASS": "Please enter a valid class.",
       "SECTION": "Please enter a valid section."
     }
-  }
+  },
+
+  "CLASSES": {
+    "TITLE": "Classes",
+    "SUBTITLE": "Manage school classes and sections",
+    "ADD_CLASS": "Add Class",
+
+    "SEARCH": "Search",
+    "SEARCH_PLACEHOLDER": "Search classes...",
+    "SEARCH_BUTTON": "Search",
+
+    "CLASS_FILTER": "Class",
+    "ALL_CLASSES": "All Classes",
+
+    "SECTION_FILTER": "Section",
+    "SELECT_CLASS_FIRST": "Select Class First",
+
+    "STATUS": "Status",
+    "ALL_STATUSES": "All Statuses",
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+
+    "LOADING": "Loading...",
+
+    "CLASS": "Class",
+    "SECTION": "Section",
+    "ACTIONS": "Actions",
+
+    "VIEW_DETAILS": "View Details",
+    "EDIT": "Edit",
+    "DEACTIVATE": "Deactivate",
+    "ACTIVATE": "Activate",
+
+    "NO_CLASSES": "No Classes Found",
+    "NO_CLASSES_DESCRIPTION": "There are no classes or sections to display."
+  },
+
+  "CLASS_FORM": {
+  "ADD_TITLE": "Add Class",
+  "EDIT_TITLE": "Edit Class",
+
+  "ADD_SUBTITLE": "Enter the class information",
+  "EDIT_SUBTITLE": "Update the class information",
+
+  "CLASS_NAME_AR": "Arabic Class Name",
+  "CLASS_NAME_AR_PLACEHOLDER": "Enter Arabic class name",
+  "CLASS_NAME_AR_REQUIRED": "Arabic class name is required",
+
+  "CLASS_NAME_EN": "English Class Name",
+  "CLASS_NAME_EN_PLACEHOLDER": "Enter English class name",
+  "CLASS_NAME_EN_REQUIRED": "English class name is required",
+
+  "LEVEL": "Level",
+  "LEVEL_REQUIRED": "Level is required",
+  "LEVEL_MIN": "Level must be at least 1",
+
+  "GRADUATION_GRADE": "Graduation Grade",
+
+  "CANCEL": "Cancel",
+  "SAVE": "Save",
+  "SAVE_CHANGES": "Save Changes",
+  "CLOSE": "Close"
+}
 }

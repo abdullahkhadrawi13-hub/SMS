@@ -1,0 +1,107 @@
+:host {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; /* يمنع أي التواء أو شريط تمرير خارجي */
+}
+
+.class-form {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24px; /* زيادات الهامش الداخلي بدلاً من 4px لمنع قص العناصر */
+}
+
+/* Header */
+.form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.title-section {
+  min-width: 0;
+  flex: 1;
+}
+
+.title-section h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #111827;
+}
+
+.title-section p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.form-header button {
+  flex-shrink: 0;
+  margin-top: -6px;
+}
+
+/* Form */
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+mat-form-field {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Checkbox */
+mat-checkbox {
+  width: fit-content;
+  margin: 4px 0;
+}
+
+/* Actions */
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+
+.form-actions button {
+  min-height: 40px;
+}
+
+.form-actions button[type='submit'] {
+  min-width: 110px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .class-form {
+    padding: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
