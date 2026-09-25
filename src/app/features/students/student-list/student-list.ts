@@ -1,4 +1,4 @@
-import {Component,DestroyRef,inject,signal} from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
@@ -9,13 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
-import {MatPaginatorModule,PageEvent} from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 import { MatMenuModule } from '@angular/material/menu';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import {MatDialog,MatDialogModule} from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -133,43 +133,28 @@ export class StudentList {
         next: response => {
 
           if (!response.success) {
-
             this.students.set([]);
-
             this.totalCount.set(0);
-
-            this.errorMessage.set(
-              response.message
-            );
-
+            this.errorMessage.set(response.message);
             this.isLoading.set(false);
-
             return;
           }
 
+          const data: PagedResult<Student> = response.data;
 
-          const data: PagedResult<Student> =
-            response.data;
+          // ✅ جديد: لو الصفحة الحالية رجعت فاضية وهي مش أول صفحة
+          // (مثلاً بعد تعطيل آخر طالب فيها) — ارجع صفحة للوراء وأعد التحميل
+          if (data.items.length === 0 && data.pageNumber > 1) {
+            this.pageNumber.set(data.pageNumber - 1);
+            this.loadStudents();
+            return;
+          }
 
-
-          this.students.set(
-            data.items
-          );
-
-          this.totalCount.set(
-            data.totalCount
-          );
-
-          this.pageNumber.set(
-            data.pageNumber
-          );
-
-          this.pageSize.set(
-            data.pageSize
-          );
-
+          this.students.set(data.items);
+          this.totalCount.set(data.totalCount);
+          this.pageNumber.set(data.pageNumber);
+          this.pageSize.set(data.pageSize);
           this.isLoading.set(false);
-
         },
 
 

@@ -103,170 +103,174 @@
     </div>
   }
 
-  <!-- Students Table -->
-  @else if (students().length > 0) {
+  <!-- Students Table + Pagination (paginator no longer tied to students().length) -->
+  @else {
     <div class="table-card">
-      <div class="table-wrapper">
-        <table mat-table [dataSource]="students()">
-          <!-- Student Number -->
-          <ng-container matColumnDef="studentNumber">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.STUDENT_NUMBER' | translate }}
-            </th>
 
-            <td mat-cell *matCellDef="let student">
-              {{ student.studentNumber }}
-            </td>
-          </ng-container>
+      @if (students().length > 0) {
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="students()">
+            <!-- Student Number -->
+            <ng-container matColumnDef="studentNumber">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'STUDENTS.STUDENT_NUMBER' | translate }}
+              </th>
 
-          <!-- Name -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.NAME' | translate }}
-            </th>
+              <td mat-cell *matCellDef="let student">
+                {{ student.studentNumber }}
+              </td>
+            </ng-container>
 
-            <td mat-cell *matCellDef="let student">
-              <div class="student-name-cell">
-                <div class="student-avatar">
-                  <mat-icon>person</mat-icon>
+            <!-- Name -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'STUDENTS.NAME' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let student">
+                <div class="student-name-cell">
+                  <div class="student-avatar">
+                    <mat-icon>person</mat-icon>
+                  </div>
+
+                  <span>
+                    {{ getStudentName(student) }}
+                  </span>
                 </div>
+              </td>
+            </ng-container>
 
-                <span>
-                  {{ getStudentName(student) }}
-                </span>
-              </div>
-            </td>
-          </ng-container>
+            <!-- Class -->
+            <ng-container matColumnDef="class">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'STUDENTS.CLASS' | translate }}
+              </th>
 
-          <!-- Class -->
-          <ng-container matColumnDef="class">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.CLASS' | translate }}
-            </th>
+              <td mat-cell *matCellDef="let student">
+                {{ student.classId }}
+              </td>
+            </ng-container>
 
-            <td mat-cell *matCellDef="let student">
-              {{ student.classId }}
-            </td>
-          </ng-container>
+            <!-- Section -->
+            <ng-container matColumnDef="section">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'STUDENTS.SECTION' | translate }}
+              </th>
 
-          <!-- Section -->
-          <ng-container matColumnDef="section">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.SECTION' | translate }}
-            </th>
+              <td mat-cell *matCellDef="let student">
+                {{ student.sectionId }}
+              </td>
+            </ng-container>
 
-            <td mat-cell *matCellDef="let student">
-              {{ student.sectionId }}
-            </td>
-          </ng-container>
+            <!-- Login ID -->
+            <ng-container matColumnDef="loginId">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'STUDENTS.LOGIN_ID' | translate }}
+              </th>
 
-          <!-- Login ID -->
-          <ng-container matColumnDef="loginId">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.LOGIN_ID' | translate }}
-            </th>
+              <td mat-cell *matCellDef="let student">
+                {{ student.loginId }}
+              </td>
+            </ng-container>
 
-            <td mat-cell *matCellDef="let student">
-              {{ student.loginId }}
-            </td>
-          </ng-container>
+            <!-- Status -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'STUDENTS.STATUS' | translate }}
+              </th>
 
-          <!-- Status -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.STATUS' | translate }}
-            </th>
-
-            <td mat-cell *matCellDef="let student">
-              <span
-                class="status-badge"
-                [class.active]="student.isActive"
-                [class.inactive]="!student.isActive"
-              >
-                <span class="status-dot"></span>
-
-                {{
-                  student.isActive
-                    ? ('STUDENTS.ACTIVE' | translate)
-                    : ('STUDENTS.INACTIVE' | translate)
-                }}
-              </span>
-            </td>
-          </ng-container>
-
-          <!-- Actions -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.ACTIONS' | translate }}
-            </th>
-
-            <td mat-cell *matCellDef="let student">
-              <button mat-icon-button [matMenuTriggerFor]="studentMenu" type="button">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-
-              <mat-menu #studentMenu="matMenu">
-                <!-- View -->
-                <button mat-menu-item type="button" (click)="openStudentDetails(student.studentId)">
-                  <mat-icon>visibility</mat-icon>
-
-                  {{ 'STUDENTS.VIEW' | translate }}
-                </button>
-
-                <!-- Edit -->
-                <button mat-menu-item type="button" (click)="openEditStudent(student.studentId)">
-                  <mat-icon>edit</mat-icon>
-
-                  {{ 'STUDENTS.EDIT' | translate }}
-                </button>
-
-                <!-- Activate / Deactivate -->
-                <button mat-menu-item type="button" (click)="toggleStudentStatus(student)">
-                  <mat-icon>
-                    {{ student.isActive ? 'person_off' : 'person' }}
-                  </mat-icon>
+              <td mat-cell *matCellDef="let student">
+                <span
+                  class="status-badge"
+                  [class.active]="student.isActive"
+                  [class.inactive]="!student.isActive"
+                >
+                  <span class="status-dot"></span>
 
                   {{
                     student.isActive
-                      ? ('STUDENTS.DEACTIVATE' | translate)
-                      : ('STUDENTS.ACTIVATE' | translate)
+                      ? ('STUDENTS.ACTIVE' | translate)
+                      : ('STUDENTS.INACTIVE' | translate)
                   }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Actions -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'STUDENTS.ACTIONS' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let student">
+                <button mat-icon-button [matMenuTriggerFor]="studentMenu" type="button">
+                  <mat-icon>more_vert</mat-icon>
                 </button>
-              </mat-menu>
-            </td>
-          </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <mat-menu #studentMenu="matMenu">
+                  <!-- View -->
+                  <button mat-menu-item type="button" (click)="openStudentDetails(student.studentId)">
+                    <mat-icon>visibility</mat-icon>
 
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
+                    {{ 'STUDENTS.VIEW' | translate }}
+                  </button>
 
-      <!-- Pagination -->
-      <mat-paginator
-        [length]="totalCount()"
-        [pageIndex]="pageNumber() - 1"
-        [pageSize]="pageSize()"
-        [pageSizeOptions]="[10, 20, 50]"
-        (page)="onPageChange($event)"
-        [attr.aria-label]="'STUDENTS.PAGINATION' | translate"
-      >
-      </mat-paginator>
-    </div>
-  }
+                  <!-- Edit -->
+                  <button mat-menu-item type="button" (click)="openEditStudent(student.studentId)">
+                    <mat-icon>edit</mat-icon>
 
-  <!-- Empty -->
-  @else {
-    <div class="state-card empty-state">
-      <mat-icon>school</mat-icon>
+                    {{ 'STUDENTS.EDIT' | translate }}
+                  </button>
 
-      <h3>
-        {{ 'STUDENTS.NO_STUDENTS' | translate }}
-      </h3>
+                  <!-- Activate / Deactivate -->
+                  <button mat-menu-item type="button" (click)="toggleStudentStatus(student)">
+                    <mat-icon>
+                      {{ student.isActive ? 'person_off' : 'person' }}
+                    </mat-icon>
 
-      <p>
-        {{ 'STUDENTS.NO_STUDENTS_DESCRIPTION' | translate }}
-      </p>
+                    {{
+                      student.isActive
+                        ? ('STUDENTS.DEACTIVATE' | translate)
+                        : ('STUDENTS.ACTIVATE' | translate)
+                    }}
+                  </button>
+                </mat-menu>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+      } @else {
+        <div class="state-card empty-state">
+          <mat-icon>school</mat-icon>
+
+          <h3>
+            {{ 'STUDENTS.NO_STUDENTS' | translate }}
+          </h3>
+
+          <p>
+            {{ 'STUDENTS.NO_STUDENTS_DESCRIPTION' | translate }}
+          </p>
+        </div>
+      }
+
+      <!-- Pagination: shown whenever there ARE results overall,
+           even if the current page happens to render empty -->
+      @if (totalCount() > 0) {
+        <mat-paginator
+          [length]="totalCount()"
+          [pageIndex]="pageNumber() - 1"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="[10, 20, 50]"
+          (page)="onPageChange($event)"
+          [attr.aria-label]="'STUDENTS.PAGINATION' | translate"
+        >
+        </mat-paginator>
+      }
+
     </div>
   }
 </div>

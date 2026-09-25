@@ -1,6 +1,6 @@
 const http = require('http');
 
-const PORT =5253//3000;//;
+const PORT =3000//5253//3000;//;
 
 const users = [
   {
@@ -163,6 +163,36 @@ const students = [
   }
 ];
 
+for (let i = 2; i <= 73; i++) {
+  students.push({
+    studentId: i,
+    studentNumber: `STU${String(i).padStart(3, '0')}`,
+
+    userId: 10 + i,
+
+    firstNameAr: `طالب`,
+    fatherNameAr: `أحمد`,
+    grandFatherNameAr: `محمد`,
+    familyNameAr: `رقم ${i}`,
+
+    firstNameEn: `Student`,
+    fatherNameEn: `Ahmad`,
+    grandFatherNameEn: `Mohammad`,
+    familyNameEn: `${i}`,
+
+    loginId: `student${String(i).padStart(3, '0')}`,
+    phoneNumber: `079111${String(i).padStart(4, '0')}`,
+
+    isActive: true,
+    mustChangePassword: false,
+
+    classId: (i % 3) + 1,
+    sectionId: (i % 2) + 1,
+
+    role: 3
+  });
+}
+
 
 
 
@@ -181,28 +211,50 @@ const server = http.createServer((req, res) => {
   }
 
     if (
-    req.method === 'GET' &&
-    req.url.startsWith('/api/Students')
-  ) {
+  req.method === 'GET' &&
+  req.url.startsWith('/api/Students')
+) {
 
-    res.writeHead(200);
+  const url = new URL(req.url, `http://localhost:${PORT}`);
 
-    res.end(
-      JSON.stringify({
-        success: true,
-        message: 'Students retrieved successfully.',
-        data: {
-          items: students,
-          totalCount: students.length,
-          pageNumber: 1,
-          pageSize: 10,
-          totalPages: 1
-        }
-      })
+  const pageNumber =
+    Number(url.searchParams.get('pageNumber')) || 1;
+
+  const pageSize =
+    Number(url.searchParams.get('pageSize')) || 10;
+
+  const totalCount = students.length;
+
+  const totalPages =
+    Math.ceil(totalCount / pageSize);
+
+  const startIndex =
+    (pageNumber - 1) * pageSize;
+
+  const items =
+    students.slice(
+      startIndex,
+      startIndex + pageSize
     );
 
-    return;
-  }
+  res.writeHead(200);
+
+  res.end(
+    JSON.stringify({
+      success: true,
+      message: 'Students retrieved successfully.',
+      data: {
+        items,
+        totalCount,
+        pageNumber,
+        pageSize,
+        totalPages
+      }
+    })
+  );
+
+  return;
+}
 
 
 
