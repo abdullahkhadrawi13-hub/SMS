@@ -279,7 +279,7 @@
   "CLASSES": {
   "TITLE": "Class Management",
   "SUBTITLE": "Manage classes and sections",
-  "ADD": "Add Classes",
+  "ADD": "Add Section",
   "FILTER": "Filter",
 
   "TABLE": {
@@ -322,6 +322,19 @@
   "CANCEL": "Cancel",
   "ADD": "Add",
   "EDIT": "Edit"
+},
+
+"FILTER_DIALOG": {
+  "TITLE": "Filter Classes",
+  "CLASS": "Class",
+  "SECTION": "Section",
+  "STATUS": "Status",
+  "ACADEMIC_YEAR": "Academic Year",
+  "ACADEMIC_TERM": "Academic Term",
+  "ALL": "All",
+  "CLEAR": "Clear",
+  "CANCEL": "Cancel",
+  "APPLY": "Apply"
 }
 }
 

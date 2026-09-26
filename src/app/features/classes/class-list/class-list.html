@@ -17,7 +17,9 @@
       <button
         mat-stroked-button
         type="button"
-        class="filter-button">
+        class="filter-button"
+        (click)="openFilterDialog()"
+        >
 
         <mat-icon>filter_list</mat-icon>
 
@@ -50,183 +52,191 @@
   <!-- Table -->
   <div class="table-card">
 
-    <table
-      mat-table
-      [dataSource]="sections"
-      class="classes-table">
+    <!-- ✅ الجدول يظهر فقط عند وجود بيانات فعلاً -->
+    @if (sections().length > 0) {
+
+      <table
+        mat-table
+        [dataSource]="sections()"
+        class="classes-table">
 
 
-      <!-- Class Name -->
-      <ng-container matColumnDef="className">
+        <!-- Class Name -->
+        <ng-container matColumnDef="className">
 
-        <th mat-header-cell *matHeaderCellDef>
-          {{ 'CLASSES.TABLE.CLASS_NAME' | translate }}
-        </th>
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'CLASSES.TABLE.CLASS_NAME' | translate }}
+          </th>
 
-        <td mat-cell *matCellDef="let classItem">
-          {{ classItem.classNameAr }}
-        </td>
+          <td mat-cell *matCellDef="let classItem">
+            {{ getClassName(classItem) }}
+          </td>
 
-      </ng-container>
-
-
-      <!-- Section -->
-      <ng-container matColumnDef="section">
-
-        <th mat-header-cell *matHeaderCellDef>
-          {{ 'CLASSES.TABLE.SECTION' | translate }}
-        </th>
-
-        <td mat-cell *matCellDef="let classItem">
-          {{ classItem.sectionAr }}
-        </td>
-
-      </ng-container>
+        </ng-container>
 
 
-      <!-- Student Count -->
-      <ng-container matColumnDef="studentCount">
+        <!-- Section -->
+        <ng-container matColumnDef="section">
 
-        <th mat-header-cell *matHeaderCellDef>
-          {{ 'CLASSES.TABLE.STUDENT_COUNT' | translate }}
-        </th>
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'CLASSES.TABLE.SECTION' | translate }}
+          </th>
 
-        <td mat-cell *matCellDef="let classItem">
-          {{ classItem.studentCount }}
-        </td>
+          <td mat-cell *matCellDef="let classItem">
+            {{ getSectionName(classItem) }}
+          </td>
 
-      </ng-container>
-
-
-      <!-- Status -->
-      <ng-container matColumnDef="status">
-
-        <th mat-header-cell *matHeaderCellDef>
-          {{ 'CLASSES.TABLE.STATUS' | translate }}
-        </th>
-
-        <td mat-cell *matCellDef="let classItem">
-
-          <span
-            class="status-badge"
-            [class.active]="classItem.isActive"
-            [class.inactive]="!classItem.isActive">
-
-            {{
-              classItem.isActive
-                ? ('CLASSES.ACTIVE' | translate)
-                : ('CLASSES.INACTIVE' | translate)
-            }}
-
-          </span>
-
-        </td>
-
-      </ng-container>
+        </ng-container>
 
 
-      <!-- Actions -->
-      <ng-container matColumnDef="actions">
+        <!-- Student Count -->
+        <ng-container matColumnDef="studentCount">
 
-        <th mat-header-cell *matHeaderCellDef>
-          {{ 'CLASSES.TABLE.ACTIONS' | translate }}
-        </th>
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'CLASSES.TABLE.STUDENT_COUNT' | translate }}
+          </th>
 
-        <td mat-cell *matCellDef="let classItem">
+          <td mat-cell *matCellDef="let classItem">
+            {{ classItem.studentCount }}
+          </td>
 
-          <button
-            mat-icon-button
-            [matMenuTriggerFor]="actionsMenu"
-            type="button"
-            aria-label="Actions">
-
-            <mat-icon>more_vert</mat-icon>
-
-          </button>
+        </ng-container>
 
 
-          <mat-menu #actionsMenu="matMenu">
+        <!-- Status -->
+        <ng-container matColumnDef="status">
 
-            <!-- Edit -->
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'CLASSES.TABLE.STATUS' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let classItem">
+
+            <span
+              class="status-badge"
+              [class.active]="classItem.isActive"
+              [class.inactive]="!classItem.isActive">
+
+              {{
+                classItem.isActive
+                  ? ('CLASSES.ACTIVE' | translate)
+                  : ('CLASSES.INACTIVE' | translate)
+              }}
+
+            </span>
+
+          </td>
+
+        </ng-container>
+
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'CLASSES.TABLE.ACTIONS' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let classItem">
+
             <button
-              mat-menu-item
+              mat-icon-button
+              [matMenuTriggerFor]="actionsMenu"
               type="button"
-              (click)="openEditClassDialog(classItem)">
+              aria-label="Actions">
 
-              <mat-icon>edit</mat-icon>
-
-              <span>
-                {{ 'CLASSES.EDIT' | translate }}
-              </span>
+              <mat-icon>more_vert</mat-icon>
 
             </button>
 
 
-            <!-- Activate / Deactivate -->
-            <button
-              mat-menu-item
-              type="button">
+            <mat-menu #actionsMenu="matMenu">
 
-              <mat-icon>
-                {{ classItem.isActive ? 'block' : 'check_circle' }}
-              </mat-icon>
+              <!-- Edit -->
+              <button
+                mat-menu-item
+                type="button"
+                (click)="openEditClassDialog(classItem)">
 
-              <span>
-                {{
-                  classItem.isActive
-                    ? ('CLASSES.DEACTIVATE' | translate)
-                    : ('CLASSES.ACTIVATE' | translate)
-                }}
-              </span>
+                <mat-icon>edit</mat-icon>
 
-            </button>
+                <span>
+                  {{ 'CLASSES.EDIT' | translate }}
+                </span>
 
-          </mat-menu>
-
-        </td>
-
-      </ng-container>
+              </button>
 
 
-      <!-- Header / Rows -->
-      <tr
-        mat-header-row
-        *matHeaderRowDef="displayedColumns">
-      </tr>
+              <!-- Activate / Deactivate -->
+              <button
+                mat-menu-item
+                type="button">
 
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns;">
-      </tr>
+                <mat-icon>
+                  {{ classItem.isActive ? 'block' : 'check_circle' }}
+                </mat-icon>
 
-    </table>
+                <span>
+                  {{
+                    classItem.isActive
+                      ? ('CLASSES.DEACTIVATE' | translate)
+                      : ('CLASSES.ACTIVATE' | translate)
+                  }}
+                </span>
+
+              </button>
+
+            </mat-menu>
+
+          </td>
+
+        </ng-container>
 
 
-    <!-- Empty State -->
-    <div class="empty-state">
+        <!-- Header / Rows -->
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns">
+        </tr>
 
-      <mat-icon>school</mat-icon>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns;">
+        </tr>
 
-      <h3>
-        {{ 'CLASSES.EMPTY.TITLE' | translate }}
-      </h3>
+      </table>
 
-      <p>
-        {{ 'CLASSES.EMPTY.MESSAGE' | translate }}
-      </p>
+    } @else {
 
-    </div>
+      <!-- ✅ رسالة "لا توجد صفوف" تظهر فقط عند عدم وجود بيانات -->
+      <div class="empty-state">
+
+        <mat-icon>school</mat-icon>
+
+        <h3>
+          {{ 'CLASSES.EMPTY.TITLE' | translate }}
+        </h3>
+
+        <p>
+          {{ 'CLASSES.EMPTY.MESSAGE' | translate }}
+        </p>
+
+      </div>
+
+    }
 
 
     <!-- Paginator -->
-    <mat-paginator
-      [length]="totalCount"
-      [pageIndex]="pageNumber - 1"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[10, 20, 50]"
-      showFirstLastButtons
-      (page)="onPageChange($event)">
-    </mat-paginator>
+    @if (sections().length > 0) {
+      <mat-paginator
+        [length]="totalCount()"
+        [pageIndex]="pageNumber() - 1"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="[10, 20, 50]"
+        showFirstLastButtons
+        (page)="onPageChange($event)">
+      </mat-paginator>
+    }
 
   </div>
 

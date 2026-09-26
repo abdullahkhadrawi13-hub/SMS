@@ -1,0 +1,124 @@
+<h2 mat-dialog-title>
+  {{ 'CLASSES.FILTER_DIALOG.TITLE' | translate }}
+</h2>
+
+<mat-dialog-content>
+
+  <form
+    [formGroup]="filterForm"
+    class="filter-form">
+
+    <!-- Class -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FILTER_DIALOG.CLASS' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="classId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Section -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FILTER_DIALOG.SECTION' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="sectionId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Status -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FILTER_DIALOG.STATUS' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="isActive">
+
+        <mat-option [value]="null">
+          {{ 'CLASSES.FILTER_DIALOG.ALL' | translate }}
+        </mat-option>
+
+        <mat-option [value]="true">
+          {{ 'CLASSES.ACTIVE' | translate }}
+        </mat-option>
+
+        <mat-option [value]="false">
+          {{ 'CLASSES.INACTIVE' | translate }}
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Academic Year -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FILTER_DIALOG.ACADEMIC_YEAR' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="academicYearId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Academic Term -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FILTER_DIALOG.ACADEMIC_TERM' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="academicTermId">
+      </mat-select>
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    (click)="clear()">
+
+    {{ 'CLASSES.FILTER_DIALOG.CLEAR' | translate }}
+
+  </button>
+
+
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()">
+
+    {{ 'CLASSES.FILTER_DIALOG.CANCEL' | translate }}
+
+  </button>
+
+
+  <button
+    mat-flat-button
+    type="button"
+    (click)="apply()">
+
+    {{ 'CLASSES.FILTER_DIALOG.APPLY' | translate }}
+
+  </button>
+
+</mat-dialog-actions>
