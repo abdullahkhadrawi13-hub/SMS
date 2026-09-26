@@ -39,6 +39,9 @@ export class ClassList {
 
 
   openAddClassDialog(): void {
+    const data: ClassFormData = {
+    mode: 'add'
+  };
     this.dialog.open(ClassForm, {
       width: '500px',
       maxWidth: '95vw'

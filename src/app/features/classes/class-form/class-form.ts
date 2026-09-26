@@ -43,12 +43,13 @@ export interface ClassFormData {
 export class ClassForm {
 
   private readonly fb = inject(FormBuilder);
+  
 
   private readonly dialogRef =
     inject(MatDialogRef<ClassForm>);
 
   readonly data =
-    inject<ClassFormData>(MAT_DIALOG_DATA);
+  inject<ClassFormData>(MAT_DIALOG_DATA, { optional: true }) ?? { mode: 'add' };
 
   readonly classForm = this.fb.group({
 
