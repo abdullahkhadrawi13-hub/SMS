@@ -1,0 +1,231 @@
+<div class="class-list">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div class="page-title">
+      <h1>{{ 'CLASSES.TITLE' | translate }}</h1>
+
+      <p>
+        {{ 'CLASSES.SUBTITLE' | translate }}
+      </p>
+    </div>
+
+    <div class="page-actions">
+
+      <!-- Filter -->
+      <button
+        mat-stroked-button
+        type="button"
+        class="filter-button">
+
+        <mat-icon>filter_list</mat-icon>
+
+        <span>
+          {{ 'CLASSES.FILTER' | translate }}
+        </span>
+
+      </button>
+
+      <!-- Add Classes -->
+      <button
+        mat-flat-button
+        type="button"
+        class="add-button"
+        (click)="openAddClassDialog()"
+        >
+
+        <mat-icon>add</mat-icon>
+
+        <span>
+          {{ 'CLASSES.ADD' | translate }}
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Table -->
+  <div class="table-card">
+
+    <table
+      mat-table
+      [dataSource]="[]"
+      class="classes-table">
+
+
+      <!-- Class Name -->
+      <ng-container matColumnDef="className">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CLASSES.TABLE.CLASS_NAME' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let classItem">
+          {{ classItem.className }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Section -->
+      <ng-container matColumnDef="section">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CLASSES.TABLE.SECTION' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let classItem">
+          {{ classItem.section }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Student Count -->
+      <ng-container matColumnDef="studentCount">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CLASSES.TABLE.STUDENT_COUNT' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let classItem">
+          {{ classItem.studentCount }}
+        </td>
+
+      </ng-container>
+
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CLASSES.TABLE.STATUS' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let classItem">
+
+          <span
+            class="status-badge"
+            [class.active]="classItem.status"
+            [class.inactive]="!classItem.status">
+
+            {{
+              classItem.status
+                ? ('CLASSES.ACTIVE' | translate)
+                : ('CLASSES.INACTIVE' | translate)
+            }}
+
+          </span>
+
+        </td>
+
+      </ng-container>
+
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CLASSES.TABLE.ACTIONS' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let classItem">
+
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="actionsMenu"
+            type="button"
+            aria-label="Actions">
+
+            <mat-icon>more_vert</mat-icon>
+
+          </button>
+
+
+          <mat-menu #actionsMenu="matMenu">
+
+            <!-- Edit -->
+            <button
+              mat-menu-item
+              type="button">
+              (click)="openEditClassDialog(classItem)">
+              <mat-icon>edit</mat-icon>
+
+              <span>
+                {{ 'CLASSES.EDIT' | translate }}
+              </span>
+
+            </button>
+
+
+            <!-- Activate / Deactivate -->
+            <button
+              mat-menu-item
+              type="button">
+
+              <mat-icon>
+                {{ classItem.status ? 'block' : 'check_circle' }}
+              </mat-icon>
+
+              <span>
+                {{
+                  classItem.status
+                    ? ('CLASSES.DEACTIVATE' | translate)
+                    : ('CLASSES.ACTIVATE' | translate)
+                }}
+              </span>
+
+            </button>
+
+          </mat-menu>
+
+        </td>
+
+      </ng-container>
+
+
+      <!-- Header / Rows -->
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumns">
+      </tr>
+
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns;">
+      </tr>
+
+    </table>
+
+
+    <!-- Empty State -->
+    <div class="empty-state">
+
+      <mat-icon>school</mat-icon>
+
+      <h3>
+        {{ 'CLASSES.EMPTY.TITLE' | translate }}
+      </h3>
+
+      <p>
+        {{ 'CLASSES.EMPTY.MESSAGE' | translate }}
+      </p>
+
+    </div>
+
+
+    <!-- Paginator -->
+    <mat-paginator
+      [length]="0"
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 20, 50]"
+      showFirstLastButtons>
+    </mat-paginator>
+
+  </div>
+
+</div>

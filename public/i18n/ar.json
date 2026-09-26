@@ -268,75 +268,60 @@
     }
   },
 
-
-  "CLASSES": {
-    "TITLE": "الصفوف",
-    "SUBTITLE": "إدارة الصفوف والشعب المدرسية",
-    "ADD_CLASS": "إضافة صف",
-
-    "SEARCH": "بحث",
-    "SEARCH_PLACEHOLDER": "ابحث عن الصفوف...",
-    "SEARCH_BUTTON": "بحث",
-
-    "CLASS_FILTER": "الصف",
-    "ALL_CLASSES": "جميع الصفوف",
-
-    "SECTION_FILTER": "الشعبة",
-    "SELECT_CLASS_FIRST": "اختر الصف أولاً",
-
-    "STATUS": "الحالة",
-    "ALL_STATUSES": "جميع الحالات",
-    "ACTIVE": "نشط",
-    "INACTIVE": "غير نشط",
-
-    "LOADING": "جاري التحميل...",
-
-    "CLASS": "الصف",
-    "SECTION": "الشعبة",
-    "ACTIONS": "الإجراءات",
-
-    "VIEW_DETAILS": "عرض التفاصيل",
-    "EDIT": "تعديل",
-    "DEACTIVATE": "إلغاء التفعيل",
-    "ACTIVATE": "تفعيل",
-
-    "NO_CLASSES": "لا توجد صفوف",
-    "NO_CLASSES_DESCRIPTION": "لا توجد صفوف أو شعب لعرضها."
+  "PAGINATOR": {
+    "ITEMS_PER_PAGE": "عدد العناصر في الصفحة:",
+    "NEXT_PAGE": "الصفحة التالية",
+    "PREVIOUS_PAGE": "الصفحة السابقة",
+    "FIRST_PAGE": "الصفحة الأولى",
+    "LAST_PAGE": "الصفحة الأخيرة",
+    "OF": "من"
   },
 
-  "CLASS_FORM": {
-  "ADD_TITLE": "إضافة صف",
-  "EDIT_TITLE": "تعديل الصف",
+  "CLASSES": {
+    "TITLE": "إدارة الصفوف",
+    "SUBTITLE": "إدارة الصفوف والشعب الدراسية",
+    "ADD": "إضافة الصفوف",
+    "FILTER": "فلتر",
 
-  "ADD_SUBTITLE": "أدخل معلومات الصف",
-  "EDIT_SUBTITLE": "تعديل معلومات الصف",
+    "TABLE": {
+      "CLASS_NAME": "اسم الصف",
+      "SECTION": "الشعبة",
+      "STUDENT_COUNT": "عدد الطلاب",
+      "STATUS": "الحالة",
+      "ACTIONS": "العمليات"
+    },
 
-  "CLASS_NAME_AR": "اسم الصف بالعربي",
-  "CLASS_NAME_AR_PLACEHOLDER": "أدخل اسم الصف بالعربي",
-  "CLASS_NAME_AR_REQUIRED": "اسم الصف بالعربي مطلوب",
+    "ACTIVE": "فعال",
+    "INACTIVE": "غير فعال",
+    "ACTIVATE": "تفعيل",
+    "DEACTIVATE": "تعطيل",
+    "EDIT": "تعديل",
 
-  "CLASS_NAME_EN": "اسم الصف بالإنجليزي",
-  "CLASS_NAME_EN_PLACEHOLDER": "أدخل اسم الصف بالإنجليزي",
-  "CLASS_NAME_EN_REQUIRED": "اسم الصف بالإنجليزي مطلوب",
+    "EMPTY": {
+      "TITLE": "لا توجد صفوف",
+      "MESSAGE": "لا توجد صفوف أو شعب دراسية لعرضها حالياً."
+    },
 
-  "LEVEL": "المستوى",
-  "LEVEL_REQUIRED": "المستوى مطلوب",
-  "LEVEL_MIN": "يجب أن يكون المستوى 1 على الأقل",
+    "FORM": {
+      "ADD_TITLE": "إضافة شعبة",
+      "EDIT_TITLE": "تعديل شعبة",
 
-  "GRADUATION_GRADE": "صف التخرج",
+      "CLASS": "الصف",
+      "CLASS_REQUIRED": "يرجى اختيار الصف",
 
-  "CANCEL": "إلغاء",
-  "SAVE": "حفظ",
-  "SAVE_CHANGES": "حفظ التغييرات",
-  "CLOSE": "إغلاق"},
+      "SECTION_AR": "اسم الشعبة بالعربي",
+      "SECTION_AR_PLACEHOLDER": "أدخل اسم الشعبة بالعربي",
+      "SECTION_AR_REQUIRED": "يرجى إدخال اسم الشعبة بالعربي",
 
-  "PAGINATOR": {
-  "ITEMS_PER_PAGE": "عدد العناصر في الصفحة:",
-  "NEXT_PAGE": "الصفحة التالية",
-  "PREVIOUS_PAGE": "الصفحة السابقة",
-  "FIRST_PAGE": "الصفحة الأولى",
-  "LAST_PAGE": "الصفحة الأخيرة",
-   "OF": "من"
+      "SECTION_EN": "اسم الشعبة بالإنجليزي",
+      "SECTION_EN_PLACEHOLDER": "أدخل اسم الشعبة بالإنجليزي",
+      "SECTION_EN_REQUIRED": "يرجى إدخال اسم الشعبة بالإنجليزي",
 
-}
+      "SECTION_MAX_LENGTH": "اسم الشعبة يجب ألا يتجاوز 100 حرف",
+
+      "CANCEL": "إلغاء",
+      "ADD": "إضافة",
+      "EDIT": "تعديل"
+    }
+  }
 }

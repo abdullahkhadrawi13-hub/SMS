@@ -1,0 +1,41 @@
+.class-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+
+/* =========================
+   Form Fields
+   ========================= */
+
+mat-form-field {
+  width: 100%;
+}
+
+
+/* =========================
+   Dialog Actions
+   ========================= */
+
+mat-dialog-actions {
+  padding: 16px 24px 20px;
+  gap: 8px;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 500px) {
+
+  mat-dialog-content {
+    padding: 16px;
+  }
+
+  mat-dialog-actions {
+    padding: 12px 16px 16px;
+  }
+}

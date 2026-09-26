@@ -1,0 +1,71 @@
+<h2 mat-dialog-title>
+  {{ 'CLASSES.FORM.ADD_TITLE' | translate }}
+</h2>
+
+<mat-dialog-content>
+
+  <form
+    [formGroup]="classForm"
+    class="class-form">
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FORM.CLASS' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="classId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FORM.SECTION_AR' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="sectionAr">
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FORM.SECTION_EN' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="sectionEn">
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    mat-dialog-close>
+    {{ 'CLASSES.FORM.CANCEL' | translate }}
+  </button>
+
+  <button
+    mat-flat-button
+    type="button"
+    [disabled]="classForm.invalid">
+
+    {{ 'CLASSES.FORM.ADD' | translate }}
+
+  </button>
+
+</mat-dialog-actions>

@@ -1,0 +1,212 @@
+.class-list {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   Page Header
+   ========================= */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.page-title h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.page-title p {
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+
+/* =========================
+   Header Actions
+   ========================= */
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-button,
+.add-button {
+  height: 42px;
+}
+
+.filter-button mat-icon,
+.add-button mat-icon {
+  margin-inline-end: 6px;
+}
+
+
+/* =========================
+   Table Card
+   ========================= */
+
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+
+/* =========================
+   Table
+   ========================= */
+
+.classes-table {
+  width: 100%;
+}
+
+.mat-mdc-header-cell {
+  background: #f8fafc;
+  height: 52px;
+  font-weight: 600;
+}
+
+.mat-mdc-cell {
+  height: 64px;
+}
+
+
+/* =========================
+   Status
+   ========================= */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 72px;
+  padding: 5px 12px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+
+/* =========================
+   Empty State
+   ========================= */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  width: 48px;
+  height: 48px;
+
+  font-size: 48px;
+  margin-bottom: 12px;
+
+  color: #9ca3af;
+}
+
+.empty-state h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+
+/* =========================
+   Paginator
+   ========================= */
+
+mat-paginator {
+  border-top: 1px solid #e5e7eb;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 900px) {
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .page-actions {
+    width: 100%;
+  }
+
+  .filter-button,
+  .add-button {
+    flex: 1;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .class-list {
+    padding: 16px;
+  }
+
+  .page-title h1 {
+    font-size: 24px;
+  }
+
+  .table-card {
+    overflow-x: auto;
+  }
+
+  .classes-table {
+    min-width: 700px;
+  }
+}
+
+
+@media (max-width: 450px) {
+
+  .page-actions {
+    flex-direction: column;
+  }
+
+  .filter-button,
+  .add-button {
+    width: 100%;
+  }
+}
