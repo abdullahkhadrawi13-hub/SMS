@@ -63,16 +63,7 @@ export const routes: Routes = [
             .then(m => m.STUDENT_ROUTES)
       },
 
-      {
-        path: 'classes',
-        loadChildren: () =>
-          import('./features/classes/class.routes')
-            .then(m => m.CLASS_ROUTES),
-        canActivate: [authGuard, roleGuard],
-        data: {
-          roles: [0, 1, 2]
-        }
-      },
+     
 
       // لاحقًا بنفس الطريقة:
       // teachers, parents, classes, sections, subjects ...
