@@ -134,6 +134,8 @@
 
     "SEARCH_BUTTON": "Search",
 
+    "FILTER": "Filter",
+
     "STATUS": "Status",
 
     "ALL_STATUSES": "All statuses",
@@ -242,8 +244,10 @@
     "TEMPORARY_PASSWORD": "Temporary Password",
     "PHONE_NUMBER": "Phone Number",
 
-    "CLASS_ID": "Class",
-    "SECTION_ID": "Section",
+    "CLASS_LABEL": "Class",
+    "SELECT_CLASS": "Select Class",
+    "SECTION_LABEL": "Section",
+    "SELECT_SECTION": "Select Section",
 
     "CANCEL": "Cancel",
     "CREATE": "Create Student",
@@ -265,6 +269,17 @@
       "CLASS": "Please enter a valid class.",
       "SECTION": "Please enter a valid section."
     }
+  },
+
+  "STUDENT_FILTER": {
+    "TITLE": "Filter Students",
+    "CLASS": "Class",
+    "SECTION": "Section",
+    "STATUS": "Status",
+    "ALL": "All",
+    "CLEAR": "Clear",
+    "CANCEL": "Cancel",
+    "APPLY": "Apply"
   },
 
   "PAGINATOR": {

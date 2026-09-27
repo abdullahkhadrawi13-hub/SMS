@@ -97,8 +97,14 @@
 
 .search-container mat-form-field {
   flex: 1;
+
   min-width: 0;
 }
+
+
+/* ================================
+   Filter Button
+   ================================ */
 
 .search-container > button {
   height: 56px;
@@ -109,17 +115,6 @@
   gap: 8px;
 
   padding: 0 20px;
-
-  flex-shrink: 0;
-}
-
-
-/* ================================
-   Status Filter
-   ================================ */
-
-.filters-card > mat-form-field {
-  width: 190px;
 
   flex-shrink: 0;
 }
@@ -407,10 +402,6 @@
     flex-basis: 100%;
   }
 
-  .filters-card > mat-form-field {
-    width: 200px;
-  }
-
 }
 
 
@@ -453,25 +444,28 @@
   }
 
   .search-container {
-    flex-direction: column;
+    flex-direction: row;
 
-    align-items: stretch;
+    align-items: center;
 
     width: 100%;
+
+    gap: 8px;
   }
 
   .search-container mat-form-field {
-    width: 100%;
+    flex: 1;
+
+    width: auto;
+    min-width: 0;
   }
 
   .search-container > button {
-    width: 100%;
+    width: auto;
 
     justify-content: center;
-  }
 
-  .filters-card > mat-form-field {
-    width: 100%;
+    padding: 0 14px;
   }
 
 

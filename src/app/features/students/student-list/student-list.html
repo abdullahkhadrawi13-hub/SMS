@@ -18,62 +18,63 @@
     </button>
   </div>
 
-  <!-- Filters -->
-  <div class="filters-card">
-    <div class="search-container">
-      <mat-form-field appearance="outline">
-        <mat-label>
-          {{ 'STUDENTS.SEARCH' | translate }}
-        </mat-label>
+ <!-- Filters -->
+<div class="filters-card">
 
-        <input
-          matInput
-          [value]="search()"
-          (input)="search.set($any($event.target).value)"
-          [placeholder]="'STUDENTS.SEARCH_PLACEHOLDER' | translate"
-          (keyup.enter)="onSearch()"
-        />
+  <div class="search-container">
 
-        @if (search()) {
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="clearSearch()"
-            [attr.aria-label]="'STUDENTS.CLEAR_SEARCH' | translate"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        }
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="search-field">
 
-      <button mat-flat-button color="primary" type="button" (click)="onSearch()">
-        <mat-icon>search</mat-icon>
-
-        {{ 'STUDENTS.SEARCH_BUTTON' | translate }}
-      </button>
-    </div>
-
-    <mat-form-field appearance="outline">
       <mat-label>
-        {{ 'STUDENTS.STATUS' | translate }}
+        {{ 'STUDENTS.SEARCH' | translate }}
       </mat-label>
 
-      <mat-select [value]="statusFilter()" (selectionChange)="onStatusChange($event.value)">
-        <mat-option [value]="undefined">
-          {{ 'STUDENTS.ALL_STATUSES' | translate }}
-        </mat-option>
+      <input
+        matInput
+        [value]="search()"
+        (input)="search.set($any($event.target).value)"
+        [placeholder]="'STUDENTS.SEARCH_PLACEHOLDER' | translate"
+        (keyup.enter)="onSearch()"
+      />
 
-        <mat-option [value]="true">
-          {{ 'STUDENTS.ACTIVE' | translate }}
-        </mat-option>
+      @if (search()) {
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="clearSearch()"
+          [attr.aria-label]="'STUDENTS.CLEAR_SEARCH' | translate"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
 
-        <mat-option [value]="false">
-          {{ 'STUDENTS.INACTIVE' | translate }}
-        </mat-option>
-      </mat-select>
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="onSearch()"
+        [attr.aria-label]="'STUDENTS.SEARCH_BUTTON' | translate"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+
     </mat-form-field>
+
+    <!-- Filter -->
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="openFilter()"
+    >
+      <mat-icon>filter_list</mat-icon>
+
+      {{ 'STUDENTS.FILTER' | translate }}
+    </button>
+
   </div>
+
+</div>
 
   <!-- Error -->
   @if (errorMessage()) {

@@ -135,6 +135,8 @@
 
     "SEARCH_BUTTON": "بحث",
 
+    "FILTER": "فلترة",
+
     "STATUS": "الحالة",
 
     "ALL_STATUSES": "جميع الحالات",
@@ -243,9 +245,12 @@
     "TEMPORARY_PASSWORD": "كلمة المرور المؤقتة",
     "PHONE_NUMBER": "رقم الهاتف",
 
-    "CLASS_ID": "الصف",
-    "SECTION_ID": "الشعبة",
+    "CLASS_LABEL": "الصف",
+    "SELECT_CLASS": "اختر الصف",
+    "SECTION_LABEL": "الشعبة",
+    "SELECT_SECTION": "اختر الشعبة",
 
+    
     "CANCEL": "إلغاء",
     "CREATE": "إضافة الطالب",
     "UPDATE": "تحديث الطالب",
@@ -266,6 +271,17 @@
       "CLASS": "يرجى إدخال صف صالح.",
       "SECTION": "يرجى إدخال شعبة صالحة."
     }
+  },
+
+  "STUDENT_FILTER": {
+    "TITLE": "فلترة الطلاب",
+    "CLASS": "الصف",
+    "SECTION": "الشعبة",
+    "STATUS": "الحالة",
+    "ALL": "الكل",
+    "CLEAR": "مسح",
+    "CANCEL": "إلغاء",
+    "APPLY": "تطبيق"
   },
 
   "PAGINATOR": {

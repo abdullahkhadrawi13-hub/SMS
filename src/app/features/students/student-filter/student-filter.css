@@ -1,0 +1,16 @@
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 360px;
+  padding-top: 8px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-dialog-actions {
+  gap: 8px;
+  padding: 16px 24px;
+}

@@ -25,6 +25,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -35,14 +36,18 @@ import {
   CreateStudentRequest,
   StudentRequest
 } from '../../../core/services/students';
+
 import { Language } from '../../../core/services/language';
+
 
 export interface StudentFormDialogData {
   studentId?: number;
 }
 
+
 @Component({
   selector: 'app-student-form',
+
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -53,41 +58,59 @@ export interface StudentFormDialogData {
     MatInputModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
 
     TranslatePipe
   ],
+
   templateUrl: './student-form.html',
   styleUrl: './student-form.css'
 })
+
+
 export class StudentForm {
 
   private readonly fb = inject(FormBuilder);
+
   private readonly studentsService = inject(Students);
-  private readonly dialogRef = inject(MatDialogRef<StudentForm>);
-  private readonly destroyRef = inject(DestroyRef);
 
- private readonly language = inject(Language);
+  private readonly dialogRef =
+    inject(MatDialogRef<StudentForm>);
 
-readonly direction = computed(
-  () => this.language.currentDirection()
-);
+  private readonly destroyRef =
+    inject(DestroyRef);
+
+  private readonly language =
+    inject(Language);
+
+
+  readonly direction = computed(
+    () => this.language.currentDirection()
+  );
+
 
   private readonly dialogData =
     inject<StudentFormDialogData>(MAT_DIALOG_DATA);
 
+
   readonly isLoading = signal(false);
+
   readonly isSubmitting = signal(false);
 
   readonly errorMessage = signal('');
+
   readonly successMessage = signal('');
+
 
   readonly studentId = signal<number | null>(
     this.dialogData?.studentId ?? null
   );
 
+
   readonly isEditMode = signal(
     !!this.dialogData?.studentId
   );
+
 
   readonly studentForm = this.fb.nonNullable.group({
 
@@ -123,6 +146,7 @@ readonly direction = computed(
       ]
     ],
 
+
     firstNameEn: [
       '',
       [
@@ -155,6 +179,7 @@ readonly direction = computed(
       ]
     ],
 
+
     loginId: [
       '',
       [
@@ -162,6 +187,7 @@ readonly direction = computed(
         Validators.minLength(3)
       ]
     ],
+
 
     temporaryPassword: [
       '',
@@ -171,12 +197,14 @@ readonly direction = computed(
       ]
     ],
 
+
     phoneNumber: [
       '',
       [
         Validators.required
       ]
     ],
+
 
     classId: [
       0,
@@ -185,6 +213,7 @@ readonly direction = computed(
         Validators.min(1)
       ]
     ],
+
 
     sectionId: [
       0,
@@ -218,13 +247,17 @@ readonly direction = computed(
   private loadStudent(studentId: number): void {
 
     this.isLoading.set(true);
+
     this.errorMessage.set('');
+
 
     this.studentsService
       .getStudent(studentId)
+
       .pipe(
         takeUntilDestroyed(this.destroyRef)
       )
+
       .subscribe({
 
         next: response => {
@@ -241,31 +274,46 @@ readonly direction = computed(
             return;
           }
 
+
           const student = response.data;
+
 
           this.studentForm.patchValue({
 
             firstNameAr: student.firstNameAr,
+
             fatherNameAr: student.fatherNameAr,
+
             grandFatherNameAr: student.grandFatherNameAr,
+
             familyNameAr: student.familyNameAr,
 
+
             firstNameEn: student.firstNameEn,
+
             fatherNameEn: student.fatherNameEn,
+
             grandFatherNameEn: student.grandFatherNameEn,
+
             familyNameEn: student.familyNameEn,
 
+
             loginId: student.loginId,
+
             phoneNumber: student.phoneNumber,
 
+
             classId: student.classId,
+
             sectionId: student.sectionId
 
           });
 
+
           this.isLoading.set(false);
 
         },
+
 
         error: error => {
 
@@ -274,9 +322,11 @@ readonly direction = computed(
             error
           );
 
+
           this.errorMessage.set(
             'STUDENTS_FORM.ERROR.LOAD_FAILED'
           );
+
 
           this.isLoading.set(false);
 
@@ -290,7 +340,9 @@ readonly direction = computed(
   onSubmit(): void {
 
     this.errorMessage.set('');
+
     this.successMessage.set('');
+
 
     if (this.studentForm.invalid) {
 
@@ -299,7 +351,9 @@ readonly direction = computed(
       return;
     }
 
+
     this.isSubmitting.set(true);
+
 
     if (this.isEditMode()) {
 
@@ -319,34 +373,50 @@ readonly direction = computed(
     const formValue =
       this.studentForm.getRawValue();
 
+
     const data: CreateStudentRequest = {
 
       firstNameAr: formValue.firstNameAr,
+
       fatherNameAr: formValue.fatherNameAr,
+
       grandFatherNameAr: formValue.grandFatherNameAr,
+
       familyNameAr: formValue.familyNameAr,
 
+
       firstNameEn: formValue.firstNameEn,
+
       fatherNameEn: formValue.fatherNameEn,
+
       grandFatherNameEn: formValue.grandFatherNameEn,
+
       familyNameEn: formValue.familyNameEn,
 
+
       loginId: formValue.loginId,
+
       temporaryPassword: formValue.temporaryPassword,
+
 
       phoneNumber: formValue.phoneNumber,
 
+
       classId: formValue.classId,
+
       sectionId: formValue.sectionId
 
     };
 
 
     this.studentsService
+
       .createStudent(data)
+
       .pipe(
         takeUntilDestroyed(this.destroyRef)
       )
+
       .subscribe({
 
         next: response => {
@@ -362,11 +432,14 @@ readonly direction = computed(
             return;
           }
 
+
           this.successMessage.set(
             'STUDENTS_FORM.SUCCESS.CREATED'
           );
 
+
           this.isSubmitting.set(false);
+
 
           setTimeout(() => {
 
@@ -379,6 +452,7 @@ readonly direction = computed(
 
         },
 
+
         error: error => {
 
           console.error(
@@ -386,9 +460,11 @@ readonly direction = computed(
             error
           );
 
+
           this.errorMessage.set(
             'STUDENTS_FORM.ERROR.CREATE_FAILED'
           );
+
 
           this.isSubmitting.set(false);
 
@@ -403,6 +479,7 @@ readonly direction = computed(
 
     const id = this.studentId();
 
+
     if (!id) {
 
       this.errorMessage.set(
@@ -414,35 +491,51 @@ readonly direction = computed(
       return;
     }
 
+
     const formValue =
       this.studentForm.getRawValue();
+
 
     const data: StudentRequest = {
 
       firstNameAr: formValue.firstNameAr,
+
       fatherNameAr: formValue.fatherNameAr,
+
       grandFatherNameAr: formValue.grandFatherNameAr,
+
       familyNameAr: formValue.familyNameAr,
 
+
       firstNameEn: formValue.firstNameEn,
+
       fatherNameEn: formValue.fatherNameEn,
+
       grandFatherNameEn: formValue.grandFatherNameEn,
+
       familyNameEn: formValue.familyNameEn,
 
+
       loginId: formValue.loginId,
+
       phoneNumber: formValue.phoneNumber,
 
+
       classId: formValue.classId,
+
       sectionId: formValue.sectionId
 
     };
 
 
     this.studentsService
+
       .updateStudent(id, data)
+
       .pipe(
         takeUntilDestroyed(this.destroyRef)
       )
+
       .subscribe({
 
         next: response => {
@@ -458,11 +551,14 @@ readonly direction = computed(
             return;
           }
 
+
           this.successMessage.set(
             'STUDENTS_FORM.SUCCESS.UPDATED'
           );
 
+
           this.isSubmitting.set(false);
+
 
           setTimeout(() => {
 
@@ -475,6 +571,7 @@ readonly direction = computed(
 
         },
 
+
         error: error => {
 
           console.error(
@@ -482,9 +579,11 @@ readonly direction = computed(
             error
           );
 
+
           this.errorMessage.set(
             'STUDENTS_FORM.ERROR.UPDATE_FAILED'
           );
+
 
           this.isSubmitting.set(false);
 
@@ -508,6 +607,7 @@ readonly direction = computed(
 
     const control =
       this.studentForm.controls[fieldName];
+
 
     return control.invalid && control.touched;
 

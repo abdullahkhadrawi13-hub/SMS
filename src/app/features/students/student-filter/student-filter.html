@@ -1,0 +1,74 @@
+<h2 mat-dialog-title>
+  {{ 'STUDENT_FILTER.TITLE' | translate }}
+</h2>
+
+<mat-dialog-content>
+
+  <div class="filter-form">
+
+    <!-- Class -->
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'STUDENT_FILTER.CLASS' | translate }}
+      </mat-label>
+
+      <mat-select>
+        <mat-option>
+          {{ 'STUDENT_FILTER.ALL' | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Section -->
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'STUDENT_FILTER.SECTION' | translate }}
+      </mat-label>
+
+      <mat-select>
+        <mat-option>
+          {{ 'STUDENT_FILTER.ALL' | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'STUDENT_FILTER.STATUS' | translate }}
+      </mat-label>
+
+      <mat-select>
+        <mat-option>
+          {{ 'STUDENT_FILTER.ALL' | translate }}
+        </mat-option>
+
+        <mat-option>
+          {{ 'STUDENTS.ACTIVE' | translate }}
+        </mat-option>
+
+        <mat-option>
+          {{ 'STUDENTS.INACTIVE' | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+  <button mat-button>
+    {{ 'STUDENT_FILTER.CLEAR' | translate }}
+  </button>
+
+  <button mat-button mat-dialog-close>
+    {{ 'STUDENT_FILTER.CANCEL' | translate }}
+  </button>
+
+  <button mat-flat-button>
+    {{ 'STUDENT_FILTER.APPLY' | translate }}
+  </button>
+
+</mat-dialog-actions>

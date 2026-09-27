@@ -32,6 +32,7 @@ import { StudentDetails } from '../student-details/student-details';
 
 import { StudentForm } from '../student-form/student-form';
 
+import { StudentFilter } from '../student-filter/student-filter';
 
 @Component({
   selector: 'app-student-list',
@@ -350,6 +351,12 @@ export class StudentList {
       });
 
   }
+
+  openFilter(): void {
+  this.dialog.open(StudentFilter, {
+    width: '420px'
+  });
+}
 
 
   toggleStudentStatus(
