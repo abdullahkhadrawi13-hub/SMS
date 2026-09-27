@@ -4,32 +4,20 @@
   <div class="page-header">
 
     <div class="page-title">
-      <h1>{{ 'CLASSES.TITLE' | translate }}</h1>
+      <h1>
+        {{ 'CLASSES.TITLE' | translate }}
+      </h1>
 
       <p>
         {{ 'CLASSES.SUBTITLE' | translate }}
       </p>
     </div>
 
+
+    <!-- Add Actions -->
     <div class="page-actions">
 
-      <!-- Filter -->
-      <button
-        mat-stroked-button
-        type="button"
-        class="filter-button"
-        (click)="openFilterDialog()"
-        >
-
-        <mat-icon>filter_list</mat-icon>
-
-        <span>
-          {{ 'CLASSES.FILTER' | translate }}
-        </span>
-
-      </button>
-
-      <!-- Add Classes -->
+      <!-- Add Class -->
       <button
         mat-flat-button
         type="button"
@@ -39,7 +27,23 @@
         <mat-icon>add</mat-icon>
 
         <span>
-          {{ 'CLASSES.ADD' | translate }}
+          {{ 'CLASSES.ADD_CLASS' | translate }}
+        </span>
+
+      </button>
+
+
+      <!-- Add Section -->
+      <button
+        mat-flat-button
+        type="button"
+        class="add-button"
+        (click)="openAddSectionDialog()">
+
+        <mat-icon>add</mat-icon>
+
+        <span>
+          {{ 'CLASSES.ADD_SECTION' | translate }}
         </span>
 
       </button>
@@ -49,10 +53,30 @@
   </div>
 
 
+  <!-- Table Toolbar -->
+  <div class="table-toolbar">
+
+  <button
+    mat-stroked-button
+    type="button"
+    class="filter-button"
+    (click)="openFilterDialog()">
+
+    <mat-icon>filter_list</mat-icon>
+
+    <span>
+      {{ 'CLASSES.FILTER' | translate }}
+    </span>
+
+  </button>
+
+</div>
+
+
   <!-- Table -->
   <div class="table-card">
 
-    <!-- ✅ الجدول يظهر فقط عند وجود بيانات فعلاً -->
+    <!-- Table appears only when data exists -->
     @if (sections().length > 0) {
 
       <table
@@ -152,11 +176,11 @@
 
             <mat-menu #actionsMenu="matMenu">
 
-              <!-- Edit -->
+              <!-- Edit Section -->
               <button
                 mat-menu-item
                 type="button"
-                (click)="openEditClassDialog(classItem)">
+                (click)="openEditSectionDialog(classItem)">
 
                 <mat-icon>edit</mat-icon>
 
@@ -208,7 +232,7 @@
 
     } @else {
 
-      <!-- ✅ رسالة "لا توجد صفوف" تظهر فقط عند عدم وجود بيانات -->
+      <!-- Empty State -->
       <div class="empty-state">
 
         <mat-icon>school</mat-icon>
@@ -228,6 +252,7 @@
 
     <!-- Paginator -->
     @if (sections().length > 0) {
+
       <mat-paginator
         [length]="totalCount()"
         [pageIndex]="pageNumber() - 1"
@@ -235,6 +260,7 @@
         [pageSizeOptions]="[10, 20, 50]"
         (page)="onPageChange($event)">
       </mat-paginator>
+
     }
 
   </div>

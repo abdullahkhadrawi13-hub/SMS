@@ -280,7 +280,8 @@
   "CLASSES": {
     "TITLE": "إدارة الصفوف",
     "SUBTITLE": "إدارة الصفوف والشعب الدراسية",
-    "ADD": "إضافة شعبة",
+    "ADD_CLASS": "إضافة صف",
+    "ADD_SECTION": "إضافة شعبة",
     "FILTER": "فلتر",
 
     "TABLE": {
@@ -302,7 +303,7 @@
       "MESSAGE": "لا توجد صفوف أو شعب دراسية لعرضها حالياً."
     },
 
-    "FORM": {
+    "SECTION_FORM": {
       "ADD_TITLE": "إضافة شعبة",
       "EDIT_TITLE": "تعديل شعبة",
 
@@ -324,7 +325,6 @@
       "EDIT": "تعديل"
     },
 
-    
     "FILTER_DIALOG": {
       "TITLE": "فلترة الصفوف",
       "CLASS": "الصف",
@@ -336,6 +336,20 @@
       "CLEAR": "مسح",
       "CANCEL": "إلغاء",
       "APPLY": "تطبيق"
+    },
+
+    "CLASS_FORM": {
+      "ADD_TITLE": "إضافة صف",
+      "CLASS_NAME_AR": "اسم الصف بالعربي",
+      "CLASS_NAME_AR_PLACEHOLDER": "أدخل اسم الصف بالعربي",
+      "CLASS_NAME_AR_REQUIRED": "يرجى إدخال اسم الصف بالعربي",
+      "CLASS_NAME_EN": "اسم الصف بالإنجليزي",
+      "CLASS_NAME_EN_PLACEHOLDER": "أدخل اسم الصف بالإنجليزي",
+      "CLASS_NAME_EN_REQUIRED": "يرجى إدخال اسم الصف بالإنجليزي",
+      "CLASS_MAX_LENGTH": "اسم الصف يجب ألا يتجاوز 100 حرف",
+      "IS_GRADUATION_CLASS": "صف التخرج",
+      "CANCEL": "إلغاء",
+      "ADD": "إضافة"
     }
   }
 }

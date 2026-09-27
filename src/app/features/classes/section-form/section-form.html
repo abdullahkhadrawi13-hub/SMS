@@ -1,0 +1,88 @@
+<h2 mat-dialog-title>
+
+  {{
+    isEditMode
+      ? ('CLASSES.SECTION_FORM.EDIT_TITLE' | translate)
+      : ('CLASSES.SECTION_FORM.ADD_TITLE' | translate)
+  }}
+
+</h2>
+
+
+<mat-dialog-content>
+
+  <form
+    [formGroup]="sectionForm"
+    class="section-form">
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.SECTION_FORM.CLASS' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="classId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.SECTION_FORM.SECTION_AR' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="sectionAr">
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.SECTION_FORM.SECTION_EN' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="sectionEn">
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()">
+
+    {{ 'CLASSES.SECTION_FORM.CANCEL' | translate }}
+
+  </button>
+
+
+  <button
+    mat-flat-button
+    type="button"
+    [disabled]="sectionForm.invalid"
+    (click)="submit()">
+
+    {{
+      isEditMode
+        ? ('CLASSES.SECTION_FORM.EDIT' | translate)
+        : ('CLASSES.SECTION_FORM.ADD' | translate)
+    }}
+
+  </button>
+
+</mat-dialog-actions>

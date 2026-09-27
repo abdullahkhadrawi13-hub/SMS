@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -7,6 +6,7 @@ import {
 } from '@angular/forms';
 
 import {
+  MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog';
@@ -14,52 +14,71 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+export interface SectionFormData {
+  mode: 'add' | 'edit';
+
+  classId?: number;
+  sectionAr?: string;
+  sectionEn?: string;
+}
+
 @Component({
-  selector: 'app-class-form',
+  selector: 'app-section-form',
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCheckboxModule,
+    MatSelectModule,
     TranslatePipe
   ],
-  templateUrl: './class-form.html',
-  styleUrl: './class-form.css'
+  templateUrl: './section-form.html',
+  styleUrl: './section-form.css'
 })
-export class ClassForm {
+export class SectionForm {
 
   private readonly fb = inject(FormBuilder);
 
   private readonly dialogRef =
-    inject(MatDialogRef<ClassForm>);
+    inject(MatDialogRef<SectionForm>);
 
-  readonly classForm = this.fb.group({
+  readonly data =
+    inject<SectionFormData>(MAT_DIALOG_DATA, { optional: true })
+    ?? { mode: 'add' };
 
-    classNameAr: [
-      '',
+  readonly sectionForm = this.fb.group({
+
+    classId: [
+      this.data.classId ?? null,
+      Validators.required
+    ],
+
+    sectionAr: [
+      this.data.sectionAr ?? '',
       [
         Validators.required,
         Validators.maxLength(100)
       ]
     ],
 
-    classNameEn: [
-      '',
+    sectionEn: [
+      this.data.sectionEn ?? '',
       [
         Validators.required,
         Validators.maxLength(100)
       ]
-    ],
-
-    isGraduationClass: [false]
+    ]
 
   });
+
+  get isEditMode(): boolean {
+    return this.data.mode === 'edit';
+  }
 
   cancel(): void {
     this.dialogRef.close();
@@ -67,14 +86,12 @@ export class ClassForm {
 
   submit(): void {
 
-    if (this.classForm.invalid) {
-      this.classForm.markAllAsTouched();
+    if (this.sectionForm.invalid) {
+      this.sectionForm.markAllAsTouched();
       return;
     }
 
-    this.dialogRef.close(
-      this.classForm.getRawValue()
-    );
+    this.dialogRef.close(this.sectionForm.getRawValue());
   }
 
 }

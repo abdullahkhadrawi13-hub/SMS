@@ -1,9 +1,5 @@
 <h2 mat-dialog-title>
-  {{
-    isEditMode
-      ? ('CLASSES.FORM.EDIT_TITLE' | translate)
-      : ('CLASSES.FORM.ADD_TITLE' | translate)
-  }}
+  {{ 'CLASSES.CLASS_FORM.ADD_TITLE' | translate }}
 </h2>
 
 <mat-dialog-content>
@@ -12,44 +8,82 @@
     [formGroup]="classForm"
     class="class-form">
 
+    <!-- Class Name Arabic -->
     <mat-form-field appearance="outline">
 
       <mat-label>
-        {{ 'CLASSES.FORM.CLASS' | translate }}
-      </mat-label>
-
-      <mat-select formControlName="classId">
-      </mat-select>
-
-    </mat-form-field>
-
-
-    <mat-form-field appearance="outline">
-
-      <mat-label>
-        {{ 'CLASSES.FORM.SECTION_AR' | translate }}
+        {{ 'CLASSES.CLASS_FORM.CLASS_NAME_AR' | translate }}
       </mat-label>
 
       <input
         matInput
         type="text"
-        formControlName="sectionAr">
+        formControlName="classNameAr"
+        [placeholder]="
+          'CLASSES.CLASS_FORM.CLASS_NAME_AR_PLACEHOLDER' | translate
+        ">
+
+      @if (
+        classForm.controls.classNameAr.touched &&
+        classForm.controls.classNameAr.hasError('required')
+      ) {
+        <mat-error>
+          {{ 'CLASSES.CLASS_FORM.CLASS_NAME_AR_REQUIRED' | translate }}
+        </mat-error>
+      }
+
+      @if (
+        classForm.controls.classNameAr.touched &&
+        classForm.controls.classNameAr.hasError('maxlength')
+      ) {
+        <mat-error>
+          {{ 'CLASSES.CLASS_FORM.CLASS_MAX_LENGTH' | translate }}
+        </mat-error>
+      }
 
     </mat-form-field>
 
 
+    <!-- Class Name English -->
     <mat-form-field appearance="outline">
 
       <mat-label>
-        {{ 'CLASSES.FORM.SECTION_EN' | translate }}
+        {{ 'CLASSES.CLASS_FORM.CLASS_NAME_EN' | translate }}
       </mat-label>
 
       <input
         matInput
         type="text"
-        formControlName="sectionEn">
+        formControlName="classNameEn"
+        [placeholder]="
+          'CLASSES.CLASS_FORM.CLASS_NAME_EN_PLACEHOLDER' | translate
+        ">
+
+      @if (
+        classForm.controls.classNameEn.touched &&
+        classForm.controls.classNameEn.hasError('required')
+      ) {
+        <mat-error>
+          {{ 'CLASSES.CLASS_FORM.CLASS_NAME_EN_REQUIRED' | translate }}
+        </mat-error>
+      }
+
+      @if (
+        classForm.controls.classNameEn.touched &&
+        classForm.controls.classNameEn.hasError('maxlength')
+      ) {
+        <mat-error>
+          {{ 'CLASSES.CLASS_FORM.CLASS_MAX_LENGTH' | translate }}
+        </mat-error>
+      }
 
     </mat-form-field>
+
+
+    <!-- Graduation Class -->
+    <mat-checkbox formControlName="isGraduationClass">
+      {{ 'CLASSES.CLASS_FORM.IS_GRADUATION_CLASS' | translate }}
+    </mat-checkbox>
 
   </form>
 
@@ -58,27 +92,25 @@
 
 <mat-dialog-actions align="end">
 
+  <!-- Cancel -->
   <button
     mat-button
     type="button"
     (click)="cancel()">
 
-    {{ 'CLASSES.FORM.CANCEL' | translate }}
+    {{ 'CLASSES.CLASS_FORM.CANCEL' | translate }}
 
   </button>
 
 
+  <!-- Add -->
   <button
     mat-flat-button
     type="button"
     [disabled]="classForm.invalid"
     (click)="submit()">
 
-    {{
-      isEditMode
-        ? ('CLASSES.FORM.EDIT' | translate)
-        : ('CLASSES.FORM.ADD' | translate)
-    }}
+    {{ 'CLASSES.CLASS_FORM.ADD' | translate }}
 
   </button>
 

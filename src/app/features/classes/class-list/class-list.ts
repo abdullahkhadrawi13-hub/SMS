@@ -4,13 +4,28 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  MatPaginatorModule,
+  PageEvent
+} from '@angular/material/paginator';
+import {
+  MatDialog,
+  MatDialogModule
+} from '@angular/material/dialog';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ClassForm, ClassFormData } from '../class-form/class-form';
-import { ClassFilter, ClassFilterData } from '../class-filter/class-filter';
+import {
+  SectionForm,
+  SectionFormData
+} from '../section-form/section-form';
+
+import { ClassForm } from '../class-form/class-form';
+
+import {
+  ClassFilter,
+  ClassFilterData
+} from '../class-filter/class-filter';
 
 import { Section } from '../section';
 import { SectionsService } from '../../../core/services/sections';
@@ -42,10 +57,6 @@ export class ClassList {
     'actions'
   ];
 
-  // ✅ استخدام signals بدل الخصائص العادية.
-  // بدون Zone.js (Angular Zoneless)، تعديل signal هو الطريقة
-  // التي تُخبر أنجولار أن عليه إعادة رسم الواجهة فوراً بعد استجابة الـ HTTP،
-  // بعكس تعديل خاصية عادية الذي لا يُحدّث الشاشة إلا عند حدوث event آخر.
   readonly sections = signal<Section[]>([]);
 
   readonly totalCount = signal(0);
@@ -80,82 +91,126 @@ export class ClassList {
     this.loadSections();
   }
 
+
+  // Add Class
   openAddClassDialog(): void {
-    const data: ClassFormData = {
+
+    const dialogRef = this.dialog.open(ClassForm, {
+      width: '500px',
+      maxWidth: '95vw',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+
+      if (result) {
+        console.log('Class form result:', result);
+
+        // سيتم استبداله بطلب الـAPI لاحقًا
+      }
+
+    });
+
+  }
+
+
+  // Add Section
+  openAddSectionDialog(): void {
+
+    const data: SectionFormData = {
       mode: 'add'
     };
 
-    const dialogRef = this.dialog.open(ClassForm, {
+    const dialogRef = this.dialog.open(SectionForm, {
       width: '500px',
       maxWidth: '95vw',
       data
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result?.success) {
-        this.loadSections();
+
+      if (result) {
+        console.log('Section form result:', result);
+
+        // سيتم استبداله بطلب الـAPI لاحقًا
       }
+
     });
+
   }
 
-  openEditClassDialog(section: Section): void {
-    const data: ClassFormData = {
+
+  // Edit Section
+  openEditSectionDialog(section: Section): void {
+
+    const data: SectionFormData = {
       mode: 'edit',
       classId: section.classId,
       sectionAr: section.sectionAr,
       sectionEn: section.sectionEn
     };
 
-    const dialogRef = this.dialog.open(ClassForm, {
+    const dialogRef = this.dialog.open(SectionForm, {
       width: '500px',
       maxWidth: '95vw',
       data
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result?.success) {
-        this.loadSections();
+
+      if (result) {
+        console.log('Section edit result:', result);
+
+        // سيتم استبداله بطلب الـAPI لاحقًا
       }
+
     });
+
   }
 
 
+  // Filter
   openFilterDialog(): void {
-  const dialogRef = this.dialog.open(ClassFilter, {
-    width: '500px',
-    maxWidth: '95vw'
-  });
 
-  dialogRef.afterClosed().subscribe((filters: ClassFilterData | undefined) => {
+    const dialogRef = this.dialog.open(ClassFilter, {
+      width: '500px',
+      maxWidth: '95vw'
+    });
 
-    if (!filters) {
-      return;
-    }
+    dialogRef.afterClosed().subscribe(
+      (filters: ClassFilterData | undefined) => {
 
-    console.log('Selected filters:', filters);
-  });
-}
+        if (!filters) {
+          return;
+        }
+
+        console.log('Selected filters:', filters);
+
+        // سيتم ربط الفلترة بالـAPI لاحقًا
+      }
+    );
+
+  }
 
 
-
-
-
-
-  // ✅ اختيار الاسم حسب اللغة الحالية للواجهة، بنفس الأسلوب
-  // المستخدم في StudentList.getStudentName().
   getClassName(section: Section): string {
+
     const language = document.documentElement.lang;
 
     return language === 'ar'
       ? section.classNameAr
       : section.classNameEn;
+
   }
 
+
   getSectionName(section: Section): string {
+
     const language = document.documentElement.lang;
 
     return language === 'ar'
       ? section.sectionAr
       : section.sectionEn;
+
   }
+
 }
