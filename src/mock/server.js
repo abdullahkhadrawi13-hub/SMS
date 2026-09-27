@@ -1,6 +1,6 @@
 const http = require('http');
 
-const PORT = 3000// 5253//3000;//;
+const PORT = 5253//3000;//;
 
 const users = [
   {
@@ -153,7 +153,7 @@ const students = [
     loginId: 'student001',
     phoneNumber: '0791111111',
 
-    isActive: true,
+    isActive: false,
     mustChangePassword: true,
 
     classId: 1,
@@ -194,6 +194,207 @@ for (let i = 2; i <= 73; i++) {
 }
 
 
+const sections = [
+  {
+    sectionId: 1,
+    classId: 1,
+    classNameAr: 'الصف الأول',
+    classNameEn: 'First Grade',
+    sectionAr: 'أ',
+    sectionEn: 'A',
+    studentCount: 25,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 2,
+    classId: 1,
+    classNameAr: 'الصف الأول',
+    classNameEn: 'First Grade',
+    sectionAr: 'ب',
+    sectionEn: 'B',
+    studentCount: 23,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 3,
+    classId: 1,
+    classNameAr: 'الصف الأول',
+    classNameEn: 'First Grade',
+    sectionAr: 'ج',
+    sectionEn: 'C',
+    studentCount: 21,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+
+  {
+    sectionId: 4,
+    classId: 2,
+    classNameAr: 'الصف الثاني',
+    classNameEn: 'Second Grade',
+    sectionAr: 'أ',
+    sectionEn: 'A',
+    studentCount: 27,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 5,
+    classId: 2,
+    classNameAr: 'الصف الثاني',
+    classNameEn: 'Second Grade',
+    sectionAr: 'ب',
+    sectionEn: 'B',
+    studentCount: 24,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 6,
+    classId: 2,
+    classNameAr: 'الصف الثاني',
+    classNameEn: 'Second Grade',
+    sectionAr: 'ج',
+    sectionEn: 'C',
+    studentCount: 22,
+    isActive: false,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+
+  {
+    sectionId: 7,
+    classId: 3,
+    classNameAr: 'الصف الثالث',
+    classNameEn: 'Third Grade',
+    sectionAr: 'أ',
+    sectionEn: 'A',
+    studentCount: 26,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 8,
+    classId: 3,
+    classNameAr: 'الصف الثالث',
+    classNameEn: 'Third Grade',
+    sectionAr: 'ب',
+    sectionEn: 'B',
+    studentCount: 28,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 9,
+    classId: 3,
+    classNameAr: 'الصف الثالث',
+    classNameEn: 'Third Grade',
+    sectionAr: 'ج',
+    sectionEn: 'C',
+    studentCount: 20,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+
+  {
+    sectionId: 10,
+    classId: 4,
+    classNameAr: 'الصف الرابع',
+    classNameEn: 'Fourth Grade',
+    sectionAr: 'أ',
+    sectionEn: 'A',
+    studentCount: 29,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 11,
+    classId: 4,
+    classNameAr: 'الصف الرابع',
+    classNameEn: 'Fourth Grade',
+    sectionAr: 'ب',
+    sectionEn: 'B',
+    studentCount: 25,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 12,
+    classId: 4,
+    classNameAr: 'الصف الرابع',
+    classNameEn: 'Fourth Grade',
+    sectionAr: 'ج',
+    sectionEn: 'C',
+    studentCount: 24,
+    isActive: false,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+
+  {
+    sectionId: 13,
+    classId: 5,
+    classNameAr: 'الصف الخامس',
+    classNameEn: 'Fifth Grade',
+    sectionAr: 'أ',
+    sectionEn: 'A',
+    studentCount: 27,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 14,
+    classId: 5,
+    classNameAr: 'الصف الخامس',
+    classNameEn: 'Fifth Grade',
+    sectionAr: 'ب',
+    sectionEn: 'B',
+    studentCount: 26,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+
+  {
+    sectionId: 15,
+    classId: 6,
+    classNameAr: 'الصف السادس',
+    classNameEn: 'Sixth Grade',
+    sectionAr: 'أ',
+    sectionEn: 'A',
+    studentCount: 28,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  },
+  {
+    sectionId: 16,
+    classId: 6,
+    classNameAr: 'الصف السادس',
+    classNameEn: 'Sixth Grade',
+    sectionAr: 'ب',
+    sectionEn: 'B',
+    studentCount: 27,
+    isActive: true,
+    academicYearId: 1,
+    academicTermId: 1
+  }
+];
+
+
 
 
 
@@ -209,6 +410,141 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   }
+
+  // =========================
+  // Sections API
+  // =========================
+
+  if (
+    req.method === 'GET' &&
+    req.url.startsWith('/api/Sections')
+  ) {
+
+    const url = new URL(
+      req.url,
+      `http://localhost:${PORT}`
+    );
+
+    const pageNumber =
+      Number(url.searchParams.get('pageNumber')) || 1;
+
+    const pageSize =
+      Number(url.searchParams.get('pageSize')) || 10;
+
+    const academicYearId =
+      url.searchParams.get('academicYearId');
+
+    const academicTermId =
+      url.searchParams.get('academicTermId');
+
+    const classId =
+      url.searchParams.get('classId');
+
+    const sectionId =
+      url.searchParams.get('sectionId');
+
+    const isActive =
+      url.searchParams.get('isActive');
+
+
+    // -------------------------
+    // Filtering
+    // -------------------------
+
+    let filteredSections = [...sections];
+
+
+    if (academicYearId !== null) {
+      filteredSections = filteredSections.filter(
+        section =>
+          section.academicYearId === Number(academicYearId)
+      );
+    }
+
+
+    if (academicTermId !== null) {
+      filteredSections = filteredSections.filter(
+        section =>
+          section.academicTermId === Number(academicTermId)
+      );
+    }
+
+
+    if (classId !== null) {
+      filteredSections = filteredSections.filter(
+        section =>
+          section.classId === Number(classId)
+      );
+    }
+
+
+    if (sectionId !== null) {
+      filteredSections = filteredSections.filter(
+        section =>
+          section.sectionId === Number(sectionId)
+      );
+    }
+
+
+    if (isActive !== null) {
+
+      const active =
+        isActive === 'true';
+
+      filteredSections =
+        filteredSections.filter(
+          section =>
+            section.isActive === active
+        );
+    }
+
+
+    // -------------------------
+    // Pagination
+    // -------------------------
+
+    const totalCount =
+      filteredSections.length;
+
+    const totalPages =
+      Math.ceil(totalCount / pageSize);
+
+    const startIndex =
+      (pageNumber - 1) * pageSize;
+
+    const items =
+      filteredSections.slice(
+        startIndex,
+        startIndex + pageSize
+      );
+
+
+    // -------------------------
+    // Response
+    // -------------------------
+
+    res.writeHead(200);
+
+    res.end(
+      JSON.stringify({
+        success: true,
+        messageAr: 'تم جلب الصفوف بنجاح',
+        messageEn: 'Sections retrieved successfully',
+        data: {
+          items,
+          totalCount,
+          pageNumber,
+          pageSize,
+          totalPages
+        }
+      })
+    );
+
+    return;
+  }
+
+
+
 
     if (
   req.method === 'GET' &&

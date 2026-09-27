@@ -1,5 +1,9 @@
 <h2 mat-dialog-title>
-  {{ 'CLASSES.FORM.ADD_TITLE' | translate }}
+  {{
+    isEditMode
+      ? ('CLASSES.FORM.EDIT_TITLE' | translate)
+      : ('CLASSES.FORM.ADD_TITLE' | translate)
+  }}
 </h2>
 
 <mat-dialog-content>
@@ -51,20 +55,30 @@
 
 </mat-dialog-content>
 
+
 <mat-dialog-actions align="end">
 
   <button
     mat-button
-    mat-dialog-close>
+    type="button"
+    (click)="cancel()">
+
     {{ 'CLASSES.FORM.CANCEL' | translate }}
+
   </button>
+
 
   <button
     mat-flat-button
     type="button"
-    [disabled]="classForm.invalid">
+    [disabled]="classForm.invalid"
+    (click)="submit()">
 
-    {{ 'CLASSES.FORM.ADD' | translate }}
+    {{
+      isEditMode
+        ? ('CLASSES.FORM.EDIT' | translate)
+        : ('CLASSES.FORM.ADD' | translate)
+    }}
 
   </button>
 
