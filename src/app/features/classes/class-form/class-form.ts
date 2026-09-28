@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -27,6 +28,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
+    MatSelectModule,
     TranslatePipe
   ],
   templateUrl: './class-form.html',
@@ -39,6 +41,7 @@ export class ClassForm {
   private readonly dialogRef =
     inject(MatDialogRef<ClassForm>);
 
+  // Add Class Form
   readonly classForm = this.fb.group({
 
     classNameAr: [
@@ -61,6 +64,16 @@ export class ClassForm {
 
   });
 
+  // Disable Class Form
+  readonly disableClassForm = this.fb.group({
+
+    classId: [
+      null,
+      Validators.required
+    ]
+
+  });
+
   cancel(): void {
     this.dialogRef.close();
   }
@@ -72,9 +85,23 @@ export class ClassForm {
       return;
     }
 
-    this.dialogRef.close(
-      this.classForm.getRawValue()
-    );
+    this.dialogRef.close({
+      action: 'add',
+      data: this.classForm.getRawValue()
+    });
+  }
+
+  disableClass(): void {
+
+    if (this.disableClassForm.invalid) {
+      this.disableClassForm.markAllAsTouched();
+      return;
+    }
+
+    this.dialogRef.close({
+      action: 'disable',
+      data: this.disableClassForm.getRawValue()
+    });
   }
 
 }

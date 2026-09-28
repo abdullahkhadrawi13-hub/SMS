@@ -92,8 +92,8 @@ export class ClassList {
   }
 
 
-  // Add Class
-  openAddClassDialog(): void {
+  // AdvancedClassSetting
+ openAdvancedClassSettingsDialog(): void {
 
     const dialogRef = this.dialog.open(ClassForm, {
       width: '500px',

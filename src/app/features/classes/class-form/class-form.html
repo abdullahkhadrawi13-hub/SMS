@@ -1,8 +1,14 @@
 <h2 mat-dialog-title>
-  {{ 'CLASSES.CLASS_FORM.ADD_TITLE' | translate }}
+  {{ 'CLASSES.CLASS_FORM.SETTINGS_TITLE' | translate }}
 </h2>
 
 <mat-dialog-content>
+
+  <!-- ==================== Add Class ==================== -->
+
+  <h3>
+    {{ 'CLASSES.CLASS_FORM.ADD_SECTION_TITLE' | translate }}
+  </h3>
 
   <form
     [formGroup]="classForm"
@@ -87,6 +93,86 @@
 
   </form>
 
+
+  <div class="form-section-actions">
+
+    <button
+      mat-flat-button
+      type="button"
+      [disabled]="classForm.invalid"
+      (click)="submit()">
+
+      {{ 'CLASSES.CLASS_FORM.ADD' | translate }}
+
+    </button>
+
+  </div>
+
+
+  <!-- ==================== Disable Class ==================== -->
+
+  <hr>
+
+  <h3>
+    {{ 'CLASSES.CLASS_FORM.DISABLE_SECTION_TITLE' | translate }}
+  </h3>
+
+  <form
+    [formGroup]="disableClassForm"
+    class="class-form">
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.CLASS_FORM.SELECT_CLASS' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="classId">
+
+        <!--
+          Classes will be loaded from the Backend here.
+        -->
+
+        <!-- Example:
+        <mat-option
+          *ngFor="let classItem of classes"
+          [value]="classItem.classId">
+
+          {{ getClassName(classItem) }}
+
+        </mat-option>
+        -->
+
+      </mat-select>
+
+      @if (
+        disableClassForm.controls.classId.touched &&
+        disableClassForm.controls.classId.hasError('required')
+      ) {
+        <mat-error>
+          {{ 'CLASSES.CLASS_FORM.SELECT_CLASS_REQUIRED' | translate }}
+        </mat-error>
+      }
+
+    </mat-form-field>
+
+  </form>
+
+
+  <div class="form-section-actions">
+
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="disableClassForm.invalid"
+      (click)="disableClass()">
+
+      {{ 'CLASSES.CLASS_FORM.DISABLE' | translate }}
+
+    </button>
+
+  </div>
+
 </mat-dialog-content>
 
 
@@ -99,18 +185,6 @@
     (click)="cancel()">
 
     {{ 'CLASSES.CLASS_FORM.CANCEL' | translate }}
-
-  </button>
-
-
-  <!-- Add -->
-  <button
-    mat-flat-button
-    type="button"
-    [disabled]="classForm.invalid"
-    (click)="submit()">
-
-    {{ 'CLASSES.CLASS_FORM.ADD' | translate }}
 
   </button>
 
