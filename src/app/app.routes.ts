@@ -74,6 +74,17 @@ export const routes: Routes = [
         }
       },
 
+      {
+        path: 'sections',
+        loadChildren: () =>
+          import('./features/sections/section.routes')
+            .then(m => m.SECTION_ROUTES),
+        canActivate: [authGuard, roleGuard],
+        data: {
+          roles: [0, 1, 2]
+        }
+      }
+
       // لاحقًا بنفس الطريقة:
       // teachers, parents, classes, sections, subjects ...
 
