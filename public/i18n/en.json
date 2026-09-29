@@ -128,7 +128,7 @@
 
     "SEARCH": "Search",
 
-    "SEARCH_PLACEHOLDER": "Search by student number, name, or login ID",
+    "SEARCH_PLACEHOLDER": "Search by student name, student number, login ID, or student phone number",
 
     "CLEAR_SEARCH": "Clear search",
 
@@ -160,7 +160,7 @@
 
     "ACTIONS": "Actions",
 
-    "VIEW": "View",
+    "VIEW": "View Details",
 
     "EDIT": "Edit",
 

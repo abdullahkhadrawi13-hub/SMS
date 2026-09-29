@@ -1,21 +1,13 @@
 const students = require('../data/students');
 
 function studentsRoutes(req, res) {
-
   // =====================================================
   // GET /api/Students
   // Get students with pagination + filters + search
   // =====================================================
 
-  if (
-    req.method === 'GET' &&
-    req.url.startsWith('/api/Students')
-  ) {
-
-    const url = new URL(
-      req.url,
-      'http://localhost:5253'
-    );
+  if (req.method === 'GET' && req.url.startsWith('/api/Students')) {
+    const url = new URL(req.url, 'http://localhost:5253');
 
     // ---------------------------------------------------
     // Get student by ID
@@ -24,26 +16,19 @@ function studentsRoutes(req, res) {
     const pathParts = url.pathname.split('/').filter(Boolean);
 
     if (pathParts.length === 3) {
+      const studentId = Number(pathParts[2]);
 
-      const studentId =
-        Number(pathParts[2]);
-
-      const student =
-        students.find(
-          student =>
-            student.studentId === studentId
-        );
+      const student = students.find((student) => student.studentId === studentId);
 
       if (!student) {
-
         res.writeHead(404);
 
         res.end(
           JSON.stringify({
             success: false,
             message: 'Student not found',
-            data: null
-          })
+            data: null,
+          }),
         );
 
         return true;
@@ -56,8 +41,8 @@ function studentsRoutes(req, res) {
           success: true,
           messageAr: 'تم جلب بيانات الطالب بنجاح',
           messageEn: 'Student retrieved successfully',
-          data: student
-        })
+          data: student,
+        }),
       );
 
       return true;
@@ -67,66 +52,74 @@ function studentsRoutes(req, res) {
     // Pagination
     // ---------------------------------------------------
 
-    const pageNumber =
-      Number(url.searchParams.get('pageNumber')) || 1;
+    const pageNumber = Number(url.searchParams.get('pageNumber')) || 1;
 
-    const pageSize =
-      Number(url.searchParams.get('pageSize')) || 10;
+    const pageSize = Number(url.searchParams.get('pageSize')) || 10;
 
     // ---------------------------------------------------
     // Filters
     // ---------------------------------------------------
 
-    const search =
-      url.searchParams.get('search');
+    const search = url.searchParams.get('search');
 
-    const classId =
-      url.searchParams.get('classId');
+    const classId = url.searchParams.get('classId');
 
-    const sectionId =
-      url.searchParams.get('sectionId');
+    const sectionId = url.searchParams.get('sectionId');
 
-    const isActive =
-      url.searchParams.get('isActive');
+    const isActive = url.searchParams.get('isActive');
 
-    let filteredStudents =
-      [...students];
+    let filteredStudents = [...students];
 
     // ---------------------------------------------------
     // Search
     // ---------------------------------------------------
 
     if (search) {
+      const searchValue = search.toLowerCase().trim();
 
-      const searchValue =
-        search.toLowerCase().trim();
+      filteredStudents = filteredStudents.filter((student) => {
+        const fullNameAr = [
+          student.firstNameAr,
+          student.fatherNameAr,
+          student.grandFatherNameAr,
+          student.familyNameAr,
+        ]
+          .filter(Boolean)
+          .join(' ');
 
-      filteredStudents =
-        filteredStudents.filter(student => {
+        const fullNameEn = [
+          student.firstNameEn,
+          student.fatherNameEn,
+          student.grandFatherNameEn,
+          student.familyNameEn,
+        ]
+          .filter(Boolean)
+          .join(' ');
 
-          const values = [
-            student.studentNumber,
-            student.firstNameAr,
-            student.fatherNameAr,
-            student.grandFatherNameAr,
-            student.familyNameAr,
+        const values = [
+          student.studentNumber,
 
-            student.firstNameEn,
-            student.fatherNameEn,
-            student.grandFatherNameEn,
-            student.familyNameEn,
+          // Arabic name
+          student.firstNameAr,
+          student.fatherNameAr,
+          student.grandFatherNameAr,
+          student.familyNameAr,
+          fullNameAr,
 
-            student.loginId,
-            student.phoneNumber
-          ];
+          // English name
+          student.firstNameEn,
+          student.fatherNameEn,
+          student.grandFatherNameEn,
+          student.familyNameEn,
+          fullNameEn,
 
-          return values.some(value =>
-            String(value)
-              .toLowerCase()
-              .includes(searchValue)
-          );
+          // Other searchable fields
+          student.loginId,
+          student.phoneNumber,
+        ];
 
-        });
+        return values.some((value) => String(value).toLowerCase().includes(searchValue));
+      });
     }
 
     // ---------------------------------------------------
@@ -134,13 +127,7 @@ function studentsRoutes(req, res) {
     // ---------------------------------------------------
 
     if (classId !== null) {
-
-      filteredStudents =
-        filteredStudents.filter(
-          student =>
-            student.classId ===
-            Number(classId)
-        );
+      filteredStudents = filteredStudents.filter((student) => student.classId === Number(classId));
     }
 
     // ---------------------------------------------------
@@ -148,13 +135,9 @@ function studentsRoutes(req, res) {
     // ---------------------------------------------------
 
     if (sectionId !== null) {
-
-      filteredStudents =
-        filteredStudents.filter(
-          student =>
-            student.sectionId ===
-            Number(sectionId)
-        );
+      filteredStudents = filteredStudents.filter(
+        (student) => student.sectionId === Number(sectionId),
+      );
     }
 
     // ---------------------------------------------------
@@ -162,37 +145,22 @@ function studentsRoutes(req, res) {
     // ---------------------------------------------------
 
     if (isActive !== null) {
+      const active = isActive === 'true';
 
-      const active =
-        isActive === 'true';
-
-      filteredStudents =
-        filteredStudents.filter(
-          student =>
-            student.isActive === active
-        );
+      filteredStudents = filteredStudents.filter((student) => student.isActive === active);
     }
 
     // ---------------------------------------------------
     // Pagination
     // ---------------------------------------------------
 
-    const totalCount =
-      filteredStudents.length;
+    const totalCount = filteredStudents.length;
 
-    const totalPages =
-      Math.ceil(
-        totalCount / pageSize
-      );
+    const totalPages = Math.ceil(totalCount / pageSize);
 
-    const startIndex =
-      (pageNumber - 1) * pageSize;
+    const startIndex = (pageNumber - 1) * pageSize;
 
-    const items =
-      filteredStudents.slice(
-        startIndex,
-        startIndex + pageSize
-      );
+    const items = filteredStudents.slice(startIndex, startIndex + pageSize);
 
     // ---------------------------------------------------
     // Response
@@ -210,37 +178,29 @@ function studentsRoutes(req, res) {
           totalCount,
           pageNumber,
           pageSize,
-          totalPages
-        }
-      })
+          totalPages,
+        },
+      }),
     );
 
     return true;
   }
-
 
   // =====================================================
   // POST /api/Students
   // Create student
   // =====================================================
 
-  if (
-    req.method === 'POST' &&
-    req.url === '/api/Students'
-  ) {
-
+  if (req.method === 'POST' && req.url === '/api/Students') {
     let body = '';
 
-    req.on('data', chunk => {
+    req.on('data', (chunk) => {
       body += chunk;
     });
 
     req.on('end', () => {
-
       try {
-
-        const data =
-          JSON.parse(body);
+        const data = JSON.parse(body);
 
         // -----------------------------------------------
         // Basic validation
@@ -251,28 +211,24 @@ function studentsRoutes(req, res) {
           !data.fatherNameAr ||
           !data.grandFatherNameAr ||
           !data.familyNameAr ||
-
           !data.firstNameEn ||
           !data.fatherNameEn ||
           !data.grandFatherNameEn ||
           !data.familyNameEn ||
-
           !data.loginId ||
           !data.temporaryPassword ||
           !data.phoneNumber ||
-
           !data.classId ||
           !data.sectionId
         ) {
-
           res.writeHead(400);
 
           res.end(
             JSON.stringify({
               success: false,
               message: 'Required fields are missing',
-              data: null
-            })
+              data: null,
+            }),
           );
 
           return;
@@ -282,23 +238,17 @@ function studentsRoutes(req, res) {
         // Check duplicate login ID
         // -----------------------------------------------
 
-        const existingStudent =
-          students.find(
-            student =>
-              student.loginId ===
-              data.loginId
-          );
+        const existingStudent = students.find((student) => student.loginId === data.loginId);
 
         if (existingStudent) {
-
           res.writeHead(409);
 
           res.end(
             JSON.stringify({
               success: false,
               message: 'Login ID already exists',
-              data: null
-            })
+              data: null,
+            }),
           );
 
           return;
@@ -309,87 +259,53 @@ function studentsRoutes(req, res) {
         // -----------------------------------------------
 
         const newStudentId =
-          students.length > 0
-            ? Math.max(
-                ...students.map(
-                  student =>
-                    student.studentId
-                )
-              ) + 1
-            : 1;
+          students.length > 0 ? Math.max(...students.map((student) => student.studentId)) + 1 : 1;
 
         const newUserId =
-          students.length > 0
-            ? Math.max(
-                ...students.map(
-                  student =>
-                    student.userId
-                )
-              ) + 1
-            : 11;
+          students.length > 0 ? Math.max(...students.map((student) => student.userId)) + 1 : 11;
 
-        const newStudentNumber =
-          `STU${String(newStudentId).padStart(3, '0')}`;
+        const newStudentNumber = `STU${String(newStudentId).padStart(3, '0')}`;
 
         // -----------------------------------------------
         // Create student
         // -----------------------------------------------
 
         const newStudent = {
+          studentId: newStudentId,
 
-          studentId:
-            newStudentId,
+          studentNumber: newStudentNumber,
 
-          studentNumber:
-            newStudentNumber,
+          userId: newUserId,
 
-          userId:
-            newUserId,
+          firstNameAr: data.firstNameAr,
 
-          firstNameAr:
-            data.firstNameAr,
+          fatherNameAr: data.fatherNameAr,
 
-          fatherNameAr:
-            data.fatherNameAr,
+          grandFatherNameAr: data.grandFatherNameAr,
 
-          grandFatherNameAr:
-            data.grandFatherNameAr,
+          familyNameAr: data.familyNameAr,
 
-          familyNameAr:
-            data.familyNameAr,
+          firstNameEn: data.firstNameEn,
 
-          firstNameEn:
-            data.firstNameEn,
+          fatherNameEn: data.fatherNameEn,
 
-          fatherNameEn:
-            data.fatherNameEn,
+          grandFatherNameEn: data.grandFatherNameEn,
 
-          grandFatherNameEn:
-            data.grandFatherNameEn,
+          familyNameEn: data.familyNameEn,
 
-          familyNameEn:
-            data.familyNameEn,
+          loginId: data.loginId,
 
-          loginId:
-            data.loginId,
+          phoneNumber: data.phoneNumber,
 
-          phoneNumber:
-            data.phoneNumber,
+          isActive: true,
 
-          isActive:
-            true,
+          mustChangePassword: true,
 
-          mustChangePassword:
-            true,
+          classId: Number(data.classId),
 
-          classId:
-            Number(data.classId),
+          sectionId: Number(data.sectionId),
 
-          sectionId:
-            Number(data.sectionId),
-
-          role:
-            3
+          role: 3,
         };
 
         students.push(newStudent);
@@ -401,20 +317,18 @@ function studentsRoutes(req, res) {
             success: true,
             messageAr: 'تمت إضافة الطالب بنجاح',
             messageEn: 'Student created successfully',
-            data: newStudent
-          })
+            data: newStudent,
+          }),
         );
-
       } catch {
-
         res.writeHead(400);
 
         res.end(
           JSON.stringify({
             success: false,
             message: 'Invalid request',
-            data: null
-          })
+            data: null,
+          }),
         );
       }
     });
@@ -422,46 +336,29 @@ function studentsRoutes(req, res) {
     return true;
   }
 
-
   // =====================================================
   // PUT /api/Students/:id
   // Update student
   // =====================================================
 
-  if (
-    req.method === 'PUT' &&
-    req.url.startsWith('/api/Students/')
-  ) {
+  if (req.method === 'PUT' && req.url.startsWith('/api/Students/')) {
+    const url = new URL(req.url, 'http://localhost:5253');
 
-    const url =
-      new URL(
-        req.url,
-        'http://localhost:5253'
-      );
+    const pathParts = url.pathname.split('/').filter(Boolean);
 
-    const pathParts =
-      url.pathname.split('/').filter(Boolean);
+    const studentId = Number(pathParts[2]);
 
-    const studentId =
-      Number(pathParts[2]);
-
-    const student =
-      students.find(
-        student =>
-          student.studentId ===
-          studentId
-      );
+    const student = students.find((student) => student.studentId === studentId);
 
     if (!student) {
-
       res.writeHead(404);
 
       res.end(
         JSON.stringify({
           success: false,
           message: 'Student not found',
-          data: null
-        })
+          data: null,
+        }),
       );
 
       return true;
@@ -469,39 +366,32 @@ function studentsRoutes(req, res) {
 
     let body = '';
 
-    req.on('data', chunk => {
+    req.on('data', (chunk) => {
       body += chunk;
     });
 
     req.on('end', () => {
-
       try {
-
-        const data =
-          JSON.parse(body);
+        const data = JSON.parse(body);
 
         // -----------------------------------------------
         // Check duplicate login ID
         // -----------------------------------------------
 
-        const duplicate =
-          students.find(
-            otherStudent =>
-              otherStudent.studentId !== studentId &&
-              otherStudent.loginId ===
-                data.loginId
-          );
+        const duplicate = students.find(
+          (otherStudent) =>
+            otherStudent.studentId !== studentId && otherStudent.loginId === data.loginId,
+        );
 
         if (duplicate) {
-
           res.writeHead(409);
 
           res.end(
             JSON.stringify({
               success: false,
               message: 'Login ID already exists',
-              data: null
-            })
+              data: null,
+            }),
           );
 
           return;
@@ -511,44 +401,29 @@ function studentsRoutes(req, res) {
         // Update fields
         // -----------------------------------------------
 
-        student.firstNameAr =
-          data.firstNameAr;
+        student.firstNameAr = data.firstNameAr;
 
-        student.fatherNameAr =
-          data.fatherNameAr;
+        student.fatherNameAr = data.fatherNameAr;
 
-        student.grandFatherNameAr =
-          data.grandFatherNameAr;
+        student.grandFatherNameAr = data.grandFatherNameAr;
 
-        student.familyNameAr =
-          data.familyNameAr;
+        student.familyNameAr = data.familyNameAr;
 
+        student.firstNameEn = data.firstNameEn;
 
-        student.firstNameEn =
-          data.firstNameEn;
+        student.fatherNameEn = data.fatherNameEn;
 
-        student.fatherNameEn =
-          data.fatherNameEn;
+        student.grandFatherNameEn = data.grandFatherNameEn;
 
-        student.grandFatherNameEn =
-          data.grandFatherNameEn;
+        student.familyNameEn = data.familyNameEn;
 
-        student.familyNameEn =
-          data.familyNameEn;
+        student.loginId = data.loginId;
 
+        student.phoneNumber = data.phoneNumber;
 
-        student.loginId =
-          data.loginId;
+        student.classId = Number(data.classId);
 
-        student.phoneNumber =
-          data.phoneNumber;
-
-
-        student.classId =
-          Number(data.classId);
-
-        student.sectionId =
-          Number(data.sectionId);
+        student.sectionId = Number(data.sectionId);
 
         // -----------------------------------------------
         // Response
@@ -561,27 +436,24 @@ function studentsRoutes(req, res) {
             success: true,
             messageAr: 'تم تعديل بيانات الطالب بنجاح',
             messageEn: 'Student updated successfully',
-            data: student
-          })
+            data: student,
+          }),
         );
-
       } catch {
-
         res.writeHead(400);
 
         res.end(
           JSON.stringify({
             success: false,
             message: 'Invalid request',
-            data: null
-          })
+            data: null,
+          }),
         );
       }
     });
 
     return true;
   }
-
 
   // =====================================================
   // PATCH /api/Students/:id/status
@@ -593,67 +465,49 @@ function studentsRoutes(req, res) {
     req.url.startsWith('/api/Students/') &&
     req.url.endsWith('/status')
   ) {
+    const url = new URL(req.url, 'http://localhost:5253');
 
-    const url =
-      new URL(
-        req.url,
-        'http://localhost:5253'
-      );
+    const pathParts = url.pathname.split('/').filter(Boolean);
 
-    const pathParts =
-      url.pathname.split('/').filter(Boolean);
+    const studentId = Number(pathParts[2]);
 
-    const studentId =
-      Number(pathParts[2]);
+    const isActive = url.searchParams.get('isActive');
 
-    const isActive =
-      url.searchParams.get('isActive');
-
-    const student =
-      students.find(
-        student =>
-          student.studentId ===
-          studentId
-      );
+    const student = students.find((student) => student.studentId === studentId);
 
     if (!student) {
-
       res.writeHead(404);
 
       res.end(
         JSON.stringify({
           success: false,
           message: 'Student not found',
-          data: null
-        })
+          data: null,
+        }),
       );
 
       return true;
     }
 
-    student.isActive =
-      isActive === 'true';
+    student.isActive = isActive === 'true';
 
     res.writeHead(200);
 
     res.end(
       JSON.stringify({
         success: true,
-        messageAr: student.isActive
-          ? 'تم تفعيل الطالب بنجاح'
-          : 'تم تعطيل الطالب بنجاح',
+        messageAr: student.isActive ? 'تم تفعيل الطالب بنجاح' : 'تم تعطيل الطالب بنجاح',
 
         messageEn: student.isActive
           ? 'Student activated successfully'
           : 'Student deactivated successfully',
 
-        data: student
-      })
+        data: student,
+      }),
     );
 
     return true;
   }
-
 
   return false;
 }
