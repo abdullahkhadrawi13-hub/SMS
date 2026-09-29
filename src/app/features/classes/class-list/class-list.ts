@@ -27,7 +27,7 @@ import {
   ClassFilterData
 } from '../class-filter/class-filter';
 
-import { Section } from '../section';
+import { Section } from '../../sections/section';
 import { SectionsService } from '../../../core/services/sections';
 
 @Component({

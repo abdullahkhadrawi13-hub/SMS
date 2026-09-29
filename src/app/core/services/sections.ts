@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
-import { Section } from '../../features/classes/section';
+import { Section } from '../../features/sections/section';
 
 export interface SectionPagedResult {
   items: Section[];

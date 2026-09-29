@@ -1,1 +1,88 @@
-<p>section-form works!</p>
+<h2 mat-dialog-title>
+
+  {{
+    isEditMode
+      ? ('SECTIONS.SECTION_FORM.EDIT_TITLE' | translate)
+      : ('SECTIONS.SECTION_FORM.ADD_TITLE' | translate)
+  }}
+
+</h2>
+
+
+<mat-dialog-content>
+
+  <form
+    [formGroup]="sectionForm"
+    class="section-form">
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SECTIONS.SECTION_FORM.CLASS' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="classId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SECTIONS.SECTION_FORM.SECTION_AR' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="sectionAr">
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SECTIONS.SECTION_FORM.SECTION_EN' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="sectionEn">
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()">
+
+    {{ 'SECTIONS.SECTION_FORM.CANCEL' | translate }}
+
+  </button>
+
+
+  <button
+    mat-flat-button
+    type="button"
+    [disabled]="sectionForm.invalid"
+    (click)="submit()">
+
+    {{
+      isEditMode
+        ? ('SECTIONS.SECTION_FORM.EDIT' | translate)
+        : ('SECTIONS.SECTION_FORM.ADD' | translate)
+    }}
+
+  </button>
+
+</mat-dialog-actions>

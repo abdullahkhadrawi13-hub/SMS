@@ -292,63 +292,77 @@
     "OF": "of"
   },
 
-  "CLASSES": {
-    "TITLE": "Class Management",
-    "SUBTITLE": "Manage classes and sections",
-    "ADVANCED_SETTINGS": "Advanced Class Settings",
-    "ADD_SECTION": "Add Section",
-    "FILTER": "Filter",
+  "SECTIONS": {
+  "TITLE": "Section Management",
+  "SUBTITLE": "Manage sections",
+  "ADD_SECTION": "Add Section",
+  "FILTER": "Filter",
 
-    "TABLE": {
-      "CLASS_NAME": "Class Name",
-      "SECTION": "Section",
-      "STUDENT_COUNT": "Student Count",
-      "STATUS": "Status",
-      "ACTIONS": "Actions"
-    },
+  "TABLE": {
+    "CLASS_NAME": "Class Name",
+    "SECTION": "Section",
+    "STUDENT_COUNT": "Student Count",
+    "STATUS": "Status",
+    "ACTIONS": "Actions"
+  },
 
-    "ACTIVE": "Active",
-    "INACTIVE": "Inactive",
-    "ACTIVATE": "Activate",
-    "DEACTIVATE": "Deactivate",
-    "EDIT": "Edit",
+  "ACTIVE": "Active",
+  "INACTIVE": "Inactive",
+  "ACTIVATE": "Activate",
+  "DEACTIVATE": "Deactivate",
+  "EDIT": "Edit",
 
-    "EMPTY": {
-      "TITLE": "No Classes",
-      "MESSAGE": "There are currently no classes or sections to display."
-    },
+  "EMPTY": {
+    "TITLE": "No Sections",
+    "MESSAGE": "There are currently no sections to display."
+  },
 
     "SECTION_FORM": {
-      "ADD_TITLE": "Add Section",
-      "EDIT_TITLE": "Edit Section",
-      "CLASS": "Class",
-      "CLASS_REQUIRED": "Please select a class",
-      "SECTION_AR": "Section Name in Arabic",
-      "SECTION_AR_PLACEHOLDER": "Enter section name in Arabic",
-      "SECTION_AR_REQUIRED": "Please enter the section name in Arabic",
-      "SECTION_EN": "Section Name in English",
-      "SECTION_EN_PLACEHOLDER": "Enter section name in English",
-      "SECTION_EN_REQUIRED": "Please enter the section name in English",
-      "SECTION_MAX_LENGTH": "Section name must not exceed 100 characters",
-      "CANCEL": "Cancel",
-      "ADD": "Add",
-      "EDIT": "Edit"
-    },
+  "ADD_TITLE": "Add Section",
+  "EDIT_TITLE": "Edit Section",
+
+  "CLASS": "Class",
+  "CLASS_REQUIRED": "Please select a class",
+
+  "SECTION_AR": "Section Name in Arabic",
+  "SECTION_AR_PLACEHOLDER": "Enter section name in Arabic",
+  "SECTION_AR_REQUIRED": "Please enter the section name in Arabic",
+
+  "SECTION_EN": "Section Name in English",
+  "SECTION_EN_PLACEHOLDER": "Enter section name in English",
+  "SECTION_EN_REQUIRED": "Please enter the section name in English",
+
+  "SECTION_MAX_LENGTH": "Section name must not exceed 100 characters",
+
+  "CANCEL": "Cancel",
+  "ADD": "Add",
+  "EDIT": "Edit"
+},
 
     "FILTER_DIALOG": {
-      "TITLE": "Filter Classes",
-      "CLASS": "Class",
-      "SECTION": "Section",
-      "STATUS": "Status",
-      "ACADEMIC_YEAR": "Academic Year",
-      "ACADEMIC_TERM": "Academic Term",
-      "ALL": "All",
-      "CLEAR": "Clear",
-      "CANCEL": "Cancel",
-      "APPLY": "Apply"
-    },
+  "TITLE": "Filter Sections",
 
-    "CLASS_FORM": {
+  "CLASS": "Class",
+
+  "SECTION": "Section",
+
+  "STATUS": "Status",
+
+  "ACADEMIC_YEAR": "Academic Year",
+
+  "ACADEMIC_TERM": "Academic Term",
+
+  "ALL": "All",
+
+  "CLEAR": "Clear",
+
+  "CANCEL": "Cancel",
+
+  "APPLY": "Apply"
+}
+  },
+
+"CLASS_FORM": {
       "SETTINGS_TITLE": "Class Settings",
 
       "ADD_SECTION_TITLE": "Add Class",
@@ -374,5 +388,6 @@
 
       "CANCEL": "Cancel"
     }
-  }
+
+
 }

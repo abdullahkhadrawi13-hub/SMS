@@ -293,10 +293,9 @@
     "OF": "من"
   },
 
-  "CLASSES": {
-    "TITLE": "إدارة الصفوف",
-    "SUBTITLE": "إدارة الصفوف والشعب الدراسية",
-    "ADVANCED_SETTINGS": "إعدادات صفوف متقدمة",
+  "SECTIONS": {
+    "TITLE": "إدارة الشعب",
+    "SUBTITLE": "إدارة الشعب الدراسية",
     "ADD_SECTION": "إضافة شعبة",
     "FILTER": "فلتر",
 
@@ -315,8 +314,8 @@
     "EDIT": "تعديل",
 
     "EMPTY": {
-      "TITLE": "لا توجد صفوف",
-      "MESSAGE": "لا توجد صفوف أو شعب دراسية لعرضها حالياً."
+      "TITLE": "لا توجد شعب",
+      "MESSAGE": "لا توجد شعب دراسية لعرضها حالياً."
     },
 
     "SECTION_FORM": {
@@ -342,7 +341,7 @@
     },
 
     "FILTER_DIALOG": {
-      "TITLE": "فلترة الصفوف",
+      "TITLE": "فلترة الشعب",
       "CLASS": "الصف",
       "SECTION": "الشعبة",
       "STATUS": "الحالة",
@@ -352,33 +351,33 @@
       "CLEAR": "مسح",
       "CANCEL": "إلغاء",
       "APPLY": "تطبيق"
-    },
-
-    "CLASS_FORM": {
-      "SETTINGS_TITLE": "إعدادات الصفوف",
-
-      "ADD_SECTION_TITLE": "إضافة صف",
-
-      "CLASS_NAME_AR": "اسم الصف بالعربي",
-      "CLASS_NAME_AR_PLACEHOLDER": "أدخل اسم الصف بالعربي",
-      "CLASS_NAME_AR_REQUIRED": "يرجى إدخال اسم الصف بالعربي",
-
-      "CLASS_NAME_EN": "اسم الصف بالإنجليزي",
-      "CLASS_NAME_EN_PLACEHOLDER": "أدخل اسم الصف بالإنجليزي",
-      "CLASS_NAME_EN_REQUIRED": "يرجى إدخال اسم الصف بالإنجليزي",
-
-      "CLASS_MAX_LENGTH": "اسم الصف يجب ألا يتجاوز 100 حرف",
-
-      "IS_GRADUATION_CLASS": "صف التخرج",
-
-      "ADD": "إضافة",
-
-      "DISABLE_SECTION_TITLE": "تعطيل صف",
-      "SELECT_CLASS": "اختر الصف",
-      "SELECT_CLASS_REQUIRED": "يرجى اختيار الصف",
-      "DISABLE": "تعطيل",
-
-      "CANCEL": "إلغاء"
     }
+  },
+
+  "CLASS_FORM": {
+    "SETTINGS_TITLE": "إعدادات الصفوف",
+
+    "ADD_SECTION_TITLE": "إضافة صف",
+
+    "CLASS_NAME_AR": "اسم الصف بالعربي",
+    "CLASS_NAME_AR_PLACEHOLDER": "أدخل اسم الصف بالعربي",
+    "CLASS_NAME_AR_REQUIRED": "يرجى إدخال اسم الصف بالعربي",
+
+    "CLASS_NAME_EN": "اسم الصف بالإنجليزي",
+    "CLASS_NAME_EN_PLACEHOLDER": "أدخل اسم الصف بالإنجليزي",
+    "CLASS_NAME_EN_REQUIRED": "يرجى إدخال اسم الصف بالإنجليزي",
+
+    "CLASS_MAX_LENGTH": "اسم الصف يجب ألا يتجاوز 100 حرف",
+
+    "IS_GRADUATION_CLASS": "صف التخرج",
+
+    "ADD": "إضافة",
+
+    "DISABLE_SECTION_TITLE": "تعطيل صف",
+    "SELECT_CLASS": "اختر الصف",
+    "SELECT_CLASS_REQUIRED": "يرجى اختيار الصف",
+    "DISABLE": "تعطيل",
+
+    "CANCEL": "إلغاء"
   }
 }

@@ -1,1 +1,124 @@
-<p>section-filter works!</p>
+<h2 mat-dialog-title>
+  {{ 'SECTIONS.FILTER_DIALOG.TITLE' | translate }}
+</h2>
+
+<mat-dialog-content>
+
+  <form
+    [formGroup]="filterForm"
+    class="filter-form">
+
+    <!-- Class -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SECTIONS.FILTER_DIALOG.CLASS' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="classId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Section -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SECTIONS.FILTER_DIALOG.SECTION' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="sectionId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Status -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SECTIONS.FILTER_DIALOG.STATUS' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="isActive">
+
+        <mat-option [value]="null">
+          {{ 'SECTIONS.FILTER_DIALOG.ALL' | translate }}
+        </mat-option>
+
+        <mat-option [value]="true">
+          {{ 'SECTIONS.ACTIVE' | translate }}
+        </mat-option>
+
+        <mat-option [value]="false">
+          {{ 'SECTIONS.INACTIVE' | translate }}
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Academic Year -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SECTIONS.FILTER_DIALOG.ACADEMIC_YEAR' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="academicYearId">
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Academic Term -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SECTIONS.FILTER_DIALOG.ACADEMIC_TERM' | translate }}
+      </mat-label>
+
+      <mat-select formControlName="academicTermId">
+      </mat-select>
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    (click)="clear()">
+
+    {{ 'SECTIONS.FILTER_DIALOG.CLEAR' | translate }}
+
+  </button>
+
+
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()">
+
+    {{ 'SECTIONS.FILTER_DIALOG.CANCEL' | translate }}
+
+  </button>
+
+
+  <button
+    mat-flat-button
+    type="button"
+    (click)="apply()">
+
+    {{ 'SECTIONS.FILTER_DIALOG.APPLY' | translate }}
+
+  </button>
+
+</mat-dialog-actions>
