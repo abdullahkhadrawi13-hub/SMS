@@ -7,12 +7,10 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { catchError, of, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
   MAT_DIALOG_DATA,
@@ -29,15 +27,20 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SchoolClassesService } from '../../../core/services/school-classes';
+import {
+  ActiveSectionDto,
+  SectionsService
+} from '../../../core/services/sections';
 
 import {
-  Students,
   CreateStudentRequest,
-  StudentRequest
+  StudentRequest,
+  Students
 } from '../../../core/services/students';
 
 import { Language } from '../../../core/services/language';
+import { SchoolClassSimpleDto } from '../../classes/school-class';
 
 
 export interface StudentFormDialogData {
@@ -47,11 +50,9 @@ export interface StudentFormDialogData {
 
 @Component({
   selector: 'app-student-form',
-
   imports: [
     CommonModule,
     ReactiveFormsModule,
-
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -59,177 +60,90 @@ export interface StudentFormDialogData {
     MatIconModule,
     MatProgressSpinnerModule,
     MatSelectModule,
-
     TranslatePipe
   ],
-
   templateUrl: './student-form.html',
   styleUrl: './student-form.css'
 })
-
-
 export class StudentForm {
 
   private readonly fb = inject(FormBuilder);
-
   private readonly studentsService = inject(Students);
+  private readonly dialogRef = inject(MatDialogRef<StudentForm>);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly language = inject(Language);
+  private readonly classesService = inject(SchoolClassesService);
+  private readonly sectionsService = inject(SectionsService);
+  private readonly dialogData = inject<StudentFormDialogData>(MAT_DIALOG_DATA);
 
-  private readonly dialogRef =
-    inject(MatDialogRef<StudentForm>);
+  readonly direction = computed(() => this.language.currentDirection());
 
-  private readonly destroyRef =
-    inject(DestroyRef);
+  readonly classes = signal<SchoolClassSimpleDto[]>([]);
+  readonly sections = signal<ActiveSectionDto[]>([]);
 
-  private readonly language =
-    inject(Language);
-
-
-  readonly direction = computed(
-    () => this.language.currentDirection()
-  );
-
-
-  private readonly dialogData =
-    inject<StudentFormDialogData>(MAT_DIALOG_DATA);
-
-
+  readonly isLoadingClasses = signal(false);
+  readonly isLoadingSections = signal(false);
   readonly isLoading = signal(false);
-
   readonly isSubmitting = signal(false);
 
   readonly errorMessage = signal('');
-
   readonly successMessage = signal('');
-
 
   readonly studentId = signal<number | null>(
     this.dialogData?.studentId ?? null
   );
 
-
   readonly isEditMode = signal(
     !!this.dialogData?.studentId
   );
 
-
   readonly studentForm = this.fb.nonNullable.group({
+    firstNameAr: ['', [Validators.required, Validators.minLength(2)]],
+    fatherNameAr: ['', [Validators.required, Validators.minLength(2)]],
+    grandFatherNameAr: ['', [Validators.required, Validators.minLength(2)]],
+    familyNameAr: ['', [Validators.required, Validators.minLength(2)]],
 
-    firstNameAr: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2)
-      ]
-    ],
+    firstNameEn: ['', [Validators.required, Validators.minLength(2)]],
+    fatherNameEn: ['', [Validators.required, Validators.minLength(2)]],
+    grandFatherNameEn: ['', [Validators.required, Validators.minLength(2)]],
+    familyNameEn: ['', [Validators.required, Validators.minLength(2)]],
 
-    fatherNameAr: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2)
-      ]
-    ],
+    loginId: ['', [Validators.required, Validators.minLength(3)]],
 
-    grandFatherNameAr: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2)
-      ]
-    ],
+    temporaryPassword: ['', [Validators.required, Validators.minLength(8)]],
 
-    familyNameAr: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2)
-      ]
-    ],
+    phoneNumber: ['', [Validators.required]],
 
+    classId: [0, [Validators.required, Validators.min(1)]],
 
-    firstNameEn: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2)
-      ]
-    ],
-
-    fatherNameEn: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2)
-      ]
-    ],
-
-    grandFatherNameEn: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2)
-      ]
-    ],
-
-    familyNameEn: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2)
-      ]
-    ],
-
-
-    loginId: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(3)
-      ]
-    ],
-
-
-    temporaryPassword: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(8)
-      ]
-    ],
-
-
-    phoneNumber: [
-      '',
-      [
-        Validators.required
-      ]
-    ],
-
-
-    classId: [
-      0,
-      [
-        Validators.required,
-        Validators.min(1)
-      ]
-    ],
-
-
-    sectionId: [
-      0,
-      [
-        Validators.required,
-        Validators.min(1)
-      ]
-    ]
-
+    sectionId: [0, [Validators.required, Validators.min(1)]]
   });
 
 
   constructor() {
+    // الشعبة معطّلة حتى يتم اختيار الصف
+    this.studentForm.controls.sectionId.disable();
+
+    this.loadClasses();
+
+    // عند تغيير الصف: تصفير الشعبة وتحميل شعب الصف الجديد
+    this.studentForm.controls.classId.valueChanges
+      .pipe(
+        tap(() => {
+          this.sections.set([]);
+          this.studentForm.controls.sectionId.reset(0, {
+            emitEvent: false
+          });
+          this.studentForm.controls.sectionId.disable({
+            emitEvent: false
+          });
+        }),
+        switchMap(classId => this.fetchSections(classId)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(sections => this.applySections(sections));
 
     if (this.isEditMode()) {
-
       const id = this.studentId();
 
       if (id) {
@@ -237,380 +151,303 @@ export class StudentForm {
       }
 
       this.studentForm.controls.temporaryPassword.clearValidators();
-
       this.studentForm.controls.temporaryPassword.updateValueAndValidity();
     }
+  }
 
+
+  private loadClasses(): void {
+    this.isLoadingClasses.set(true);
+
+    this.classesService
+      .getActiveSchoolClasses()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: response => {
+          this.classes.set(response.success ? response.data : []);
+          this.isLoadingClasses.set(false);
+        },
+        error: error => {
+          console.error('Failed to load classes:', error);
+          this.classes.set([]);
+          this.isLoadingClasses.set(false);
+        }
+      });
+  }
+
+
+  // يرجع الشعب النشطة للصف، أو [] إذا لم يُختر صف
+  private fetchSections(classId: number) {
+    if (!classId || classId < 1) {
+      return of<ActiveSectionDto[]>([]);
+    }
+
+    this.isLoadingSections.set(true);
+
+    return this.sectionsService.getActiveSectionsByClass(classId).pipe(
+      switchMap(response =>
+        of(response.success ? response.data : [])
+      ),
+      catchError(error => {
+        console.error('Failed to load sections:', error);
+        return of<ActiveSectionDto[]>([]);
+      })
+    );
+  }
+
+
+  private applySections(sections: ActiveSectionDto[]): void {
+    this.sections.set(sections);
+    this.isLoadingSections.set(false);
+
+    if (sections.length > 0) {
+      this.studentForm.controls.sectionId.enable({
+        emitEvent: false
+      });
+    }
+  }
+
+
+  getClassName(c: SchoolClassSimpleDto): string {
+    return document.documentElement.lang === 'ar'
+      ? c.classNameAr
+      : c.classNameEn;
+  }
+
+
+  getSectionName(s: ActiveSectionDto): string {
+    return document.documentElement.lang === 'ar'
+      ? s.sectionAr
+      : s.sectionEn;
   }
 
 
   private loadStudent(studentId: number): void {
-
     this.isLoading.set(true);
-
     this.errorMessage.set('');
-
 
     this.studentsService
       .getStudent(studentId)
-
-      .pipe(
-        takeUntilDestroyed(this.destroyRef)
-      )
-
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-
         next: response => {
-
           if (!response.success || !response.data) {
-
             this.errorMessage.set(
-              response.message ||
-              'STUDENTS_FORM.ERROR.LOAD_FAILED'
+              response.message || 'STUDENTS_FORM.ERROR.LOAD_FAILED'
             );
-
             this.isLoading.set(false);
-
             return;
           }
 
-
           const student = response.data;
 
-
+          // لا نشغّل cascading عند تحميل الصف المحفوظ
           this.studentForm.patchValue({
-
             firstNameAr: student.firstNameAr,
-
             fatherNameAr: student.fatherNameAr,
-
             grandFatherNameAr: student.grandFatherNameAr,
-
             familyNameAr: student.familyNameAr,
 
-
             firstNameEn: student.firstNameEn,
-
             fatherNameEn: student.fatherNameEn,
-
             grandFatherNameEn: student.grandFatherNameEn,
-
             familyNameEn: student.familyNameEn,
 
-
             loginId: student.loginId,
-
             phoneNumber: student.phoneNumber,
 
-
-            classId: student.classId,
-
-            sectionId: student.sectionId
-
+            classId: student.classId
+          }, {
+            emitEvent: false
           });
-
 
           this.isLoading.set(false);
 
+          // تحميل شعب الصف ثم تحديد شعبة الطالب الحالية
+          this.fetchSections(student.classId)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(sections => {
+              this.applySections(sections);
+
+              this.studentForm.controls.sectionId.setValue(
+                student.sectionId
+              );
+            });
         },
 
-
         error: error => {
-
-          console.error(
-            'Failed to load student:',
-            error
-          );
-
+          console.error('Failed to load student:', error);
 
           this.errorMessage.set(
             'STUDENTS_FORM.ERROR.LOAD_FAILED'
           );
 
-
           this.isLoading.set(false);
-
         }
-
       });
-
   }
 
 
   onSubmit(): void {
-
     this.errorMessage.set('');
-
     this.successMessage.set('');
 
-
     if (this.studentForm.invalid) {
-
       this.studentForm.markAllAsTouched();
-
       return;
     }
 
-
     this.isSubmitting.set(true);
 
-
     if (this.isEditMode()) {
-
       this.updateStudent();
-
     } else {
-
       this.createStudent();
-
     }
-
   }
 
 
   private createStudent(): void {
-
-    const formValue =
-      this.studentForm.getRawValue();
-
+    const formValue = this.studentForm.getRawValue();
 
     const data: CreateStudentRequest = {
-
       firstNameAr: formValue.firstNameAr,
-
       fatherNameAr: formValue.fatherNameAr,
-
       grandFatherNameAr: formValue.grandFatherNameAr,
-
       familyNameAr: formValue.familyNameAr,
 
-
       firstNameEn: formValue.firstNameEn,
-
       fatherNameEn: formValue.fatherNameEn,
-
       grandFatherNameEn: formValue.grandFatherNameEn,
-
       familyNameEn: formValue.familyNameEn,
 
-
       loginId: formValue.loginId,
-
       temporaryPassword: formValue.temporaryPassword,
-
 
       phoneNumber: formValue.phoneNumber,
 
-
       classId: formValue.classId,
-
       sectionId: formValue.sectionId
-
     };
 
-
     this.studentsService
-
       .createStudent(data)
-
-      .pipe(
-        takeUntilDestroyed(this.destroyRef)
-      )
-
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-
         next: response => {
-
           if (!response.success) {
-
-            this.errorMessage.set(
-              response.message
-            );
-
+            this.errorMessage.set(response.message);
             this.isSubmitting.set(false);
-
             return;
           }
-
 
           this.successMessage.set(
             'STUDENTS_FORM.SUCCESS.CREATED'
           );
 
-
           this.isSubmitting.set(false);
 
-
           setTimeout(() => {
-
             this.dialogRef.close({
               success: true,
               action: 'created'
             });
-
           }, 700);
-
         },
 
-
         error: error => {
-
-          console.error(
-            'Failed to create student:',
-            error
-          );
-
+          console.error('Failed to create student:', error);
 
           this.errorMessage.set(
             'STUDENTS_FORM.ERROR.CREATE_FAILED'
           );
 
-
           this.isSubmitting.set(false);
-
         }
-
       });
-
   }
 
 
   private updateStudent(): void {
-
     const id = this.studentId();
 
-
     if (!id) {
-
       this.errorMessage.set(
         'STUDENTS_FORM.ERROR.INVALID_ID'
       );
 
       this.isSubmitting.set(false);
-
       return;
     }
 
-
-    const formValue =
-      this.studentForm.getRawValue();
-
+    const formValue = this.studentForm.getRawValue();
 
     const data: StudentRequest = {
-
       firstNameAr: formValue.firstNameAr,
-
       fatherNameAr: formValue.fatherNameAr,
-
       grandFatherNameAr: formValue.grandFatherNameAr,
-
       familyNameAr: formValue.familyNameAr,
 
-
       firstNameEn: formValue.firstNameEn,
-
       fatherNameEn: formValue.fatherNameEn,
-
       grandFatherNameEn: formValue.grandFatherNameEn,
-
       familyNameEn: formValue.familyNameEn,
 
-
       loginId: formValue.loginId,
-
       phoneNumber: formValue.phoneNumber,
 
-
       classId: formValue.classId,
-
       sectionId: formValue.sectionId
-
     };
 
-
     this.studentsService
-
       .updateStudent(id, data)
-
-      .pipe(
-        takeUntilDestroyed(this.destroyRef)
-      )
-
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-
         next: response => {
-
           if (!response.success) {
-
-            this.errorMessage.set(
-              response.message
-            );
-
+            this.errorMessage.set(response.message);
             this.isSubmitting.set(false);
-
             return;
           }
-
 
           this.successMessage.set(
             'STUDENTS_FORM.SUCCESS.UPDATED'
           );
 
-
           this.isSubmitting.set(false);
 
-
           setTimeout(() => {
-
             this.dialogRef.close({
               success: true,
               action: 'updated'
             });
-
           }, 700);
-
         },
 
-
         error: error => {
-
-          console.error(
-            'Failed to update student:',
-            error
-          );
-
+          console.error('Failed to update student:', error);
 
           this.errorMessage.set(
             'STUDENTS_FORM.ERROR.UPDATE_FAILED'
           );
 
-
           this.isSubmitting.set(false);
-
         }
-
       });
-
   }
 
 
   cancel(): void {
-
     this.dialogRef.close();
-
   }
 
 
   isFieldInvalid(
     fieldName: keyof typeof this.studentForm.controls
   ): boolean {
-
-    const control =
-      this.studentForm.controls[fieldName];
-
+    const control = this.studentForm.controls[fieldName];
 
     return control.invalid && control.touched;
-
   }
-
 }

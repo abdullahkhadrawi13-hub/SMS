@@ -4,7 +4,7 @@ const authRoutes = require('./routes/auth.routes');
 const studentsRoutes = require('./routes/students.routes');
 const sectionsRoutes = require('./routes/sections.routes');
 
-const PORT = 5253;
+const PORT =3000// 5253;
 
 const server = http.createServer((req, res) => {
 
