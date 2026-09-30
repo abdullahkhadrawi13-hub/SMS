@@ -22,7 +22,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { forkJoin, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import {
   Students,
@@ -33,7 +33,7 @@ import { SchoolClassesService } from '../../../core/services/school-classes';
 
 import {
   SectionsService,
-  SectionPagedResult
+  SectionSimpleDto
 } from '../../../core/services/sections';
 
 import { Student } from '../student';
@@ -138,24 +138,12 @@ export class StudentList {
 
   private loadLookups(): void {
 
-    this.loadClassNames();
-
-    this.loadSectionNames();
-
-  }
-
-
-  // الصفوف
-  private loadClassNames(): void {
-
     this.classesService
       .getSchoolClasses(1, 1000)
       .pipe(
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe({
 
-        next: classes => {
+        // 1) أسماء الصفوف
+        tap(classes => {
 
           if (!classes.success) {
             return;
@@ -170,56 +158,33 @@ export class StudentList {
             )
           );
 
-        },
+        }),
 
-        error: error => {
-          console.error(
-            'Failed to load classes:',
-            error
-          );
-        }
+        // 2) كل شعب كل صف عبر by-class
+        //    (بدل GET /api/Sections الذي يعيد فقط الشعب المرتبطة بسجلات أكاديمية)
+        switchMap(classes => {
 
-      });
-
-  }
-
-
-  // الشعب: تحميل كل الصفحات مهما كان الحد الأقصى للـ pageSize في الـ backend
-  private loadSectionNames(): void {
-
-    this.sectionsService
-      .getSections({ pageNumber: 1, pageSize: 100 })
-      .pipe(
-
-        switchMap(first => {
-
-          if (!first.success) {
-            return of([] as SectionPagedResult['items']);
+          if (!classes.success || classes.data.items.length === 0) {
+            return of([] as SectionSimpleDto[]);
           }
 
-          const { items, totalPages, pageSize } = first.data;
-
-          if (totalPages <= 1) {
-            return of(items);
-          }
-
-          // نستخدم pageSize الفعلي الذي أرجعه السيرفر
-          const remainingPages = Array.from(
-            { length: totalPages - 1 },
-            (_, i) =>
-              this.sectionsService.getSections({
-                pageNumber: i + 2,
-                pageSize
-              })
-          );
-
-          return forkJoin(remainingPages).pipe(
-            map(pages => [
-              ...items,
-              ...pages.flatMap(p =>
-                p.success ? p.data.items : []
+          const requests = classes.data.items.map(c =>
+            this.sectionsService
+              .getSectionsByClass(c.schoolClassId)
+              .pipe(
+                map(r => (r.success ? r.data : [])),
+                catchError(error => {
+                  console.error(
+                    `Failed to load sections for class ${c.schoolClassId}:`,
+                    error
+                  );
+                  return of([] as SectionSimpleDto[]);
+                })
               )
-            ])
+          );
+
+          return forkJoin(requests).pipe(
+            map(groups => groups.flat())
           );
 
         }),
@@ -244,7 +209,7 @@ export class StudentList {
 
         error: error => {
           console.error(
-            'Failed to load sections:',
+            'Failed to load classes/sections:',
             error
           );
         }
