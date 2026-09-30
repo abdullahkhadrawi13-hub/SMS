@@ -21,7 +21,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import {
   Students,
@@ -30,7 +31,10 @@ import {
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
 
-import { SectionsService } from '../../../core/services/sections';
+import {
+  SectionsService,
+  SectionPagedResult
+} from '../../../core/services/sections';
 
 import { Student } from '../student';
 
@@ -134,44 +138,113 @@ export class StudentList {
 
   private loadLookups(): void {
 
-    forkJoin({
-      classes: this.classesService.getSchoolClasses(1, 1000),
-      sections: this.sectionsService.getSections({ pageSize: 1000 })
-    })
+    this.loadClassNames();
+
+    this.loadSectionNames();
+
+  }
+
+
+  // الصفوف
+  private loadClassNames(): void {
+
+    this.classesService
+      .getSchoolClasses(1, 1000)
       .pipe(
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
 
-        next: ({ classes, sections }) => {
+        next: classes => {
 
-          if (classes.success) {
-            this.classNames.set(
-              new Map(
-                classes.data.items.map(c => [
-                  c.schoolClassId,
-                  { ar: c.classNameAr, en: c.classNameEn }
-                ])
-              )
-            );
+          if (!classes.success) {
+            return;
           }
 
-          if (sections.success) {
-            this.sectionNames.set(
-              new Map(
-                sections.data.items.map(s => [
-                  s.sectionId,
-                  { ar: s.sectionAr, en: s.sectionEn }
-                ])
-              )
-            );
-          }
+          this.classNames.set(
+            new Map(
+              classes.data.items.map(c => [
+                c.schoolClassId,
+                { ar: c.classNameAr, en: c.classNameEn }
+              ])
+            )
+          );
 
         },
 
         error: error => {
           console.error(
-            'Failed to load classes/sections:',
+            'Failed to load classes:',
+            error
+          );
+        }
+
+      });
+
+  }
+
+
+  // الشعب: تحميل كل الصفحات مهما كان الحد الأقصى للـ pageSize في الـ backend
+  private loadSectionNames(): void {
+
+    this.sectionsService
+      .getSections({ pageNumber: 1, pageSize: 100 })
+      .pipe(
+
+        switchMap(first => {
+
+          if (!first.success) {
+            return of([] as SectionPagedResult['items']);
+          }
+
+          const { items, totalPages, pageSize } = first.data;
+
+          if (totalPages <= 1) {
+            return of(items);
+          }
+
+          // نستخدم pageSize الفعلي الذي أرجعه السيرفر
+          const remainingPages = Array.from(
+            { length: totalPages - 1 },
+            (_, i) =>
+              this.sectionsService.getSections({
+                pageNumber: i + 2,
+                pageSize
+              })
+          );
+
+          return forkJoin(remainingPages).pipe(
+            map(pages => [
+              ...items,
+              ...pages.flatMap(p =>
+                p.success ? p.data.items : []
+              )
+            ])
+          );
+
+        }),
+
+        takeUntilDestroyed(this.destroyRef)
+
+      )
+      .subscribe({
+
+        next: sections => {
+
+          this.sectionNames.set(
+            new Map(
+              sections.map(s => [
+                s.sectionId,
+                { ar: s.sectionAr, en: s.sectionEn }
+              ])
+            )
+          );
+
+        },
+
+        error: error => {
+          console.error(
+            'Failed to load sections:',
             error
           );
         }
@@ -249,7 +322,7 @@ export class StudentList {
 
           const data: PagedResult<Student> = response.data;
 
-          // ✅ جديد: لو الصفحة الحالية رجعت فاضية وهي مش أول صفحة
+          // لو الصفحة الحالية رجعت فاضية وهي مش أول صفحة
           // (مثلاً بعد تعطيل آخر طالب فيها) — ارجع صفحة للوراء وأعد التحميل
           if (data.items.length === 0 && data.pageNumber > 1) {
             this.pageNumber.set(data.pageNumber - 1);
@@ -458,11 +531,14 @@ export class StudentList {
 
   }
 
+
   openFilter(): void {
-  this.dialog.open(StudentFilter, {
-    width: '420px'
-  });
-}
+
+    this.dialog.open(StudentFilter, {
+      width: '420px'
+    });
+
+  }
 
 
   toggleStudentStatus(
