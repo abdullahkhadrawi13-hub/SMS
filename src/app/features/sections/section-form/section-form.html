@@ -22,7 +22,24 @@
       </mat-label>
 
       <mat-select formControlName="classId">
+
+        @if (fallbackClassName; as name) {
+          <mat-option [value]="data.classId">
+            {{ name }}
+          </mat-option>
+        }
+
+        @for (c of classes(); track c.schoolClassId) {
+          <mat-option [value]="c.schoolClassId">
+            {{ getClassName(c) }}
+          </mat-option>
+        }
+
       </mat-select>
+
+      @if (isLoadingClasses()) {
+        <mat-spinner matSuffix diameter="18"></mat-spinner>
+      }
 
     </mat-form-field>
 

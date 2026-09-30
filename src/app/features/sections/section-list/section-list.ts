@@ -120,6 +120,8 @@ export class SectionList {
     const data: SectionFormData = {
       mode: 'edit',
       classId: section.classId,
+      classNameAr: section.classNameAr,
+      classNameEn: section.classNameEn,
       sectionAr: section.sectionAr,
       sectionEn: section.sectionEn
     };

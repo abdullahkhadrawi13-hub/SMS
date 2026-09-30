@@ -21,10 +21,16 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { forkJoin } from 'rxjs';
+
 import {
   Students,
   PagedResult
 } from '../../../core/services/students';
+
+import { SchoolClassesService } from '../../../core/services/school-classes';
+
+import { SectionsService } from '../../../core/services/sections';
 
 import { Student } from '../student';
 
@@ -67,6 +73,19 @@ export class StudentList {
   private readonly dialog =
     inject(MatDialog);
 
+  private readonly classesService =
+    inject(SchoolClassesService);
+
+  private readonly sectionsService =
+    inject(SectionsService);
+
+  // id -> { ar, en }
+  private readonly classNames =
+    signal<Map<number, { ar: string; en: string }>>(new Map());
+
+  private readonly sectionNames =
+    signal<Map<number, { ar: string; en: string }>>(new Map());
+
 
   readonly displayedColumns = [
     'studentNumber',
@@ -106,7 +125,94 @@ export class StudentList {
 
   constructor() {
 
+    this.loadLookups();
+
     this.loadStudents();
+
+  }
+
+
+  private loadLookups(): void {
+
+    forkJoin({
+      classes: this.classesService.getSchoolClasses(1, 1000),
+      sections: this.sectionsService.getSections({ pageSize: 1000 })
+    })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+
+        next: ({ classes, sections }) => {
+
+          if (classes.success) {
+            this.classNames.set(
+              new Map(
+                classes.data.items.map(c => [
+                  c.schoolClassId,
+                  { ar: c.classNameAr, en: c.classNameEn }
+                ])
+              )
+            );
+          }
+
+          if (sections.success) {
+            this.sectionNames.set(
+              new Map(
+                sections.data.items.map(s => [
+                  s.sectionId,
+                  { ar: s.sectionAr, en: s.sectionEn }
+                ])
+              )
+            );
+          }
+
+        },
+
+        error: error => {
+          console.error(
+            'Failed to load classes/sections:',
+            error
+          );
+        }
+
+      });
+
+  }
+
+
+  getClassName(
+    student: Student
+  ): string {
+
+    const name =
+      this.classNames().get(student.classId);
+
+    if (!name) {
+      return '—';
+    }
+
+    return document.documentElement.lang === 'ar'
+      ? name.ar
+      : name.en;
+
+  }
+
+
+  getSectionName(
+    student: Student
+  ): string {
+
+    const name =
+      this.sectionNames().get(student.sectionId);
+
+    if (!name) {
+      return '—';
+    }
+
+    return document.documentElement.lang === 'ar'
+      ? name.ar
+      : name.en;
 
   }
 

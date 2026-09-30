@@ -148,7 +148,7 @@
               </th>
 
               <td mat-cell *matCellDef="let student">
-                {{ student.classId }}
+                {{ getClassName(student) }}
               </td>
             </ng-container>
 
@@ -159,7 +159,7 @@
               </th>
 
               <td mat-cell *matCellDef="let student">
-                {{ student.sectionId }}
+                {{ getSectionName(student) }}
               </td>
             </ng-container>
 
