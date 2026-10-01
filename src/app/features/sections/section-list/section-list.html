@@ -57,6 +57,15 @@
   </div>
 
 
+  <!-- Error -->
+  @if (errorMessage()) {
+    <div class="error-banner" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() | translate }}</span>
+    </div>
+  }
+
+
   <!-- Table -->
   <div class="table-card">
 
@@ -177,7 +186,9 @@
               <!-- Activate / Deactivate -->
               <button
                 mat-menu-item
-                type="button">
+                type="button"
+                [disabled]="togglingSectionId() !== null"
+                (click)="toggleSectionStatus(sectionItem)">
 
                 <mat-icon>
                   {{ sectionItem.isActive ? 'block' : 'check_circle' }}

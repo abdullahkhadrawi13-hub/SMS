@@ -129,7 +129,7 @@
 
     "SEARCH": "Search",
 
-    "SEARCH_PLACEHOLDER": "Search by student name, student number, login ID, or student phone number",
+    "SEARCH_PLACEHOLDER": "Search by student name or login ID",
 
     "CLEAR_SEARCH": "Clear search",
 
@@ -265,8 +265,13 @@
 
     "VALIDATION": {
       "REQUIRED": "This field is required.",
+      "ARABIC_ONLY": "This field allows Arabic letters and spaces only.",
+      "ENGLISH_ONLY": "This field allows English letters and spaces only.",
+      "MIN_LENGTH": "This field must contain at least 2 characters.",
+
       "LOGIN_ID": "Login ID must contain at least 3 characters.",
       "PASSWORD": "Password must contain at least 8 characters.",
+      "PHONE_NUMBER": "Phone number must contain exactly 10 digits.",
       "CLASS": "Please enter a valid class.",
       "SECTION": "Please enter a valid section."
     }
@@ -293,101 +298,103 @@
   },
 
   "SECTIONS": {
-  "TITLE": "Section Management",
-  "SUBTITLE": "Manage sections",
-  "ADD_SECTION": "Add Section",
-  "FILTER": "Filter",
+    "TITLE": "Section Management",
+    "SUBTITLE": "Manage sections",
+    "ADD_SECTION": "Add Section",
+    "FILTER": "Filter",
 
-  "TABLE": {
-    "CLASS_NAME": "Class Name",
-    "SECTION": "Section",
-    "STUDENT_COUNT": "Student Count",
-    "STATUS": "Status",
-    "ACTIONS": "Actions"
-  },
+    "TABLE": {
+      "CLASS_NAME": "Class Name",
+      "SECTION": "Section",
+      "STUDENT_COUNT": "Student Count",
+      "STATUS": "Status",
+      "ACTIONS": "Actions"
+    },
 
-  "ACTIVE": "Active",
-  "INACTIVE": "Inactive",
-  "ACTIVATE": "Activate",
-  "DEACTIVATE": "Deactivate",
-  "EDIT": "Edit",
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "ACTIVATE": "Activate",
+    "DEACTIVATE": "Deactivate",
+    "EDIT": "Edit",
 
-  "EMPTY": {
-    "TITLE": "No Sections",
-    "MESSAGE": "There are currently no sections to display."
-  },
+    "ERROR": {
+      "STATUS_UPDATE_FAILED": "Failed to update section status. Please try again."
+    },
+
+    "EMPTY": {
+      "TITLE": "No Sections",
+      "MESSAGE": "There are currently no sections to display."
+    },
 
     "SECTION_FORM": {
-  "ADD_TITLE": "Add Section",
-  "EDIT_TITLE": "Edit Section",
+      "ADD_TITLE": "Add Section",
+      "EDIT_TITLE": "Edit Section",
 
-  "CLASS": "Class",
-  "CLASS_REQUIRED": "Please select a class",
+      "CLASS": "Class",
+      "CLASS_REQUIRED": "Please select a class",
 
-  "SECTION_AR": "Section Name in Arabic",
-  "SECTION_AR_PLACEHOLDER": "Enter section name in Arabic",
-  "SECTION_AR_REQUIRED": "Please enter the section name in Arabic",
+      "SECTION_AR": "Section Name in Arabic",
+      "SECTION_AR_PLACEHOLDER": "Enter section name in Arabic",
+      "SECTION_AR_REQUIRED": "Please enter the section name in Arabic",
 
-  "SECTION_EN": "Section Name in English",
-  "SECTION_EN_PLACEHOLDER": "Enter section name in English",
-  "SECTION_EN_REQUIRED": "Please enter the section name in English",
+      "SECTION_EN": "Section Name in English",
+      "SECTION_EN_PLACEHOLDER": "Enter section name in English",
+      "SECTION_EN_REQUIRED": "Please enter the section name in English",
 
-  "SECTION_MAX_LENGTH": "Section name must not exceed 100 characters",
+      "SECTION_MAX_LENGTH": "Section name must not exceed 100 characters",
 
-  "CANCEL": "Cancel",
-  "ADD": "Add",
-  "EDIT": "Edit"
-},
+      "CANCEL": "Cancel",
+      "ADD": "Add",
+      "EDIT": "Edit"
+    },
 
     "FILTER_DIALOG": {
-  "TITLE": "Filter Sections",
+      "TITLE": "Filter Sections",
 
-  "CLASS": "Class",
+      "CLASS": "Class",
 
-  "SECTION": "Section",
+      "SECTION": "Section",
 
-  "STATUS": "Status",
+      "STATUS": "Status",
 
-  "ACADEMIC_YEAR": "Academic Year",
+      "ACADEMIC_YEAR": "Academic Year",
 
-  "ACADEMIC_TERM": "Academic Term",
+      "ACADEMIC_TERM": "Academic Term",
 
-  "ALL": "All",
+      "ALL": "All",
 
-  "CLEAR": "Clear",
+      "CLEAR": "Clear",
 
-  "CANCEL": "Cancel",
+      "CANCEL": "Cancel",
 
-  "APPLY": "Apply"
-}
+      "APPLY": "Apply"
+    }
   },
 
-"CLASS_FORM": {
-      "SETTINGS_TITLE": "Class Settings",
+  "CLASS_FORM": {
+    "SETTINGS_TITLE": "Class Settings",
 
-      "ADD_SECTION_TITLE": "Add Class",
+    "ADD_SECTION_TITLE": "Add Class",
 
-      "CLASS_NAME_AR": "Class Name in Arabic",
-      "CLASS_NAME_AR_PLACEHOLDER": "Enter class name in Arabic",
-      "CLASS_NAME_AR_REQUIRED": "Please enter the class name in Arabic",
+    "CLASS_NAME_AR": "Class Name in Arabic",
+    "CLASS_NAME_AR_PLACEHOLDER": "Enter class name in Arabic",
+    "CLASS_NAME_AR_REQUIRED": "Please enter the class name in Arabic",
 
-      "CLASS_NAME_EN": "Class Name in English",
-      "CLASS_NAME_EN_PLACEHOLDER": "Enter class name in English",
-      "CLASS_NAME_EN_REQUIRED": "Please enter the class name in English",
+    "CLASS_NAME_EN": "Class Name in English",
+    "CLASS_NAME_EN_PLACEHOLDER": "Enter class name in English",
+    "CLASS_NAME_EN_REQUIRED": "Please enter the class name in English",
 
-      "CLASS_MAX_LENGTH": "Class name must not exceed 100 characters",
+    "CLASS_MAX_LENGTH": "Class name must not exceed 100 characters",
 
-      "IS_GRADUATION_CLASS": "Graduation Class",
+    "IS_GRADUATION_CLASS": "Graduation Class",
 
-      "ADD": "Add",
+    "ADD": "Add",
 
-      "DISABLE_SECTION_TITLE": "Disable Class",
-      "SELECT_CLASS": "Select Class",
-      "SELECT_CLASS_REQUIRED": "Please select a class",
-      "DISABLE": "Disable",
+    "DISABLE_SECTION_TITLE": "Disable Class",
+    "SELECT_CLASS": "Select Class",
+    "SELECT_CLASS_REQUIRED": "Please select a class",
+    "DISABLE": "Disable",
 
-      "CANCEL": "Cancel"
-    }
-
-
+    "CANCEL": "Cancel"
+  }
 }

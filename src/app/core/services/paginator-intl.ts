@@ -41,16 +41,13 @@ export class PaginatorIntl extends MatPaginatorIntl {
     ): string => {
 
       if (length === 0 || pageSize === 0) {
-        return `0 ${this.translate.instant('PAGINATOR.OF')} ${length}`;
+        return `0 ${this.translate.instant('PAGINATOR.OF')} 0`;
       }
 
-      const startIndex = page * pageSize;
-      const endIndex = Math.min(
-        startIndex + pageSize,
-        length
-      );
+      const currentPage = page + 1;
+      const totalPages = Math.ceil(length / pageSize);
 
-      return `${startIndex + 1} – ${endIndex} ${this.translate.instant('PAGINATOR.OF')} ${length}`;
+      return `${currentPage} ${this.translate.instant('PAGINATOR.OF')} ${totalPages}`;
     };
 
     this.changes.next();

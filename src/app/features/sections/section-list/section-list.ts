@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +28,7 @@ import {
 
 import { Section } from '../section';
 import { SectionsService } from '../../../core/services/sections';
+import { ApiMessageService } from '../../../core/services/api-message';
 
 @Component({
   selector: 'app-section-list',
@@ -46,6 +48,8 @@ export class SectionList {
 
   private readonly dialog = inject(MatDialog);
   private readonly sectionsService = inject(SectionsService);
+  private readonly apiMessageService = inject(ApiMessageService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly displayedColumns = [
     'className',
@@ -56,6 +60,10 @@ export class SectionList {
   ];
 
   readonly sections = signal<Section[]>([]);
+
+  // id الشعبة التي يجري تغيير حالتها حاليًا (لمنع الضغط المتكرر)
+  readonly togglingSectionId = signal<number | null>(null);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly totalCount = signal(0);
   readonly pageNumber = signal(1);
@@ -141,6 +149,42 @@ export class SectionList {
       }
 
     });
+
+  }
+
+  // Activate / Deactivate
+  toggleSectionStatus(section: Section): void {
+
+    if (this.togglingSectionId() !== null) {
+      return;
+    }
+
+    this.togglingSectionId.set(section.sectionId);
+    this.errorMessage.set(null);
+
+    this.sectionsService
+      .updateSectionStatus(section.sectionId, !section.isActive)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.togglingSectionId.set(null);
+
+          if (!response.success) {
+            this.errorMessage.set(
+              this.apiMessageService.getMessage(response)
+            );
+            return;
+          }
+
+          this.loadSections();
+        },
+        error: (error) => {
+          console.error('Failed to update section status:', error);
+
+          this.togglingSectionId.set(null);
+          this.errorMessage.set('SECTIONS.ERROR.STATUS_UPDATE_FAILED');
+        }
+      });
 
   }
 
