@@ -6,48 +6,71 @@
 
   <div class="filter-form">
 
-    <!-- Class -->
+    <!-- Class (Active only) -->
     <mat-form-field appearance="outline">
       <mat-label>
         {{ 'STUDENT_FILTER.CLASS' | translate }}
       </mat-label>
 
-      <mat-select>
-        <mat-option>
+      <mat-select
+        [value]="classId()"
+        [disabled]="isLoadingClasses()"
+        (selectionChange)="onClassChange($event.value)"
+      >
+        <mat-option [value]="null">
           {{ 'STUDENT_FILTER.ALL' | translate }}
         </mat-option>
+
+        @for (c of classes(); track c.schoolClassId) {
+          <mat-option [value]="c.schoolClassId">
+            {{ getClassName(c) }}
+          </mat-option>
+        }
       </mat-select>
     </mat-form-field>
 
-    <!-- Section -->
+    <!-- Section (disabled until a class is chosen) -->
     <mat-form-field appearance="outline">
       <mat-label>
         {{ 'STUDENT_FILTER.SECTION' | translate }}
       </mat-label>
 
-      <mat-select>
-        <mat-option>
+      <mat-select
+        [value]="sectionId()"
+        [disabled]="!classId() || isLoadingSections()"
+        (selectionChange)="sectionId.set($event.value)"
+      >
+        <mat-option [value]="null">
           {{ 'STUDENT_FILTER.ALL' | translate }}
         </mat-option>
+
+        @for (s of sections(); track s.sectionId) {
+          <mat-option [value]="s.sectionId">
+            {{ getSectionName(s) }}
+          </mat-option>
+        }
       </mat-select>
     </mat-form-field>
 
-    <!-- Status -->
+    <!-- Status (independent) -->
     <mat-form-field appearance="outline">
       <mat-label>
         {{ 'STUDENT_FILTER.STATUS' | translate }}
       </mat-label>
 
-      <mat-select>
-        <mat-option>
+      <mat-select
+        [value]="isActive()"
+        (selectionChange)="isActive.set($event.value)"
+      >
+        <mat-option [value]="null">
           {{ 'STUDENT_FILTER.ALL' | translate }}
         </mat-option>
 
-        <mat-option>
+        <mat-option [value]="true">
           {{ 'STUDENTS.ACTIVE' | translate }}
         </mat-option>
 
-        <mat-option>
+        <mat-option [value]="false">
           {{ 'STUDENTS.INACTIVE' | translate }}
         </mat-option>
       </mat-select>
@@ -59,15 +82,15 @@
 
 <mat-dialog-actions align="end">
 
-  <button mat-button>
+  <button mat-button type="button" (click)="clear()">
     {{ 'STUDENT_FILTER.CLEAR' | translate }}
   </button>
 
-  <button mat-button mat-dialog-close>
+  <button mat-button type="button" mat-dialog-close>
     {{ 'STUDENT_FILTER.CANCEL' | translate }}
   </button>
 
-  <button mat-flat-button>
+  <button mat-flat-button color="primary" type="button" (click)="apply()">
     {{ 'STUDENT_FILTER.APPLY' | translate }}
   </button>
 
