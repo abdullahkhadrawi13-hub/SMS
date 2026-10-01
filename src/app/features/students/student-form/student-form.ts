@@ -44,7 +44,7 @@ import { ApiMessageService } from '../../../core/services/api-message';
 import { Language } from '../../../core/services/language';
 
 import { SchoolClassSimpleDto } from '../../classes/school-class';
-import { Notification } from '../../../core/services/notification';
+
 
 export interface StudentFormDialogData {
   studentId?: number;
@@ -94,7 +94,6 @@ export class StudentForm {
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
 
-  private readonly notification = inject(Notification);
 
 
   readonly studentId = signal<number | null>(
@@ -357,8 +356,8 @@ export class StudentForm {
           return;
         }
 
-        this.notification.success(
-          this.apiMessageService.getMessage(response)
+        this.successMessage.set(
+          'STUDENTS_FORM.SUCCESS.CREATED'
         );
 
         this.isSubmitting.set(false);
