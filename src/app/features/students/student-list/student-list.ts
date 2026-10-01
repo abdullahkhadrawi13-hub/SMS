@@ -31,10 +31,9 @@ import {
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
 
-import {
-  SectionsService,
-  SectionSimpleDto
-} from '../../../core/services/sections';
+import {SectionsService,SectionSimpleDto} from '../../../core/services/sections';
+
+import { ApiMessageService } from '../../../core/services/api-message';
 
 import { Student } from '../student';
 
@@ -43,6 +42,7 @@ import { StudentDetails } from '../student-details/student-details';
 import { StudentForm } from '../student-form/student-form';
 
 import { StudentFilter } from '../student-filter/student-filter';
+
 
 @Component({
   selector: 'app-student-list',
@@ -82,6 +82,9 @@ export class StudentList {
 
   private readonly sectionsService =
     inject(SectionsService);
+
+  private readonly apiMessageService =
+    inject(ApiMessageService);
 
   // id -> { ar, en }
   private readonly classNames =
@@ -178,6 +181,7 @@ export class StudentList {
                     `Failed to load sections for class ${c.schoolClassId}:`,
                     error
                   );
+
                   return of([] as SectionSimpleDto[]);
                 })
               )
@@ -278,10 +282,17 @@ export class StudentList {
         next: response => {
 
           if (!response.success) {
+
             this.students.set([]);
+
             this.totalCount.set(0);
-            this.errorMessage.set(response.message);
+
+            this.errorMessage.set(
+              this.apiMessageService.getMessage(response)
+            );
+
             this.isLoading.set(false);
+
             return;
           }
 
@@ -290,16 +301,24 @@ export class StudentList {
           // لو الصفحة الحالية رجعت فاضية وهي مش أول صفحة
           // (مثلاً بعد تعطيل آخر طالب فيها) — ارجع صفحة للوراء وأعد التحميل
           if (data.items.length === 0 && data.pageNumber > 1) {
+
             this.pageNumber.set(data.pageNumber - 1);
+
             this.loadStudents();
+
             return;
           }
 
           this.students.set(data.items);
+
           this.totalCount.set(data.totalCount);
+
           this.pageNumber.set(data.pageNumber);
+
           this.pageSize.set(data.pageSize);
+
           this.isLoading.set(false);
+
         },
 
 
@@ -309,7 +328,6 @@ export class StudentList {
             'Failed to load students:',
             error
           );
-
 
           this.students.set([]);
 
@@ -529,7 +547,7 @@ export class StudentList {
           if (!response.success) {
 
             this.errorMessage.set(
-              response.message
+              this.apiMessageService.getMessage(response)
             );
 
             return;

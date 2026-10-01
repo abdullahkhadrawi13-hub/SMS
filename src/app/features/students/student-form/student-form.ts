@@ -28,6 +28,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
+
 import {
   ActiveSectionDto,
   SectionsService
@@ -39,9 +40,11 @@ import {
   Students
 } from '../../../core/services/students';
 
+import { ApiMessageService } from '../../../core/services/api-message';
 import { Language } from '../../../core/services/language';
-import { SchoolClassSimpleDto } from '../../classes/school-class';
 
+import { SchoolClassSimpleDto } from '../../classes/school-class';
+import { Notification } from '../../../core/services/notification';
 
 export interface StudentFormDialogData {
   studentId?: number;
@@ -72,9 +75,11 @@ export class StudentForm {
   private readonly dialogRef = inject(MatDialogRef<StudentForm>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly language = inject(Language);
+  private readonly apiMessageService = inject(ApiMessageService);
   private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);
-  private readonly dialogData = inject<StudentFormDialogData>(MAT_DIALOG_DATA);
+  private readonly dialogData =
+    inject<StudentFormDialogData>(MAT_DIALOG_DATA);
 
   readonly direction = computed(() => this.language.currentDirection());
 
@@ -88,6 +93,9 @@ export class StudentForm {
 
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
+
+  private readonly notification = inject(Notification);
+
 
   readonly studentId = signal<number | null>(
     this.dialogData?.studentId ?? null
@@ -134,6 +142,7 @@ export class StudentForm {
           this.studentForm.controls.sectionId.reset(0, {
             emitEvent: false
           });
+
           this.studentForm.controls.sectionId.disable({
             emitEvent: false
           });
@@ -167,6 +176,7 @@ export class StudentForm {
           this.classes.set(response.success ? response.data : []);
           this.isLoadingClasses.set(false);
         },
+
         error: error => {
           console.error('Failed to load classes:', error);
           this.classes.set([]);
@@ -188,6 +198,7 @@ export class StudentForm {
       switchMap(response =>
         of(response.success ? response.data : [])
       ),
+
       catchError(error => {
         console.error('Failed to load sections:', error);
         return of<ActiveSectionDto[]>([]);
@@ -233,8 +244,10 @@ export class StudentForm {
         next: response => {
           if (!response.success || !response.data) {
             this.errorMessage.set(
-              response.message || 'STUDENTS_FORM.ERROR.LOAD_FAILED'
+              this.apiMessageService.getMessage(response) ||
+              'STUDENTS_FORM.ERROR.LOAD_FAILED'
             );
+
             this.isLoading.set(false);
             return;
           }
@@ -307,65 +320,68 @@ export class StudentForm {
   }
 
 
-  private createStudent(): void {
-    const formValue = this.studentForm.getRawValue();
+ private createStudent(): void {
+  const formValue = this.studentForm.getRawValue();
 
-    const data: CreateStudentRequest = {
-      firstNameAr: formValue.firstNameAr,
-      fatherNameAr: formValue.fatherNameAr,
-      grandFatherNameAr: formValue.grandFatherNameAr,
-      familyNameAr: formValue.familyNameAr,
+  const data: CreateStudentRequest = {
+    firstNameAr: formValue.firstNameAr,
+    fatherNameAr: formValue.fatherNameAr,
+    grandFatherNameAr: formValue.grandFatherNameAr,
+    familyNameAr: formValue.familyNameAr,
 
-      firstNameEn: formValue.firstNameEn,
-      fatherNameEn: formValue.fatherNameEn,
-      grandFatherNameEn: formValue.grandFatherNameEn,
-      familyNameEn: formValue.familyNameEn,
+    firstNameEn: formValue.firstNameEn,
+    fatherNameEn: formValue.fatherNameEn,
+    grandFatherNameEn: formValue.grandFatherNameEn,
+    familyNameEn: formValue.familyNameEn,
 
-      loginId: formValue.loginId,
-      temporaryPassword: formValue.temporaryPassword,
+    loginId: formValue.loginId,
+    temporaryPassword: formValue.temporaryPassword,
 
-      phoneNumber: formValue.phoneNumber,
+    phoneNumber: formValue.phoneNumber,
 
-      classId: formValue.classId,
-      sectionId: formValue.sectionId
-    };
+    classId: formValue.classId,
+    sectionId: formValue.sectionId
+  };
 
-    this.studentsService
-      .createStudent(data)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: response => {
-          if (!response.success) {
-            this.errorMessage.set(response.message);
-            this.isSubmitting.set(false);
-            return;
-          }
-
-          this.successMessage.set(
-            'STUDENTS_FORM.SUCCESS.CREATED'
-          );
-
-          this.isSubmitting.set(false);
-
-          setTimeout(() => {
-            this.dialogRef.close({
-              success: true,
-              action: 'created'
-            });
-          }, 700);
-        },
-
-        error: error => {
-          console.error('Failed to create student:', error);
-
+  this.studentsService
+    .createStudent(data)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: response => {
+        if (!response.success) {
           this.errorMessage.set(
-            'STUDENTS_FORM.ERROR.CREATE_FAILED'
+            this.apiMessageService.getMessage(response)
           );
 
           this.isSubmitting.set(false);
+          return;
         }
-      });
-  }
+
+        this.notification.success(
+          this.apiMessageService.getMessage(response)
+        );
+
+        this.isSubmitting.set(false);
+
+        setTimeout(() => {
+          this.dialogRef.close({
+            success: true,
+            action: 'created'
+          });
+        }, 700);
+      },
+
+      error: error => {
+        console.error('Failed to create student:', error);
+
+        this.errorMessage.set(
+          'STUDENTS_FORM.ERROR.CREATE_FAILED'
+        );
+
+        this.isSubmitting.set(false);
+      }
+    });
+}
 
 
   private updateStudent(): void {
@@ -406,7 +422,10 @@ export class StudentForm {
       .subscribe({
         next: response => {
           if (!response.success) {
-            this.errorMessage.set(response.message);
+            this.errorMessage.set(
+              this.apiMessageService.getMessage(response)
+            );
+
             this.isSubmitting.set(false);
             return;
           }

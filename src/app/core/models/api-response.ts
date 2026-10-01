@@ -1,5 +1,6 @@
 export interface ApiResponse<T> {
   success: boolean;
-  message: string;
+  messageAr: string;
+  messageEn: string;
   data: T;
 }

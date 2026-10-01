@@ -2,19 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { ApiResponse } from '../models/api-response';
 import {
   SchoolClass,
   SchoolClassSimpleDto,
   CreateSchoolClassRequest,
   UpdateSchoolClassRequest
 } from '../../features/classes/school-class';
-
-export interface SchoolClassApiResponse<T> {
-  success: boolean;
-  messageAr: string;
-  messageEn: string;
-  data: T;
-}
 
 export interface SchoolClassPagedResult {
   items: SchoolClass[];
@@ -38,44 +32,44 @@ export class SchoolClassesService {
   getSchoolClasses(
     pageNumber: number = 1,
     pageSize: number = 10
-  ): Observable<SchoolClassApiResponse<SchoolClassPagedResult>> {
+  ): Observable<ApiResponse<SchoolClassPagedResult>> {
 
     const params = new HttpParams()
       .set('pageNumber', pageNumber)
       .set('pageSize', pageSize);
 
     return this.http.get<
-      SchoolClassApiResponse<SchoolClassPagedResult>
+      ApiResponse<SchoolClassPagedResult>
     >(this.apiUrl, { params });
   }
 
   // GET /api/SchoolClasses/active
   getActiveSchoolClasses(): Observable<
-    SchoolClassApiResponse<SchoolClassSimpleDto[]>
+    ApiResponse<SchoolClassSimpleDto[]>
   > {
 
     return this.http.get<
-      SchoolClassApiResponse<SchoolClassSimpleDto[]>
+      ApiResponse<SchoolClassSimpleDto[]>
     >(`${this.apiUrl}/active`);
   }
 
   // GET /api/SchoolClasses/{schoolClassId}
   getSchoolClass(
     schoolClassId: number
-  ): Observable<SchoolClassApiResponse<SchoolClass>> {
+  ): Observable<ApiResponse<SchoolClass>> {
 
     return this.http.get<
-      SchoolClassApiResponse<SchoolClass>
+      ApiResponse<SchoolClass>
     >(`${this.apiUrl}/${schoolClassId}`);
   }
 
   // POST /api/SchoolClasses
   createSchoolClass(
     request: CreateSchoolClassRequest
-  ): Observable<SchoolClassApiResponse<SchoolClass>> {
+  ): Observable<ApiResponse<SchoolClass>> {
 
     return this.http.post<
-      SchoolClassApiResponse<SchoolClass>
+      ApiResponse<SchoolClass>
     >(this.apiUrl, request);
   }
 
@@ -83,10 +77,10 @@ export class SchoolClassesService {
   updateSchoolClass(
     schoolClassId: number,
     request: UpdateSchoolClassRequest
-  ): Observable<SchoolClassApiResponse<SchoolClass>> {
+  ): Observable<ApiResponse<SchoolClass>> {
 
     return this.http.put<
-      SchoolClassApiResponse<SchoolClass>
+      ApiResponse<SchoolClass>
     >(`${this.apiUrl}/${schoolClassId}`, request);
   }
 
@@ -94,13 +88,13 @@ export class SchoolClassesService {
   updateSchoolClassStatus(
     schoolClassId: number,
     isActive: boolean
-  ): Observable<SchoolClassApiResponse<SchoolClass>> {
+  ): Observable<ApiResponse<SchoolClass>> {
 
     const params = new HttpParams()
       .set('isActive', isActive);
 
     return this.http.patch<
-      SchoolClassApiResponse<SchoolClass>
+      ApiResponse<SchoolClass>
     >(
       `${this.apiUrl}/${schoolClassId}/status`,
       null,

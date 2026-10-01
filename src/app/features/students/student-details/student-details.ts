@@ -1,8 +1,12 @@
-import {Component,DestroyRef,Inject,inject,signal} from '@angular/core';
+import { Component, DestroyRef, Inject, inject, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
-import {MAT_DIALOG_DATA,MatDialogModule,MatDialogRef} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef
+} from '@angular/material/dialog';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +17,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Students } from '../../../core/services/students';
+import { ApiMessageService } from '../../../core/services/api-message';
+
 import { Student } from '../student';
 
 export interface StudentDetailsDialogData {
@@ -34,6 +40,7 @@ export interface StudentDetailsDialogData {
 })
 export class StudentDetails {
   private readonly studentsService = inject(Students);
+  private readonly apiMessageService = inject(ApiMessageService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly dialogRef =
@@ -73,7 +80,7 @@ export class StudentDetails {
             this.student.set(null);
 
             this.errorMessage.set(
-              response.message ||
+              this.apiMessageService.getMessage(response) ||
               'STUDENTS_DETAILS.LOAD_FAILED'
             );
 
@@ -130,21 +137,21 @@ export class StudentDetails {
   }
 
   getRoleTranslationKey(role: number): string {
-  switch (role) {
-    case 0:
-      return 'ROLES.ADMIN';
-    case 1:
-      return 'ROLES.ASSISTANT_PRINCIPAL';
-    case 2:
-      return 'ROLES.TEACHER';
-    case 3:
-      return 'ROLES.STUDENT';
-    case 4:
-      return 'ROLES.PARENT';
-    default:
-      return 'ROLES.UNKNOWN';
+    switch (role) {
+      case 0:
+        return 'ROLES.ADMIN';
+      case 1:
+        return 'ROLES.ASSISTANT_PRINCIPAL';
+      case 2:
+        return 'ROLES.TEACHER';
+      case 3:
+        return 'ROLES.STUDENT';
+      case 4:
+        return 'ROLES.PARENT';
+      default:
+        return 'ROLES.UNKNOWN';
+    }
   }
-}
 
   close(): void {
     this.dialogRef.close();
