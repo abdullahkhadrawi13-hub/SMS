@@ -145,8 +145,14 @@ export class StudentFilter {
       : s.sectionEn;
   }
 
+  // إعادة ضبط الفورم فقط، بدون إغلاق النافذة ولا تطبيق
   clear(): void {
-    this.dialogRef.close({ ...EMPTY_STUDENT_FILTER });
+    this.classId.set(null);
+    this.sectionId.set(null);
+    this.isActive.set(null);
+
+    this.sections.set([]);
+    this.isLoadingSections.set(false);
   }
 
   apply(): void {

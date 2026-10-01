@@ -41,7 +41,10 @@ import { StudentDetails } from '../student-details/student-details';
 
 import { StudentForm } from '../student-form/student-form';
 
-import { StudentFilter } from '../student-filter/student-filter';
+import {
+  StudentFilter,
+  StudentFilterValues
+} from '../student-filter/student-filter';
 
 
 @Component({
@@ -122,6 +125,12 @@ export class StudentList {
 
   readonly statusFilter =
     signal<boolean | undefined>(undefined);
+
+  readonly classFilter =
+    signal<number | undefined>(undefined);
+
+  readonly sectionFilter =
+    signal<number | undefined>(undefined);
 
   readonly isLoading =
     signal(false);
@@ -270,8 +279,8 @@ export class StudentList {
         this.pageNumber(),
         this.pageSize(),
         this.search(),
-        undefined,
-        undefined,
+        this.classFilter(),
+        this.sectionFilter(),
         this.statusFilter()
       )
       .pipe(
@@ -517,9 +526,34 @@ export class StudentList {
 
   openFilter(): void {
 
-    this.dialog.open(StudentFilter, {
-      width: '420px'
-    });
+    const current: StudentFilterValues = {
+      classId: this.classFilter() ?? null,
+      sectionId: this.sectionFilter() ?? null,
+      isActive: this.statusFilter() ?? null
+    };
+
+    this.dialog
+      .open(StudentFilter, {
+        width: '420px',
+        data: current
+      })
+      .afterClosed()
+      .subscribe((result?: StudentFilterValues) => {
+
+        // Cancel / إغلاق النافذة بدون تطبيق
+        if (!result) {
+          return;
+        }
+
+        this.classFilter.set(result.classId ?? undefined);
+        this.sectionFilter.set(result.sectionId ?? undefined);
+        this.statusFilter.set(result.isActive ?? undefined);
+
+        this.pageNumber.set(1);
+
+        this.loadStudents();
+
+      });
 
   }
 
