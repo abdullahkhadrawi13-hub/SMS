@@ -113,17 +113,17 @@ export class StudentForm {
   );
 
   readonly studentForm = this.fb.nonNullable.group({
-    // Arabic name fields: allow Arabic letters and spaces only
-    firstNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s]+$/)]],
-    fatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s]+$/)]],
-    grandFatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s]+$/)]],
-    familyNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s]+$/)]],
+    // Arabic name fields: allow Arabic letters, spaces, dots, and hyphens
+    firstNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s.-]+$/)]],
+    fatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s.-]+$/)]],
+    grandFatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s.-]+$/)]],
+    familyNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s.-]+$/)]],
 
-    // English name fields: allow English letters and spaces only
-    firstNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s]+$/)]],
-    fatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s]+$/)]],
-    grandFatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s]+$/)]],
-    familyNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s]+$/)]],
+    // English name fields: allow English letters, spaces, dots, and hyphens
+    firstNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
+    fatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
+    grandFatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
+    familyNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
 
     loginId: ['', [Validators.required, Validators.minLength(3)]],
 
@@ -330,66 +330,66 @@ export class StudentForm {
   }
 
 
-private createStudent(): void {
-  const formValue = this.studentForm.getRawValue();
+  private createStudent(): void {
+    const formValue = this.studentForm.getRawValue();
 
-  const data: CreateStudentRequest = {
-    firstNameAr: formValue.firstNameAr,
-    fatherNameAr: formValue.fatherNameAr,
-    grandFatherNameAr: formValue.grandFatherNameAr,
-    familyNameAr: formValue.familyNameAr,
+    const data: CreateStudentRequest = {
+      firstNameAr: formValue.firstNameAr,
+      fatherNameAr: formValue.fatherNameAr,
+      grandFatherNameAr: formValue.grandFatherNameAr,
+      familyNameAr: formValue.familyNameAr,
 
-    firstNameEn: formValue.firstNameEn,
-    fatherNameEn: formValue.fatherNameEn,
-    grandFatherNameEn: formValue.grandFatherNameEn,
-    familyNameEn: formValue.familyNameEn,
+      firstNameEn: formValue.firstNameEn,
+      fatherNameEn: formValue.fatherNameEn,
+      grandFatherNameEn: formValue.grandFatherNameEn,
+      familyNameEn: formValue.familyNameEn,
 
-    loginId: formValue.loginId,
-    temporaryPassword: formValue.temporaryPassword,
+      loginId: formValue.loginId,
+      temporaryPassword: formValue.temporaryPassword,
 
-    phoneNumber: formValue.phoneNumber,
+      phoneNumber: formValue.phoneNumber,
 
-    classId: formValue.classId,
-    sectionId: formValue.sectionId
-  };
+      classId: formValue.classId,
+      sectionId: formValue.sectionId
+    };
 
-  this.studentsService
-    .createStudent(data)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      next: response => {
+    this.studentsService
+      .createStudent(data)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: response => {
 
-        this.isSubmitting.set(false);
+          this.isSubmitting.set(false);
 
-        if (!response.success) {
-          this.actionResult.error(
+          if (!response.success) {
+            this.actionResult.error(
+              this.apiMessageService.getMessage(response)
+            );
+
+            return;
+          }
+
+          this.dialogRef.close({
+            success: true,
+            action: 'created'
+          });
+
+          this.actionResult.success(
             this.apiMessageService.getMessage(response)
           );
+        },
 
-          return;
+        error: error => {
+          console.error('Failed to create student:', error);
+
+          this.isSubmitting.set(false);
+
+          this.actionResult.error(
+            this.apiMessageService.getErrorMessage(error)
+          );
         }
-
-        this.dialogRef.close({
-          success: true,
-          action: 'created'
-        });
-
-        this.actionResult.success(
-          this.apiMessageService.getMessage(response)
-        );
-      },
-
-      error: error => {
-        console.error('Failed to create student:', error);
-
-        this.isSubmitting.set(false);
-
-        this.actionResult.error(
-          'STUDENTS_FORM.ERROR.CREATE_FAILED'
-        );
-      }
-    });
-}
+      });
+  }
 
 
   private updateStudent(): void {
@@ -429,37 +429,33 @@ private createStudent(): void {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => {
+          this.isSubmitting.set(false);
+
           if (!response.success) {
-            this.errorMessage.set(
+            this.actionResult.error(
               this.apiMessageService.getMessage(response)
             );
-
-            this.isSubmitting.set(false);
             return;
           }
 
-          this.successMessage.set(
-            'STUDENTS_FORM.SUCCESS.UPDATED'
+          this.dialogRef.close({
+            success: true,
+            action: 'updated'
+          });
+
+          this.actionResult.success(
+            this.apiMessageService.getMessage(response)
           );
-
-          this.isSubmitting.set(false);
-
-          setTimeout(() => {
-            this.dialogRef.close({
-              success: true,
-              action: 'updated'
-            });
-          }, 700);
         },
 
         error: error => {
           console.error('Failed to update student:', error);
 
-          this.errorMessage.set(
-            'STUDENTS_FORM.ERROR.UPDATE_FAILED'
-          );
-
           this.isSubmitting.set(false);
+
+          this.actionResult.error(
+            this.apiMessageService.getErrorMessage(error)
+          );
         }
       });
   }
