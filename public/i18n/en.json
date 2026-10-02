@@ -120,6 +120,8 @@
     "ACADEMIC_INFORMATION": "Academic Information",
     "TIMETABLE": "Timetable"
   },
+
+
   "STUDENTS": {
     "TITLE": "Students",
 
@@ -176,9 +178,7 @@
     "PAGINATION": "Students pagination",
 
     "ERROR": {
-      "LOAD_FAILED": "Failed to load students. Please try again.",
-
-      "STATUS_UPDATE_FAILED": "Failed to update student status. Please try again."
+      "LOAD_FAILED": "Failed to load students. Please try again."
     }
   },
   "STUDENTS_DETAILS": {
@@ -257,8 +257,6 @@
 
     "LOADING": "Loading student information...",
     "ERROR": {
-      "CREATE_FAILED": "Failed to create student. Please try again.",
-      "UPDATE_FAILED": "Failed to update student. Please try again.",
       "LOAD_FAILED": "Failed to load student. Please try again.",
       "INVALID_ID": "Invalid student ID."
     },
@@ -316,10 +314,6 @@
     "ACTIVATE": "Activate",
     "DEACTIVATE": "Deactivate",
     "EDIT": "Edit",
-
-    "ERROR": {
-      "STATUS_UPDATE_FAILED": "Failed to update section status. Please try again."
-    },
 
     "EMPTY": {
       "TITLE": "No Sections",

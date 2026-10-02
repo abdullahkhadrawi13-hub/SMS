@@ -29,6 +29,7 @@ import {
 import { Section } from '../section';
 import { SectionsService } from '../../../core/services/sections';
 import { ApiMessageService } from '../../../core/services/api-message';
+import { ActionResult } from '../../../shared/services/action-result';
 
 @Component({
   selector: 'app-section-list',
@@ -48,7 +49,10 @@ export class SectionList {
 
   private readonly dialog = inject(MatDialog);
   private readonly sectionsService = inject(SectionsService);
+
   private readonly apiMessageService = inject(ApiMessageService);
+  private readonly actionResult = inject(ActionResult);
+
   private readonly destroyRef = inject(DestroyRef);
 
   readonly displayedColumns = [
@@ -155,38 +159,52 @@ export class SectionList {
   // Activate / Deactivate
   toggleSectionStatus(section: Section): void {
 
-    if (this.togglingSectionId() !== null) {
-      return;
-    }
-
-    this.togglingSectionId.set(section.sectionId);
-    this.errorMessage.set(null);
-
-    this.sectionsService
-      .updateSectionStatus(section.sectionId, !section.isActive)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.togglingSectionId.set(null);
-
-          if (!response.success) {
-            this.errorMessage.set(
-              this.apiMessageService.getMessage(response)
-            );
-            return;
-          }
-
-          this.loadSections();
-        },
-        error: (error) => {
-          console.error('Failed to update section status:', error);
-
-          this.togglingSectionId.set(null);
-          this.errorMessage.set('SECTIONS.ERROR.STATUS_UPDATE_FAILED');
-        }
-      });
-
+  if (this.togglingSectionId() !== null) {
+    return;
   }
+
+  this.togglingSectionId.set(section.sectionId);
+  this.errorMessage.set(null);
+
+  this.sectionsService
+    .updateSectionStatus(
+      section.sectionId,
+      !section.isActive
+    )
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: (response) => {
+        this.togglingSectionId.set(null);
+
+        if (!response.success) {
+          this.actionResult.error(
+            this.apiMessageService.getMessage(response)
+          );
+          return;
+        }
+
+        this.loadSections();
+
+        this.actionResult.success(
+          this.apiMessageService.getMessage(response)
+        );
+      },
+
+      error: (error) => {
+        console.error(
+          'Failed to update section status:',
+          error
+        );
+
+        this.togglingSectionId.set(null);
+
+        this.actionResult.error(
+          this.apiMessageService.getErrorMessage(error)
+        );
+      }
+    });
+
+}
 
   // Filter
   openFilterDialog(): void {

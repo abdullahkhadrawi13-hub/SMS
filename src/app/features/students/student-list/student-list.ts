@@ -34,6 +34,7 @@ import { SchoolClassesService } from '../../../core/services/school-classes';
 import {SectionsService,SectionSimpleDto} from '../../../core/services/sections';
 
 import { ApiMessageService } from '../../../core/services/api-message';
+import { ActionResult } from '../../../shared/services/action-result';
 
 import { Student } from '../student';
 
@@ -45,6 +46,7 @@ import {
   StudentFilter,
   StudentFilterValues
 } from '../student-filter/student-filter';
+
 
 
 @Component({
@@ -88,6 +90,8 @@ export class StudentList {
 
   private readonly apiMessageService =
     inject(ApiMessageService);
+
+  private readonly actionResult = inject(ActionResult);
 
   // id -> { ar, en }
   private readonly classNames =
@@ -559,58 +563,61 @@ export class StudentList {
 
 
   toggleStudentStatus(
-    student: Student
-  ): void {
+  student: Student
+): void {
 
-    const newStatus =
-      !student.isActive;
-
-
-    this.studentsService
-      .updateStudentStatus(
-        student.studentId,
-        newStatus
-      )
-      .pipe(
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe({
-
-        next: response => {
-
-          if (!response.success) {
-
-            this.errorMessage.set(
-              this.apiMessageService.getMessage(response)
-            );
-
-            return;
-          }
+  const newStatus =
+    !student.isActive;
 
 
-          this.loadStudents();
+  this.studentsService
+    .updateStudentStatus(
+      student.studentId,
+      newStatus
+    )
+    .pipe(
+      takeUntilDestroyed(this.destroyRef)
+    )
+    .subscribe({
 
-        },
+      next: response => {
 
+        if (!response.success) {
 
-        error: error => {
-
-          console.error(
-            'Failed to update student status:',
-            error
+          this.actionResult.error(
+            this.apiMessageService.getMessage(response)
           );
 
-
-          this.errorMessage.set(
-            'STUDENTS.ERROR.STATUS_UPDATE_FAILED'
-          );
-
+          return;
         }
 
-      });
 
-  }
+        this.loadStudents();
 
+        this.actionResult.success(
+          this.apiMessageService.getMessage(response)
+        );
+
+      },
+
+
+      error: error => {
+
+        console.error(
+          'Failed to update student status:',
+          error
+        );
+
+
+        this.actionResult.error(
+          this.apiMessageService.getErrorMessage(error)
+        );
+
+      }
+
+    });
+
+}
 
   retry(): void {
 
