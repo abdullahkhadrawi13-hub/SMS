@@ -18,10 +18,15 @@ export class ApiMessageService {
   }
 
   getErrorMessage(error: HttpErrorResponse): string {
-    const response = error.error as ApiResponse<null>;
+  const response = error.error as {
+    Success: boolean;
+    MessageAr: string;
+    MessageEn: string;
+    Data: null;
+  };
 
-    return this.language.getCurrentLanguage() === 'ar'
-      ? response.messageAr
-      : response.messageEn;
-  }
+  return this.language.getCurrentLanguage() === 'ar'
+    ? response.MessageAr
+    : response.MessageEn;
+}
 }
