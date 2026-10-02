@@ -1,0 +1,33 @@
+<div class="action-result-dialog">
+
+  <div
+    class="result-icon"
+    [class.success]="data.type === 'success'"
+    [class.error]="data.type === 'error'"
+  >
+    <mat-icon>
+      {{ icon }}
+    </mat-icon>
+  </div>
+
+  <h2 class="result-title">
+    {{
+      data.type === 'success'
+        ? ('SHARED.ACTION_RESULT.SUCCESS' | translate)
+        : ('SHARED.ACTION_RESULT.ERROR' | translate)
+    }}
+  </h2>
+
+  <p class="result-message">
+    {{ data.message }}
+  </p>
+
+  <button
+    mat-flat-button
+    type="button"
+    (click)="close()"
+  >
+    {{ 'SHARED.ACTION_RESULT.OK' | translate }}
+  </button>
+
+</div>

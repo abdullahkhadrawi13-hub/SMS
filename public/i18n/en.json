@@ -396,5 +396,24 @@
     "DISABLE": "Disable",
 
     "CANCEL": "Cancel"
+  },
+
+
+  "SHARED": {
+  "ACTION_RESULT": {
+    "SUCCESS": "Success",
+    "ERROR": "Error",
+    "OK": "OK"
   }
+}
+
+
+
+
+
+
+
+
+
+  
 }
