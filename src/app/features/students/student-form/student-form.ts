@@ -41,6 +41,10 @@ import {
 } from '../../../core/services/students';
 
 import { ApiMessageService } from '../../../core/services/api-message';
+import { ActionResult } from '../../../shared/services/action-result';
+
+
+
 import { Language } from '../../../core/services/language';
 
 import { SchoolClassSimpleDto } from '../../classes/school-class';
@@ -75,7 +79,11 @@ export class StudentForm {
   private readonly dialogRef = inject(MatDialogRef<StudentForm>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly language = inject(Language);
+
   private readonly apiMessageService = inject(ApiMessageService);
+  private readonly actionResult = inject(ActionResult);
+
+
   private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);
   private readonly dialogData =
@@ -322,68 +330,66 @@ export class StudentForm {
   }
 
 
-  private createStudent(): void {
-    const formValue = this.studentForm.getRawValue();
+private createStudent(): void {
+  const formValue = this.studentForm.getRawValue();
 
-    const data: CreateStudentRequest = {
-      firstNameAr: formValue.firstNameAr,
-      fatherNameAr: formValue.fatherNameAr,
-      grandFatherNameAr: formValue.grandFatherNameAr,
-      familyNameAr: formValue.familyNameAr,
+  const data: CreateStudentRequest = {
+    firstNameAr: formValue.firstNameAr,
+    fatherNameAr: formValue.fatherNameAr,
+    grandFatherNameAr: formValue.grandFatherNameAr,
+    familyNameAr: formValue.familyNameAr,
 
-      firstNameEn: formValue.firstNameEn,
-      fatherNameEn: formValue.fatherNameEn,
-      grandFatherNameEn: formValue.grandFatherNameEn,
-      familyNameEn: formValue.familyNameEn,
+    firstNameEn: formValue.firstNameEn,
+    fatherNameEn: formValue.fatherNameEn,
+    grandFatherNameEn: formValue.grandFatherNameEn,
+    familyNameEn: formValue.familyNameEn,
 
-      loginId: formValue.loginId,
-      temporaryPassword: formValue.temporaryPassword,
+    loginId: formValue.loginId,
+    temporaryPassword: formValue.temporaryPassword,
 
-      phoneNumber: formValue.phoneNumber,
+    phoneNumber: formValue.phoneNumber,
 
-      classId: formValue.classId,
-      sectionId: formValue.sectionId
-    };
+    classId: formValue.classId,
+    sectionId: formValue.sectionId
+  };
 
-    this.studentsService
-      .createStudent(data)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: response => {
-          if (!response.success) {
-            this.errorMessage.set(
-              this.apiMessageService.getMessage(response)
-            );
+  this.studentsService
+    .createStudent(data)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: response => {
 
-            this.isSubmitting.set(false);
-            return;
-          }
+        this.isSubmitting.set(false);
 
-          this.successMessage.set(
-            'STUDENTS_FORM.SUCCESS.CREATED'
+        if (!response.success) {
+          this.actionResult.error(
+            this.apiMessageService.getMessage(response)
           );
 
-          this.isSubmitting.set(false);
-
-          setTimeout(() => {
-            this.dialogRef.close({
-              success: true,
-              action: 'created'
-            });
-          }, 700);
-        },
-
-        error: error => {
-          console.error('Failed to create student:', error);
-
-          this.errorMessage.set(
-            'STUDENTS_FORM.ERROR.CREATE_FAILED'
-          );
-
-          this.isSubmitting.set(false);
+          return;
         }
-      });
-  }
+
+        this.dialogRef.close({
+          success: true,
+          action: 'created'
+        });
+
+        this.actionResult.success(
+          this.apiMessageService.getMessage(response)
+        );
+      },
+
+      error: error => {
+        console.error('Failed to create student:', error);
+
+        this.isSubmitting.set(false);
+
+        this.actionResult.error(
+          'STUDENTS_FORM.ERROR.CREATE_FAILED'
+        );
+      }
+    });
+}
 
 
   private updateStudent(): void {
