@@ -26,13 +26,16 @@
     "NEW_PASSWORD_PLACEHOLDER": "Enter your new password",
     "CONFIRM_PASSWORD": "Confirm Password",
     "CONFIRM_PASSWORD_PLACEHOLDER": "Re-enter your new password",
+    "LOADING": "Changing password...",
     "BUTTON": "Change Password",
-    "REQUIRED": "Please fill in all fields",
-    "PASSWORD_MISMATCH": "Passwords do not match",
+
+    "REQUIRED": "Please fill in all fields.",
     "SAME_PASSWORD": "You cannot use your current password as your new password.",
-    "ERROR": "Current password is incorrect",
-    "LOADING": "Changing password..."
+    "MIN_LENGTH": "The new password must be at least 8 characters long.",
+    "PASSWORD_MISMATCH": "The new password and confirm password fields do not match."
   },
+
+  
   "SIDEBAR": {
     "MENU": "Main Menu",
     "DASHBOARD": "Dashboard",
@@ -120,7 +123,6 @@
     "ACADEMIC_INFORMATION": "Academic Information",
     "TIMETABLE": "Timetable"
   },
-
 
   "STUDENTS": {
     "TITLE": "Students",
@@ -365,14 +367,11 @@
     }
   },
 
-  
   "SHARED": {
-  "ACTION_RESULT": {
-    "SUCCESS": "Success",
-    "ERROR": "Error",
-    "OK": "OK"
+    "ACTION_RESULT": {
+      "SUCCESS": "Success",
+      "ERROR": "Error",
+      "OK": "OK"
+    }
   }
-}
-
-
 }

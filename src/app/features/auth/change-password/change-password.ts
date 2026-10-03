@@ -4,10 +4,15 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Auth } from '../../../core/services/auth';
 import { User } from '../../../core/services/user';
 import { ChangePasswordRequest } from '../../../core/models/change-password-request';
+import { ApiMessageService } from '../../../core/services/api-message';
+import { ActionResult } from '../../../shared/services/action-result';
+
+const MIN_PASSWORD_LENGTH = 8;
 
 @Component({
   selector: 'app-change-password',
@@ -25,6 +30,8 @@ export class ChangePassword {
   private auth = inject(Auth);
   private user = inject(User);
   private router = inject(Router);
+  private apiMessageService = inject(ApiMessageService);
+  private actionResult = inject(ActionResult);
 
   private dialogRef = inject(
     MatDialogRef<ChangePassword>,
@@ -60,49 +67,52 @@ export class ChangePassword {
   }
 
 
-  onSubmit() {
+  // أخطاء الفورم (قبل إرسال الطلب) بترتيب الأولوية
+  private validate(): string | null {
 
-    this.errorMessage.set('');
-
-
-    // 1. التأكد من تعبئة جميع الحقول
-
+    // 1. تعبئة جميع الحقول
     if (
       !this.currentPassword ||
       !this.newPassword ||
       !this.confirmPassword
     ) {
-
-      this.errorMessage.set(
-        'CHANGE_PASSWORD.REQUIRED'
-      );
-
-      return;
-
+      return 'CHANGE_PASSWORD.REQUIRED';
     }
 
-
-    // 2. منع استخدام كلمة المرور الحالية ككلمة مرور جديدة
-
+    // 2. كلمة المرور الجديدة يجب ألا تكون نفس الحالية
     if (this.currentPassword === this.newPassword) {
+      return 'CHANGE_PASSWORD.SAME_PASSWORD';
+    }
 
-      this.errorMessage.set(
-        'CHANGE_PASSWORD.SAME_PASSWORD'
-      );
+    // 3. طول كلمة المرور الجديدة 8 أو أكثر
+    if (this.newPassword.length < MIN_PASSWORD_LENGTH) {
+      return 'CHANGE_PASSWORD.MIN_LENGTH';
+    }
 
+    // 4. تطابق New Password مع Confirm Password
+    if (this.newPassword !== this.confirmPassword) {
+      return 'CHANGE_PASSWORD.PASSWORD_MISMATCH';
+    }
+
+    return null;
+  }
+
+
+  onSubmit() {
+
+    const validationError = this.validate();
+
+    this.errorMessage.set(validationError ?? '');
+
+    if (validationError) {
       return;
-
     }
 
 
     const data: ChangePasswordRequest = {
-
       currentPassword: this.currentPassword,
-
       newPassword: this.newPassword,
-
       confirmPassword: this.confirmPassword
-
     };
 
 
@@ -118,8 +128,8 @@ export class ChangePassword {
 
         if (!response.success || !response.data) {
 
-          this.errorMessage.set(
-            'CHANGE_PASSWORD.ERROR'
+          this.actionResult.error(
+            this.apiMessageService.getMessage(response)
           );
 
           return;
@@ -135,64 +145,29 @@ export class ChangePassword {
 
           this.dialogRef.close(true);
 
-          return;
+        } else {
+
+          // إذا كان المكون مفتوحًا كصفحة
+          this.router.navigate(['/dashboard']);
 
         }
 
 
-        // إذا كان المكون مفتوحًا كصفحة
-        this.router.navigate(['/dashboard']);
+        this.actionResult.success(
+          this.apiMessageService.getMessage(response)
+        );
 
       },
 
 
-      error: (error) => {
+      error: error => {
+        console.error('Change password error:', error);
 
         this.isLoading.set(false);
 
-
-        console.error(
-          'Change password error:',
-          error
+        this.actionResult.error(
+          this.apiMessageService.getErrorMessage(error)
         );
-
-
-        // 3. كلمة المرور الحالية غير صحيحة
-
-        if (
-          error.error?.message ===
-          'Current password is incorrect'
-        ) {
-
-          this.errorMessage.set(
-            'CHANGE_PASSWORD.CURRENT_PASSWORD_INCORRECT'
-          );
-
-          return;
-
-        }
-
-
-        // 4. كلمة المرور الجديدة والتأكيد غير متطابقين
-
-        if (
-          error.error?.message ===
-          'Passwords do not match'
-        ) {
-
-          this.errorMessage.set(
-            'CHANGE_PASSWORD.PASSWORD_MISMATCH'
-          );
-
-          return;
-
-        }
-
-
-        this.errorMessage.set(
-          'CHANGE_PASSWORD.ERROR'
-        );
-
       }
 
     });

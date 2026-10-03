@@ -1,10 +1,56 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
 .sidebar {
   width: 260px;
   height: 100vh;
 
   box-sizing: border-box;
 
-  background: #182238;
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      #33466f 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      #2a3a5f 0%,
+      transparent 40%
+    ),
+    linear-gradient(
+      135deg,
+      #202d49,
+      #172238
+    );
+
+  /* شريط تمرير عمودي عند زيادة المحتوى عن ارتفاع الشاشة */
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* مظهر شريط التمرير (Firefox) */
+  scrollbar-width: thin;
+  scrollbar-color: #475569 transparent;
+}
+
+/* مظهر شريط التمرير (Chrome / Edge / Safari) */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 
@@ -15,7 +61,7 @@
 .sidebar-header {
   font-size: 15px;
   padding: 20px;
-  margin-bottom: 33px;
+  margin-bottom: 10px;
 
   font-size: 14px;
   font-weight: 600;
@@ -72,7 +118,8 @@
    ============================== */
 
 .menu-item:hover {
-  background: #464d5d;
+  background: #4f5b77;
+  color: #e4e9ee;
 }
 
 
@@ -81,7 +128,7 @@
    ============================== */
 
 .menu-item.active {
-  background: #133570;
+  background: #2554a4;
   color: #ffffff;
 }
 
