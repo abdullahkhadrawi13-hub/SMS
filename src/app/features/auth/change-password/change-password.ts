@@ -32,6 +32,9 @@ export class ChangePassword {
   );
 
 
+  // true عند الفتح من الـ navbar (Dialog)، false عند الفتح كصفحة (أول تسجيل دخول)
+  isDialog = !!this.dialogRef;
+
   passwordVisibility = [
     signal(false),
     signal(false),

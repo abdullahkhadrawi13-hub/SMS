@@ -42,7 +42,8 @@ export class Navbar {
     this.dialog.open(ChangePassword, {
       width: '500px',
       maxWidth: '95vw',
-      autoFocus: false
+      autoFocus: false,
+      panelClass: 'change-password-dialog'
     });
   }
 }

@@ -93,3 +93,11 @@
   margin-right: 6px;
 
 }
+
+
+
+/* Change Password dialog: نفس تدوير زوايا بطاقة تسجيل الدخول (16px) */
+.change-password-dialog {
+  --mat-dialog-container-shape: 16px;
+  --mdc-dialog-container-shape: 16px;
+}

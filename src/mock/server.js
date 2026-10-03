@@ -5,7 +5,7 @@ const studentsRoutes = require('./routes/students.routes');
 const sectionsRoutes = require('./routes/sections.routes');
 const schoolClassesRoutes = require('./routes/school-classes.routes');
 
-const PORT = 5253;
+const PORT = 3000//5253;
 
 const server = http.createServer((req, res) => {
 
