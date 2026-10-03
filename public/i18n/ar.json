@@ -357,32 +357,6 @@
     }
   },
 
-  "CLASS_FORM": {
-    "SETTINGS_TITLE": "إعدادات الصفوف",
-
-    "ADD_SECTION_TITLE": "إضافة صف",
-
-    "CLASS_NAME_AR": "اسم الصف بالعربي",
-    "CLASS_NAME_AR_PLACEHOLDER": "أدخل اسم الصف بالعربي",
-    "CLASS_NAME_AR_REQUIRED": "يرجى إدخال اسم الصف بالعربي",
-
-    "CLASS_NAME_EN": "اسم الصف بالإنجليزي",
-    "CLASS_NAME_EN_PLACEHOLDER": "أدخل اسم الصف بالإنجليزي",
-    "CLASS_NAME_EN_REQUIRED": "يرجى إدخال اسم الصف بالإنجليزي",
-
-    "CLASS_MAX_LENGTH": "اسم الصف يجب ألا يتجاوز 100 حرف",
-
-    "IS_GRADUATION_CLASS": "صف التخرج",
-
-    "ADD": "إضافة",
-
-    "DISABLE_SECTION_TITLE": "تعطيل صف",
-    "SELECT_CLASS": "اختر الصف",
-    "SELECT_CLASS_REQUIRED": "يرجى اختيار الصف",
-    "DISABLE": "تعطيل",
-
-    "CANCEL": "إلغاء"
-  },
 
 "SHARED": {
   "ACTION_RESULT": {
@@ -391,10 +365,6 @@
     "OK": "موافق"
   }
 }
-
-
-
-
 
 
 }

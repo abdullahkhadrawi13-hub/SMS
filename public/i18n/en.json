@@ -365,34 +365,7 @@
     }
   },
 
-  "CLASS_FORM": {
-    "SETTINGS_TITLE": "Class Settings",
-
-    "ADD_SECTION_TITLE": "Add Class",
-
-    "CLASS_NAME_AR": "Class Name in Arabic",
-    "CLASS_NAME_AR_PLACEHOLDER": "Enter class name in Arabic",
-    "CLASS_NAME_AR_REQUIRED": "Please enter the class name in Arabic",
-
-    "CLASS_NAME_EN": "Class Name in English",
-    "CLASS_NAME_EN_PLACEHOLDER": "Enter class name in English",
-    "CLASS_NAME_EN_REQUIRED": "Please enter the class name in English",
-
-    "CLASS_MAX_LENGTH": "Class name must not exceed 100 characters",
-
-    "IS_GRADUATION_CLASS": "Graduation Class",
-
-    "ADD": "Add",
-
-    "DISABLE_SECTION_TITLE": "Disable Class",
-    "SELECT_CLASS": "Select Class",
-    "SELECT_CLASS_REQUIRED": "Please select a class",
-    "DISABLE": "Disable",
-
-    "CANCEL": "Cancel"
-  },
-
-
+  
   "SHARED": {
   "ACTION_RESULT": {
     "SUCCESS": "Success",
@@ -402,12 +375,4 @@
 }
 
 
-
-
-
-
-
-
-
-  
 }
