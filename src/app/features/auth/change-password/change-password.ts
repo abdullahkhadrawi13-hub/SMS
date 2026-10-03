@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 import { Auth } from '../../../core/services/auth';
@@ -25,95 +26,174 @@ export class ChangePassword {
   private user = inject(User);
   private router = inject(Router);
 
+  private dialogRef = inject(
+    MatDialogRef<ChangePassword>,
+    { optional: true }
+  );
+
+
   passwordVisibility = [
     signal(false),
     signal(false),
     signal(false)
   ];
 
+
   currentPassword = '';
   newPassword = '';
   confirmPassword = '';
 
+
   errorMessage = signal('');
   isLoading = signal(false);
 
+
   togglePassword(index: number) {
-    this.passwordVisibility[index].update(value => !value);
+
+    this.passwordVisibility[index].update(
+      value => !value
+    );
+
   }
+
 
   onSubmit() {
 
-  this.errorMessage.set('');
+    this.errorMessage.set('');
 
-  // 1. التأكد من تعبئة جميع الحقول
-  if (
-    !this.currentPassword ||
-    !this.newPassword ||
-    !this.confirmPassword
-  ) {
-    this.errorMessage.set('CHANGE_PASSWORD.REQUIRED');
-    return;
-  }
 
-  // 2. منع استخدام كلمة المرور الحالية ككلمة مرور جديدة
-  if (this.currentPassword === this.newPassword) {
-    this.errorMessage.set('CHANGE_PASSWORD.SAME_PASSWORD');
-    return;
-  }
+    // 1. التأكد من تعبئة جميع الحقول
 
-  const data: ChangePasswordRequest = {
-    currentPassword: this.currentPassword,
-    newPassword: this.newPassword,
-    confirmPassword: this.confirmPassword
-  };
+    if (
+      !this.currentPassword ||
+      !this.newPassword ||
+      !this.confirmPassword
+    ) {
 
-  this.isLoading.set(true);
+      this.errorMessage.set(
+        'CHANGE_PASSWORD.REQUIRED'
+      );
 
-  this.auth.changePassword(data).subscribe({
+      return;
 
-    next: (response) => {
-
-      this.isLoading.set(false);
-
-      if (!response.success || !response.data) {
-        this.errorMessage.set('CHANGE_PASSWORD.ERROR');
-        return;
-      }
-
-      this.user.setUser(response.data);
-
-      this.router.navigate(['/dashboard']);
-    },
-
-    error: (error) => {
-
-      this.isLoading.set(false);
-
-      console.error('Change password error:', error);
-
-      // 3. كلمة المرور الحالية غير صحيحة
-      if (
-        error.error?.message === 'Current password is incorrect'
-      ) {
-        this.errorMessage.set(
-          'CHANGE_PASSWORD.CURRENT_PASSWORD_INCORRECT'
-        );
-        return;
-      }
-
-      // 4. كلمة المرور الجديدة والتأكيد غير متطابقين
-      if (
-        error.error?.message === 'Passwords do not match'
-      ) {
-        this.errorMessage.set(
-          'CHANGE_PASSWORD.PASSWORD_MISMATCH'
-        );
-        return;
-      }
-
-      this.errorMessage.set('CHANGE_PASSWORD.ERROR');
     }
-  });
-}
+
+
+    // 2. منع استخدام كلمة المرور الحالية ككلمة مرور جديدة
+
+    if (this.currentPassword === this.newPassword) {
+
+      this.errorMessage.set(
+        'CHANGE_PASSWORD.SAME_PASSWORD'
+      );
+
+      return;
+
+    }
+
+
+    const data: ChangePasswordRequest = {
+
+      currentPassword: this.currentPassword,
+
+      newPassword: this.newPassword,
+
+      confirmPassword: this.confirmPassword
+
+    };
+
+
+    this.isLoading.set(true);
+
+
+    this.auth.changePassword(data).subscribe({
+
+      next: (response) => {
+
+        this.isLoading.set(false);
+
+
+        if (!response.success || !response.data) {
+
+          this.errorMessage.set(
+            'CHANGE_PASSWORD.ERROR'
+          );
+
+          return;
+
+        }
+
+
+        this.user.setUser(response.data);
+
+
+        // إذا كان المكون مفتوحًا داخل Dialog
+        if (this.dialogRef) {
+
+          this.dialogRef.close(true);
+
+          return;
+
+        }
+
+
+        // إذا كان المكون مفتوحًا كصفحة
+        this.router.navigate(['/dashboard']);
+
+      },
+
+
+      error: (error) => {
+
+        this.isLoading.set(false);
+
+
+        console.error(
+          'Change password error:',
+          error
+        );
+
+
+        // 3. كلمة المرور الحالية غير صحيحة
+
+        if (
+          error.error?.message ===
+          'Current password is incorrect'
+        ) {
+
+          this.errorMessage.set(
+            'CHANGE_PASSWORD.CURRENT_PASSWORD_INCORRECT'
+          );
+
+          return;
+
+        }
+
+
+        // 4. كلمة المرور الجديدة والتأكيد غير متطابقين
+
+        if (
+          error.error?.message ===
+          'Passwords do not match'
+        ) {
+
+          this.errorMessage.set(
+            'CHANGE_PASSWORD.PASSWORD_MISMATCH'
+          );
+
+          return;
+
+        }
+
+
+        this.errorMessage.set(
+          'CHANGE_PASSWORD.ERROR'
+        );
+
+      }
+
+    });
+
+  }
+
 }

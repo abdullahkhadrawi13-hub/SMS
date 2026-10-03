@@ -13,46 +13,79 @@ export class User {
 
   readonly user = this.currentUser.asReadonly();
 
+
   setUser(user: LoginResponse): void {
+
     this.currentUser.set(user);
 
-    localStorage.setItem(
+    sessionStorage.setItem(
       'user',
       JSON.stringify(user)
     );
+
+    sessionStorage.setItem(
+      'token',
+      user.token
+    );
+
   }
+
 
   clearUser(): void {
+
     this.currentUser.set(null);
 
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
+
+    sessionStorage.removeItem('token');
+
   }
+
 
   getUser(): LoginResponse | null {
+
     return this.currentUser();
+
   }
+
 
   getRole(): number | null {
+
     return this.currentUser()?.role ?? null;
+
   }
 
+
   mustChangePassword(): boolean {
+
     return this.currentUser()?.mustChangePassword ?? false;
+
   }
+
 
   private getStoredUser(): LoginResponse | null {
 
-    const storedUser = localStorage.getItem('user');
+    const storedUser = sessionStorage.getItem('user');
 
     if (!storedUser) {
+
       return null;
+
     }
 
     try {
+
       return JSON.parse(storedUser) as LoginResponse;
+
     } catch {
-      localStorage.removeItem('user');
+
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('token');
+
       return null;
+
     }
+
   }
+
 }

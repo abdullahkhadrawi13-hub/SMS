@@ -1,36 +1,95 @@
 .navbar {
-  height: 64px;
+
+  height: 71px;
+
   padding: 0 20px;
+
   display: flex;
+
   align-items: center;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+
 }
+
+
+/* ==============================
+   Navbar Brand
+   ============================== */
 
 .navbar-brand {
+
   display: flex;
+
   align-items: center;
+
   gap: 12px;
+
 }
+
+
+/* ==============================
+   Logo
+   ============================== */
 
 .navbar-brand img {
+
   width: 70px;
+
   height: 70px;
+
   object-fit: contain;
+
   border-radius: 8px;
+
 }
+
+
+/* ==============================
+   Title
+   ============================== */
 
 .navbar-brand span {
+
   font-size: 18px;
+
   font-weight: 600;
+
 }
+
+
+/* ==============================
+   Spacer
+   ============================== */
 
 .spacer {
+
   flex: 1;
+
 }
+
+
+/* ==============================
+   User Button
+   ============================== */
 
 .user-button {
+
   margin-left: 8px;
+
 }
 
+
 .user-button mat-icon:first-child {
+
   margin-right: 6px;
+
 }

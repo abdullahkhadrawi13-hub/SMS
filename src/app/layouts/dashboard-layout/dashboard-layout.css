@@ -3,22 +3,57 @@
   height: 100vh;
 
   display: flex;
-  flex-direction: column;
+  overflow: hidden;
+
+  box-sizing: border-box;
 }
 
-.dashboard-container {
-  width: 100%;
-  flex: 1;
-  min-height: 0;
-}
+/* ==============================
+   Sidebar
+   ============================== */
 
 .sidebar-container {
-  width: 240px;
-  max-width: 100%;
+  width: 260px;
+  min-width: 260px;
+  height: 100vh;
+
+  flex-shrink: 0;
+
   box-sizing: border-box;
 }
 
+
+/* ==============================
+   Main Area
+   ============================== */
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+
+/* ==============================
+   Content
+   ============================== */
+
 .content-area {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+
   padding: 24px;
+  
+
   box-sizing: border-box;
+
+  overflow: auto;
 }

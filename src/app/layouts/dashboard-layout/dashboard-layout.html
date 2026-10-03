@@ -1,28 +1,21 @@
-<div class="dashboard-layout">
+<div class="dashboard-layout" [dir]="languageService.getDirection()">
 
-  <app-navbar></app-navbar>
+  <!-- Sidebar -->
+  <aside class="sidebar-container">
+    <app-sidebar></app-sidebar>
+  </aside>
 
-  <mat-sidenav-container
-    class="dashboard-container"
-    [dir]="languageService.getDirection()">
+  <!-- Main Area -->
+  <div class="main-area">
 
-    <mat-sidenav
-      mode="side"
-      opened
-      class="sidebar-container">
+    <!-- Navbar -->
+    <app-navbar></app-navbar>
 
-      <app-sidebar></app-sidebar>
+    <!-- Content -->
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
 
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-
-      <main class="content-area">
-        <router-outlet></router-outlet>
-      </main>
-
-    </mat-sidenav-content>
-
-  </mat-sidenav-container>
+  </div>
 
 </div>
