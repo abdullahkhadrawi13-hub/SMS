@@ -1,210 +1,354 @@
 const students = require('../data/students');
+const sections = require('../data/sections');
+const schoolClasses = require('../data/school-classes');
+
+
+function sendJson(res, statusCode, body) {
+  res.writeHead(statusCode);
+  res.end(JSON.stringify(body));
+}
+
+
+function getRequestBody(req) {
+  return new Promise((resolve, reject) => {
+
+    let body = '';
+
+    req.on('data', chunk => {
+      body += chunk;
+    });
+
+    req.on('end', () => {
+
+      if (!body) {
+        resolve({});
+        return;
+      }
+
+      try {
+        resolve(JSON.parse(body));
+      } catch (error) {
+        reject(error);
+      }
+
+    });
+
+    req.on('error', reject);
+  });
+}
+
+
+// =====================================================
+// Students Routes
+// =====================================================
 
 function studentsRoutes(req, res) {
+
+  const url = new URL(
+    req.url,
+    `http://${req.headers.host || 'localhost:5253'}`
+  );
+
+  const pathname = url.pathname;
+
+
+  // =====================================================
+  // Only handle Students API
+  // =====================================================
+
+  if (!pathname.startsWith('/api/Students')) {
+    return false;
+  }
+
+
+  // =====================================================
+  // GET /api/Students/{id}
+  // Get student by ID
+  // =====================================================
+
+  const studentIdMatch = pathname.match(
+    /^\/api\/Students\/(\d+)$/
+  );
+
+
+  if (
+    req.method === 'GET' &&
+    studentIdMatch
+  ) {
+
+    const studentId =
+      Number(studentIdMatch[1]);
+
+
+    const student =
+      students.find(
+        item =>
+          item.studentId === studentId
+      );
+
+
+    if (!student) {
+
+      sendJson(res, 404, {
+        success: false,
+        messageAr: 'الطالب غير موجود',
+        messageEn: 'Student not found',
+        data: null
+      });
+
+      return true;
+    }
+
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم جلب بيانات الطالب بنجاح',
+      messageEn: 'Student retrieved successfully',
+      data: student
+    });
+
+    return true;
+  }
+
+
   // =====================================================
   // GET /api/Students
   // Get students with pagination + filters + search
   // =====================================================
 
-  if (req.method === 'GET' && req.url.startsWith('/api/Students')) {
-    const url = new URL(req.url, 'http://localhost:5253');
+  if (
+    req.method === 'GET' &&
+    pathname === '/api/Students'
+  ) {
 
-    // ---------------------------------------------------
-    // Get student by ID
-    // ---------------------------------------------------
+    const pageNumber = Math.max(
+      Number(
+        url.searchParams.get('pageNumber')
+      ) || 1,
+      1
+    );
 
-    const pathParts = url.pathname.split('/').filter(Boolean);
 
-    if (pathParts.length === 3) {
-      const studentId = Number(pathParts[2]);
+    const pageSize = Math.max(
+      Number(
+        url.searchParams.get('pageSize')
+      ) || 10,
+      1
+    );
 
-      const student = students.find((student) => student.studentId === studentId);
 
-      if (!student) {
-        res.writeHead(404);
+    const search =
+      url.searchParams.get('search');
 
-        res.end(
-          JSON.stringify({
-            success: false,
-            message: 'Student not found',
-            data: null,
-          }),
+    const classId =
+      url.searchParams.get('classId');
+
+    const sectionId =
+      url.searchParams.get('sectionId');
+
+    const isActive =
+      url.searchParams.get('isActive');
+
+
+    let filteredStudents =
+      [...students];
+
+
+    // ===================================================
+    // Search
+    // ===================================================
+
+    if (search) {
+
+      const searchValue =
+        search.toLowerCase().trim();
+
+
+      filteredStudents =
+        filteredStudents.filter(student => {
+
+          const fullNameAr = [
+            student.firstNameAr,
+            student.fatherNameAr,
+            student.grandFatherNameAr,
+            student.familyNameAr
+          ]
+            .filter(Boolean)
+            .join(' ');
+
+
+          const fullNameEn = [
+            student.firstNameEn,
+            student.fatherNameEn,
+            student.grandFatherNameEn,
+            student.familyNameEn
+          ]
+            .filter(Boolean)
+            .join(' ');
+
+
+          const values = [
+
+            student.studentNumber,
+
+            // Arabic name
+            student.firstNameAr,
+            student.fatherNameAr,
+            student.grandFatherNameAr,
+            student.familyNameAr,
+            fullNameAr,
+
+            // English name
+            student.firstNameEn,
+            student.fatherNameEn,
+            student.grandFatherNameEn,
+            student.familyNameEn,
+            fullNameEn,
+
+            // Other fields
+            student.loginId,
+            student.phoneNumber
+          ];
+
+
+          return values.some(
+            value =>
+              String(value)
+                .toLowerCase()
+                .includes(searchValue)
+          );
+
+        });
+    }
+
+
+    // ===================================================
+    // Class filter
+    // ===================================================
+
+    if (classId !== null) {
+
+      filteredStudents =
+        filteredStudents.filter(
+          student =>
+            student.classId ===
+            Number(classId)
         );
+    }
+
+
+    // ===================================================
+    // Section filter
+    // ===================================================
+
+    if (sectionId !== null) {
+
+      filteredStudents =
+        filteredStudents.filter(
+          student =>
+            student.sectionId ===
+            Number(sectionId)
+        );
+    }
+
+
+    // ===================================================
+    // Active / Inactive filter
+    // ===================================================
+
+    if (isActive !== null) {
+
+      if (
+        isActive !== 'true' &&
+        isActive !== 'false'
+      ) {
+
+        sendJson(res, 400, {
+          success: false,
+          messageAr: 'قيمة حالة الطالب غير صالحة',
+          messageEn: 'Invalid student active status',
+          data: null
+        });
 
         return true;
       }
 
-      res.writeHead(200);
 
-      res.end(
-        JSON.stringify({
-          success: true,
-          messageAr: 'تم جلب بيانات الطالب بنجاح',
-          messageEn: 'Student retrieved successfully',
-          data: student,
-        }),
+      const active =
+        isActive === 'true';
+
+
+      filteredStudents =
+        filteredStudents.filter(
+          student =>
+            student.isActive === active
+        );
+    }
+
+
+    // ===================================================
+    // Pagination
+    // ===================================================
+
+    const totalCount =
+      filteredStudents.length;
+
+
+    const totalPages =
+      Math.ceil(
+        totalCount / pageSize
       );
 
-      return true;
-    }
 
-    // ---------------------------------------------------
-    // Pagination
-    // ---------------------------------------------------
+    const startIndex =
+      (pageNumber - 1) * pageSize;
 
-    const pageNumber = Number(url.searchParams.get('pageNumber')) || 1;
 
-    const pageSize = Number(url.searchParams.get('pageSize')) || 10;
-
-    // ---------------------------------------------------
-    // Filters
-    // ---------------------------------------------------
-
-    const search = url.searchParams.get('search');
-
-    const classId = url.searchParams.get('classId');
-
-    const sectionId = url.searchParams.get('sectionId');
-
-    const isActive = url.searchParams.get('isActive');
-
-    let filteredStudents = [...students];
-
-    // ---------------------------------------------------
-    // Search
-    // ---------------------------------------------------
-
-    if (search) {
-      const searchValue = search.toLowerCase().trim();
-
-      filteredStudents = filteredStudents.filter((student) => {
-        const fullNameAr = [
-          student.firstNameAr,
-          student.fatherNameAr,
-          student.grandFatherNameAr,
-          student.familyNameAr,
-        ]
-          .filter(Boolean)
-          .join(' ');
-
-        const fullNameEn = [
-          student.firstNameEn,
-          student.fatherNameEn,
-          student.grandFatherNameEn,
-          student.familyNameEn,
-        ]
-          .filter(Boolean)
-          .join(' ');
-
-        const values = [
-          student.studentNumber,
-
-          // Arabic name
-          student.firstNameAr,
-          student.fatherNameAr,
-          student.grandFatherNameAr,
-          student.familyNameAr,
-          fullNameAr,
-
-          // English name
-          student.firstNameEn,
-          student.fatherNameEn,
-          student.grandFatherNameEn,
-          student.familyNameEn,
-          fullNameEn,
-
-          // Other searchable fields
-          student.loginId,
-          student.phoneNumber,
-        ];
-
-        return values.some((value) => String(value).toLowerCase().includes(searchValue));
-      });
-    }
-
-    // ---------------------------------------------------
-    // Class filter
-    // ---------------------------------------------------
-
-    if (classId !== null) {
-      filteredStudents = filteredStudents.filter((student) => student.classId === Number(classId));
-    }
-
-    // ---------------------------------------------------
-    // Section filter
-    // ---------------------------------------------------
-
-    if (sectionId !== null) {
-      filteredStudents = filteredStudents.filter(
-        (student) => student.sectionId === Number(sectionId),
+    const items =
+      filteredStudents.slice(
+        startIndex,
+        startIndex + pageSize
       );
-    }
 
-    // ---------------------------------------------------
-    // Active filter
-    // ---------------------------------------------------
 
-    if (isActive !== null) {
-      const active = isActive === 'true';
-
-      filteredStudents = filteredStudents.filter((student) => student.isActive === active);
-    }
-
-    // ---------------------------------------------------
-    // Pagination
-    // ---------------------------------------------------
-
-    const totalCount = filteredStudents.length;
-
-    const totalPages = Math.ceil(totalCount / pageSize);
-
-    const startIndex = (pageNumber - 1) * pageSize;
-
-    const items = filteredStudents.slice(startIndex, startIndex + pageSize);
-
-    // ---------------------------------------------------
+    // ===================================================
     // Response
-    // ---------------------------------------------------
+    // ===================================================
 
-    res.writeHead(200);
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم جلب الطلاب بنجاح',
+      messageEn: 'Students retrieved successfully',
 
-    res.end(
-      JSON.stringify({
-        success: true,
-        messageAr: 'تم جلب الطلاب بنجاح',
-        messageEn: 'Students retrieved successfully',
-        data: {
-          items,
-          totalCount,
-          pageNumber,
-          pageSize,
-          totalPages,
-        },
-      }),
-    );
+      data: {
+        items,
+        totalCount,
+        pageNumber,
+        pageSize,
+        totalPages
+      }
+    });
 
     return true;
   }
+
 
   // =====================================================
   // POST /api/Students
   // Create student
   // =====================================================
 
-  if (req.method === 'POST' && req.url === '/api/Students') {
-    let body = '';
+  if (
+    req.method === 'POST' &&
+    pathname === '/api/Students'
+  ) {
 
-    req.on('data', (chunk) => {
-      body += chunk;
-    });
+    getRequestBody(req)
+      .then(data => {
 
-    req.on('end', () => {
-      try {
-        const data = JSON.parse(body);
-
-        // -----------------------------------------------
-        // Basic validation
-        // -----------------------------------------------
+        // -------------------------------------------------
+        // Required fields
+        // -------------------------------------------------
 
         if (
           !data.firstNameAr ||
@@ -218,298 +362,607 @@ function studentsRoutes(req, res) {
           !data.loginId ||
           !data.temporaryPassword ||
           !data.phoneNumber ||
-          !data.classId ||
-          !data.sectionId
+          data.classId === undefined ||
+          data.sectionId === undefined
         ) {
-          res.writeHead(400);
 
-          res.end(
-            JSON.stringify({
-              success: false,
-              message: 'Required fields are missing',
-              data: null,
-            }),
-          );
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'جميع الحقول المطلوبة يجب إدخالها',
+            messageEn: 'All required fields must be provided',
+            data: null
+          });
 
           return;
         }
 
-        // -----------------------------------------------
-        // Check duplicate login ID
-        // -----------------------------------------------
 
-        const existingStudent = students.find((student) => student.loginId === data.loginId);
+        const numericClassId =
+          Number(data.classId);
+
+        const numericSectionId =
+          Number(data.sectionId);
+
+
+        // -------------------------------------------------
+        // Validate class
+        // -------------------------------------------------
+
+        const schoolClass =
+          schoolClasses.find(
+            item =>
+              item.schoolClassId ===
+              numericClassId
+          );
+
+
+        if (!schoolClass) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'الصف غير موجود',
+            messageEn: 'School class not found',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // Validate section
+        // -------------------------------------------------
+
+        const section =
+          sections.find(
+            item =>
+              item.sectionId ===
+              numericSectionId
+          );
+
+
+        if (!section) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'الشعبة غير موجودة',
+            messageEn: 'Section not found',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // Validate class / section relationship
+        // -------------------------------------------------
+
+        if (
+          section.classId !==
+          numericClassId
+        ) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'الشعبة لا تتبع الصف المحدد',
+            messageEn:
+              'The selected section does not belong to the selected class',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // Check duplicate Login ID
+        // -------------------------------------------------
+
+        const existingStudent =
+          students.find(
+            student =>
+              student.loginId ===
+              data.loginId
+          );
+
 
         if (existingStudent) {
-          res.writeHead(409);
 
-          res.end(
-            JSON.stringify({
-              success: false,
-              message: 'Login ID already exists',
-              data: null,
-            }),
-          );
+          sendJson(res, 409, {
+            success: false,
+            messageAr: 'رقم الدخول مستخدم مسبقًا',
+            messageEn: 'Login ID already exists',
+            data: null
+          });
 
           return;
         }
 
-        // -----------------------------------------------
+
+        // -------------------------------------------------
         // Generate IDs
-        // -----------------------------------------------
+        // -------------------------------------------------
 
         const newStudentId =
-          students.length > 0 ? Math.max(...students.map((student) => student.studentId)) + 1 : 1;
+          students.length > 0
+            ? Math.max(
+                ...students.map(
+                  student =>
+                    student.studentId
+                )
+              ) + 1
+            : 1;
+
 
         const newUserId =
-          students.length > 0 ? Math.max(...students.map((student) => student.userId)) + 1 : 11;
+          students.length > 0
+            ? Math.max(
+                ...students.map(
+                  student =>
+                    student.userId
+                )
+              ) + 1
+            : 11;
 
-        const newStudentNumber = `STU${String(newStudentId).padStart(3, '0')}`;
 
-        // -----------------------------------------------
+        const newStudentNumber =
+          `STU${String(newStudentId).padStart(3, '0')}`;
+
+
+        // -------------------------------------------------
         // Create student
-        // -----------------------------------------------
+        // -------------------------------------------------
 
         const newStudent = {
-          studentId: newStudentId,
 
-          studentNumber: newStudentNumber,
+          studentId:
+            newStudentId,
 
-          userId: newUserId,
+          studentNumber:
+            newStudentNumber,
 
-          firstNameAr: data.firstNameAr,
+          userId:
+            newUserId,
 
-          fatherNameAr: data.fatherNameAr,
+          firstNameAr:
+            data.firstNameAr,
 
-          grandFatherNameAr: data.grandFatherNameAr,
+          fatherNameAr:
+            data.fatherNameAr,
 
-          familyNameAr: data.familyNameAr,
+          grandFatherNameAr:
+            data.grandFatherNameAr,
 
-          firstNameEn: data.firstNameEn,
+          familyNameAr:
+            data.familyNameAr,
 
-          fatherNameEn: data.fatherNameEn,
+          firstNameEn:
+            data.firstNameEn,
 
-          grandFatherNameEn: data.grandFatherNameEn,
+          fatherNameEn:
+            data.fatherNameEn,
 
-          familyNameEn: data.familyNameEn,
+          grandFatherNameEn:
+            data.grandFatherNameEn,
 
-          loginId: data.loginId,
+          familyNameEn:
+            data.familyNameEn,
 
-          phoneNumber: data.phoneNumber,
+          loginId:
+            data.loginId,
 
-          isActive: true,
+          phoneNumber:
+            data.phoneNumber,
 
-          mustChangePassword: true,
+          isActive:
+            true,
 
-          classId: Number(data.classId),
+          mustChangePassword:
+            true,
 
-          sectionId: Number(data.sectionId),
+          classId:
+            numericClassId,
 
-          role: 3,
+          sectionId:
+            numericSectionId,
+
+          role:
+            3
         };
+
 
         students.push(newStudent);
 
-        res.writeHead(201);
 
-        res.end(
-          JSON.stringify({
-            success: true,
-            messageAr: 'تمت إضافة الطالب بنجاح',
-            messageEn: 'Student created successfully',
-            data: newStudent,
-          }),
-        );
-      } catch {
-        res.writeHead(400);
+        sendJson(res, 201, {
+          success: true,
+          messageAr: 'تمت إضافة الطالب بنجاح',
+          messageEn: 'Student created successfully',
+          data: newStudent
+        });
 
-        res.end(
-          JSON.stringify({
-            success: false,
-            message: 'Invalid request',
-            data: null,
-          }),
-        );
-      }
-    });
+      })
+      .catch(() => {
+
+        sendJson(res, 400, {
+          success: false,
+          messageAr: 'بيانات الطلب غير صالحة',
+          messageEn: 'Invalid request body',
+          data: null
+        });
+
+      });
+
 
     return true;
   }
 
+
   // =====================================================
-  // PUT /api/Students/:id
+  // PUT /api/Students/{id}
   // Update student
   // =====================================================
 
-  if (req.method === 'PUT' && req.url.startsWith('/api/Students/')) {
-    const url = new URL(req.url, 'http://localhost:5253');
+  if (
+    req.method === 'PUT' &&
+    studentIdMatch
+  ) {
 
-    const pathParts = url.pathname.split('/').filter(Boolean);
+    const studentId =
+      Number(studentIdMatch[1]);
 
-    const studentId = Number(pathParts[2]);
 
-    const student = students.find((student) => student.studentId === studentId);
+    const student =
+      students.find(
+        item =>
+          item.studentId ===
+          studentId
+      );
+
 
     if (!student) {
-      res.writeHead(404);
 
-      res.end(
-        JSON.stringify({
-          success: false,
-          message: 'Student not found',
-          data: null,
-        }),
-      );
+      sendJson(res, 404, {
+        success: false,
+        messageAr: 'الطالب غير موجود',
+        messageEn: 'Student not found',
+        data: null
+      });
 
       return true;
     }
 
-    let body = '';
 
-    req.on('data', (chunk) => {
-      body += chunk;
-    });
+    getRequestBody(req)
+      .then(data => {
 
-    req.on('end', () => {
-      try {
-        const data = JSON.parse(body);
+        // -------------------------------------------------
+        // Required fields
+        // -------------------------------------------------
 
-        // -----------------------------------------------
-        // Check duplicate login ID
-        // -----------------------------------------------
+        if (
+          !data.firstNameAr ||
+          !data.fatherNameAr ||
+          !data.grandFatherNameAr ||
+          !data.familyNameAr ||
+          !data.firstNameEn ||
+          !data.fatherNameEn ||
+          !data.grandFatherNameEn ||
+          !data.familyNameEn ||
+          !data.loginId ||
+          !data.phoneNumber ||
+          data.classId === undefined ||
+          data.sectionId === undefined
+        ) {
 
-        const duplicate = students.find(
-          (otherStudent) =>
-            otherStudent.studentId !== studentId && otherStudent.loginId === data.loginId,
-        );
-
-        if (duplicate) {
-          res.writeHead(409);
-
-          res.end(
-            JSON.stringify({
-              success: false,
-              message: 'Login ID already exists',
-              data: null,
-            }),
-          );
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'جميع الحقول المطلوبة يجب إدخالها',
+            messageEn: 'All required fields must be provided',
+            data: null
+          });
 
           return;
         }
 
-        // -----------------------------------------------
-        // Update fields
-        // -----------------------------------------------
 
-        student.firstNameAr = data.firstNameAr;
+        const numericClassId =
+          Number(data.classId);
 
-        student.fatherNameAr = data.fatherNameAr;
+        const numericSectionId =
+          Number(data.sectionId);
 
-        student.grandFatherNameAr = data.grandFatherNameAr;
 
-        student.familyNameAr = data.familyNameAr;
+        // -------------------------------------------------
+        // Validate class
+        // -------------------------------------------------
 
-        student.firstNameEn = data.firstNameEn;
+        const schoolClass =
+          schoolClasses.find(
+            item =>
+              item.schoolClassId ===
+              numericClassId
+          );
 
-        student.fatherNameEn = data.fatherNameEn;
 
-        student.grandFatherNameEn = data.grandFatherNameEn;
+        if (!schoolClass) {
 
-        student.familyNameEn = data.familyNameEn;
-
-        student.loginId = data.loginId;
-
-        student.phoneNumber = data.phoneNumber;
-
-        student.classId = Number(data.classId);
-
-        student.sectionId = Number(data.sectionId);
-
-        // -----------------------------------------------
-        // Response
-        // -----------------------------------------------
-
-        res.writeHead(200);
-
-        res.end(
-          JSON.stringify({
-            success: true,
-            messageAr: 'تم تعديل بيانات الطالب بنجاح',
-            messageEn: 'Student updated successfully',
-            data: student,
-          }),
-        );
-      } catch {
-        res.writeHead(400);
-
-        res.end(
-          JSON.stringify({
+          sendJson(res, 400, {
             success: false,
-            message: 'Invalid request',
-            data: null,
-          }),
-        );
-      }
-    });
+            messageAr: 'الصف غير موجود',
+            messageEn: 'School class not found',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // Validate section
+        // -------------------------------------------------
+
+        const section =
+          sections.find(
+            item =>
+              item.sectionId ===
+              numericSectionId
+          );
+
+
+        if (!section) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'الشعبة غير موجودة',
+            messageEn: 'Section not found',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // Validate class / section relationship
+        // -------------------------------------------------
+
+        if (
+          section.classId !==
+          numericClassId
+        ) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'الشعبة لا تتبع الصف المحدد',
+            messageEn:
+              'The selected section does not belong to the selected class',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // Check duplicate Login ID
+        // -------------------------------------------------
+
+        const duplicate =
+          students.find(
+            otherStudent =>
+              otherStudent.studentId !== studentId &&
+              otherStudent.loginId === data.loginId
+          );
+
+
+        if (duplicate) {
+
+          sendJson(res, 409, {
+            success: false,
+            messageAr: 'رقم الدخول مستخدم مسبقًا',
+            messageEn: 'Login ID already exists',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // Update student
+        // -------------------------------------------------
+
+        student.firstNameAr =
+          data.firstNameAr;
+
+        student.fatherNameAr =
+          data.fatherNameAr;
+
+        student.grandFatherNameAr =
+          data.grandFatherNameAr;
+
+        student.familyNameAr =
+          data.familyNameAr;
+
+
+        student.firstNameEn =
+          data.firstNameEn;
+
+        student.fatherNameEn =
+          data.fatherNameEn;
+
+        student.grandFatherNameEn =
+          data.grandFatherNameEn;
+
+        student.familyNameEn =
+          data.familyNameEn;
+
+
+        student.loginId =
+          data.loginId;
+
+        student.phoneNumber =
+          data.phoneNumber;
+
+
+        student.classId =
+          numericClassId;
+
+        student.sectionId =
+          numericSectionId;
+
+
+        // -------------------------------------------------
+        // Response
+        // -------------------------------------------------
+
+        sendJson(res, 200, {
+          success: true,
+          messageAr: 'تم تعديل بيانات الطالب بنجاح',
+          messageEn: 'Student updated successfully',
+          data: student
+        });
+
+      })
+      .catch(() => {
+
+        sendJson(res, 400, {
+          success: false,
+          messageAr: 'بيانات الطلب غير صالحة',
+          messageEn: 'Invalid request body',
+          data: null
+        });
+
+      });
+
 
     return true;
   }
 
+
   // =====================================================
-  // PATCH /api/Students/:id/status
+  // PATCH /api/Students/{id}/status
   // Activate / Deactivate student
   // =====================================================
 
   if (
-    req.method === 'PATCH' &&
-    req.url.startsWith('/api/Students/') &&
-    req.url.endsWith('/status')
+    req.method === 'PATCH'
   ) {
-    const url = new URL(req.url, 'http://localhost:5253');
 
-    const pathParts = url.pathname.split('/').filter(Boolean);
+    const pathParts =
+      pathname.split('/').filter(Boolean);
 
-    const studentId = Number(pathParts[2]);
 
-    const isActive = url.searchParams.get('isActive');
+    // Expected:
+    // /api/Students/{id}/status
 
-    const student = students.find((student) => student.studentId === studentId);
+    if (
+      pathParts.length !== 4 ||
+      pathParts[0] !== 'api' ||
+      pathParts[1] !== 'Students' ||
+      pathParts[3] !== 'status'
+    ) {
+
+      return false;
+    }
+
+
+    const studentId =
+      Number(pathParts[2]);
+
+
+    const student =
+      students.find(
+        item =>
+          item.studentId ===
+          studentId
+      );
+
 
     if (!student) {
-      res.writeHead(404);
 
-      res.end(
-        JSON.stringify({
-          success: false,
-          message: 'Student not found',
-          data: null,
-        }),
-      );
+      sendJson(res, 404, {
+        success: false,
+        messageAr: 'الطالب غير موجود',
+        messageEn: 'Student not found',
+        data: null
+      });
 
       return true;
     }
 
-    student.isActive = isActive === 'true';
 
-    res.writeHead(200);
+    // -------------------------------------------------
+    // Validate isActive
+    // -------------------------------------------------
 
-    res.end(
-      JSON.stringify({
-        success: true,
-        messageAr: student.isActive ? 'تم تفعيل الطالب بنجاح' : 'تم تعطيل الطالب بنجاح',
+    const isActive =
+      url.searchParams.get('isActive');
 
-        messageEn: student.isActive
+
+    if (
+      isActive !== 'true' &&
+      isActive !== 'false'
+    ) {
+
+      sendJson(res, 400, {
+        success: false,
+        messageAr: 'قيمة حالة الطالب غير صالحة',
+        messageEn: 'Invalid student active status',
+        data: null
+      });
+
+      return true;
+    }
+
+
+    // -------------------------------------------------
+    // Update status
+    // -------------------------------------------------
+
+    student.isActive =
+      isActive === 'true';
+
+
+    // -------------------------------------------------
+    // Response
+    // -------------------------------------------------
+
+    sendJson(res, 200, {
+      success: true,
+
+      messageAr:
+        student.isActive
+          ? 'تم تفعيل الطالب بنجاح'
+          : 'تم تعطيل الطالب بنجاح',
+
+      messageEn:
+        student.isActive
           ? 'Student activated successfully'
           : 'Student deactivated successfully',
 
-        data: student,
-      }),
-    );
+      data: student
+    });
 
     return true;
   }
 
-  return false;
+
+  // =====================================================
+  // Unknown Students endpoint
+  // =====================================================
+
+  sendJson(res, 404, {
+    success: false,
+    messageAr: 'نقطة النهاية غير موجودة',
+    messageEn: 'Student endpoint not found',
+    data: null
+  });
+
+  return true;
 }
+
 
 module.exports = studentsRoutes;

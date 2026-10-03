@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 
 import { roleGuard } from '../../core/guards/role-guard';
 
-export const STUDENT_ROUTES: Routes = [
+export const STUDENTS_ROUTES: Routes = [
 
   // /students
   {
     path: '',
     loadComponent: () =>
-      import('./student-list/student-list')
-        .then(m => m.StudentList)
+      import('./students-page/students-page')
+        .then(m => m.StudentsPage)
   },
 
   // /students/new

@@ -3,6 +3,7 @@ const http = require('http');
 const authRoutes = require('./routes/auth.routes');
 const studentsRoutes = require('./routes/students.routes');
 const sectionsRoutes = require('./routes/sections.routes');
+const schoolClassesRoutes = require('./routes/school-classes.routes');
 
 const PORT = 5253;
 
@@ -72,6 +73,19 @@ const server = http.createServer((req, res) => {
   if (sectionsRoutes(req, res)) {
     return;
   }
+
+
+
+    // =========================
+  // School Classes API
+  // =========================
+
+  if (schoolClassesRoutes(req, res)) {
+    return;
+  }
+
+
+  
 
 
   // =========================

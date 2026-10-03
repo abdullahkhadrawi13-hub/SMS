@@ -50,7 +50,7 @@ import {
 
 
 @Component({
-  selector: 'app-student-list',
+  selector: 'app-students-page',
 
   imports: [
     CommonModule,
@@ -68,11 +68,10 @@ import {
     TranslatePipe
   ],
 
-  templateUrl: './student-list.html',
-
-  styleUrl: './student-list.css'
+  templateUrl: './students-page.html',
+styleUrl: './students-page.css'
 })
-export class StudentList {
+export class StudentsPage {
 
   private readonly studentsService = inject(Students);
 

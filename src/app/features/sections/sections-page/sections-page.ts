@@ -32,7 +32,7 @@ import { ApiMessageService } from '../../../core/services/api-message';
 import { ActionResult } from '../../../shared/services/action-result';
 
 @Component({
-  selector: 'app-section-list',
+  selector: 'app-sections-page',
   imports: [
     MatButtonModule,
     MatIconModule,
@@ -42,10 +42,10 @@ import { ActionResult } from '../../../shared/services/action-result';
     MatDialogModule,
     TranslatePipe
   ],
-  templateUrl: './section-list.html',
-  styleUrl: './section-list.css'
+  templateUrl: './sections-page.html',
+styleUrl: './sections-page.css'
 })
-export class SectionList {
+export class SectionsPage {
 
   private readonly dialog = inject(MatDialog);
   private readonly sectionsService = inject(SectionsService);

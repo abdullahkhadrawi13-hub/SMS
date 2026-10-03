@@ -28,7 +28,21 @@ const students = [
   }
 ];
 
+const classSections = {
+  1: [1, 2, 3],
+  2: [4, 5, 6],
+  3: [7, 8, 9],
+  4: [10, 11, 12],
+  5: [13, 14],
+  6: [15, 16]
+};
+
 for (let i = 2; i <= 73; i++) {
+  const classId = ((i - 2) % 6) + 1;
+
+  const sections = classSections[classId];
+  const sectionId = sections[(Math.floor((i - 2) / 6)) % sections.length];
+
   students.push({
     studentId: i,
     studentNumber: `STU${String(i).padStart(3, '0')}`,
@@ -51,8 +65,8 @@ for (let i = 2; i <= 73; i++) {
     isActive: true,
     mustChangePassword: false,
 
-    classId: (i % 3) + 1,
-    sectionId: (i % 2) + 1,
+    classId,
+    sectionId,
 
     role: 3
   });

@@ -59,15 +59,15 @@ export const routes: Routes = [
           roles: [0, 1, 2]
         },
         loadChildren: () =>
-          import('./features/students/student.routes')
-            .then(m => m.STUDENT_ROUTES)
+          import('./features/students/students.routes')
+            .then(m => m.STUDENTS_ROUTES)
       },
 
       {
         path: 'classes',
         loadChildren: () =>
-          import('./features/classes/class.routes')
-            .then(m => m.CLASS_ROUTES),
+          import('./features/classes/classes.routes')
+            .then(m => m.CLASSES_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
           roles: [0, 1, 2]
@@ -77,8 +77,8 @@ export const routes: Routes = [
       {
         path: 'sections',
         loadChildren: () =>
-          import('./features/sections/section.routes')
-            .then(m => m.SECTION_ROUTES),
+          import('./features/sections/sections.routes')
+            .then(m => m.SECTIONS_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
           roles: [0, 1, 2]
