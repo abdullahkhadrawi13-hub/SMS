@@ -315,8 +315,6 @@
     "DEACTIVATE": "تعطيل",
     "EDIT": "تعديل",
 
-    
-
     "EMPTY": {
       "TITLE": "لا توجد شعب",
       "MESSAGE": "لا توجد شعب دراسية لعرضها حالياً."
@@ -358,14 +356,91 @@
     }
   },
 
+  "SHARED": {
+    "ACTION_RESULT": {
+      "SUCCESS": "نجاح",
+      "ERROR": "خطأ",
+      "OK": "موافق"
+    }
+  },
 
-"SHARED": {
-  "ACTION_RESULT": {
-    "SUCCESS": "نجاح",
-    "ERROR": "خطأ",
-    "OK": "موافق"
+  "TEACHERS": {
+    "HEADER": {
+      "TITLE": "إدارة المدرسين",
+      "SUBTITLE": "إدارة بيانات المدرسين وحساباتهم",
+      "ADD": "إضافة مدرس"
+    },
+
+    "SEARCH": {
+      "LABEL": "بحث",
+      "PLACEHOLDER": "ابحث عن مدرس...",
+      "CLEAR": "مسح البحث",
+      "SUBMIT": "بحث"
+    },
+
+    "FILTER": {
+      "TITLE": "فلترة المدرسين",
+      "STATUS": "الحالة",
+      "ALL": "جميع الحالات",
+      "CLEAR": "إعادة تعيين",
+      "CANCEL": "إلغاء",
+      "APPLY": "تطبيق"
+    },
+
+    "TABLE": {
+      "TEACHER_NUMBER": "رقم المدرس",
+      "NAME": "اسم المدرس",
+      "LOGIN_ID": "اسم المستخدم",
+      "PHONE": "رقم الهاتف",
+      "STATUS": "الحالة",
+      "ACTIONS": "الإجراءات",
+      "VIEW": "عرض",
+      "EDIT": "تعديل",
+      "ACTIVATE": "تفعيل",
+      "DEACTIVATE": "تعطيل",
+      "EMPTY": "لا يوجد مدرسون للعرض",
+      "PAGINATION": "ترقيم صفحات المدرسين"
+    },
+
+    "FORM": {
+      "TITLE": "إضافة مدرس",
+
+      "ARABIC_INFO": "المعلومات العربية",
+      "ENGLISH_INFO": "المعلومات الإنجليزية",
+      "ACCOUNT_INFO": "معلومات الحساب",
+
+      "FIRST_NAME_AR": "الاسم الأول",
+      "FATHER_NAME_AR": "اسم الأب",
+      "GRANDFATHER_NAME_AR": "اسم الجد",
+      "FAMILY_NAME_AR": "اسم العائلة",
+
+      "FIRST_NAME_EN": "الاسم الأول",
+      "FATHER_NAME_EN": "اسم الأب",
+      "GRANDFATHER_NAME_EN": "اسم الجد",
+      "FAMILY_NAME_EN": "اسم العائلة",
+
+      "LOGIN_ID": "اسم المستخدم",
+      "PHONE": "رقم الهاتف",
+
+      "SUBTITLE": "أدخل بيانات المدرس ومعلومات حسابه",
+      "ARABIC_INFO_DESCRIPTION": "أدخل اسم المدرس باللغة العربية",
+      "ENGLISH_INFO_DESCRIPTION": "أدخل اسم المدرس باللغة الإنجليزية",
+      "ACCOUNT_INFO_DESCRIPTION": "أدخل معلومات حساب المدرس",
+
+      "CANCEL": "إلغاء",
+      "SAVE": "حفظ",
+
+      "ERROR": {
+        "REQUIRED": "هذا الحقل مطلوب",
+        "MIN_LENGTH": "يجب أن يحتوي الحقل على حرفين على الأقل",
+        "ARABIC_NAME": "يسمح بالأحرف العربية والمسافات والنقاط والشرطات فقط",
+        "ENGLISH_NAME": "يسمح بالأحرف الإنجليزية والمسافات والنقاط والشرطات فقط",
+        "PHONE": "يجب أن يحتوي رقم الهاتف على 10 أرقام"
+      }
+    },
+
+    "ACTIVE": "نشط",
+    "INACTIVE": "غير نشط",
+    "FILTER_BUTTON": "فلتر"
   }
-}
-
-
 }

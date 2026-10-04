@@ -83,7 +83,20 @@ export const routes: Routes = [
         data: {
           roles: [0, 1, 2]
         }
-      }
+      },
+
+      
+
+      {
+        path: 'teachers',
+        loadChildren: () =>
+          import('./features/teachers/teachers.routes').then(
+            (m) => m.TEACHER_ROUTES
+          ),
+      },
+
+
+
 
       // لاحقًا بنفس الطريقة:
       // teachers, parents, classes, sections, subjects ...

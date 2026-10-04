@@ -1,0 +1,31 @@
+<div class="teachers-page">
+
+  <!-- Page Header -->
+  <app-teacher-header></app-teacher-header>
+
+  <!-- Search and Filter -->
+  <div class="filters-card">
+
+    <div class="search-container">
+
+      <!-- Teacher Search -->
+      <app-teacher-search></app-teacher-search>
+
+      <!-- Teacher Filter -->
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="openFilter()"
+      >
+        <mat-icon>filter_list</mat-icon>
+        {{ 'TEACHERS.FILTER_BUTTON' | translate }}
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Teacher Table -->
+  <app-teacher-table></app-teacher-table>
+
+</div>

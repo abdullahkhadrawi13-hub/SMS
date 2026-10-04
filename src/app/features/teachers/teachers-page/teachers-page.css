@@ -1,0 +1,66 @@
+/* ================================
+   Teachers Page
+   ================================ */
+
+.teachers-page {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* ================================
+   Search and Filter Card
+   ================================ */
+
+.filters-card {
+  padding: 20px;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* Keeps search and filter button on the same row. */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Makes the search area smaller instead of taking all available width. */
+.search-container app-teacher-search {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Keeps the filter button at the same height as the search field. */
+.search-container > button {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-container app-teacher-search {
+    width: 100%;
+  }
+
+  .search-container > button {
+    width: 100%;
+    justify-content: center;
+  }
+}

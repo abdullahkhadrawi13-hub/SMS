@@ -35,7 +35,6 @@
     "PASSWORD_MISMATCH": "The new password and confirm password fields do not match."
   },
 
-  
   "SIDEBAR": {
     "MENU": "Main Menu",
     "DASHBOARD": "Dashboard",
@@ -373,5 +372,85 @@
       "ERROR": "Error",
       "OK": "OK"
     }
+  },
+
+  "TEACHERS": {
+    "HEADER": {
+      "TITLE": "Teacher Management",
+      "SUBTITLE": "Manage teacher information and accounts",
+      "ADD": "Add Teacher"
+    },
+
+    "SEARCH": {
+      "LABEL": "Search",
+      "PLACEHOLDER": "Search for a teacher...",
+      "CLEAR": "Clear search",
+      "SUBMIT": "Search"
+    },
+
+    "FILTER": {
+      "TITLE": "Filter Teachers",
+      "STATUS": "Status",
+      "ALL": "All statuses",
+      "CLEAR": "Reset",
+      "CANCEL": "Cancel",
+      "APPLY": "Apply"
+    },
+
+    "TABLE": {
+      "TEACHER_NUMBER": "Teacher Number",
+      "NAME": "Teacher Name",
+      "LOGIN_ID": "Login ID",
+      "PHONE": "Phone Number",
+      "STATUS": "Status",
+      "ACTIONS": "Actions",
+      "VIEW": "View",
+      "EDIT": "Edit",
+      "ACTIVATE": "Activate",
+      "DEACTIVATE": "Deactivate",
+      "EMPTY": "No teachers to display",
+      "PAGINATION": "Teacher pagination"
+    },
+
+    "FORM": {
+      "TITLE": "Add Teacher",
+
+      "ARABIC_INFO": "Arabic Information",
+      "ENGLISH_INFO": "English Information",
+      "ACCOUNT_INFO": "Account Information",
+
+      "FIRST_NAME_AR": "First Name",
+      "FATHER_NAME_AR": "Father Name",
+      "GRANDFATHER_NAME_AR": "Grandfather Name",
+      "FAMILY_NAME_AR": "Family Name",
+
+      "FIRST_NAME_EN": "First Name",
+      "FATHER_NAME_EN": "Father Name",
+      "GRANDFATHER_NAME_EN": "Grandfather Name",
+      "FAMILY_NAME_EN": "Family Name",
+
+      "LOGIN_ID": "Login ID",
+      "PHONE": "Phone Number",
+
+      "SUBTITLE": "Enter the teacher's information and account details",
+      "ARABIC_INFO_DESCRIPTION": "Enter the teacher's name in Arabic",
+      "ENGLISH_INFO_DESCRIPTION": "Enter the teacher's name in English",
+      "ACCOUNT_INFO_DESCRIPTION": "Enter the teacher's account information",
+
+      "CANCEL": "Cancel",
+      "SAVE": "Save",
+
+      "ERROR": {
+        "REQUIRED": "This field is required",
+        "MIN_LENGTH": "This field must contain at least 2 characters",
+        "ARABIC_NAME": "Only Arabic letters, spaces, dots, and hyphens are allowed",
+        "ENGLISH_NAME": "Only English letters, spaces, dots, and hyphens are allowed",
+        "PHONE": "Phone number must contain exactly 10 digits"
+      }
+    },
+
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "FILTER_BUTTON": "Filter"
   }
 }

@@ -1,0 +1,50 @@
+<!-- Search field -->
+<div class="search-container">
+
+  <!-- Teacher search input -->
+  <mat-form-field
+    appearance="outline"
+    class="search-field"
+  >
+
+    <!-- Search field label -->
+    <mat-label>
+      {{ 'TEACHERS.SEARCH.LABEL' | translate }}
+    </mat-label>
+
+    <!-- Search input -->
+    <input
+      matInput
+      [value]="search()"
+      (input)="search.set($any($event.target).value); searchChange.emit(search())"
+      [placeholder]="'TEACHERS.SEARCH.PLACEHOLDER' | translate"
+      (keyup.enter)="onSearch()"
+    />
+
+    <!-- Clear search button -->
+    @if (search()) {
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="clearSearch()"
+        [attr.aria-label]="'TEACHERS.SEARCH.CLEAR' | translate"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+
+    <!-- Submit search button -->
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="onSearch()"
+      [attr.aria-label]="'TEACHERS.SEARCH.SUBMIT' | translate"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+
+  </mat-form-field>
+
+</div>

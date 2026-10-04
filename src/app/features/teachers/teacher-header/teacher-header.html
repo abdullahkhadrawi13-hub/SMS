@@ -1,0 +1,24 @@
+<div class="page-header">
+
+  <div class="title-section">
+    <h1>
+      {{ 'TEACHERS.HEADER.TITLE' | translate }}
+    </h1>
+
+    <p>
+      {{ 'TEACHERS.HEADER.SUBTITLE' | translate }}
+    </p>
+  </div>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="openTeacherForm()"
+  >
+    <mat-icon>person_add</mat-icon>
+
+    {{ 'TEACHERS.HEADER.ADD' | translate }}
+  </button>
+
+</div>
