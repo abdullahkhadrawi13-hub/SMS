@@ -8,7 +8,7 @@
     [formGroup]="filterForm"
     class="filter-form">
 
-    <!-- Class -->
+    <!-- Class (Active only) -->
     <mat-form-field appearance="outline">
 
       <mat-label>
@@ -16,12 +16,23 @@
       </mat-label>
 
       <mat-select formControlName="classId">
+
+        <mat-option [value]="null">
+          {{ 'SECTIONS.FILTER_DIALOG.ALL' | translate }}
+        </mat-option>
+
+        @for (c of classes(); track c.schoolClassId) {
+          <mat-option [value]="c.schoolClassId">
+            {{ getClassName(c) }}
+          </mat-option>
+        }
+
       </mat-select>
 
     </mat-form-field>
 
 
-    <!-- Section -->
+    <!-- Section (disabled until a class is chosen) -->
     <mat-form-field appearance="outline">
 
       <mat-label>
@@ -29,6 +40,17 @@
       </mat-label>
 
       <mat-select formControlName="sectionId">
+
+        <mat-option [value]="null">
+          {{ 'SECTIONS.FILTER_DIALOG.ALL' | translate }}
+        </mat-option>
+
+        @for (s of sections(); track s.sectionId) {
+          <mat-option [value]="s.sectionId">
+            {{ getSectionName(s) }}
+          </mat-option>
+        }
+
       </mat-select>
 
     </mat-form-field>
@@ -42,12 +64,23 @@
       </mat-label>
 
       <mat-select formControlName="academicYearId">
+
+        <mat-option [value]="null">
+          {{ 'SECTIONS.FILTER_DIALOG.ALL' | translate }}
+        </mat-option>
+
+        @for (y of academicYears(); track y.academicYearId) {
+          <mat-option [value]="y.academicYearId">
+            {{ y.yearName }}
+          </mat-option>
+        }
+
       </mat-select>
 
     </mat-form-field>
 
 
-    <!-- Academic Term -->
+    <!-- Academic Term (disabled until an academic year is chosen) -->
     <mat-form-field appearance="outline">
 
       <mat-label>
@@ -55,6 +88,17 @@
       </mat-label>
 
       <mat-select formControlName="academicTermId">
+
+        <mat-option [value]="null">
+          {{ 'SECTIONS.FILTER_DIALOG.ALL' | translate }}
+        </mat-option>
+
+        @for (t of academicTerms(); track t.academicTermId) {
+          <mat-option [value]="t.academicTermId">
+            {{ getTermName(t) }}
+          </mat-option>
+        }
+
       </mat-select>
 
     </mat-form-field>
