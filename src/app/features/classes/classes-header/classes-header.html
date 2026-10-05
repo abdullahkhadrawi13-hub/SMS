@@ -1,0 +1,26 @@
+<div class="page-header">
+
+  <div class="title-section">
+
+    <h1>
+      {{ 'CLASSES.HEADER.TITLE' | translate }}
+    </h1>
+
+    <p>
+      {{ 'CLASSES.HEADER.SUBTITLE' | translate }}
+    </p>
+
+  </div>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="onAddClass()"
+  >
+    <mat-icon>add</mat-icon>
+
+    {{ 'CLASSES.HEADER.ADD' | translate }}
+  </button>
+
+</div>

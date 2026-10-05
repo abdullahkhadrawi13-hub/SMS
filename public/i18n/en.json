@@ -296,6 +296,14 @@
     "OF": "of"
   },
 
+  "CLASSES": {
+    "HEADER": {
+      "TITLE": "Class Management",
+      "SUBTITLE": "Manage school classes and their settings",
+      "ADD": "Add Class"
+    }
+  },
+
   "SECTIONS": {
     "TITLE": "Section Management",
     "SUBTITLE": "Manage sections",

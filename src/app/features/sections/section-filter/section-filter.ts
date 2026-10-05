@@ -16,7 +16,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 export interface SectionFilterData {
   classId?: number;
   sectionId?: number;
-  isActive?: boolean;
   academicYearId?: number;
   academicTermId?: number;
 }
@@ -55,10 +54,6 @@ export class SectionFilter {
       this.data.sectionId ?? null
     ],
 
-    isActive: [
-      this.data.isActive ?? null
-    ],
-
     academicYearId: [
       this.data.academicYearId ?? null
     ],
@@ -83,7 +78,6 @@ export class SectionFilter {
     this.filterForm.reset({
       classId: null,
       sectionId: null,
-      isActive: null,
       academicYearId: null,
       academicTermId: null
     });

@@ -1,0 +1,20 @@
+/* ================================
+   Classes Page
+   ================================ */
+
+.classes-page {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Page Content
+   ================================ */
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
