@@ -203,6 +203,7 @@ export class SectionFilter {
   }
 
   // Terms of the selected academic year only
+  // (GET /api/academicterms/by-year/{academicYearId})
   private loadAcademicTerms(
     academicYearId: number,
     selectedTermId: number | null = null
@@ -214,7 +215,7 @@ export class SectionFilter {
     termControl.disable({ emitEvent: false });
 
     this.academicTermsService
-      .getAcademicTerms(academicYearId)
+      .getAcademicTermsByYear(academicYearId)
       .pipe(
         catchError(error => {
           console.error('Failed to load academic terms:', error);

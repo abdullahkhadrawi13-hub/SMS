@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
@@ -29,26 +29,29 @@ export class AcademicTermsService {
 
   // GET /api/academicterms
   // Returns all academic terms for lookup lists.
-  getAcademicTerms(
-    academicYearId?: number
+  getAcademicTerms(): Observable<
+    ApiResponse<AcademicTerm[]>
+  > {
+
+    return this.http.get<
+      ApiResponse<AcademicTerm[]>
+    >(this.apiUrl);
+  }
+
+
+  // GET /api/academicterms/by-year/{academicYearId}
+  // Returns only the terms of the given academic year,
+  // ordered by termNumber. Returns an empty array when
+  // the year has no terms (not an error).
+  getAcademicTermsByYear(
+    academicYearId: number
   ): Observable<
     ApiResponse<AcademicTerm[]>
   > {
 
-    let params = new HttpParams();
-
-    // If an academic year is selected,
-    // send it to the backend to get its terms.
-    if (academicYearId !== undefined) {
-      params = params.set(
-        'academicYearId',
-        academicYearId
-      );
-    }
-
     return this.http.get<
       ApiResponse<AcademicTerm[]>
-    >(this.apiUrl, { params });
+    >(`${this.apiUrl}/by-year/${academicYearId}`);
   }
 
 }
