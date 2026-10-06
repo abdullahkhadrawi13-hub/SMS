@@ -35,16 +35,16 @@ export interface StudentDetailsDialogData {
     MatProgressSpinnerModule,
     TranslatePipe
   ],
-  templateUrl: './student-details.html',
-  styleUrl: './student-details.css'
+  templateUrl: './students-details.html',
+  styleUrl: './students-details.css'
 })
-export class StudentDetails {
+export class StudentsDetails {
   private readonly studentsService = inject(Students);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly dialogRef =
-    inject(MatDialogRef<StudentDetails>);
+    inject(MatDialogRef<StudentsDetails>);
 
   readonly direction = signal(document.documentElement.dir);
   readonly student = signal<Student | null>(null);

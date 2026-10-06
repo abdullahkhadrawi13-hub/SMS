@@ -232,6 +232,10 @@ export class SectionFilter {
           return;
         }
 
+        if (!response?.success) {
+          console.warn('Academic terms response:', response);
+        }
+
         const terms = response?.success ? response.data : [];
         this.academicTerms.set(terms);
 

@@ -69,14 +69,14 @@ export interface StudentFormDialogData {
     MatSelectModule,
     TranslatePipe
   ],
-  templateUrl: './student-form.html',
-  styleUrl: './student-form.css'
+  templateUrl: './students-form.html',
+  styleUrl: './students-form.css'
 })
-export class StudentForm {
+export class StudentsForm {
 
   private readonly fb = inject(FormBuilder);
   private readonly studentsService = inject(Students);
-  private readonly dialogRef = inject(MatDialogRef<StudentForm>);
+  private readonly dialogRef = inject(MatDialogRef<StudentsForm>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly language = inject(Language);
 

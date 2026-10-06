@@ -38,14 +38,14 @@ import { ActionResult } from '../../../shared/services/action-result';
 
 import { Student } from '../student';
 
-import { StudentDetails } from '../student-details/student-details';
+import { StudentsDetails } from '../students-details/students-details';
 
-import { StudentForm } from '../student-form/student-form';
+import { StudentsForm } from '../students-form/students-form';
 
 import {
-  StudentFilter,
+  StudentsFilter,
   StudentFilterValues
-} from '../student-filter/student-filter';
+} from '../students-filter/students-filter';
 
 
 
@@ -446,7 +446,7 @@ export class StudentsPage {
     studentId: number
   ): void {
 
-    this.dialog.open(StudentDetails, {
+    this.dialog.open(StudentsDetails, {
 
       width: '850px',
 
@@ -466,7 +466,7 @@ export class StudentsPage {
   openAddStudent(): void {
 
     const dialogRef =
-      this.dialog.open(StudentForm, {
+      this.dialog.open(StudentsForm, {
 
         width: '900px',
 
@@ -497,7 +497,7 @@ export class StudentsPage {
   ): void {
 
     const dialogRef =
-      this.dialog.open(StudentForm, {
+      this.dialog.open(StudentsForm, {
 
         width: '900px',
 
@@ -536,7 +536,7 @@ export class StudentsPage {
     };
 
     this.dialog
-      .open(StudentFilter, {
+      .open(StudentsFilter, {
         width: '420px',
         data: current
       })

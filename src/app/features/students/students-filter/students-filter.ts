@@ -37,12 +37,12 @@ export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
     MatSelectModule,
     TranslatePipe
   ],
-  templateUrl: './student-filter.html',
-  styleUrl: './student-filter.css'
+  templateUrl: './students-filter.html',
+  styleUrl: './students-filter.css'
 })
-export class StudentFilter {
+export class StudentsFilter {
 
-  private readonly dialogRef = inject(MatDialogRef<StudentFilter>);
+  private readonly dialogRef = inject(MatDialogRef<StudentsFilter>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);

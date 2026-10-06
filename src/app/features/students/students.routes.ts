@@ -18,8 +18,8 @@ export const STUDENTS_ROUTES: Routes = [
     canActivate: [roleGuard],
     data: { roles: [0, 1] },
     loadComponent: () =>
-      import('./student-form/student-form')
-        .then(m => m.StudentForm)
+      import('./students-form/students-form')
+        .then(m => m.StudentsForm)
   },
 
   // /students/:id/edit
@@ -28,8 +28,8 @@ export const STUDENTS_ROUTES: Routes = [
     canActivate: [roleGuard],
     data: { roles: [0, 1] },
     loadComponent: () =>
-      import('./student-form/student-form')
-        .then(m => m.StudentForm)
+      import('./students-form/students-form')
+        .then(m => m.StudentsForm)
   }
 
 ];
