@@ -108,10 +108,34 @@ export const routes: Routes = [
       },
 
 
+      {
+        path: 'settings',
+        loadChildren: () =>
+          import('./features/settings/settings.routes')
+            .then(m => m.SETTINGS_ROUTES),
+        canActivate: [authGuard, roleGuard],
+        data: {
+          roles: [0]
+        }
+      },
+
+
 
 
       // لاحقًا بنفس الطريقة:
       // teachers, parents, classes, sections, subjects ...
+
+
+
+
+
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./shared/components/coming-soon/coming-soon')
+            .then(m => m.ComingSoon)
+      }
+
 
     ]
   },

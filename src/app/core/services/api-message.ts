@@ -18,15 +18,25 @@ export class ApiMessageService {
   }
 
   getErrorMessage(error: HttpErrorResponse): string {
-  const response = error.error as {
-    Success: boolean;
-    MessageAr: string;
-    MessageEn: string;
-    Data: null;
-  };
 
-  return this.language.getCurrentLanguage() === 'ar'
-    ? response.MessageAr
-    : response.MessageEn;
-}
+    // Backend errors now use the same camelCase shape as success responses.
+    // 401/403 have no body, so fall back to a generic message.
+
+    const response =
+      error.error as Partial<ApiResponse<unknown>> | null;
+
+    const isArabic =
+      this.language.getCurrentLanguage() === 'ar';
+
+    const message =
+      isArabic
+        ? response?.messageAr
+        : response?.messageEn;
+
+    return message ?? (
+      isArabic
+        ? 'حدث خطأ غير متوقع.'
+        : 'An unexpected error occurred.'
+    );
+  }
 }

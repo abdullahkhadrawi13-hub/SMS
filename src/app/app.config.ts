@@ -2,7 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -21,11 +21,29 @@ export const appConfig: ApplicationConfig = {
 
     provideBrowserGlobalErrorListeners(),
 
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withViewTransitions()
+    ),
 
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideTranslateService({ loader: provideTranslateHttpLoader({ prefix: './i18n/', suffix: '.json' }) }), { provide: Directionality, useClass: AppDirectionality },
-    {provide: MatPaginatorIntl,useClass: PaginatorIntl}
+
+    provideTranslateService({
+      loader: provideTranslateHttpLoader({
+        prefix: './i18n/',
+        suffix: '.json'
+      })
+    }),
+
+    {
+      provide: Directionality,
+      useClass: AppDirectionality
+    },
+
+    {
+      provide: MatPaginatorIntl,
+      useClass: PaginatorIntl
+    }
 
   ]
 };

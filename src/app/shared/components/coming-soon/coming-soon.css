@@ -1,0 +1,97 @@
+.coming-soon {
+  height: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 32px;
+  background: #f5f7fb;
+}
+
+/* Main card */
+.coming-soon-card {
+  width: min(520px, 100%);
+  padding: 48px 40px;
+  text-align: center;
+
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+
+  box-shadow: 0 8px 30px rgba(24, 34, 56, 0.08);
+}
+
+/* Icon */
+.icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #e8f3ff;
+}
+
+.icon-wrapper .material-icons {
+  font-size: 42px;
+  color: #38a8e8;
+}
+
+/* Title */
+.coming-soon-card h1 {
+  margin: 0 0 14px;
+
+  color: #202d49;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* Main message */
+.coming-soon-card p {
+  margin: 0 auto;
+  max-width: 420px;
+
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* Divider */
+.divider {
+  width: 60px;
+  height: 3px;
+  margin: 26px auto 18px;
+
+  border-radius: 10px;
+  background: #38a8e8;
+}
+
+/* Small message */
+.sub-message {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .coming-soon {
+    padding: 20px;
+  }
+
+  .coming-soon-card {
+    padding: 36px 24px;
+  }
+
+  .coming-soon-card h1 {
+    font-size: 26px;
+  }
+
+  .coming-soon-card p {
+    font-size: 15px;
+  }
+}
