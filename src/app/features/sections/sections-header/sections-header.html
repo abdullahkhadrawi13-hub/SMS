@@ -1,1 +1,24 @@
-<p>sections-header works!</p>
+<!-- Page Header -->
+<div class="page-header">
+  <div class="page-title">
+    <h1>
+      {{ 'SECTIONS.TITLE' | translate }}
+    </h1>
+
+    <p>
+      {{ 'SECTIONS.SUBTITLE' | translate }}
+    </p>
+  </div>
+
+  <!-- Add Actions -->
+  <div class="page-actions">
+    <!-- Add Section -->
+    <button mat-flat-button type="button" class="add-button" (click)="addSection.emit()">
+      <mat-icon>add</mat-icon>
+
+      <span>
+        {{ 'SECTIONS.ADD_SECTION' | translate }}
+      </span>
+    </button>
+  </div>
+</div>

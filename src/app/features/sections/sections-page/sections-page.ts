@@ -3,12 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatMenuModule } from '@angular/material/menu';
-import {
-  MatPaginatorModule,
-  PageEvent
-} from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import {
   MatDialog,
   MatDialogModule
@@ -26,6 +21,9 @@ import {
   SectionFilterData
 } from '../sections-filter/sections-filter';
 
+import { SectionsHeader } from '../sections-header/sections-header';
+import { SectionsTable } from '../sections-table/sections-table';
+
 import { Section } from '../section';
 import { SectionsService } from '../../../core/services/sections';
 import { ApiMessageService } from '../../../core/services/api-message';
@@ -34,11 +32,11 @@ import { ActionResult } from '../../../shared/services/action-result';
 @Component({
   selector: 'app-sections-page',
   imports: [
+    SectionsHeader,
+    SectionsTable,
+
     MatButtonModule,
     MatIconModule,
-    MatTableModule,
-    MatMenuModule,
-    MatPaginatorModule,
     MatDialogModule,
     TranslatePipe
   ],
@@ -54,14 +52,6 @@ export class SectionsPage {
   private readonly actionResult = inject(ActionResult);
 
   private readonly destroyRef = inject(DestroyRef);
-
-  readonly displayedColumns = [
-    'className',
-    'section',
-    'studentCount',
-    'status',
-    'actions'
-  ];
 
   readonly sections = signal<Section[]>([]);
 
@@ -226,26 +216,6 @@ export class SectionsPage {
         // سيتم ربط الفلترة بالـAPI لاحقًا
       }
     );
-
-  }
-
-  getClassName(section: Section): string {
-
-    const language = document.documentElement.lang;
-
-    return language === 'ar'
-      ? section.classNameAr
-      : section.classNameEn;
-
-  }
-
-  getSectionName(section: Section): string {
-
-    const language = document.documentElement.lang;
-
-    return language === 'ar'
-      ? section.sectionAr
-      : section.sectionEn;
 
   }
 

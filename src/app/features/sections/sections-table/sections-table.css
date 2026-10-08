@@ -1,0 +1,277 @@
+/* The table component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+
+/* =========================
+   Error Banner
+   ========================= */
+
+.error-banner {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 12px;
+
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  background: #fdecea;
+
+  color: #b3261e;
+
+}
+
+
+/* =========================
+   Table Card
+   ========================= */
+
+.table-card {
+
+  width: 100%;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+}
+
+
+/* =========================
+   Table
+   ========================= */
+
+.sections-table {
+
+  width: 100%;
+
+}
+
+
+/* =========================
+   Table Header
+   ========================= */
+
+.sections-table .mat-mdc-header-cell {
+
+  height: 52px;
+
+  padding: 0 16px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: #6b7280;
+
+  background: #f8fafc;
+
+  white-space: nowrap;
+
+}
+
+
+/* =========================
+   Table Cells
+   ========================= */
+
+.sections-table .mat-mdc-cell {
+
+  height: 64px;
+
+  padding: 0 16px;
+
+  font-size: 14px;
+
+  color: #374151;
+
+  white-space: nowrap;
+
+}
+
+
+/* =========================
+   Row Hover
+   ========================= */
+
+.sections-table .mat-mdc-row:hover {
+
+  background: #f8fafc;
+
+}
+
+
+/* =========================
+   Actions
+   ========================= */
+
+.sections-table .mat-mdc-cell:last-child {
+
+  width: 64px;
+
+  text-align: center;
+
+}
+
+.sections-table .mat-mdc-cell:last-child button {
+
+  color: #6b7280;
+
+}
+
+
+/* =========================
+   Status
+   ========================= */
+
+.status-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 6px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+}
+
+.status-badge.active {
+
+  background: #f0fdf4;
+
+  color: #166534;
+
+}
+
+.status-badge.inactive {
+
+  background: #fef2f2;
+
+  color: #991b1b;
+
+}
+
+.status-dot {
+
+  width: 7px;
+
+  height: 7px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: currentColor;
+
+}
+
+
+/* =========================
+   Empty State
+   ========================= */
+
+.empty-state {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 48px 24px;
+
+  text-align: center;
+
+}
+
+.empty-state mat-icon {
+
+  width: 48px;
+
+  height: 48px;
+
+  font-size: 48px;
+
+  margin-bottom: 12px;
+
+  color: #9ca3af;
+
+}
+
+.empty-state h3 {
+
+  margin: 0 0 6px;
+
+  font-size: 17px;
+
+  font-weight: 600;
+
+}
+
+.empty-state p {
+
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+
+}
+
+
+/* =========================
+   Paginator
+   ========================= */
+
+.table-card mat-paginator {
+
+  border-top: 1px solid #e5e7eb;
+
+  background: #ffffff;
+
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 650px) {
+
+  .table-card {
+
+    overflow-x: auto;
+
+  }
+
+  .sections-table {
+
+    min-width: 700px;
+
+  }
+
+}
