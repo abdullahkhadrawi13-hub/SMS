@@ -1,19 +1,9 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
 
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-
-import { MatMenuModule } from '@angular/material/menu';
-
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PageEvent } from '@angular/material/paginator';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
@@ -47,23 +37,22 @@ import {
   StudentFilterValues
 } from '../students-filter/students-filter';
 
+import { StudentsHeader } from '../students-header/students-header';
+import { StudentsSearch } from '../students-search/students-search';
+import { StudentsTable } from '../students-table/students-table';
+
 
 
 @Component({
   selector: 'app-students-page',
 
   imports: [
-    CommonModule,
+    StudentsHeader,
+    StudentsSearch,
+    StudentsTable,
 
     MatButtonModule,
     MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
     MatDialogModule,
     TranslatePipe
   ],
@@ -93,22 +82,12 @@ export class StudentsPage {
   private readonly actionResult = inject(ActionResult);
 
   // id -> { ar, en }
-  private readonly classNames =
+  // (protected: read by the template and passed to <app-students-table>)
+  protected readonly classNames =
     signal<Map<number, { ar: string; en: string }>>(new Map());
 
-  private readonly sectionNames =
+  protected readonly sectionNames =
     signal<Map<number, { ar: string; en: string }>>(new Map());
-
-
-  readonly displayedColumns = [
-    'studentNumber',
-    'name',
-    'class',
-    'section',
-    'loginId',
-    'status',
-    'actions'
-  ];
 
 
   readonly students =
@@ -231,42 +210,6 @@ export class StudentsPage {
         }
 
       });
-
-  }
-
-
-  getClassName(
-    student: Student
-  ): string {
-
-    const name =
-      this.classNames().get(student.classId);
-
-    if (!name) {
-      return '—';
-    }
-
-    return document.documentElement.lang === 'ar'
-      ? name.ar
-      : name.en;
-
-  }
-
-
-  getSectionName(
-    student: Student
-  ): string {
-
-    const name =
-      this.sectionNames().get(student.sectionId);
-
-    if (!name) {
-      return '—';
-    }
-
-    return document.documentElement.lang === 'ar'
-      ? name.ar
-      : name.en;
 
   }
 
@@ -404,40 +347,6 @@ export class StudentsPage {
     );
 
     this.loadStudents();
-
-  }
-
-
-  getStudentName(
-    student: Student
-  ): string {
-
-    const language =
-      document.documentElement.lang;
-
-
-    if (language === 'ar') {
-
-      return [
-        student.firstNameAr,
-        student.fatherNameAr,
-        student.grandFatherNameAr,
-        student.familyNameAr
-      ]
-        .filter(Boolean)
-        .join(' ');
-
-    }
-
-
-    return [
-      student.firstNameEn,
-      student.fatherNameEn,
-      student.grandFatherNameEn,
-      student.familyNameEn
-    ]
-      .filter(Boolean)
-      .join(' ');
 
   }
 

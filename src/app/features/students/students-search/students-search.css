@@ -1,0 +1,13 @@
+/* Allows the search component to fit inside the parent row. */
+:host {
+  display: block;
+
+  min-width: 0;
+}
+
+/* Makes the input fill the students-search component width. */
+mat-form-field {
+  width: 100%;
+
+  min-width: 0;
+}

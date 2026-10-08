@@ -1,1 +1,24 @@
-<p>students-header works!</p>
+<div class="page-header">
+
+  <div class="title-section">
+    <h1>
+      {{ 'STUDENTS.TITLE' | translate }}
+    </h1>
+
+    <p>
+      {{ 'STUDENTS.SUBTITLE' | translate }}
+    </p>
+  </div>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="addStudent.emit()"
+  >
+    <mat-icon>person_add</mat-icon>
+
+    {{ 'STUDENTS.ADD_STUDENT' | translate }}
+  </button>
+
+</div>
