@@ -1,22 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import {
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-// Temporary teacher data used until the Teacher API is ready.
-interface TeacherRow {
-  teacherNumber: string;
-  nameAr: string;
-  nameEn: string;
-  loginId: string;
-  phoneNumber: string;
-  isActive: boolean;
-}
+import {
+  TeacherListDto,
+  TeachersService,
+} from '../../../core/services/teachers';
+
 
 @Component({
   selector: 'app-teacher-table',
@@ -31,7 +30,11 @@ interface TeacherRow {
   templateUrl: './teacher-table.html',
   styleUrl: './teacher-table.css',
 })
-export class TeacherTable {
+export class TeacherTable implements OnInit {
+
+  // Service used to communicate with the Teachers API.
+  private readonly teachersService = inject(TeachersService);
+
 
   // Columns displayed in the teacher table.
   readonly displayedColumns = [
@@ -43,50 +46,86 @@ export class TeacherTable {
     'actions',
   ];
 
-  // Temporary teacher data for previewing the table.
-  readonly teachers: TeacherRow[] = [
-    {
-      teacherNumber: 'T-260001',
-      nameAr: 'أحمد محمد',
-      nameEn: 'Ahmad Mohammad',
-      loginId: 'ahmad01',
-      phoneNumber: '0791234567',
-      isActive: true,
-    },
-    {
-      teacherNumber: 'T-260002',
-      nameAr: 'محمد علي',
-      nameEn: 'Mohammad Ali',
-      loginId: 'mohammad01',
-      phoneNumber: '0781234567',
-      isActive: true,
-    },
-    {
-      teacherNumber: 'T-260003',
-      nameAr: 'خالد حسن',
-      nameEn: 'Khaled Hassan',
-      loginId: 'khaled01',
-      phoneNumber: '0771234567',
-      isActive: false,
-    },
-  ];
+
+  // Stores the teachers returned by the API.
+  readonly teachers = signal<TeacherListDto[]>([]);
+
+
+  // Total number of teachers returned by the API.
+  readonly totalCount = signal(0);
+
 
   // Current paginator page.
-  pageIndex = 0;
+  readonly pageIndex = signal(0);
+
 
   // Current number of rows displayed per page.
-  pageSize = 10;
+  readonly pageSize = signal(10);
 
-  // Returns the teacher name according to the current language.
-  getTeacherName(teacher: TeacherRow): string {
-    return document.documentElement.lang === 'ar'
-      ? teacher.nameAr
-      : teacher.nameEn;
+
+  // Indicates whether the table is currently loading.
+  readonly loading = signal(false);
+
+
+  ngOnInit(): void {
+
+    // Load the first page when the component is initialized.
+    this.loadTeachers();
   }
 
-  // Handles paginator changes.
+
+  // Loads teachers from the backend using the current pagination values.
+  loadTeachers(): void {
+
+    this.loading.set(true);
+
+    this.teachersService
+      .getTeachers(
+        this.pageIndex() + 1,
+        this.pageSize()
+      )
+      .subscribe({
+        next: (response) => {
+
+          if (!response.success) {
+            this.teachers.set([]);
+            this.totalCount.set(0);
+            this.loading.set(false);
+            return;
+          }
+
+          this.teachers.set(response.data.items);
+          this.totalCount.set(response.data.totalCount);
+
+          this.loading.set(false);
+        },
+
+        error: () => {
+
+          this.teachers.set([]);
+          this.totalCount.set(0);
+
+          this.loading.set(false);
+        },
+      });
+  }
+
+
+  // Returns the teacher name according to the current language.
+  getTeacherName(teacher: TeacherListDto): string {
+
+    return document.documentElement.lang === 'ar'
+      ? `${teacher.firstNameAr} ${teacher.fatherNameAr} ${teacher.grandFatherNameAr} ${teacher.familyNameAr}`
+      : `${teacher.firstNameEn} ${teacher.fatherNameEn} ${teacher.grandFatherNameEn} ${teacher.familyNameEn}`;
+  }
+
+
+  // Handles paginator changes and reloads the requested page.
   onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
+
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+
+    this.loadTeachers();
   }
 }

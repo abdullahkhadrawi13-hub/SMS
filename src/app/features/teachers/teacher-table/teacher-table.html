@@ -6,7 +6,7 @@
 
     <table
       mat-table
-      [dataSource]="teachers"
+      [dataSource]="teachers()"
     >
 
       <!-- Teacher Number -->
@@ -226,7 +226,7 @@
 
 
     <!-- Empty state -->
-    @if (teachers.length === 0) {
+    @if (teachers().length === 0 && !loading()) {
 
       <div class="empty-state">
 
@@ -245,9 +245,9 @@
 
   <!-- Teacher pagination -->
   <mat-paginator
-    [length]="teachers.length"
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
+    [length]="totalCount()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
     [pageSizeOptions]="[10, 20, 50]"
     (page)="onPageChange($event)"
     [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
