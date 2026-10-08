@@ -460,5 +460,65 @@
     "ACTIVE": "Active",
     "INACTIVE": "Inactive",
     "FILTER_BUTTON": "Filter"
+  },
+
+  "SUBJECTS": {
+    "HEADER": {
+      "TITLE": "Subjects Management",
+      "SUBTITLE": "Manage school subjects",
+      "ADD": "Add Subject"
+    },
+
+    "SEARCH": {
+      "LABEL": "Search",
+      "PLACEHOLDER": "Search by subject name",
+      "CLEAR": "Clear search",
+      "SUBMIT": "Search"
+    },
+
+    "FILTER_BUTTON": "Filter",
+
+    "FILTER": {
+      "TITLE": "Filter Subjects",
+      "STATUS": "Status",
+      "ALL": "All",
+      "CLEAR": "Clear",
+      "CANCEL": "Cancel",
+      "APPLY": "Apply"
+    },
+
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+
+    "TABLE": {
+      "SUBJECT_ID": "Subject ID",
+      "NAME": "Subject Name",
+      "STATUS": "Status",
+      "ACTIONS": "Actions",
+      "VIEW": "View",
+      "EDIT": "Edit",
+      "ACTIVATE": "Activate",
+      "DEACTIVATE": "Deactivate",
+      "EMPTY": "No subjects found",
+      "PAGINATION": "Subjects pagination"
+    },
+    "FORM": {
+      "TITLE": "Add Subject",
+
+      "NAME_AR": "Subject Name (Arabic)",
+      "NAME_AR_PLACEHOLDER": "Enter subject name in Arabic",
+      "NAME_AR_REQUIRED": "Arabic subject name is required",
+      "NAME_AR_MIN_LENGTH": "Arabic subject name must be at least 2 characters",
+      "NAME_AR_PATTERN": "Please enter a valid Arabic subject name",
+
+      "NAME_EN": "Subject Name (English)",
+      "NAME_EN_PLACEHOLDER": "Enter subject name in English",
+      "NAME_EN_REQUIRED": "English subject name is required",
+      "NAME_EN_MIN_LENGTH": "English subject name must be at least 2 characters",
+      "NAME_EN_PATTERN": "Please enter a valid English subject name",
+
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
+    }
   }
 }

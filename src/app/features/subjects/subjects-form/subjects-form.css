@@ -1,0 +1,62 @@
+/* ================================
+   Subject Form
+   ================================ */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+
+/* ================================
+   Form Fields
+   ================================ */
+
+.form-field {
+  width: 100%;
+}
+
+
+/* ================================
+   Dialog Content
+   ================================ */
+
+mat-dialog-content {
+  min-width: 500px;
+  padding-top: 16px;
+  overflow: visible;
+}
+
+
+/* ================================
+   Dialog Actions
+   ================================ */
+
+mat-dialog-actions {
+  gap: 8px;
+  padding: 16px 24px 20px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 600px) {
+
+  mat-dialog-content {
+    min-width: 0;
+    padding: 16px;
+    overflow: visible;
+  }
+
+  .form-field {
+    width: 100%;
+  }
+
+  mat-dialog-actions {
+    padding: 12px 16px 16px;
+  }
+}

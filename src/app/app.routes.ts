@@ -85,7 +85,7 @@ export const routes: Routes = [
         }
       },
 
-      
+
 
       {
         path: 'teachers',
@@ -93,6 +93,18 @@ export const routes: Routes = [
           import('./features/teachers/teachers.routes').then(
             (m) => m.TEACHER_ROUTES
           ),
+      },
+
+
+      {
+        path: 'subjects',
+        loadChildren: () =>
+          import('./features/subjects/subjects.routes')
+            .then(m => m.SUBJECTS_ROUTES),
+        canActivate: [authGuard, roleGuard],
+        data: {
+          roles: [0, 1, 2]
+        }
       },
 
 

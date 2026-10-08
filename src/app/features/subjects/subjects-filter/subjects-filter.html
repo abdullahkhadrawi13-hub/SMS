@@ -1,0 +1,77 @@
+<!-- Dialog title -->
+<h2 mat-dialog-title>
+  {{ 'SUBJECTS.FILTER.TITLE' | translate }}
+</h2>
+
+<!-- Filter content -->
+<mat-dialog-content>
+
+  <div class="filter-form">
+
+    <!-- Subject status filter -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'SUBJECTS.FILTER.STATUS' | translate }}
+      </mat-label>
+
+      <mat-select
+        [value]="isActive()"
+        (selectionChange)="isActive.set($event.value)"
+      >
+
+        <!-- Show all subjects -->
+        <mat-option [value]="null">
+          {{ 'SUBJECTS.FILTER.ALL' | translate }}
+        </mat-option>
+
+        <!-- Show active subjects -->
+        <mat-option [value]="true">
+          {{ 'SUBJECTS.ACTIVE' | translate }}
+        </mat-option>
+
+        <!-- Show inactive subjects -->
+        <mat-option [value]="false">
+          {{ 'SUBJECTS.INACTIVE' | translate }}
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+
+  </div>
+
+</mat-dialog-content>
+
+<!-- Dialog actions -->
+<mat-dialog-actions align="end">
+
+  <!-- Reset filter values -->
+  <button
+    mat-button
+    type="button"
+    (click)="clear()"
+  >
+    {{ 'SUBJECTS.FILTER.CLEAR' | translate }}
+  </button>
+
+  <!-- Close dialog without applying changes -->
+  <button
+    mat-button
+    type="button"
+    mat-dialog-close
+  >
+    {{ 'SUBJECTS.FILTER.CANCEL' | translate }}
+  </button>
+
+  <!-- Apply selected filter -->
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="apply()"
+  >
+    {{ 'SUBJECTS.FILTER.APPLY' | translate }}
+  </button>
+
+</mat-dialog-actions>

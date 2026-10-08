@@ -45,15 +45,15 @@ export interface SectionFormData {
     MatProgressSpinnerModule,
     TranslatePipe
   ],
-  templateUrl: './section-form.html',
-  styleUrl: './section-form.css'
+  templateUrl: './sections-form.html',
+  styleUrl: './sections-form.css'
 })
-export class SectionForm {
+export class SectionsForm {
 
   private readonly fb = inject(FormBuilder);
 
   private readonly dialogRef =
-    inject(MatDialogRef<SectionForm>);
+    inject(MatDialogRef<SectionsForm>);
 
   private readonly classesService = inject(SchoolClassesService);
   private readonly destroyRef = inject(DestroyRef);

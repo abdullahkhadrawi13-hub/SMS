@@ -17,14 +17,14 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 
 import {
-  SectionForm,
+  SectionsForm,
   SectionFormData
-} from '../section-form/section-form';
+} from '../sections-form/sections-form';
 
 import {
-  SectionFilter,
+  SectionsFilter,
   SectionFilterData
-} from '../section-filter/section-filter';
+} from '../sections-filter/sections-filter';
 
 import { Section } from '../section';
 import { SectionsService } from '../../../core/services/sections';
@@ -108,7 +108,7 @@ export class SectionsPage {
       mode: 'add'
     };
 
-    const dialogRef = this.dialog.open(SectionForm, {
+    const dialogRef = this.dialog.open(SectionsForm, {
       width: '500px',
       maxWidth: '95vw',
       data
@@ -138,7 +138,7 @@ export class SectionsPage {
       sectionEn: section.sectionEn
     };
 
-    const dialogRef = this.dialog.open(SectionForm, {
+    const dialogRef = this.dialog.open(SectionsForm, {
       width: '500px',
       maxWidth: '95vw',
       data
@@ -209,7 +209,7 @@ export class SectionsPage {
   // Filter
   openFilterDialog(): void {
 
-    const dialogRef = this.dialog.open(SectionFilter, {
+    const dialogRef = this.dialog.open(SectionsFilter, {
       width: '500px',
       maxWidth: '95vw'
     });

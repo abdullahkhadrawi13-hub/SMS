@@ -47,16 +47,16 @@ export interface SectionFilterData {
     MatSelectModule,
     TranslatePipe
   ],
-  templateUrl: './section-filter.html',
-  styleUrl: './section-filter.css'
+  templateUrl: './sections-filter.html',
+  styleUrl: './sections-filter.css'
 })
-export class SectionFilter {
+export class SectionsFilter {
 
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly dialogRef =
-    inject(MatDialogRef<SectionFilter>);
+    inject(MatDialogRef<SectionsFilter>);
 
   private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);

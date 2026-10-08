@@ -1,0 +1,26 @@
+<div class="page-header">
+
+  <div class="title-section">
+
+    <h1>
+      {{ 'SUBJECTS.HEADER.TITLE' | translate }}
+    </h1>
+
+    <p>
+      {{ 'SUBJECTS.HEADER.SUBTITLE' | translate }}
+    </p>
+
+  </div>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="openSubjectForm()"
+  >
+    <mat-icon>menu_book</mat-icon>
+
+    {{ 'SUBJECTS.HEADER.ADD' | translate }}
+  </button>
+
+</div>

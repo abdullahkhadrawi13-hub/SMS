@@ -1,0 +1,31 @@
+/* ================================
+   Filter Form
+   ================================ */
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  min-width: 360px;
+
+  padding-top: 8px;
+}
+
+
+/* Makes the filter field occupy the full available width. */
+mat-form-field {
+  width: 100%;
+}
+
+
+/* ================================
+   Dialog Actions
+   ================================ */
+
+mat-dialog-actions {
+  gap: 8px;
+
+  padding: 16px 24px;
+}

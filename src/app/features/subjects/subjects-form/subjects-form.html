@@ -1,0 +1,124 @@
+<!-- Subject form dialog -->
+
+<h2 mat-dialog-title>
+  {{ 'SUBJECTS.FORM.TITLE' | translate }}
+</h2>
+
+
+<mat-dialog-content>
+
+  <form
+    [formGroup]="subjectForm"
+    (ngSubmit)="onSubmit()"
+  >
+
+    <!-- Arabic Subject Name -->
+    <mat-form-field
+      appearance="outline"
+      class="form-field"
+    >
+
+      <mat-label>
+        {{ 'SUBJECTS.FORM.NAME_AR' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        formControlName="nameAr"
+        [placeholder]="'SUBJECTS.FORM.NAME_AR_PLACEHOLDER' | translate"
+      />
+
+      @if (isFieldInvalid('nameAr')) {
+
+        <mat-error>
+
+          @if (subjectForm.controls.nameAr.hasError('required')) {
+            {{ 'SUBJECTS.FORM.NAME_AR_REQUIRED' | translate }}
+          }
+
+          @else if (subjectForm.controls.nameAr.hasError('minlength')) {
+            {{ 'SUBJECTS.FORM.NAME_AR_MIN_LENGTH' | translate }}
+          }
+
+          @else if (subjectForm.controls.nameAr.hasError('pattern')) {
+            {{ 'SUBJECTS.FORM.NAME_AR_PATTERN' | translate }}
+          }
+
+        </mat-error>
+
+      }
+
+    </mat-form-field>
+
+
+    <!-- English Subject Name -->
+    <mat-form-field
+      appearance="outline"
+      class="form-field"
+    >
+
+      <mat-label>
+        {{ 'SUBJECTS.FORM.NAME_EN' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        formControlName="nameEn"
+        [placeholder]="'SUBJECTS.FORM.NAME_EN_PLACEHOLDER' | translate"
+      />
+
+      @if (isFieldInvalid('nameEn')) {
+
+        <mat-error>
+
+          @if (subjectForm.controls.nameEn.hasError('required')) {
+            {{ 'SUBJECTS.FORM.NAME_EN_REQUIRED' | translate }}
+          }
+
+          @else if (subjectForm.controls.nameEn.hasError('minlength')) {
+            {{ 'SUBJECTS.FORM.NAME_EN_MIN_LENGTH' | translate }}
+          }
+
+          @else if (subjectForm.controls.nameEn.hasError('pattern')) {
+            {{ 'SUBJECTS.FORM.NAME_EN_PATTERN' | translate }}
+          }
+
+        </mat-error>
+
+      }
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<!-- Dialog actions -->
+
+<mat-dialog-actions align="end">
+
+  <!-- Cancel -->
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()"
+  >
+    {{ 'SUBJECTS.FORM.CANCEL' | translate }}
+  </button>
+
+
+  <!-- Save -->
+  <button
+    mat-flat-button
+    color="primary"
+    type="submit"
+    [disabled]="subjectForm.invalid"
+    (click)="onSubmit()"
+  >
+    <mat-icon>save</mat-icon>
+
+    {{ 'SUBJECTS.FORM.SAVE' | translate }}
+  </button>
+
+</mat-dialog-actions>

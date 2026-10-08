@@ -1,0 +1,31 @@
+<div class="subjects-page">
+
+  <!-- Page Header -->
+  <app-subjects-header></app-subjects-header>
+
+  <!-- Search and Filter -->
+  <div class="filters-card">
+
+    <div class="search-container">
+
+      <!-- Subject Search -->
+      <app-subjects-search></app-subjects-search>
+
+      <!-- Subject Filter -->
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="openFilter()"
+      >
+        <mat-icon>filter_list</mat-icon>
+        {{ 'SUBJECTS.FILTER_BUTTON' | translate }}
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Subject Table -->
+  <app-subjects-table></app-subjects-table>
+
+</div>

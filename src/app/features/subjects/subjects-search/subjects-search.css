@@ -1,0 +1,22 @@
+/* Allows the search component to fit inside the parent row. */
+:host {
+  display: block;
+  min-width: 0;
+}
+
+/* ================================
+   Search Container
+   ================================ */
+
+.search-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Makes the input fill the subjects-search component width. */
+.search-container mat-form-field {
+  width: 100%;
+  min-width: 0;
+}
