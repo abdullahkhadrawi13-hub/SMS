@@ -9,6 +9,7 @@ import { DashboardLayout } from './layouts/dashboard-layout/dashboard-layout';
 
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
+import { mustChangePasswordGuard } from './core/guards/must-change-password-guard';
 
 import { DASHBOARD_ROUTES } from './features/dashboard/dashboard.routes';
 
@@ -40,10 +41,11 @@ export const routes: Routes = [
   },
 
   // كل الصفحات المحمية داخل الـ Layout (navbar + sidebar)
+  // mustChangePasswordGuard: لا دخول لأي صفحة قبل تغيير كلمة المرور المؤقتة
   {
     path: '',
     component: DashboardLayout,
-    canActivate: [authGuard],
+    canActivate: [authGuard, mustChangePasswordGuard],
 
     children: [
 

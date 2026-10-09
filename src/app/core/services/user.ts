@@ -2,30 +2,36 @@ import { Injectable, signal } from '@angular/core';
 
 import { LoginResponse } from '../models/login-response';
 
+// بيانات المستخدم بدون رمز الدخول.
+// الرمز (JWT) تديره خدمة Auth فقط، وهذه الخدمة مسؤولة عن بيانات المستخدم ودوره.
+export type UserProfile = Omit<LoginResponse, 'token'>;
+
+const USER_KEY = 'user';
+
 @Injectable({
   providedIn: 'root',
 })
 export class User {
 
-  private currentUser = signal<LoginResponse | null>(
+  private currentUser = signal<UserProfile | null>(
     this.getStoredUser()
   );
 
   readonly user = this.currentUser.asReadonly();
 
 
-  setUser(user: LoginResponse): void {
+  setUser(user: LoginResponse | UserProfile): void {
 
-    this.currentUser.set(user);
+    // الرمز لا يُحفظ مع بيانات المستخدم
+    const profile: UserProfile & { token?: string } = { ...user };
+
+    delete profile.token;
+
+    this.currentUser.set(profile);
 
     sessionStorage.setItem(
-      'user',
-      JSON.stringify(user)
-    );
-
-    sessionStorage.setItem(
-      'token',
-      user.token
+      USER_KEY,
+      JSON.stringify(profile)
     );
 
   }
@@ -35,14 +41,12 @@ export class User {
 
     this.currentUser.set(null);
 
-    sessionStorage.removeItem('user');
-
-    sessionStorage.removeItem('token');
+    sessionStorage.removeItem(USER_KEY);
 
   }
 
 
-  getUser(): LoginResponse | null {
+  getUser(): UserProfile | null {
 
     return this.currentUser();
 
@@ -63,9 +67,9 @@ export class User {
   }
 
 
-  private getStoredUser(): LoginResponse | null {
+  private getStoredUser(): UserProfile | null {
 
-    const storedUser = sessionStorage.getItem('user');
+    const storedUser = sessionStorage.getItem(USER_KEY);
 
     if (!storedUser) {
 
@@ -75,12 +79,11 @@ export class User {
 
     try {
 
-      return JSON.parse(storedUser) as LoginResponse;
+      return JSON.parse(storedUser) as UserProfile;
 
     } catch {
 
-      sessionStorage.removeItem('user');
-      sessionStorage.removeItem('token');
+      sessionStorage.removeItem(USER_KEY);
 
       return null;
 

@@ -10,7 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { LanguageSwitcher } from '../../../shared/components/language-switcher/language-switcher';
 import { Router } from '@angular/router';
-import { User } from '../../../core/services/user';
+import { Auth } from '../../../core/services/auth';
 
 import { ChangePassword } from '../../../features/auth/change-password/change-password';
 
@@ -29,12 +29,13 @@ import { ChangePassword } from '../../../features/auth/change-password/change-pa
 })
 export class Navbar {
 
-  private readonly userService = inject(User);
+  private readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
 
   logout(): void {
-    this.userService.clearUser();
+    // يحذف رمز الدخول وبيانات المستخدم معًا
+    this.auth.logout();
     this.router.navigate(['/login']);
   }
 

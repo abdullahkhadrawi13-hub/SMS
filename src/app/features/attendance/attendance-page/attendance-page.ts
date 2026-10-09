@@ -437,7 +437,9 @@ export class AttendancePage implements OnInit {
   // Save:
   // - students that are not recorded yet go in ONE POST (batch),
   // - recorded students whose status changed get one PUT each,
-  // - then the sheet is loaded again.
+  // - when everything is saved, the screen goes back to
+  //   "Choose a class and section" (ready for the next section),
+  // - when something failed, the sheet is loaded again and stays open.
   saveAttendance(): void {
 
     const sheet = this.sheet();
@@ -510,16 +512,35 @@ export class AttendancePage implements OnInit {
 
         if (firstError) {
           this.actionResult.error(firstError);
-        } else {
-          this.actionResult.success(
-            this.translate.instant('ATTENDANCE.SHEET.SAVE_SUCCESS')
-          );
+
+          // Refresh the screen from the backend. Anything that was not
+          // saved stays on the screen as an unsaved change.
+          this.loadSheet(true);
+          return;
         }
 
-        // Refresh the screen from the backend. Anything that was not
-        // saved stays on the screen as an unsaved change.
-        this.loadSheet(true);
+        this.actionResult.success(
+          this.translate.instant('ATTENDANCE.SHEET.SAVE_SUCCESS')
+        );
+
+        // Everything is saved: back to "Choose a class and section".
+        this.resetSelection();
       });
+  }
+
+  // Clears the class and the section (the date is kept), which closes
+  // the sheet and shows the "Choose a class and section" state again.
+  private resetSelection(): void {
+
+    this.sectionsRequest?.unsubscribe();
+    this.sectionsLoading.set(false);
+
+    this.classId.set(null);
+    this.sectionId.set(null);
+    this.sections.set([]);
+
+    // No class / section is selected now, so this clears the sheet
+    this.loadSheet();
   }
 
   // Turns a save request into: null (saved) or an error message.
