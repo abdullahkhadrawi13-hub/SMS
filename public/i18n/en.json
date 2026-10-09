@@ -520,5 +520,99 @@
       "CANCEL": "Cancel",
       "SAVE": "Save"
     }
+  },
+
+  "ATTENDANCE": {
+    "HEADER": {
+      "TITLE": "Attendance",
+      "SUBTITLE": "Record and follow up daily student attendance"
+    },
+
+    "TABS": {
+      "RECORD": "Record Attendance",
+      "SUMMARY": "Daily Summary"
+    },
+
+    "STATUS": {
+      "PRESENT": "Present",
+      "ABSENT": "Absent",
+      "UNMARKED": "Unmarked"
+    },
+
+    "SELECTOR": {
+      "CLASS": "Class",
+      "SECTION": "Section",
+      "DATE": "Date",
+      "LOCKED_HINT": "Save or reset your changes first to change the class, section or date."
+    },
+
+    "SHEET": {
+      "TITLE": "{{className}} · Section {{sectionName}}",
+      "TOTAL": "Total",
+      "MARK_REMAINING_PRESENT": "Mark remaining present",
+      "UNSAVED_BADGE": "Unsaved",
+      "UNMARKED_HINT": "Choose a status for every student before saving (remaining: {{count}})",
+      "UNSAVED_CHANGES": "Unsaved changes: {{count}}",
+      "SAVED": "Sheet saved — no changes",
+      "RESET": "Reset",
+      "SAVE": "Save Attendance",
+      "SAVING": "Saving...",
+      "SAVE_SUCCESS": "Attendance saved successfully.",
+      "UNSAVED_BLOCK": "The current sheet has unsaved changes. Save or reset them before opening another section.",
+      "LOADING": "Loading attendance sheet...",
+
+      "TABLE": {
+        "INDEX": "#",
+        "STUDENT_NUMBER": "Student Number",
+        "NAME": "Student Name",
+        "STATUS": "Status"
+      },
+
+      "EMPTY": {
+        "SELECT_TITLE": "Choose a class and section",
+        "SELECT_MESSAGE": "Choose a class, then a section, to show the attendance sheet.",
+        "NO_STUDENTS_TITLE": "No students",
+        "NO_STUDENTS_MESSAGE": "This section has no students on the selected date."
+      }
+    },
+
+    "SUMMARY": {
+      "TODAY": "Today",
+      "LOADING": "Loading attendance summary...",
+      "COMPLETED_SECTIONS": "Completed Sections",
+      "OF_TOTAL": "of {{total}}",
+      "PENDING_SECTIONS": "Pending Sections",
+      "TOTAL_ABSENT": "Total Absent",
+
+      "TABLE": {
+        "CLASS": "Class",
+        "SECTION": "Section",
+        "RECORDED": "Recorded / Students",
+        "ABSENT": "Absent",
+        "STATE": "State",
+        "ACTIONS": "Actions"
+      },
+
+      "STATE": {
+        "COMPLETE": "Complete",
+        "PARTIAL": "Partial",
+        "NOT_STARTED": "Not started"
+      },
+
+      "ACTION": {
+        "OPEN": "Open sheet",
+        "CONTINUE": "Continue recording",
+        "RECORD": "Record attendance"
+      },
+
+      "EMPTY": {
+        "TITLE": "No sections",
+        "MESSAGE": "No sections have students on the selected date."
+      }
+    },
+
+    "ERRORS": {
+      "FORBIDDEN": "You do not have permission to view attendance data."
+    }
   }
 }

@@ -1,0 +1,262 @@
+<!-- Error -->
+@if (errorMessage()) {
+  <div class="error-banner" role="alert">
+    <mat-icon>error_outline</mat-icon>
+
+    <span>{{ errorMessage() }}</span>
+  </div>
+}
+
+<!-- Loading -->
+@if (loading()) {
+  <div class="state-card">
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <p>
+      {{ 'ATTENDANCE.SHEET.LOADING' | translate }}
+    </p>
+  </div>
+}
+
+<!-- Nothing selected yet -->
+@else if (!sheet()) {
+  @if (!errorMessage()) {
+    <div class="state-card">
+      <mat-icon>fact_check</mat-icon>
+
+      <h3>
+        {{ 'ATTENDANCE.SHEET.EMPTY.SELECT_TITLE' | translate }}
+      </h3>
+
+      <p>
+        {{ 'ATTENDANCE.SHEET.EMPTY.SELECT_MESSAGE' | translate }}
+      </p>
+    </div>
+  }
+}
+
+<!-- The section has no students on this date -->
+@else if (rows().length === 0) {
+  <div class="state-card">
+    <mat-icon>groups</mat-icon>
+
+    <h3>
+      {{ 'ATTENDANCE.SHEET.EMPTY.NO_STUDENTS_TITLE' | translate }}
+    </h3>
+
+    <p>
+      {{ 'ATTENDANCE.SHEET.EMPTY.NO_STUDENTS_MESSAGE' | translate }}
+    </p>
+  </div>
+}
+
+<!-- Sheet -->
+@else {
+  <div class="table-card">
+
+    <!-- Sheet Toolbar: title + counters + mark remaining -->
+    <div class="sheet-toolbar">
+
+      <div class="sheet-title">
+        <h2>
+          {{
+            'ATTENDANCE.SHEET.TITLE'
+              | translate: { className: className(), sectionName: sectionName() }
+          }}
+        </h2>
+
+        <p>{{ displayDate() }}</p>
+      </div>
+
+      <div class="sheet-counters">
+
+        <span class="counter total">
+          {{ 'ATTENDANCE.SHEET.TOTAL' | translate }}
+          <strong>{{ stats().total }}</strong>
+        </span>
+
+        <span class="counter present">
+          {{ 'ATTENDANCE.STATUS.PRESENT' | translate }}
+          <strong>{{ stats().present }}</strong>
+        </span>
+
+        <span class="counter absent">
+          {{ 'ATTENDANCE.STATUS.ABSENT' | translate }}
+          <strong>{{ stats().absent }}</strong>
+        </span>
+
+        @if (stats().unmarked > 0) {
+          <span class="counter unmarked">
+            {{ 'ATTENDANCE.STATUS.UNMARKED' | translate }}
+            <strong>{{ stats().unmarked }}</strong>
+          </span>
+        }
+
+        <!-- Fills only the students that have no status yet -->
+        <button
+          mat-stroked-button
+          type="button"
+          class="mark-remaining-button"
+          [disabled]="stats().unmarked === 0 || saving()"
+          (click)="markRemainingPresent.emit()"
+        >
+          <mat-icon>done_all</mat-icon>
+
+          {{ 'ATTENDANCE.SHEET.MARK_REMAINING_PRESENT' | translate }}
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- Students -->
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="rows()">
+
+        <!-- # -->
+        <ng-container matColumnDef="index">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'ATTENDANCE.SHEET.TABLE.INDEX' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- Student Number -->
+        <ng-container matColumnDef="studentNumber">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'ATTENDANCE.SHEET.TABLE.STUDENT_NUMBER' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.studentNumber }}
+          </td>
+        </ng-container>
+
+        <!-- Name -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'ATTENDANCE.SHEET.TABLE.NAME' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="student-name-cell">
+              <span>{{ row.name }}</span>
+
+              @if (row.changed) {
+                <span class="unsaved-badge">
+                  {{ 'ATTENDANCE.SHEET.UNSAVED_BADGE' | translate }}
+                </span>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Status: Present / Absent -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'ATTENDANCE.SHEET.TABLE.STATUS' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <mat-button-toggle-group
+              class="status-toggle"
+              [hideSingleSelectionIndicator]="true"
+              [value]="row.current"
+              [disabled]="saving()"
+              [attr.aria-label]="'ATTENDANCE.SHEET.TABLE.STATUS' | translate"
+              (change)="statusChange.emit({ studentId: row.studentId, status: $event.value })"
+            >
+
+              <mat-button-toggle class="present" [value]="present">
+                <span class="toggle-label">
+                  <mat-icon>check</mat-icon>
+
+                  <span>
+                    {{ 'ATTENDANCE.STATUS.PRESENT' | translate }}
+                  </span>
+                </span>
+              </mat-button-toggle>
+
+              <mat-button-toggle class="absent" [value]="absent">
+                <span class="toggle-label">
+                  <mat-icon>close</mat-icon>
+
+                  <span>
+                    {{ 'ATTENDANCE.STATUS.ABSENT' | translate }}
+                  </span>
+                </span>
+              </mat-button-toggle>
+
+            </mat-button-toggle-group>
+          </td>
+        </ng-container>
+
+        <!-- Header / Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      </table>
+    </div>
+
+
+    <!-- Sheet Footer: state message + Reset / Save -->
+    <div class="sheet-footer">
+
+      @if (stats().unmarked > 0) {
+        <span class="footer-message warning">
+          <mat-icon>info</mat-icon>
+
+          {{ 'ATTENDANCE.SHEET.UNMARKED_HINT' | translate: { count: stats().unmarked } }}
+        </span>
+      } @else if (stats().changes > 0) {
+        <span class="footer-message warning">
+          <mat-icon>info</mat-icon>
+
+          {{ 'ATTENDANCE.SHEET.UNSAVED_CHANGES' | translate: { count: stats().changes } }}
+        </span>
+      } @else {
+        <span class="footer-message success">
+          <mat-icon>check_circle</mat-icon>
+
+          {{ 'ATTENDANCE.SHEET.SAVED' | translate }}
+        </span>
+      }
+
+      <div class="footer-actions">
+
+        <button
+          mat-button
+          type="button"
+          [disabled]="stats().changes === 0 || saving()"
+          (click)="reset.emit()"
+        >
+          {{ 'ATTENDANCE.SHEET.RESET' | translate }}
+        </button>
+
+        <button
+          mat-flat-button
+          type="button"
+          class="save-button"
+          [disabled]="!canSave()"
+          (click)="save.emit()"
+        >
+          <mat-icon>save</mat-icon>
+
+          {{
+            saving()
+              ? ('ATTENDANCE.SHEET.SAVING' | translate)
+              : ('ATTENDANCE.SHEET.SAVE' | translate)
+          }}
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+}

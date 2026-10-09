@@ -1,0 +1,91 @@
+<!-- Class / Section / Date -->
+<div class="selector-card">
+
+  <div class="selector-fields">
+
+    <!-- Class (Active only) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+      <mat-label>
+        {{ 'ATTENDANCE.SELECTOR.CLASS' | translate }}
+      </mat-label>
+
+      <mat-select
+        [value]="classId()"
+        [disabled]="locked()"
+        (selectionChange)="classChange.emit($event.value)"
+      >
+
+        @for (c of classes(); track c.schoolClassId) {
+          <mat-option [value]="c.schoolClassId">
+            {{ getClassName(c) }}
+          </mat-option>
+        }
+
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Section (disabled until a class is chosen) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+      <mat-label>
+        {{ 'ATTENDANCE.SELECTOR.SECTION' | translate }}
+      </mat-label>
+
+      <mat-select
+        [value]="sectionId()"
+        [disabled]="locked() || classId() === null || sectionsLoading()"
+        (selectionChange)="sectionChange.emit($event.value)"
+      >
+
+        @for (s of sections(); track s.sectionId) {
+          <mat-option [value]="s.sectionId">
+            {{ getSectionName(s) }}
+          </mat-option>
+        }
+
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Date (today or any past day, never a future date) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+      <mat-label>
+        {{ 'ATTENDANCE.SELECTOR.DATE' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        readonly
+        [matDatepicker]="datePicker"
+        [value]="dateValue()"
+        [max]="maxDateValue()"
+        [disabled]="locked()"
+        (dateChange)="onDateChange($event.value)"
+        (click)="datePicker.open()"
+      />
+
+      <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+
+      <mat-datepicker #datePicker></mat-datepicker>
+
+    </mat-form-field>
+
+  </div>
+
+  <!-- Shown while the sheet has unsaved changes -->
+  @if (locked()) {
+    <p class="selector-hint">
+      <mat-icon>lock</mat-icon>
+
+      <span>
+        {{ 'ATTENDANCE.SELECTOR.LOCKED_HINT' | translate }}
+      </span>
+    </p>
+  }
+
+</div>

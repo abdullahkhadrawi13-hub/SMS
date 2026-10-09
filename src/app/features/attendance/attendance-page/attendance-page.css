@@ -1,0 +1,43 @@
+/* ================================
+   Attendance Page
+   ================================ */
+
+.attendance-page {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Tabs
+   ================================ */
+
+.attendance-tabs {
+  margin-bottom: 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Icon + text of a tab.
+   gap is used (not a margin on the icon) so the space is correct
+   in both Arabic (RTL) and English (LTR). */
+.tab-label {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .attendance-page {
+    padding: 16px;
+  }
+
+}

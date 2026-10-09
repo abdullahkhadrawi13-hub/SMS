@@ -1,0 +1,400 @@
+/* The sheet component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Error Banner
+   ================================ */
+
+.error-banner {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 12px;
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  background: #fdecea;
+  color: #b3261e;
+}
+
+.error-banner mat-icon {
+  flex-shrink: 0;
+}
+
+
+/* ================================
+   Table Card
+   ================================ */
+
+.table-card {
+  width: 100%;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Sheet Toolbar
+   ================================ */
+
+.sheet-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 16px 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sheet-title h2 {
+  margin: 0 0 4px;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.sheet-title p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 13px;
+}
+
+.sheet-counters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.counter {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.counter.total {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.counter.present {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.counter.absent {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.counter.unmarked {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.mark-remaining-button {
+  height: 40px;
+
+  margin-inline-start: 8px;
+}
+
+
+/* ================================
+   Material Table
+   ================================ */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.table-wrapper table {
+  width: 100%;
+
+  min-width: 640px;
+}
+
+.table-wrapper th {
+  height: 52px;
+
+  padding: 0 16px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #6b7280;
+
+  background: #f8fafc;
+
+  white-space: nowrap;
+}
+
+.table-wrapper td {
+  height: 60px;
+
+  padding: 0 16px;
+
+  font-size: 14px;
+
+  color: #374151;
+
+  white-space: nowrap;
+}
+
+.table-wrapper tr.mat-mdc-row:hover {
+  background: #f8fafc;
+}
+
+/* # column */
+.table-wrapper th:first-child,
+.table-wrapper td:first-child {
+  width: 56px;
+
+  color: #6b7280;
+}
+
+/* Status column */
+.table-wrapper th:last-child,
+.table-wrapper td:last-child {
+  width: 250px;
+}
+
+
+/* ================================
+   Student Name
+   ================================ */
+
+.student-name-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  color: #111827;
+}
+
+.unsaved-badge {
+  padding: 3px 8px;
+
+  border-radius: 20px;
+
+  background: #fef3c7;
+  color: #92400e;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* ================================
+   Status Toggle (Present / Absent)
+   ================================ */
+
+.status-toggle {
+  --mat-button-toggle-height: 40px;
+  --mat-button-toggle-label-text-size: 14px;
+  --mat-button-toggle-label-text-weight: 600;
+}
+
+.status-toggle mat-button-toggle {
+  min-width: 104px;
+}
+
+/* Icon + text of a toggle.
+   gap is used (not a margin on the icon) so the space is correct
+   in both Arabic (RTL) and English (LTR). */
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.status-toggle mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+/* Same colors as the Active / Inactive badges used in the other tables. */
+.status-toggle .present.mat-button-toggle-checked {
+  --mat-button-toggle-selected-state-background-color: #dcfce7;
+  --mat-button-toggle-selected-state-text-color: #166534;
+}
+
+.status-toggle .absent.mat-button-toggle-checked {
+  --mat-button-toggle-selected-state-background-color: #fee2e2;
+  --mat-button-toggle-selected-state-text-color: #991b1b;
+}
+
+
+/* ================================
+   Sheet Footer
+   ================================ */
+
+.sheet-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 14px 20px;
+
+  border-top: 1px solid #e5e7eb;
+
+  background: #f8fafc;
+}
+
+.footer-message {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.footer-message mat-icon {
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+
+  flex-shrink: 0;
+}
+
+.footer-message.warning {
+  color: #92400e;
+}
+
+.footer-message.success {
+  color: #166534;
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.save-button {
+  height: 44px;
+
+  min-width: 150px;
+}
+
+
+/* ================================
+   State Card (loading / empty)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+}
+
+.state-card > mat-icon {
+  width: 48px;
+  height: 48px;
+
+  font-size: 48px;
+
+  margin-bottom: 4px;
+
+  color: #9ca3af;
+}
+
+.state-card h3 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.state-card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .mark-remaining-button {
+    width: 100%;
+
+    margin-inline-start: 0;
+  }
+
+  .footer-actions {
+    width: 100%;
+  }
+
+  .footer-actions button {
+    flex: 1;
+  }
+
+}

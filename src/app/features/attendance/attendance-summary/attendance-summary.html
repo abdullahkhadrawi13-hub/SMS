@@ -1,0 +1,286 @@
+<!-- Date -->
+<div class="date-card">
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+    <mat-label>
+      {{ 'ATTENDANCE.SELECTOR.DATE' | translate }}
+    </mat-label>
+
+    <input
+      matInput
+      readonly
+      [matDatepicker]="datePicker"
+      [value]="dateValue()"
+      [max]="maxDateValue()"
+      (dateChange)="onDateChange($event.value)"
+      (click)="datePicker.open()"
+    />
+
+    <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+
+    <mat-datepicker #datePicker></mat-datepicker>
+
+  </mat-form-field>
+
+  <button
+    mat-stroked-button
+    type="button"
+    class="today-button"
+    [disabled]="isToday()"
+    (click)="goToToday()"
+  >
+    <mat-icon>today</mat-icon>
+
+    {{ 'ATTENDANCE.SUMMARY.TODAY' | translate }}
+  </button>
+
+  <span class="date-text">{{ displayDate() }}</span>
+
+</div>
+
+
+<!-- Error -->
+@if (errorMessage()) {
+  <div class="error-banner" role="alert">
+    <mat-icon>error_outline</mat-icon>
+
+    <span>{{ errorMessage() }}</span>
+  </div>
+}
+
+<!-- Loading -->
+@if (loading()) {
+  <div class="state-card">
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <p>
+      {{ 'ATTENDANCE.SUMMARY.LOADING' | translate }}
+    </p>
+  </div>
+}
+
+@else if (summary(); as data) {
+
+  <!-- Statistics -->
+  <div class="statistics">
+
+    <!-- Completed Sections -->
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        <mat-icon>task_alt</mat-icon>
+      </div>
+
+      <div class="stat-info">
+        <h3>
+          {{ 'ATTENDANCE.SUMMARY.COMPLETED_SECTIONS' | translate }}
+        </h3>
+
+        <div class="stat-value">
+          <span>{{ data.completedSections }}</span>
+
+          <small>
+            {{ 'ATTENDANCE.SUMMARY.OF_TOTAL' | translate: { total: data.totalSections } }}
+          </small>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-bar" [style.width.%]="completedProgress()"></div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Pending Sections -->
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
+
+      <div class="stat-info">
+        <h3>
+          {{ 'ATTENDANCE.SUMMARY.PENDING_SECTIONS' | translate }}
+        </h3>
+
+        <div class="stat-value">
+          <span>{{ pendingSections() }}</span>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Total Absent -->
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        <mat-icon>person_off</mat-icon>
+      </div>
+
+      <div class="stat-info">
+        <h3>
+          {{ 'ATTENDANCE.SUMMARY.TOTAL_ABSENT' | translate }}
+        </h3>
+
+        <div class="stat-value">
+          <span>{{ data.totalAbsent }}</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Sections Table -->
+  <div class="table-card">
+
+    @if (rows().length > 0) {
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="rows()">
+
+          <!-- Class -->
+          <ng-container matColumnDef="className">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'ATTENDANCE.SUMMARY.TABLE.CLASS' | translate }}
+            </th>
+
+            <td mat-cell *matCellDef="let row">
+              {{ row.className }}
+            </td>
+          </ng-container>
+
+          <!-- Section -->
+          <ng-container matColumnDef="section">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'ATTENDANCE.SUMMARY.TABLE.SECTION' | translate }}
+            </th>
+
+            <td mat-cell *matCellDef="let row">
+              {{ row.sectionName }}
+            </td>
+          </ng-container>
+
+          <!-- Recorded / Students -->
+          <ng-container matColumnDef="recorded">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'ATTENDANCE.SUMMARY.TABLE.RECORDED' | translate }}
+            </th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="recorded-cell">
+                <span class="recorded-text">
+                  {{ row.section.recordedCount }} / {{ row.section.studentCount }}
+                </span>
+
+                <div class="progress-track small">
+                  <div class="progress-bar" [style.width.%]="row.progress"></div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Absent -->
+          <ng-container matColumnDef="absent">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'ATTENDANCE.SUMMARY.TABLE.ABSENT' | translate }}
+            </th>
+
+            <td mat-cell *matCellDef="let row">
+              @if (row.state === 'notStarted') {
+                <span class="muted">—</span>
+              } @else {
+                <strong>{{ row.section.absentCount }}</strong>
+              }
+            </td>
+          </ng-container>
+
+          <!-- State -->
+          <ng-container matColumnDef="state">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'ATTENDANCE.SUMMARY.TABLE.STATE' | translate }}
+            </th>
+
+            <td mat-cell *matCellDef="let row">
+              <span
+                class="status-badge"
+                [class.complete]="row.state === 'complete'"
+                [class.partial]="row.state === 'partial'"
+                [class.not-started]="row.state === 'notStarted'"
+              >
+                <span class="status-dot"></span>
+
+                @switch (row.state) {
+                  @case ('complete') {
+                    {{ 'ATTENDANCE.SUMMARY.STATE.COMPLETE' | translate }}
+                  }
+                  @case ('partial') {
+                    {{ 'ATTENDANCE.SUMMARY.STATE.PARTIAL' | translate }}
+                  }
+                  @default {
+                    {{ 'ATTENDANCE.SUMMARY.STATE.NOT_STARTED' | translate }}
+                  }
+                }
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Actions: open the sheet of this section -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'ATTENDANCE.SUMMARY.TABLE.ACTIONS' | translate }}
+            </th>
+
+            <td mat-cell *matCellDef="let row">
+              <button
+                mat-button
+                type="button"
+                (click)="openSection.emit(row.section)"
+              >
+                <mat-icon>
+                  {{ row.state === 'notStarted' ? 'add_task' : 'edit' }}
+                </mat-icon>
+
+                @switch (row.state) {
+                  @case ('complete') {
+                    {{ 'ATTENDANCE.SUMMARY.ACTION.OPEN' | translate }}
+                  }
+                  @case ('partial') {
+                    {{ 'ATTENDANCE.SUMMARY.ACTION.CONTINUE' | translate }}
+                  }
+                  @default {
+                    {{ 'ATTENDANCE.SUMMARY.ACTION.RECORD' | translate }}
+                  }
+                }
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Header / Rows -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        </table>
+      </div>
+    } @else {
+      <!-- Empty State -->
+      <div class="empty-state">
+        <mat-icon>groups</mat-icon>
+
+        <h3>
+          {{ 'ATTENDANCE.SUMMARY.EMPTY.TITLE' | translate }}
+        </h3>
+
+        <p>
+          {{ 'ATTENDANCE.SUMMARY.EMPTY.MESSAGE' | translate }}
+        </p>
+      </div>
+    }
+
+  </div>
+
+}

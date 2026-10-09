@@ -108,6 +108,18 @@ export const routes: Routes = [
       },
 
 
+
+
+            // الحضور والغياب: حاليًا كل الأدوار تصل لنفس الصفحة
+      // (سيتم تخصيص المحتوى حسب الدور لاحقًا)
+      {
+        path: 'attendance',
+        loadChildren: () =>
+          import('./features/attendance/attendance.routes')
+            .then(m => m.ATTENDANCE_ROUTES)
+      },
+
+
       {
         path: 'settings',
         loadChildren: () =>

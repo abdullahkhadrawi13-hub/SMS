@@ -1,0 +1,77 @@
+/* The selector component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Selector Card
+   ================================ */
+
+.selector-card {
+  padding: 20px;
+  margin-bottom: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+.selector-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.selector-fields mat-form-field {
+  width: 100%;
+}
+
+/* The date is picked from the calendar only. */
+.selector-fields input[readonly] {
+  cursor: pointer;
+}
+
+
+/* ================================
+   Locked Hint
+   ================================ */
+
+.selector-hint {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 14px 0 0;
+
+  color: #92400e;
+
+  font-size: 13px;
+}
+
+.selector-hint mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  flex-shrink: 0;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 900px) {
+
+  .selector-fields {
+    grid-template-columns: 1fr;
+  }
+
+}

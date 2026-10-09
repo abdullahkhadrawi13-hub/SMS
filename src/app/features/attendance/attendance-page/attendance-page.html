@@ -1,0 +1,96 @@
+<div class="attendance-page">
+
+  <!-- Page Header -->
+  <app-attendance-header></app-attendance-header>
+
+  <!-- Tabs -->
+  <nav
+    mat-tab-nav-bar
+    mat-stretch-tabs="false"
+    class="attendance-tabs"
+    [tabPanel]="tabPanel"
+  >
+
+    <a
+      mat-tab-link
+      [active]="activeTab() === 'record'"
+      (click)="selectTab('record')"
+    >
+      <span class="tab-label">
+        <mat-icon>edit_note</mat-icon>
+
+        <span>
+          {{ 'ATTENDANCE.TABS.RECORD' | translate }}
+        </span>
+      </span>
+    </a>
+
+    <a
+      mat-tab-link
+      [active]="activeTab() === 'summary'"
+      (click)="selectTab('summary')"
+    >
+      <span class="tab-label">
+        <mat-icon>insights</mat-icon>
+
+        <span>
+          {{ 'ATTENDANCE.TABS.SUMMARY' | translate }}
+        </span>
+      </span>
+    </a>
+
+  </nav>
+
+  <mat-tab-nav-panel #tabPanel>
+
+    @if (activeTab() === 'record') {
+
+      <!-- Class / Section / Date -->
+      <app-attendance-selector
+        [classes]="classes()"
+        [sections]="sections()"
+        [sectionsLoading]="sectionsLoading()"
+        [classId]="classId()"
+        [sectionId]="sectionId()"
+        [date]="date()"
+        [maxDate]="today"
+        [locked]="selectionLocked()"
+        (classChange)="onClassChange($event)"
+        (sectionChange)="onSectionChange($event)"
+        (dateChange)="onDateChange($event)"
+      ></app-attendance-selector>
+
+      <!-- Attendance Sheet (error / loading / empty state / table) -->
+      <app-attendance-sheet
+        [sheet]="sheet()"
+        [draft]="draft()"
+        [stats]="stats()"
+        [className]="selectedClassName()"
+        [sectionName]="selectedSectionName()"
+        [loading]="sheetLoading()"
+        [saving]="saving()"
+        [errorMessage]="sheetError()"
+        (statusChange)="onStatusChange($event)"
+        (markRemainingPresent)="markRemainingPresent()"
+        (reset)="resetChanges()"
+        (save)="saveAttendance()"
+      ></app-attendance-sheet>
+
+    } @else {
+
+      <!-- Daily Summary (date / statistics / sections table) -->
+      <app-attendance-summary
+        [summary]="summary()"
+        [date]="summaryDate()"
+        [maxDate]="today"
+        [loading]="summaryLoading()"
+        [errorMessage]="summaryError()"
+        (dateChange)="onSummaryDateChange($event)"
+        (openSection)="openSectionSheet($event)"
+      ></app-attendance-summary>
+
+    }
+
+  </mat-tab-nav-panel>
+
+</div>
