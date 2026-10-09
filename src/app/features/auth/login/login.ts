@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
 import { User } from '../../../core/services/user';
 import { LoginRequest } from '../../../core/models/login-request';
+import { ActionResult } from '../../../shared/services/action-result';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +26,8 @@ export class Login {
   private auth = inject(Auth);
   private user = inject(User);
   private router = inject(Router);
+  private translate = inject(TranslateService);
+  private actionResult = inject(ActionResult);
 
   showPassword = signal(false);
 
@@ -69,7 +72,19 @@ export class Login {
         this.user.setUser(userData);
 
         if (userData.mustChangePassword) {
-          this.router.navigate(['/change-password']);
+
+          // أول تسجيل دخول: ننتقل لصفحة تغيير كلمة المرور
+          // ثم نعرض رسالة النجاح فوقها
+          this.router.navigate(['/change-password']).then(navigated => {
+
+            if (navigated) {
+              this.actionResult.success(
+                this.translate.instant('LOGIN.FIRST_LOGIN_SUCCESS')
+              );
+            }
+
+          });
+
         } else {
           this.router.navigate(['/dashboard']);
         }

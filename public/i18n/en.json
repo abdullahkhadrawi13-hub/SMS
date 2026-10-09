@@ -14,6 +14,7 @@
     "BUTTON": "Login",
     "REQUIRED": "Please enter username and password",
     "ERROR": "Invalid username or password",
+    "FIRST_LOGIN_SUCCESS": "You have logged in successfully. Please change your password now to continue to the site.",
     "LOADING": "Logging in..."
   },
 
