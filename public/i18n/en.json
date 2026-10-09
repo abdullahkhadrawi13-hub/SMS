@@ -614,5 +614,22 @@
     "ERRORS": {
       "FORBIDDEN": "You do not have permission to view attendance data."
     }
+  },
+
+  "SETTINGS": {
+    "HEADER": {
+      "TITLE": "Settings",
+      "SUBTITLE": "Manage the general school settings"
+    },
+    "OPTIONS": {
+      "ACADEMIC_YEARS": {
+        "TITLE": "Academic Years & Terms",
+        "DESCRIPTION": "Manage academic years, the terms of each year and the current year"
+      },
+      "ATTENDANCE_OFFICER": {
+        "TITLE": "Attendance Officer",
+        "DESCRIPTION": "Choose the teacher responsible for following up attendance"
+      }
+    }
   }
 }

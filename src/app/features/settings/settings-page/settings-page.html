@@ -1,1 +1,58 @@
-<p>settings-page works!</p>
+<div class="settings-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div class="title-section">
+      <h1>
+        {{ 'SETTINGS.HEADER.TITLE' | translate }}
+      </h1>
+
+      <p>
+        {{ 'SETTINGS.HEADER.SUBTITLE' | translate }}
+      </p>
+    </div>
+
+  </div>
+
+  <hr class="header-divider" />
+
+  <!-- Settings Options -->
+  <nav class="settings-list">
+
+    @for (option of options; track option.route) {
+
+      <!-- The whole option is one link to its sub-route.
+           color-... gives the option its own color. -->
+      <a
+        class="settings-option"
+        [class]="'color-' + option.color"
+        [routerLink]="option.route"
+      >
+
+        <!-- Icon -->
+        <span class="option-icon">
+          <mat-icon>{{ option.icon }}</mat-icon>
+        </span>
+
+        <!-- Title + Description -->
+        <span class="option-text">
+          <span class="option-title">
+            {{ option.title | translate }}
+          </span>
+
+          <span class="option-description">
+            {{ option.description | translate }}
+          </span>
+        </span>
+
+        <!-- Arrow (flipped automatically in Arabic) -->
+        <mat-icon class="option-arrow">chevron_right</mat-icon>
+
+      </a>
+
+    }
+
+  </nav>
+
+</div>
