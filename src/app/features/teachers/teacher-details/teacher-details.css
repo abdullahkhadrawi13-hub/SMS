@@ -1,20 +1,12 @@
 /* ================================
-   Student Details Dialog
+   Teacher Details Dialog
    ================================ */
 
-.student-dialog {
+.teacher-dialog {
   width: 100%;
   box-sizing: border-box;
   background: #ffffff;
   text-align: start;
-}
-
-.student-dialog[dir='rtl'] {
-  direction: rtl;
-}
-
-.student-dialog[dir='ltr'] {
-  direction: ltr;
 }
 
 
@@ -88,25 +80,6 @@
 
 
 /* ================================
-   Tabs (Details / Attendance)
-   ================================ */
-
-.details-tabs {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-/* Icon + text of a tab.
-   gap is used (not a margin on the icon) so the space is correct
-   in both Arabic (RTL) and English (LTR). */
-.tab-label {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 8px;
-}
-
-
-/* ================================
    Dialog Content
    ================================ */
 
@@ -118,10 +91,10 @@
 
 
 /* ================================
-   Student Profile
+   Teacher Profile
    ================================ */
 
-.student-profile {
+.teacher-profile {
   display: flex;
   align-items: center;
 
@@ -133,7 +106,7 @@
   border-bottom: 1px solid #f1f5f9;
 }
 
-.student-avatar {
+.teacher-avatar {
   width: 60px;
   height: 60px;
 
@@ -150,19 +123,19 @@
   color: #475569;
 }
 
-.student-avatar mat-icon {
+.teacher-avatar mat-icon {
   width: 30px;
   height: 30px;
 
   font-size: 30px;
 }
 
-.student-name {
+.teacher-name {
   flex: 1;
   min-width: 0;
 }
 
-.student-name h2 {
+.teacher-name h2 {
   margin: 0;
 
   font-size: 20px;
@@ -174,7 +147,7 @@
   word-break: break-word;
 }
 
-.student-name span {
+.teacher-name span {
   display: block;
 
   margin-top: 4px;
@@ -258,7 +231,7 @@
   display: grid;
 
   grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+    repeat(2, minmax(0, 1fr));
 
   gap: 18px;
 }
@@ -355,6 +328,15 @@
   text-align: center;
 }
 
+.state-card h3 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
 .state-card p {
   margin: 0;
 
@@ -363,7 +345,7 @@
   font-size: 14px;
 }
 
-.error-state mat-icon {
+.error-state > mat-icon {
   width: 42px;
   height: 42px;
 
@@ -411,7 +393,7 @@
     gap: 16px;
   }
 
-  .student-profile {
+  .teacher-profile {
     align-items: flex-start;
   }
 
@@ -449,23 +431,23 @@
     padding: 16px;
   }
 
-  .student-profile {
+  .teacher-profile {
     gap: 12px;
   }
 
-  .student-avatar {
+  .teacher-avatar {
     width: 50px;
     height: 50px;
   }
 
-  .student-avatar mat-icon {
+  .teacher-avatar mat-icon {
     width: 26px;
     height: 26px;
 
     font-size: 26px;
   }
 
-  .student-name h2 {
+  .teacher-name h2 {
     font-size: 18px;
   }
 

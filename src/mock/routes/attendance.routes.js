@@ -14,31 +14,52 @@ const users = require('../data/users');
 // 0 = no delay. Try 500 or 2000 to see the loading states.
 const DELAY_MS = 0;
 
-// Roles that can view and record attendance:
+// Roles that can call the attendance API at all:
 // 0 = Admin, 1 = Assistant Principal, 2 = Teacher.
-// Student (3) and Parent (4) get 403.
-const RECORD_ROLES = [0, 1, 2];
+// Student (3) and Parent (4) have no attendance endpoints yet: 403.
+const STAFF_ROLES = [0, 1, 2];
+
+// Admin and Assistant Principal: any past day or today,
+// plus by-student, by-date and daily-summary.
+const FULL_ACCESS_ROLES = [0, 1];
+
+// The teacher who is the school's attendance officer (userId in data/users.js).
+// 6 = the user "officer". The user "teacher2" is a normal teacher.
+// Set it to null to test a school with no attendance officer.
+// (The real backend keeps a teacherId in SchoolSettings.)
+const ATTENDANCE_OFFICER_USER_ID = 6;
 
 const STATUS_PRESENT = 0;
 const STATUS_ABSENT = 1;
 
 
 // =====================================================
-// ASSUMPTIONS
-// These rules are not taken from the real backend.
-// Change them when the real API rules are known.
+// RULES (SMS API Reference - section 11)
 // =====================================================
 //
-// 1. The sheet shows only ACTIVE students of the section.
-// 2. A future date is rejected with 400.
-// 3. A date that is outside every academic term is rejected with 400.
-// 4. Recording a student that is already recorded on that day
-//    is rejected with 409 (the whole batch fails).
-// 5. The daily summary shows only ACTIVE sections of ACTIVE classes
-//    that have at least one active student.
-// 6. my-access: the teacher gets todayOnly = true.
-//    (The value is only returned. The mock does not block past dates.)
-// 7. Weekend days are accepted.
+// 1. my-access (roles 0, 1, 2):
+//      Admin / Assistant Principal -> canRecord: true,  todayOnly: false
+//      The attendance officer      -> canRecord: true,  todayOnly: true
+//      Any other teacher           -> canRecord: false, todayOnly: false
+// 2. sheet / POST / PUT: Admin, Assistant Principal, the attendance officer.
+//    A teacher who is not the officer gets 400.
+//    The officer gets 400 for any day other than today.
+// 3. by-student / by-date / daily-summary: Admin and Assistant Principal
+//    only. A teacher (the officer included) gets 403.
+// 4. A future date is rejected with 400, for everyone.
+// 5. A date that no academic term covers is rejected with 400.
+// 6. Recording a student twice on the same day is rejected with 400,
+//    and so is the same studentId twice in one request.
+//    All or nothing: the whole batch fails.
+// 7. daily-summary: the date is optional (without it, today is used).
+// 8. recordedAt / editedAt are UTC without a trailing "Z".
+//
+// ASSUMPTIONS (not taken from the real backend):
+// - The sheet shows the ACTIVE students of the section (the real backend
+//   reads them from StudentAcademicRecord in the term that covers the date).
+// - The daily summary shows only ACTIVE sections of ACTIVE classes
+//   that have at least one active student.
+// - Weekend days are accepted.
 
 
 // =====================================================
@@ -252,6 +273,89 @@ function findRecord(studentId, date) {
 }
 
 
+// The answer of GET /api/attendance/my-access for one user.
+function getAccess(user) {
+
+  if (FULL_ACCESS_ROLES.includes(user.role)) {
+    return { canRecord: true, todayOnly: false };
+  }
+
+  if (
+    user.role === 2 &&
+    user.userId === ATTENDANCE_OFFICER_USER_ID
+  ) {
+    return { canRecord: true, todayOnly: true };
+  }
+
+  return { canRecord: false, todayOnly: false };
+}
+
+
+// Used by sheet / POST / PUT.
+// Sends 400 and returns false when the user cannot work on that day.
+function checkCanRecord(res, user, date) {
+
+  const access = getAccess(user);
+
+  if (!access.canRecord) {
+
+    sendError(
+      res,
+      400,
+      'المعلم ليس مسؤول الحضور',
+      'The teacher is not the attendance officer'
+    );
+
+    return false;
+  }
+
+  if (access.todayOnly && date !== getToday()) {
+
+    sendError(
+      res,
+      400,
+      'مسؤول الحضور يستطيع تسجيل وتعديل حضور اليوم الحالي فقط',
+      'The attendance officer can record and edit attendance for today only'
+    );
+
+    return false;
+  }
+
+  return true;
+}
+
+
+// Now in UTC without a trailing "Z" (like the real backend).
+// Example: "2026-10-08T19:18:38.803"
+function getUtcNow() {
+  return new Date().toISOString().replace('Z', '');
+}
+
+
+// One saved record in the shape the API returns (AttendanceDto).
+function toAttendanceDto(record) {
+
+  const student = students.find(
+    item => item.studentId === record.studentId
+  );
+
+  return {
+    attendanceId: record.attendanceId,
+    studentId: record.studentId,
+    studentNumber: student ? student.studentNumber : '',
+    studentFirstNameAr: student ? student.firstNameAr : '',
+    studentFirstNameEn: student ? student.firstNameEn : '',
+    academicTermId: record.academicTermId,
+    date: record.date,
+    status: record.status,
+    recordedByUserId: record.recordedByUserId,
+    recordedAt: record.recordedAt,
+    editedByUserId: record.editedByUserId,
+    editedAt: record.editedAt
+  };
+}
+
+
 // =====================================================
 // Attendance Routes
 // =====================================================
@@ -309,12 +413,19 @@ function handleAttendance(req, res, url, pathname) {
     return;
   }
 
-  const canRecord =
-    RECORD_ROLES.includes(currentUser.role);
+  // Student / Parent: no attendance endpoints yet.
+  if (!STAFF_ROLES.includes(currentUser.role)) {
+    sendEmpty(res, 403);
+    return;
+  }
+
+  const hasFullAccess =
+    FULL_ACCESS_ROLES.includes(currentUser.role);
 
 
   // =====================================================
   // GET /api/attendance/my-access
+  // (Admin, Assistant Principal, Teacher)
   // =====================================================
 
   if (
@@ -326,10 +437,7 @@ function handleAttendance(req, res, url, pathname) {
       success: true,
       messageAr: 'تم جلب صلاحيات الحضور بنجاح',
       messageEn: 'Attendance access retrieved successfully',
-      data: {
-        canRecord,
-        todayOnly: currentUser.role === 2
-      }
+      data: getAccess(currentUser)
     });
 
     return;
@@ -337,17 +445,111 @@ function handleAttendance(req, res, url, pathname) {
 
 
   // =====================================================
-  // All other endpoints: allowed roles only
+  // GET /api/attendance/by-student/{studentId}
+  // (Admin, Assistant Principal)
+  // One student's history in every term, oldest first.
   // =====================================================
 
-  if (!canRecord) {
-    sendEmpty(res, 403);
+  const byStudentMatch = pathname.match(
+    /^\/api\/attendance\/by-student\/(\d+)$/
+  );
+
+  if (
+    req.method === 'GET' &&
+    byStudentMatch
+  ) {
+
+    if (!hasFullAccess) {
+      sendEmpty(res, 403);
+      return;
+    }
+
+    const studentId = Number(byStudentMatch[1]);
+
+    const studentExists = students.some(
+      student => student.studentId === studentId
+    );
+
+    if (!studentExists) {
+
+      sendError(
+        res,
+        404,
+        'الطالب غير موجود',
+        'Student not found'
+      );
+
+      return;
+    }
+
+    const history = attendanceRecords
+      .filter(record => record.studentId === studentId)
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map(toAttendanceDto);
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم جلب سجل حضور الطالب بنجاح',
+      messageEn: 'Student attendance retrieved successfully',
+      data: history
+    });
+
+    return;
+  }
+
+
+  // =====================================================
+  // GET /api/attendance/by-date/{date}
+  // (Admin, Assistant Principal)
+  // Every student's record on one day.
+  // =====================================================
+
+  const byDateMatch = pathname.match(
+    /^\/api\/attendance\/by-date\/([^/]+)$/
+  );
+
+  if (
+    req.method === 'GET' &&
+    byDateMatch
+  ) {
+
+    if (!hasFullAccess) {
+      sendEmpty(res, 403);
+      return;
+    }
+
+    const date = byDateMatch[1];
+
+    if (!isValidDate(date)) {
+
+      sendError(
+        res,
+        400,
+        'التاريخ غير صالح',
+        'Invalid date'
+      );
+
+      return;
+    }
+
+    const dayRecords = attendanceRecords
+      .filter(record => record.date === date)
+      .map(toAttendanceDto);
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم جلب حضور اليوم بنجاح',
+      messageEn: 'Attendance retrieved successfully',
+      data: dayRecords
+    });
+
     return;
   }
 
 
   // =====================================================
   // GET /api/attendance/sheet?date=..&classId=..&sectionId=..
+  // (Admin, Assistant Principal, the attendance officer)
   // =====================================================
 
   if (
@@ -369,6 +571,11 @@ function handleAttendance(req, res, url, pathname) {
     const term = validateDate(res, date);
 
     if (!term) {
+      return;
+    }
+
+
+    if (!checkCanRecord(res, currentUser, date)) {
       return;
     }
 
@@ -460,6 +667,8 @@ function handleAttendance(req, res, url, pathname) {
 
   // =====================================================
   // GET /api/attendance/daily-summary?date=..
+  // (Admin, Assistant Principal)
+  // date is optional: without it, today is used.
   // =====================================================
 
   if (
@@ -467,7 +676,13 @@ function handleAttendance(req, res, url, pathname) {
     pathname === '/api/attendance/daily-summary'
   ) {
 
-    const date = url.searchParams.get('date');
+    if (!hasFullAccess) {
+      sendEmpty(res, 403);
+      return;
+    }
+
+    const date =
+      url.searchParams.get('date') || getToday();
 
     const term = validateDate(res, date);
 
@@ -545,6 +760,7 @@ function handleAttendance(req, res, url, pathname) {
 
   // =====================================================
   // POST /api/attendance
+  // (Admin, Assistant Principal, the attendance officer for today only)
   // Body: { date, entries: [{ studentId, status }] }
   // All or nothing: one rejected student fails the whole batch.
   // =====================================================
@@ -583,11 +799,50 @@ function handleAttendance(req, res, url, pathname) {
         }
 
 
+        if (!checkCanRecord(res, currentUser, date)) {
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // The same studentId twice in one request: 400,
+        // and the message lists the duplicated IDs.
+        // -------------------------------------------------
+
+        const duplicatedIds = [];
+
+        entries.forEach((entry, index) => {
+
+          const firstIndex = entries.findIndex(
+            item => item.studentId === entry.studentId
+          );
+
+          if (
+            firstIndex !== index &&
+            !duplicatedIds.includes(entry.studentId)
+          ) {
+            duplicatedIds.push(entry.studentId);
+          }
+        });
+
+        if (duplicatedIds.length > 0) {
+
+          const ids = duplicatedIds.join(', ');
+
+          sendError(
+            res,
+            400,
+            `تم إرسال الطالب أكثر من مرة في نفس الطلب: ${ids}`,
+            `The same student was sent more than once: ${ids}`
+          );
+
+          return;
+        }
+
+
         // -------------------------------------------------
         // Check every entry BEFORE saving anything
         // -------------------------------------------------
-
-        const seenStudentIds = [];
 
         for (const entry of entries) {
 
@@ -621,26 +876,11 @@ function handleAttendance(req, res, url, pathname) {
           }
 
 
-          if (seenStudentIds.includes(entry.studentId)) {
-
-            sendError(
-              res,
-              400,
-              'تم إرسال الطالب أكثر من مرة في نفس الطلب',
-              'The same student was sent more than once'
-            );
-
-            return;
-          }
-
-          seenStudentIds.push(entry.studentId);
-
-
           if (findRecord(entry.studentId, date)) {
 
             sendError(
               res,
-              409,
+              400,
               'تم تسجيل حضور الطالب مسبقًا في هذا اليوم',
               'Attendance is already recorded for this student on this day'
             );
@@ -663,24 +903,37 @@ function handleAttendance(req, res, url, pathname) {
               ) + 1
             : 1;
 
+        const recordedAt = getUtcNow();
+
+        const createdRecords = [];
+
         for (const entry of entries) {
 
-          attendanceRecords.push({
+          const record = {
             attendanceId: nextId,
             studentId: entry.studentId,
+            academicTermId: term.academicTermId,
             date,
-            status: entry.status
-          });
+            status: entry.status,
+            recordedByUserId: currentUser.userId,
+            recordedAt,
+            editedByUserId: null,
+            editedAt: null
+          };
+
+          attendanceRecords.push(record);
+          createdRecords.push(record);
 
           nextId++;
         }
 
 
+        // data = the records that were created (AttendanceDto[])
         sendJson(res, 201, {
           success: true,
           messageAr: 'تم تسجيل الحضور بنجاح',
           messageEn: 'Attendance recorded successfully',
-          data: null
+          data: createdRecords.map(toAttendanceDto)
         });
 
       })
@@ -701,6 +954,8 @@ function handleAttendance(req, res, url, pathname) {
 
   // =====================================================
   // PUT /api/attendance/{attendanceId}
+  // (Admin, Assistant Principal; the attendance officer
+  //  for today's records only)
   // Body: { status }
   // =====================================================
 
@@ -737,6 +992,12 @@ function handleAttendance(req, res, url, pathname) {
         }
 
 
+        // The officer cannot edit a record after its day ends.
+        if (!checkCanRecord(res, currentUser, record.date)) {
+          return;
+        }
+
+
         if (!isValidStatus(body.status)) {
 
           sendError(
@@ -751,6 +1012,8 @@ function handleAttendance(req, res, url, pathname) {
 
 
         record.status = body.status;
+        record.editedByUserId = currentUser.userId;
+        record.editedAt = getUtcNow();
 
 
         sendJson(res, 200, {

@@ -10,15 +10,18 @@
     </p>
   </div>
 
-  <button
-    mat-flat-button
-    color="primary"
-    type="button"
-    (click)="openTeacherForm()"
-  >
-    <mat-icon>person_add</mat-icon>
+  <!-- Add teacher (Admin only) -->
+  @if (canManage()) {
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="addTeacher.emit()"
+    >
+      <mat-icon>person_add</mat-icon>
 
-    {{ 'TEACHERS.HEADER.ADD' | translate }}
-  </button>
+      {{ 'TEACHERS.HEADER.ADD' | translate }}
+    </button>
+  }
 
 </div>

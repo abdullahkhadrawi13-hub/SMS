@@ -3,43 +3,46 @@
   <!-- Page Header -->
   <app-attendance-header></app-attendance-header>
 
-  <!-- Tabs -->
-  <nav
-    mat-tab-nav-bar
-    mat-stretch-tabs="false"
-    class="attendance-tabs"
-    [tabPanel]="tabPanel"
-  >
-
-    <a
-      mat-tab-link
-      [active]="activeTab() === 'record'"
-      (click)="selectTab('record')"
+  <!-- Tabs: Admin and Assistant Principal only.
+       The attendance officer has one screen (record), so no tabs are shown. -->
+  @if (canViewSummary()) {
+    <nav
+      mat-tab-nav-bar
+      mat-stretch-tabs="false"
+      class="attendance-tabs"
+      [tabPanel]="tabPanel"
     >
-      <span class="tab-label">
-        <mat-icon>edit_note</mat-icon>
 
-        <span>
-          {{ 'ATTENDANCE.TABS.RECORD' | translate }}
+      <a
+        mat-tab-link
+        [active]="activeTab() === 'record'"
+        (click)="selectTab('record')"
+      >
+        <span class="tab-label">
+          <mat-icon>edit_note</mat-icon>
+
+          <span>
+            {{ 'ATTENDANCE.TABS.RECORD' | translate }}
+          </span>
         </span>
-      </span>
-    </a>
+      </a>
 
-    <a
-      mat-tab-link
-      [active]="activeTab() === 'summary'"
-      (click)="selectTab('summary')"
-    >
-      <span class="tab-label">
-        <mat-icon>insights</mat-icon>
+      <a
+        mat-tab-link
+        [active]="activeTab() === 'summary'"
+        (click)="selectTab('summary')"
+      >
+        <span class="tab-label">
+          <mat-icon>insights</mat-icon>
 
-        <span>
-          {{ 'ATTENDANCE.TABS.SUMMARY' | translate }}
+          <span>
+            {{ 'ATTENDANCE.TABS.SUMMARY' | translate }}
+          </span>
         </span>
-      </span>
-    </a>
+      </a>
 
-  </nav>
+    </nav>
+  }
 
   <mat-tab-nav-panel #tabPanel>
 
@@ -54,6 +57,7 @@
         [sectionId]="sectionId()"
         [date]="date()"
         [maxDate]="today"
+        [todayOnly]="todayOnly()"
         [locked]="selectionLocked()"
         (classChange)="onClassChange($event)"
         (sectionChange)="onSectionChange($event)"

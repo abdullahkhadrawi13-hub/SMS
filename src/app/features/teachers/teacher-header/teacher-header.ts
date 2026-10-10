@@ -1,12 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
 
 import { TranslatePipe } from '@ngx-translate/core';
-
-import { TeacherForm } from '../teacher-form/teacher-form';
 
 @Component({
   selector: 'app-teacher-header',
@@ -20,15 +17,10 @@ import { TeacherForm } from '../teacher-form/teacher-form';
 })
 export class TeacherHeader {
 
-  // Reference used to open teacher dialogs.
-  private readonly dialog = inject(MatDialog);
+  // Shows the "Add teacher" button only for users allowed to add teachers.
+  readonly canManage = input(false);
 
-  // Opens the teacher form dialog.
-  openTeacherForm(): void {
-    this.dialog.open(TeacherForm, {
-      width: '850px',
-      maxWidth: '95vw',
-      maxHeight: '90vh',
-    });
-  }
+  // Emitted when the user clicks the "Add teacher" button.
+  // The parent page opens the form dialog and reloads the list afterwards.
+  readonly addTeacher = output<void>();
 }

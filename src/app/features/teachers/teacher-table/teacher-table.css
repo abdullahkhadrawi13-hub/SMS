@@ -1,3 +1,8 @@
+/* The table component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
 /* ================================
    Table Card
    ================================ */
@@ -192,4 +197,48 @@
 
   font-size: 14px;
   font-weight: 500;
+}
+
+
+/* ================================
+   State Card (loading / error)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+.state-card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.error-state > mat-icon {
+  width: 42px;
+  height: 42px;
+
+  font-size: 42px;
+
+  color: #dc2626;
 }

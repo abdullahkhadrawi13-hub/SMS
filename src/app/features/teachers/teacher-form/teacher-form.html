@@ -6,11 +6,19 @@
     <div class="title-section">
 
       <h1>
-        {{ 'TEACHERS.FORM.TITLE' | translate }}
+        {{
+          isEditMode()
+            ? ('TEACHERS.FORM.EDIT_TITLE' | translate)
+            : ('TEACHERS.FORM.TITLE' | translate)
+        }}
       </h1>
 
       <p>
-        {{ 'TEACHERS.FORM.SUBTITLE' | translate }}
+        {{
+          isEditMode()
+            ? ('TEACHERS.FORM.EDIT_SUBTITLE' | translate)
+            : ('TEACHERS.FORM.SUBTITLE' | translate)
+        }}
       </p>
 
     </div>
@@ -18,12 +26,42 @@
   </div>
 
 
+  <!-- Loading (edit mode: while the teacher is being loaded) -->
+  @if (isLoading()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>
+        {{ 'TEACHERS.FORM.LOADING' | translate }}
+      </p>
+
+    </div>
+
+  } @else {
+
   <!-- Teacher Form -->
   <form
     [formGroup]="teacherForm"
     (ngSubmit)="onSubmit()"
     novalidate
   >
+
+    <!-- Error -->
+    @if (errorMessage()) {
+
+      <div class="message-card error-message">
+
+        <mat-icon>error_outline</mat-icon>
+
+        <span>
+          {{ errorMessage() | translate }}
+        </span>
+
+      </div>
+
+    }
 
     <!-- ================================
          Arabic Information
@@ -456,7 +494,7 @@
 
               } @else if (teacherForm.controls.loginId.hasError('minlength')) {
 
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
+                {{ 'TEACHERS.FORM.ERROR.LOGIN_ID' | translate }}
 
               }
 
@@ -465,6 +503,46 @@
           }
 
         </mat-form-field>
+
+
+        <!-- Temporary Password (only when adding a teacher) -->
+        @if (!isEditMode()) {
+
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'TEACHERS.FORM.TEMPORARY_PASSWORD' | translate }}
+            </mat-label>
+
+            <input
+              matInput
+              type="text"
+              formControlName="temporaryPassword"
+              dir="ltr"
+              autocomplete="new-password"
+            />
+
+            @if (isFieldInvalid('temporaryPassword')) {
+
+              <mat-error>
+
+                @if (teacherForm.controls.temporaryPassword.hasError('required')) {
+
+                  {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
+
+                } @else if (teacherForm.controls.temporaryPassword.hasError('minlength')) {
+
+                  {{ 'TEACHERS.FORM.ERROR.PASSWORD' | translate }}
+
+                }
+
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        }
 
 
         <!-- Phone Number -->
@@ -517,6 +595,7 @@
       <button
         mat-button
         type="button"
+        [disabled]="isSubmitting()"
         (click)="cancel()"
       >
         {{ 'TEACHERS.FORM.CANCEL' | translate }}
@@ -526,14 +605,23 @@
         mat-flat-button
         color="primary"
         type="submit"
+        [disabled]="isSubmitting()"
       >
-        <mat-icon>person_add</mat-icon>
+        <mat-icon>
+          {{ isEditMode() ? 'save' : 'person_add' }}
+        </mat-icon>
 
-        {{ 'TEACHERS.FORM.SAVE' | translate }}
+        {{
+          isSubmitting()
+            ? ('TEACHERS.FORM.SAVING' | translate)
+            : ('TEACHERS.FORM.SAVE' | translate)
+        }}
       </button>
 
     </div>
 
   </form>
+
+  }
 
 </div>

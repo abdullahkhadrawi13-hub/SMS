@@ -24,6 +24,10 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 
+  /* Each field keeps its own height. Without this the other fields are
+     stretched when the date field has a hint line under it. */
+  align-items: start;
+
   gap: 16px;
 }
 
@@ -34,6 +38,15 @@
 /* The date is picked from the calendar only. */
 .selector-fields input[readonly] {
   cursor: pointer;
+}
+
+/* Attendance officer: the date is fixed to today, it cannot be opened. */
+.selector-fields .today-only-field input[readonly] {
+  cursor: default;
+}
+
+.selector-fields .today-only-field mat-icon {
+  color: #6b7280;
 }
 
 

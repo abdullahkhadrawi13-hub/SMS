@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,14 +7,12 @@ import {
   MatPaginatorModule,
   PageEvent,
 } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import {
-  TeacherListDto,
-  TeachersService,
-} from '../../../core/services/teachers';
+import { TeacherListDto } from '../../../core/services/teachers';
 
 
 @Component({
@@ -24,16 +22,40 @@ import {
     MatIconModule,
     MatMenuModule,
     MatPaginatorModule,
+    MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
   ],
   templateUrl: './teacher-table.html',
   styleUrl: './teacher-table.css',
 })
-export class TeacherTable implements OnInit {
+export class TeacherTable {
 
-  // Service used to communicate with the Teachers API.
-  private readonly teachersService = inject(TeachersService);
+  // ===== Inputs (all data is owned and loaded by the parent page) =====
+
+  // Teachers of the current page.
+  readonly teachers = input<TeacherListDto[]>([]);
+
+  // Loading and error state of the list.
+  readonly isLoading = input(false);
+  readonly errorMessage = input('');
+
+  // Pagination state (pageNumber is 1-based).
+  readonly totalCount = input(0);
+  readonly pageNumber = input(1);
+  readonly pageSize = input(10);
+
+  // Shows the edit and activate / deactivate actions (Admin only).
+  readonly canManage = input(false);
+
+
+  // ===== Outputs (the parent page performs the actual actions) =====
+
+  readonly retry = output<void>();
+  readonly pageChange = output<PageEvent>();
+  readonly viewTeacher = output<number>();
+  readonly editTeacher = output<number>();
+  readonly toggleStatus = output<TeacherListDto>();
 
 
   // Columns displayed in the teacher table.
@@ -47,85 +69,11 @@ export class TeacherTable implements OnInit {
   ];
 
 
-  // Stores the teachers returned by the API.
-  readonly teachers = signal<TeacherListDto[]>([]);
-
-
-  // Total number of teachers returned by the API.
-  readonly totalCount = signal(0);
-
-
-  // Current paginator page.
-  readonly pageIndex = signal(0);
-
-
-  // Current number of rows displayed per page.
-  readonly pageSize = signal(10);
-
-
-  // Indicates whether the table is currently loading.
-  readonly loading = signal(false);
-
-
-  ngOnInit(): void {
-
-    // Load the first page when the component is initialized.
-    this.loadTeachers();
-  }
-
-
-  // Loads teachers from the backend using the current pagination values.
-  loadTeachers(): void {
-
-    this.loading.set(true);
-
-    this.teachersService
-      .getTeachers(
-        this.pageIndex() + 1,
-        this.pageSize()
-      )
-      .subscribe({
-        next: (response) => {
-
-          if (!response.success) {
-            this.teachers.set([]);
-            this.totalCount.set(0);
-            this.loading.set(false);
-            return;
-          }
-
-          this.teachers.set(response.data.items);
-          this.totalCount.set(response.data.totalCount);
-
-          this.loading.set(false);
-        },
-
-        error: () => {
-
-          this.teachers.set([]);
-          this.totalCount.set(0);
-
-          this.loading.set(false);
-        },
-      });
-  }
-
-
   // Returns the teacher name according to the current language.
   getTeacherName(teacher: TeacherListDto): string {
 
     return document.documentElement.lang === 'ar'
       ? `${teacher.firstNameAr} ${teacher.fatherNameAr} ${teacher.grandFatherNameAr} ${teacher.familyNameAr}`
       : `${teacher.firstNameEn} ${teacher.fatherNameEn} ${teacher.grandFatherNameEn} ${teacher.familyNameEn}`;
-  }
-
-
-  // Handles paginator changes and reloads the requested page.
-  onPageChange(event: PageEvent): void {
-
-    this.pageIndex.set(event.pageIndex);
-    this.pageSize.set(event.pageSize);
-
-    this.loadTeachers();
   }
 }

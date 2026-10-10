@@ -40,6 +40,7 @@ import {
 import { ApiResponse } from '../../../core/models/api-response';
 import { ApiMessageService } from '../../../core/services/api-message';
 import { AttendanceService } from '../../../core/services/attendance';
+import { AttendanceAccessService } from '../../../core/services/attendance-access';
 import { Language } from '../../../core/services/language';
 import { SchoolClassesService } from '../../../core/services/school-classes';
 import {
@@ -67,6 +68,7 @@ import { SchoolClassSimpleDto } from '../../classes/school-class';
 export class AttendancePage implements OnInit {
 
   private readonly attendanceService = inject(AttendanceService);
+  private readonly attendanceAccess = inject(AttendanceAccessService);
   private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);
 
@@ -80,6 +82,19 @@ export class AttendancePage implements OnInit {
 
   // Today in the API format (YYYY-MM-DD). Future dates are not allowed.
   readonly today = todayApiDate();
+
+  // =========================
+  // Access (GET /api/attendance/my-access)
+  // =========================
+  // The answer is already loaded: attendanceAccessGuard waits for it
+  // before this page opens.
+
+  // The attendance officer records today only: the date is locked.
+  readonly todayOnly = this.attendanceAccess.todayOnly;
+
+  // The daily summary is for Admin and AssistantPrincipal only
+  // (the attendance officer gets 403 from daily-summary).
+  readonly canViewSummary = this.attendanceAccess.fullAccess;
 
   readonly activeTab = signal<AttendanceTab>('record');
 
@@ -228,6 +243,11 @@ export class AttendancePage implements OnInit {
 
   selectTab(tab: AttendanceTab): void {
 
+    // The summary tab is not available for the attendance officer
+    if (tab === 'summary' && !this.canViewSummary()) {
+      return;
+    }
+
     this.activeTab.set(tab);
 
     // Always show fresh numbers when the summary is opened.
@@ -324,6 +344,12 @@ export class AttendancePage implements OnInit {
   }
 
   onDateChange(date: string): void {
+
+    // The attendance officer cannot leave today
+    if (this.todayOnly()) {
+      return;
+    }
+
     this.date.set(date);
     this.loadSheet();
   }

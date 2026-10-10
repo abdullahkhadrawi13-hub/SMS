@@ -58,6 +58,24 @@ export interface CreateTeacherRequest {
 }
 
 
+// Data required when editing a teacher (UpdateUserDto).
+// Same fields as creation, without the password. Every field is required.
+export interface UpdateTeacherRequest {
+  firstNameAr: string;
+  fatherNameAr: string;
+  grandFatherNameAr: string;
+  familyNameAr: string;
+
+  firstNameEn: string;
+  fatherNameEn: string;
+  grandFatherNameEn: string;
+  familyNameEn: string;
+
+  loginId: string;
+  phoneNumber: string;
+}
+
+
 @Injectable({
   providedIn: 'root',
 })
@@ -116,6 +134,37 @@ export class TeachersService {
     return this.http.post<ApiResponse<TeacherListDto>>(
       this.apiUrl,
       data
+    );
+  }
+
+
+  // Edits a teacher and returns the updated teacher.
+  updateTeacher(
+    teacherId: number,
+    data: UpdateTeacherRequest
+  ): Observable<ApiResponse<TeacherListDto>> {
+
+    return this.http.put<ApiResponse<TeacherListDto>>(
+      `${this.apiUrl}/${teacherId}`,
+      data
+    );
+  }
+
+
+  // Activates or deactivates a teacher account.
+  // isActive is sent as a query parameter, with an empty body.
+  updateTeacherStatus(
+    teacherId: number,
+    isActive: boolean
+  ): Observable<ApiResponse<TeacherListDto>> {
+
+    const params = new HttpParams()
+      .set('isActive', isActive);
+
+    return this.http.patch<ApiResponse<TeacherListDto>>(
+      `${this.apiUrl}/${teacherId}/status`,
+      null,
+      { params }
     );
   }
 }

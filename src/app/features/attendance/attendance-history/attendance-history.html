@@ -1,0 +1,188 @@
+<!-- Loading -->
+@if (loading()) {
+  <div class="state-card">
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <p>
+      {{ 'ATTENDANCE.HISTORY.LOADING' | translate }}
+    </p>
+  </div>
+}
+
+<!-- Error -->
+@else if (errorMessage()) {
+  <div class="state-card">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+
+    <p>{{ errorMessage() }}</p>
+
+    <button mat-stroked-button type="button" (click)="loadHistory()">
+      <mat-icon>refresh</mat-icon>
+
+      {{ 'ATTENDANCE.HISTORY.RETRY' | translate }}
+    </button>
+  </div>
+}
+
+<!-- The student has no attendance records at all -->
+@else if (records().length === 0) {
+  <div class="state-card">
+    <mat-icon>event_busy</mat-icon>
+
+    <h3>
+      {{ 'ATTENDANCE.HISTORY.EMPTY.TITLE' | translate }}
+    </h3>
+
+    <p>
+      {{ 'ATTENDANCE.HISTORY.EMPTY.MESSAGE' | translate }}
+    </p>
+  </div>
+}
+
+<!-- History -->
+@else {
+
+  <!-- Toolbar: counters + academic term -->
+  <div class="history-toolbar">
+
+    <div class="history-counters">
+
+      <span class="counter total">
+        {{ 'ATTENDANCE.HISTORY.RECORDED_DAYS' | translate }}
+        <strong>{{ stats().recorded }}</strong>
+      </span>
+
+      <span class="counter present">
+        {{ 'ATTENDANCE.STATUS.PRESENT' | translate }}
+        <strong>{{ stats().present }}</strong>
+      </span>
+
+      <span class="counter absent">
+        {{ 'ATTENDANCE.STATUS.ABSENT' | translate }}
+        <strong>{{ stats().absent }}</strong>
+      </span>
+
+    </div>
+
+    <!-- Academic term (only when the student has records in more than one term) -->
+    @if (termOptions().length > 1) {
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <mat-label>
+          {{ 'ATTENDANCE.HISTORY.TERM' | translate }}
+        </mat-label>
+
+        <!-- canSelectNullableOptions: "All terms" has the value null.
+             Without it the select would show the null option as "nothing selected". -->
+        <mat-select
+          canSelectNullableOptions
+          [value]="termId()"
+          (selectionChange)="onTermChange($event.value)"
+        >
+
+          <mat-option [value]="null">
+            {{ 'ATTENDANCE.HISTORY.ALL_TERMS' | translate }}
+          </mat-option>
+
+          @for (term of termOptions(); track term.academicTermId) {
+            <mat-option [value]="term.academicTermId">
+              {{
+                term.name
+                  ?? ('ATTENDANCE.HISTORY.TERM_NUMBER' | translate: { id: term.academicTermId })
+              }}
+            </mat-option>
+          }
+
+        </mat-select>
+
+      </mat-form-field>
+    }
+
+  </div>
+
+
+  <!-- A day with no record is not shown, and it does not mean "present" -->
+  <p class="history-note">
+    <mat-icon>info</mat-icon>
+
+    <span>
+      {{ 'ATTENDANCE.HISTORY.NOTE' | translate }}
+    </span>
+  </p>
+
+
+  <!-- Records -->
+  <div class="table-card">
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="rows()">
+
+        <!-- Date -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'ATTENDANCE.HISTORY.TABLE.DATE' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.date }}
+          </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'ATTENDANCE.HISTORY.TABLE.STATUS' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <span
+              class="status-badge"
+              [class.present]="row.status === present"
+              [class.absent]="row.status === absent"
+            >
+              <span class="status-dot"></span>
+
+              {{
+                row.status === present
+                  ? ('ATTENDANCE.STATUS.PRESENT' | translate)
+                  : ('ATTENDANCE.STATUS.ABSENT' | translate)
+              }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Recorded at -->
+        <ng-container matColumnDef="recordedAt">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'ATTENDANCE.HISTORY.TABLE.RECORDED_AT' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.recordedAt }}
+          </td>
+        </ng-container>
+
+        <!-- Last edit -->
+        <ng-container matColumnDef="editedAt">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'ATTENDANCE.HISTORY.TABLE.EDITED_AT' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            @if (row.editedAt) {
+              {{ row.editedAt }}
+            } @else {
+              <span class="muted">—</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Header (stays visible while the records are scrolled) / Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      </table>
+    </div>
+  </div>
+
+}

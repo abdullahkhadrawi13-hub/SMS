@@ -1,233 +1,287 @@
-<!-- Teacher table card -->
-<div class="table-card">
+<!-- Error -->
+@if (errorMessage()) {
 
-  <!-- Table wrapper allows horizontal scrolling on smaller screens. -->
-  <div class="table-wrapper">
+  <div class="state-card error-state">
 
-    <table
-      mat-table
-      [dataSource]="teachers()"
+    <mat-icon>error_outline</mat-icon>
+
+    <p>
+      {{ errorMessage() | translate }}
+    </p>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="retry.emit()"
     >
+      <mat-icon>refresh</mat-icon>
 
-      <!-- Teacher Number -->
-      <ng-container matColumnDef="teacherNumber">
+      {{ 'TEACHERS.TABLE.RETRY' | translate }}
+    </button>
 
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-        >
-          {{ 'TEACHERS.TABLE.TEACHER_NUMBER' | translate }}
-        </th>
+  </div>
 
-        <td
-          mat-cell
-          *matCellDef="let teacher"
-        >
-          {{ teacher.teacherNumber }}
-        </td>
+}
 
-      </ng-container>
+<!-- Loading -->
+@else if (isLoading()) {
 
+  <div class="state-card">
 
-      <!-- Teacher Name -->
-      <ng-container matColumnDef="name">
+    <mat-spinner diameter="42"></mat-spinner>
 
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-        >
-          {{ 'TEACHERS.TABLE.NAME' | translate }}
-        </th>
+    <p>
+      {{ 'TEACHERS.TABLE.LOADING' | translate }}
+    </p>
 
-        <td
-          mat-cell
-          *matCellDef="let teacher"
-        >
+  </div>
 
-          <div class="teacher-name-cell">
+}
 
-            <!-- Teacher avatar -->
-            <div class="teacher-avatar">
-              <mat-icon>person</mat-icon>
-            </div>
+<!-- Teacher table card -->
+@else {
 
-            <!-- Teacher name -->
-            <span>
-              {{ getTeacherName(teacher) }}
-            </span>
+  <div class="table-card">
 
-          </div>
+    @if (teachers().length > 0) {
 
-        </td>
+      <!-- Table wrapper allows horizontal scrolling on smaller screens. -->
+      <div class="table-wrapper">
 
-      </ng-container>
-
-
-      <!-- Login ID -->
-      <ng-container matColumnDef="loginId">
-
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-        >
-          {{ 'TEACHERS.TABLE.LOGIN_ID' | translate }}
-        </th>
-
-        <td
-          mat-cell
-          *matCellDef="let teacher"
-        >
-          {{ teacher.loginId }}
-        </td>
-
-      </ng-container>
-
-
-      <!-- Phone Number -->
-      <ng-container matColumnDef="phoneNumber">
-
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-        >
-          {{ 'TEACHERS.TABLE.PHONE' | translate }}
-        </th>
-
-        <td
-          mat-cell
-          *matCellDef="let teacher"
-        >
-          {{ teacher.phoneNumber }}
-        </td>
-
-      </ng-container>
-
-
-      <!-- Status -->
-      <ng-container matColumnDef="status">
-
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-        >
-          {{ 'TEACHERS.TABLE.STATUS' | translate }}
-        </th>
-
-        <td
-          mat-cell
-          *matCellDef="let teacher"
+        <table
+          mat-table
+          [dataSource]="teachers()"
         >
 
-          <!-- Active / inactive status badge -->
-          <span
-            class="status-badge"
-            [class.active]="teacher.isActive"
-            [class.inactive]="!teacher.isActive"
-          >
+          <!-- Teacher Number -->
+          <ng-container matColumnDef="teacherNumber">
 
-            <span class="status-dot"></span>
-
-            {{
-              teacher.isActive
-                ? ('TEACHERS.ACTIVE' | translate)
-                : ('TEACHERS.INACTIVE' | translate)
-            }}
-
-          </span>
-
-        </td>
-
-      </ng-container>
-
-
-      <!-- Actions -->
-      <ng-container matColumnDef="actions">
-
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-        >
-          {{ 'TEACHERS.TABLE.ACTIONS' | translate }}
-        </th>
-
-        <td
-          mat-cell
-          *matCellDef="let teacher"
-        >
-
-          <!-- Teacher actions menu -->
-          <button
-            mat-icon-button
-            [matMenuTriggerFor]="teacherMenu"
-            type="button"
-          >
-            <mat-icon>more_vert</mat-icon>
-          </button>
-
-          <mat-menu #teacherMenu="matMenu">
-
-            <!-- View teacher -->
-            <button
-              mat-menu-item
-              type="button"
+            <th
+              mat-header-cell
+              *matHeaderCellDef
             >
-              <mat-icon>visibility</mat-icon>
+              {{ 'TEACHERS.TABLE.TEACHER_NUMBER' | translate }}
+            </th>
 
-              {{ 'TEACHERS.TABLE.VIEW' | translate }}
-            </button>
-
-            <!-- Edit teacher -->
-            <button
-              mat-menu-item
-              type="button"
+            <td
+              mat-cell
+              *matCellDef="let teacher"
             >
-              <mat-icon>edit</mat-icon>
+              {{ teacher.teacherNumber }}
+            </td>
 
-              {{ 'TEACHERS.TABLE.EDIT' | translate }}
-            </button>
+          </ng-container>
 
-            <!-- Activate / deactivate teacher -->
-            <button
-              mat-menu-item
-              type="button"
+
+          <!-- Teacher Name -->
+          <ng-container matColumnDef="name">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
             >
-              <mat-icon>
-                {{ teacher.isActive ? 'person_off' : 'person' }}
-              </mat-icon>
+              {{ 'TEACHERS.TABLE.NAME' | translate }}
+            </th>
 
-              {{
-                teacher.isActive
-                  ? ('TEACHERS.TABLE.DEACTIVATE' | translate)
-                  : ('TEACHERS.TABLE.ACTIVATE' | translate)
-              }}
+            <td
+              mat-cell
+              *matCellDef="let teacher"
+            >
 
-            </button>
+              <div class="teacher-name-cell">
 
-          </mat-menu>
+                <!-- Teacher avatar -->
+                <div class="teacher-avatar">
+                  <mat-icon>person</mat-icon>
+                </div>
 
-        </td>
+                <!-- Teacher name -->
+                <span>
+                  {{ getTeacherName(teacher) }}
+                </span>
 
-      </ng-container>
+              </div>
 
+            </td>
 
-      <!-- Table header row -->
-      <tr
-        mat-header-row
-        *matHeaderRowDef="displayedColumns"
-      ></tr>
-
-      <!-- Table data rows -->
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-      ></tr>
-
-    </table>
+          </ng-container>
 
 
-    <!-- Empty state -->
-    @if (teachers().length === 0 && !loading()) {
+          <!-- Login ID -->
+          <ng-container matColumnDef="loginId">
 
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'TEACHERS.TABLE.LOGIN_ID' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let teacher"
+            >
+              {{ teacher.loginId }}
+            </td>
+
+          </ng-container>
+
+
+          <!-- Phone Number -->
+          <ng-container matColumnDef="phoneNumber">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'TEACHERS.TABLE.PHONE' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let teacher"
+            >
+              {{ teacher.phoneNumber }}
+            </td>
+
+          </ng-container>
+
+
+          <!-- Status -->
+          <ng-container matColumnDef="status">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'TEACHERS.TABLE.STATUS' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let teacher"
+            >
+
+              <!-- Active / inactive status badge -->
+              <span
+                class="status-badge"
+                [class.active]="teacher.isActive"
+                [class.inactive]="!teacher.isActive"
+              >
+
+                <span class="status-dot"></span>
+
+                {{
+                  teacher.isActive
+                    ? ('TEACHERS.ACTIVE' | translate)
+                    : ('TEACHERS.INACTIVE' | translate)
+                }}
+
+              </span>
+
+            </td>
+
+          </ng-container>
+
+
+          <!-- Actions -->
+          <ng-container matColumnDef="actions">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'TEACHERS.TABLE.ACTIONS' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let teacher"
+            >
+
+              <!-- Teacher actions menu -->
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="teacherMenu"
+                type="button"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+
+              <mat-menu #teacherMenu="matMenu">
+
+                <!-- View teacher -->
+                <button
+                  mat-menu-item
+                  type="button"
+                  (click)="viewTeacher.emit(teacher.teacherId)"
+                >
+                  <mat-icon>visibility</mat-icon>
+
+                  {{ 'TEACHERS.TABLE.VIEW' | translate }}
+                </button>
+
+                <!-- Edit and status actions (Admin only) -->
+                @if (canManage()) {
+
+                  <!-- Edit teacher -->
+                  <button
+                    mat-menu-item
+                    type="button"
+                    (click)="editTeacher.emit(teacher.teacherId)"
+                  >
+                    <mat-icon>edit</mat-icon>
+
+                    {{ 'TEACHERS.TABLE.EDIT' | translate }}
+                  </button>
+
+                  <!-- Activate / deactivate teacher -->
+                  <button
+                    mat-menu-item
+                    type="button"
+                    (click)="toggleStatus.emit(teacher)"
+                  >
+                    <mat-icon>
+                      {{ teacher.isActive ? 'person_off' : 'person' }}
+                    </mat-icon>
+
+                    {{
+                      teacher.isActive
+                        ? ('TEACHERS.TABLE.DEACTIVATE' | translate)
+                        : ('TEACHERS.TABLE.ACTIVATE' | translate)
+                    }}
+
+                  </button>
+
+                }
+
+              </mat-menu>
+
+            </td>
+
+          </ng-container>
+
+
+          <!-- Table header row -->
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns"
+          ></tr>
+
+          <!-- Table data rows -->
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+          ></tr>
+
+        </table>
+
+      </div>
+
+    } @else {
+
+      <!-- Empty state -->
       <div class="empty-state">
 
         <mat-icon>person_off</mat-icon>
@@ -240,18 +294,22 @@
 
     }
 
+
+    <!-- Teacher pagination: shown whenever there are results overall -->
+    @if (totalCount() > 0) {
+
+      <mat-paginator
+        [length]="totalCount()"
+        [pageIndex]="pageNumber() - 1"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="pageChange.emit($event)"
+        [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
+      >
+      </mat-paginator>
+
+    }
+
   </div>
 
-
-  <!-- Teacher pagination -->
-  <mat-paginator
-    [length]="totalCount()"
-    [pageIndex]="pageIndex()"
-    [pageSize]="pageSize()"
-    [pageSizeOptions]="[10, 20, 50]"
-    (page)="onPageChange($event)"
-    [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
-  >
-  </mat-paginator>
-
-</div>
+}

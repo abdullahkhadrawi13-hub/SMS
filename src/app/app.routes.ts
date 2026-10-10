@@ -112,8 +112,8 @@ export const routes: Routes = [
 
 
 
-            // الحضور والغياب: حاليًا كل الأدوار تصل لنفس الصفحة
-      // (سيتم تخصيص المحتوى حسب الدور لاحقًا)
+      // الحضور والغياب: الصفحة المعروضة تُحدَّد حسب الدور داخل attendance.routes.ts
+      // (Admin / AssistantPrincipal / Teacher: صفحة الحضور - Student / Parent: Coming Soon)
       {
         path: 'attendance',
         loadChildren: () =>

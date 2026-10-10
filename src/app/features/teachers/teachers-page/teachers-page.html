@@ -1,7 +1,10 @@
 <div class="teachers-page">
 
   <!-- Page Header -->
-  <app-teacher-header></app-teacher-header>
+  <app-teacher-header
+    [canManage]="canManage()"
+    (addTeacher)="openAddTeacher()"
+  ></app-teacher-header>
 
   <!-- Search and Filter -->
   <div class="filters-card">
@@ -9,7 +12,10 @@
     <div class="search-container">
 
       <!-- Teacher Search -->
-      <app-teacher-search></app-teacher-search>
+      <app-teacher-search
+        (searchChange)="search.set($event)"
+        (searchSubmit)="onSearch($event)"
+      ></app-teacher-search>
 
       <!-- Teacher Filter -->
       <button
@@ -25,7 +31,20 @@
 
   </div>
 
-  <!-- Teacher Table -->
-  <app-teacher-table></app-teacher-table>
+  <!-- Teacher Table (error / loading / table / empty state / pagination) -->
+  <app-teacher-table
+    [teachers]="teachers()"
+    [isLoading]="isLoading()"
+    [errorMessage]="errorMessage()"
+    [totalCount]="totalCount()"
+    [pageNumber]="pageNumber()"
+    [pageSize]="pageSize()"
+    [canManage]="canManage()"
+    (retry)="retry()"
+    (pageChange)="onPageChange($event)"
+    (viewTeacher)="openTeacherDetails($event)"
+    (editTeacher)="openEditTeacher($event)"
+    (toggleStatus)="toggleTeacherStatus($event)"
+  ></app-teacher-table>
 
 </div>

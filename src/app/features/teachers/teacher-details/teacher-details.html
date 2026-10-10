@@ -1,0 +1,329 @@
+<div class="teacher-dialog">
+
+  <!-- Dialog Header -->
+  <div class="dialog-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+        <mat-icon>person</mat-icon>
+      </div>
+
+      <div>
+
+        <h2>
+          {{ 'TEACHERS.DETAILS.TITLE' | translate }}
+        </h2>
+
+        <p>
+          {{ 'TEACHERS.DETAILS.SUBTITLE' | translate }}
+        </p>
+
+      </div>
+
+    </div>
+
+    <button
+      mat-icon-button
+      type="button"
+      (click)="close()"
+      [attr.aria-label]="'TEACHERS.DETAILS.CLOSE' | translate"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (isLoading()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>
+        {{ 'TEACHERS.DETAILS.LOADING' | translate }}
+      </p>
+
+    </div>
+
+  }
+
+  <!-- Error -->
+  @else if (errorMessage()) {
+
+    <div class="state-card error-state">
+
+      <mat-icon>error_outline</mat-icon>
+
+      <h3>
+        {{ 'TEACHERS.DETAILS.ERROR_TITLE' | translate }}
+      </h3>
+
+      <p>
+        {{ errorMessage() | translate }}
+      </p>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="retry()"
+      >
+        <mat-icon>refresh</mat-icon>
+
+        {{ 'TEACHERS.DETAILS.RETRY' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+  <!-- Teacher Information -->
+  @else if (teacher(); as currentTeacher) {
+
+    <div class="dialog-content">
+
+      <!-- Teacher Profile -->
+      <div class="teacher-profile">
+
+        <div class="teacher-avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+
+        <div class="teacher-name">
+
+          <h2>
+            {{ getTeacherName(currentTeacher) }}
+          </h2>
+
+          <span>
+            {{ currentTeacher.teacherNumber }}
+          </span>
+
+        </div>
+
+        <span
+          class="status-badge"
+          [class.active]="currentTeacher.isActive"
+          [class.inactive]="!currentTeacher.isActive"
+        >
+
+          <span class="status-dot"></span>
+
+          {{
+            currentTeacher.isActive
+              ? ('TEACHERS.ACTIVE' | translate)
+              : ('TEACHERS.INACTIVE' | translate)
+          }}
+
+        </span>
+
+      </div>
+
+
+      <!-- ================================
+           Personal Information
+           ================================ -->
+
+      <section class="details-section">
+
+        <div class="section-header">
+
+          <div class="section-icon">
+            <mat-icon>badge</mat-icon>
+          </div>
+
+          <div>
+
+            <h3>
+              {{ 'TEACHERS.DETAILS.PERSONAL_INFO' | translate }}
+            </h3>
+
+            <p>
+              {{ 'TEACHERS.DETAILS.PERSONAL_INFO_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="details-grid">
+
+          <!-- Name in Arabic -->
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'TEACHERS.DETAILS.NAME_AR' | translate }}
+            </span>
+
+            <span class="detail-value">
+              {{ getArabicName(currentTeacher) }}
+            </span>
+
+          </div>
+
+          <!-- Name in English -->
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'TEACHERS.DETAILS.NAME_EN' | translate }}
+            </span>
+
+            <span class="detail-value">
+              {{ getEnglishName(currentTeacher) }}
+            </span>
+
+          </div>
+
+          <!-- Teacher Number -->
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'TEACHERS.TABLE.TEACHER_NUMBER' | translate }}
+            </span>
+
+            <span class="detail-value">
+              {{ currentTeacher.teacherNumber }}
+            </span>
+
+          </div>
+
+          <!-- Phone Number -->
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'TEACHERS.TABLE.PHONE' | translate }}
+            </span>
+
+            <span class="detail-value">
+              {{ currentTeacher.phoneNumber || '-' }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================
+           Account Information
+           ================================ -->
+
+      <section class="details-section">
+
+        <div class="section-header">
+
+          <div class="section-icon">
+            <mat-icon>manage_accounts</mat-icon>
+          </div>
+
+          <div>
+
+            <h3>
+              {{ 'TEACHERS.DETAILS.ACCOUNT_INFO' | translate }}
+            </h3>
+
+            <p>
+              {{ 'TEACHERS.DETAILS.ACCOUNT_INFO_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="details-grid">
+
+          <!-- Login ID -->
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'TEACHERS.TABLE.LOGIN_ID' | translate }}
+            </span>
+
+            <span class="detail-value">
+              {{ currentTeacher.loginId }}
+            </span>
+
+          </div>
+
+          <!-- Role -->
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'TEACHERS.DETAILS.ROLE' | translate }}
+            </span>
+
+            <span class="detail-value">
+              {{ getRoleTranslationKey(currentTeacher.role) | translate }}
+            </span>
+
+          </div>
+
+          <!-- Account Status -->
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'TEACHERS.DETAILS.ACCOUNT_STATUS' | translate }}
+            </span>
+
+            <span
+              class="status-badge inline"
+              [class.active]="currentTeacher.isActive"
+              [class.inactive]="!currentTeacher.isActive"
+            >
+
+              <span class="status-dot"></span>
+
+              {{
+                currentTeacher.isActive
+                  ? ('TEACHERS.ACTIVE' | translate)
+                  : ('TEACHERS.INACTIVE' | translate)
+              }}
+
+            </span>
+
+          </div>
+
+          <!-- Password Status -->
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'TEACHERS.DETAILS.PASSWORD_STATUS' | translate }}
+            </span>
+
+            <span class="detail-value">
+              {{
+                currentTeacher.mustChangePassword
+                  ? ('TEACHERS.DETAILS.MUST_CHANGE_PASSWORD' | translate)
+                  : ('TEACHERS.DETAILS.PASSWORD_NORMAL' | translate)
+              }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- Dialog Footer -->
+    <div class="dialog-actions">
+
+      <button
+        mat-button
+        type="button"
+        (click)="close()"
+      >
+        {{ 'TEACHERS.DETAILS.CLOSE' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+</div>

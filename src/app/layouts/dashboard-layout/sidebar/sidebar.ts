@@ -4,7 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { User } from '../../../core/services/user';
-import { SIDEBAR_MENU } from './sidebar-menu';
+import { AttendanceAccessService } from '../../../core/services/attendance-access';
+import { MenuItem, SIDEBAR_MENU } from './sidebar-menu';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,6 +21,7 @@ import { SIDEBAR_MENU } from './sidebar-menu';
 export class Sidebar {
 
   private userService = inject(User);
+  private attendanceAccess = inject(AttendanceAccessService);
 
   menuItems = SIDEBAR_MENU;
 
@@ -31,7 +33,18 @@ export class Sidebar {
     }
 
     return this.menuItems.filter(item =>
-      item.roles.includes(role)
+      item.roles.includes(role) &&
+      !this.isHidden(item)
+    );
+  }
+
+  // قسم الحضور والغياب يُخفى عن المعلم إذا لم يكن مسؤول الحضور
+  // (GET /api/attendance/my-access أعاد canRecord: false).
+  // الطالب وولي الأمر يبقى القسم ظاهرًا لهما ويفتح صفحة Coming Soon.
+  private isHidden(item: MenuItem): boolean {
+    return (
+      item.route === '/attendance' &&
+      this.attendanceAccess.hideFromSidebar()
     );
   }
 }

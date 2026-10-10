@@ -67,7 +67,7 @@ const users = [
     loginId: 'teacher',
     password: '123',
 
-    mustChangePassword: true,
+    mustChangePassword: false,
     isActive: true,
 
     role: 2,
@@ -127,6 +127,61 @@ const users = [
     phoneNumber: '0790000004',
 
     token: 'mock-parent-token'
+  },
+
+  // A teacher who IS the attendance officer
+  // (see ATTENDANCE_OFFICER_USER_ID in routes/attendance.routes.js).
+  {
+    userId: 6,
+
+    firstNameAr: 'ليلى',
+    fatherNameAr: 'سامي',
+    grandFatherNameAr: 'يوسف',
+    familyNameAr: 'النجار',
+
+    firstNameEn: 'Layla',
+    fatherNameEn: 'Sami',
+    grandFatherNameEn: 'Yousef',
+    familyNameEn: 'Al-Najjar',
+
+    loginId: 'officer',
+    password: '123',
+
+    mustChangePassword: false,
+    isActive: true,
+
+    role: 2,
+
+    phoneNumber: '0790000005',
+
+    token: 'mock-officer-token'
+  },
+
+  // A teacher who is NOT the attendance officer.
+  {
+    userId: 7,
+
+    firstNameAr: 'ماجد',
+    fatherNameAr: 'عمر',
+    grandFatherNameAr: 'حسين',
+    familyNameAr: 'الزعبي',
+
+    firstNameEn: 'Majed',
+    fatherNameEn: 'Omar',
+    grandFatherNameEn: 'Hussein',
+    familyNameEn: 'Al-Zoubi',
+
+    loginId: 'teacher2',
+    password: '123',
+
+    mustChangePassword: false,
+    isActive: true,
+
+    role: 2,
+
+    phoneNumber: '0790000006',
+
+    token: 'mock-teacher2-token'
   }
 ];
 

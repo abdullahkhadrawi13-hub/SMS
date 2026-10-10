@@ -7,6 +7,7 @@ import {
   AttendanceAccess,
   AttendanceDailySummary,
   AttendanceEntry,
+  AttendanceRecord,
   AttendanceSheet,
   AttendanceStatus,
   RecordAttendanceRequest,
@@ -24,9 +25,10 @@ export class AttendanceService {
     'http://localhost:5253/api/attendance';
 
 
-  // GET /api/attendance/my-access
+  // GET /api/attendance/my-access   (Admin, AssistantPrincipal, Teacher)
   // Tells whether the current user can record attendance and for which dates.
-  // (Not used yet. Needed later when the page is customized for each role.)
+  // Do not call it directly from a component:
+  // AttendanceAccessService calls it and keeps the answer for the whole app.
   getMyAccess(): Observable<ApiResponse<AttendanceAccess>> {
 
     return this.http.get<ApiResponse<AttendanceAccess>>(
@@ -36,6 +38,7 @@ export class AttendanceService {
 
 
   // GET /api/attendance/sheet?date=YYYY-MM-DD&classId=..&sectionId=..
+  // (Admin, AssistantPrincipal, the attendance officer)
   // The students of one section and each one's status on that day.
   getSheet(
     date: string,
@@ -56,20 +59,22 @@ export class AttendanceService {
 
 
   // POST /api/attendance
+  // (Admin, AssistantPrincipal, the attendance officer for today only)
   // Records a batch of students for the same day in one call.
   // All or nothing: if one student is rejected, the whole batch fails.
   // academicTermId is worked out by the backend from the date.
+  // data = the records that were created.
   recordAttendance(
     date: string,
     entries: AttendanceEntry[]
-  ): Observable<ApiResponse<unknown>> {
+  ): Observable<ApiResponse<AttendanceRecord[]>> {
 
     const request: RecordAttendanceRequest = {
       date,
       entries
     };
 
-    return this.http.post<ApiResponse<unknown>>(
+    return this.http.post<ApiResponse<AttendanceRecord[]>>(
       this.apiUrl,
       request
     );
@@ -77,6 +82,7 @@ export class AttendanceService {
 
 
   // PUT /api/attendance/{attendanceId}
+  // (Admin, AssistantPrincipal; the attendance officer for today's records only)
   // Changes the status of a student that is already recorded.
   updateAttendance(
     attendanceId: number,
@@ -94,15 +100,48 @@ export class AttendanceService {
   }
 
 
+  // GET /api/attendance/by-student/{studentId}   (Admin, AssistantPrincipal)
+  // One student's attendance history, in every academic term,
+  // sorted oldest to newest. Only recorded days are returned:
+  // a day with no record does NOT mean the student was present.
+  getStudentAttendance(
+    studentId: number
+  ): Observable<ApiResponse<AttendanceRecord[]>> {
+
+    return this.http.get<ApiResponse<AttendanceRecord[]>>(
+      `${this.apiUrl}/by-student/${studentId}`
+    );
+  }
+
+
+  // GET /api/attendance/by-date/{date}   (Admin, AssistantPrincipal)
+  // Every student's attendance record on one day (date = YYYY-MM-DD).
+  // (Not used by a screen yet. The recording screen uses getSheet()
+  // and the daily follow-up uses getDailySummary().)
+  getAttendanceByDate(
+    date: string
+  ): Observable<ApiResponse<AttendanceRecord[]>> {
+
+    return this.http.get<ApiResponse<AttendanceRecord[]>>(
+      `${this.apiUrl}/by-date/${date}`
+    );
+  }
+
+
   // GET /api/attendance/daily-summary?date=YYYY-MM-DD
+  // (Admin, AssistantPrincipal)
   // Which sections have attendance recorded on one day,
   // and how many students are absent in each.
+  // date is optional: without it, the backend uses today.
   getDailySummary(
-    date: string
+    date?: string
   ): Observable<ApiResponse<AttendanceDailySummary>> {
 
-    const params = new HttpParams()
-      .set('date', date);
+    let params = new HttpParams();
+
+    if (date) {
+      params = params.set('date', date);
+    }
 
     return this.http.get<ApiResponse<AttendanceDailySummary>>(
       `${this.apiUrl}/daily-summary`,

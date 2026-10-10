@@ -202,7 +202,9 @@
     "PASSWORD_NORMAL": "Password is up to date",
     "ROLE": "Role",
     "ACCOUNT_STATUS": "Account Status",
-    "CLOSE": "Close"
+    "CLOSE": "Close",
+    "TAB_DETAILS": "Details",
+    "TAB_ATTENDANCE": "Attendance"
   },
 
   "ROLES": {
@@ -419,11 +421,14 @@
       "ACTIVATE": "Activate",
       "DEACTIVATE": "Deactivate",
       "EMPTY": "No teachers to display",
-      "PAGINATION": "Teacher pagination"
+      "PAGINATION": "Teacher pagination",
+      "LOADING": "Loading teachers...",
+      "RETRY": "Retry"
     },
 
     "FORM": {
       "TITLE": "Add Teacher",
+      "EDIT_TITLE": "Edit Teacher",
 
       "ARABIC_INFO": "Arabic Information",
       "ENGLISH_INFO": "English Information",
@@ -440,23 +445,57 @@
       "FAMILY_NAME_EN": "Family Name",
 
       "LOGIN_ID": "Login ID",
+      "TEMPORARY_PASSWORD": "Temporary Password",
       "PHONE": "Phone Number",
 
       "SUBTITLE": "Enter the teacher's information and account details",
+      "EDIT_SUBTITLE": "Update the teacher's information and account details",
       "ARABIC_INFO_DESCRIPTION": "Enter the teacher's name in Arabic",
       "ENGLISH_INFO_DESCRIPTION": "Enter the teacher's name in English",
       "ACCOUNT_INFO_DESCRIPTION": "Enter the teacher's account information",
 
       "CANCEL": "Cancel",
       "SAVE": "Save",
+      "SAVING": "Saving...",
+      "LOADING": "Loading teacher information...",
 
       "ERROR": {
         "REQUIRED": "This field is required",
         "MIN_LENGTH": "This field must contain at least 2 characters",
         "ARABIC_NAME": "Only Arabic letters, spaces, dots, and hyphens are allowed",
         "ENGLISH_NAME": "Only English letters, spaces, dots, and hyphens are allowed",
-        "PHONE": "Phone number must contain exactly 10 digits"
+        "PHONE": "Phone number must contain exactly 10 digits",
+        "LOGIN_ID": "Login ID must contain at least 3 characters",
+        "PASSWORD": "Password must contain at least 8 characters",
+        "LOAD_FAILED": "Failed to load teacher. Please try again.",
+        "INVALID_ID": "Invalid teacher ID."
       }
+    },
+
+    "DETAILS": {
+      "TITLE": "Teacher Details",
+      "SUBTITLE": "View teacher information and account details",
+      "LOADING": "Loading teacher...",
+      "ERROR_TITLE": "Unable to load teacher",
+      "INVALID_ID": "Invalid teacher ID.",
+      "LOAD_FAILED": "Failed to load teacher. Please try again.",
+      "RETRY": "Retry",
+      "PERSONAL_INFO": "Personal Information",
+      "PERSONAL_INFO_DESCRIPTION": "Teacher name and contact information",
+      "NAME_AR": "Name (Arabic)",
+      "NAME_EN": "Name (English)",
+      "ACCOUNT_INFO": "Account Information",
+      "ACCOUNT_INFO_DESCRIPTION": "Teacher account and access information",
+      "ROLE": "Role",
+      "ACCOUNT_STATUS": "Account Status",
+      "PASSWORD_STATUS": "Password Status",
+      "MUST_CHANGE_PASSWORD": "Must change password",
+      "PASSWORD_NORMAL": "Password is up to date",
+      "CLOSE": "Close"
+    },
+
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load teachers. Please try again."
     },
 
     "ACTIVE": "Active",
@@ -545,7 +584,8 @@
       "CLASS": "Class",
       "SECTION": "Section",
       "DATE": "Date",
-      "LOCKED_HINT": "Save or reset your changes first to change the class, section or date."
+      "LOCKED_HINT": "Save or reset your changes first to change the class, section or date.",
+      "TODAY_ONLY_HINT": "You can record attendance for today only."
     },
 
     "SHEET": {
@@ -610,6 +650,28 @@
       "EMPTY": {
         "TITLE": "No sections",
         "MESSAGE": "No sections have students on the selected date."
+      }
+    },
+
+    "HISTORY": {
+      "RECORDED_DAYS": "Recorded days",
+      "TERM": "Academic term",
+      "ALL_TERMS": "All terms",
+      "TERM_NUMBER": "Term #{{id}}",
+      "NOTE": "Only recorded days are listed. A day with no record does not mean the student was present.",
+      "LOADING": "Loading attendance history...",
+      "RETRY": "Retry",
+
+      "TABLE": {
+        "DATE": "Date",
+        "STATUS": "Status",
+        "RECORDED_AT": "Recorded at",
+        "EDITED_AT": "Last edit"
+      },
+
+      "EMPTY": {
+        "TITLE": "No attendance records",
+        "MESSAGE": "No attendance has been recorded for this student yet."
       }
     },
 

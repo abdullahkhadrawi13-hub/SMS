@@ -11,6 +11,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -18,12 +19,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Students } from '../../../core/services/students';
 import { ApiMessageService } from '../../../core/services/api-message';
+import { AttendanceAccessService } from '../../../core/services/attendance-access';
+
+import { AttendanceHistory } from '../../attendance/attendance-history/attendance-history';
 
 import { Student } from '../student';
 
 export interface StudentDetailsDialogData {
   studentId: number;
 }
+
+// The tabs of the dialog.
+export type StudentDetailsTab = 'details' | 'attendance';
 
 @Component({
   selector: 'app-student-details',
@@ -33,7 +40,9 @@ export interface StudentDetailsDialogData {
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    TranslatePipe
+    MatTabsModule,
+    TranslatePipe,
+    AttendanceHistory
   ],
   templateUrl: './students-details.html',
   styleUrl: './students-details.css'
@@ -41,6 +50,7 @@ export interface StudentDetailsDialogData {
 export class StudentsDetails {
   private readonly studentsService = inject(Students);
   private readonly apiMessageService = inject(ApiMessageService);
+  private readonly attendanceAccess = inject(AttendanceAccessService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly dialogRef =
@@ -50,6 +60,13 @@ export class StudentsDetails {
   readonly student = signal<Student | null>(null);
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
+
+  // The "Attendance" tab (GET /api/attendance/by-student/{studentId})
+  // is for Admin and AssistantPrincipal only. For the other roles
+  // the tabs are not shown and the dialog looks as before.
+  readonly canViewAttendance = this.attendanceAccess.fullAccess;
+
+  readonly activeTab = signal<StudentDetailsTab>('details');
 
   constructor(
     @Inject(MAT_DIALOG_DATA)

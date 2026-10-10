@@ -27,203 +27,121 @@
     </button>
   </div>
 
-  <!-- Loading -->
-  @if (isLoading()) {
-    <div class="state-card">
-      <mat-spinner diameter="42"></mat-spinner>
+  <!-- Tabs: Details / Attendance (Admin and Assistant Principal only) -->
+  @if (canViewAttendance()) {
+    <nav
+      mat-tab-nav-bar
+      mat-stretch-tabs="false"
+      class="details-tabs"
+      [tabPanel]="tabPanel"
+    >
 
-      <p>
-        {{ 'STUDENTS_DETAILS.LOADING' | translate }}
-      </p>
-    </div>
-  }
-
-  <!-- Error -->
-  @else if (errorMessage()) {
-    <div class="state-card error-state">
-      <mat-icon>error_outline</mat-icon>
-
-      <h3>
-        {{ 'STUDENTS_DETAILS.ERROR_TITLE' | translate }}
-      </h3>
-
-      <p>
-        {{ errorMessage() | translate }}
-      </p>
-
-      <button mat-flat-button color="primary" type="button" (click)="retry()">
-        <mat-icon>refresh</mat-icon>
-
-        {{ 'STUDENTS.RETRY' | translate }}
-      </button>
-    </div>
-  }
-
-  <!-- Student Information -->
-  @else if (student(); as currentStudent) {
-    <div class="dialog-content">
-      <!-- Student Profile -->
-      <div class="student-profile">
-        <div class="student-avatar">
-          <mat-icon>person</mat-icon>
-        </div>
-
-        <div class="student-name">
-          <h2>
-            {{ getStudentName(currentStudent) }}
-          </h2>
+      <a
+        mat-tab-link
+        [active]="activeTab() === 'details'"
+        (click)="activeTab.set('details')"
+      >
+        <span class="tab-label">
+          <mat-icon>badge</mat-icon>
 
           <span>
-            {{ currentStudent.studentNumber }}
+            {{ 'STUDENTS_DETAILS.TAB_DETAILS' | translate }}
           </span>
-        </div>
-
-        <span
-          class="status-badge"
-          [class.active]="currentStudent.isActive"
-          [class.inactive]="!currentStudent.isActive"
-        >
-          <span class="status-dot"></span>
-
-          {{
-            currentStudent.isActive
-              ? ('STUDENTS.ACTIVE' | translate)
-              : ('STUDENTS.INACTIVE' | translate)
-          }}
         </span>
+      </a>
+
+      <a
+        mat-tab-link
+        [active]="activeTab() === 'attendance'"
+        (click)="activeTab.set('attendance')"
+      >
+        <span class="tab-label">
+          <mat-icon>fact_check</mat-icon>
+
+          <span>
+            {{ 'STUDENTS_DETAILS.TAB_ATTENDANCE' | translate }}
+          </span>
+        </span>
+      </a>
+
+    </nav>
+  }
+
+  <mat-tab-nav-panel #tabPanel>
+
+    <!-- Attendance tab: the student's attendance history.
+         It is created (and its data is loaded) only when the tab is opened. -->
+    @if (activeTab() === 'attendance') {
+      <div class="dialog-content">
+        <app-attendance-history
+          [studentId]="data.studentId"
+        ></app-attendance-history>
       </div>
 
-      <!-- Personal Information -->
-      <section class="details-section">
-        <div class="section-header">
-          <div class="section-icon">
-            <mat-icon>person</mat-icon>
-          </div>
+      <!-- Dialog Footer -->
+      <div class="dialog-actions">
+        <button mat-button type="button" (click)="close()">
+          {{ 'STUDENTS_DETAILS.CLOSE' | translate }}
+        </button>
+      </div>
+    }
 
-          <div>
-            <h3>
-              {{ 'STUDENTS_DETAILS.PERSONAL_INFORMATION' | translate }}
-            </h3>
+    <!-- Details tab (the same content as before) -->
+    @else {
 
-            <p>
-              {{ 'STUDENTS_DETAILS.PERSONAL_INFORMATION_DESCRIPTION' | translate }}
-            </p>
-          </div>
+      <!-- Loading -->
+      @if (isLoading()) {
+        <div class="state-card">
+          <mat-spinner diameter="42"></mat-spinner>
+
+          <p>
+            {{ 'STUDENTS_DETAILS.LOADING' | translate }}
+          </p>
         </div>
+      }
 
-        <div class="details-grid">
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS.STUDENT_NUMBER' | translate }}
-            </span>
+      <!-- Error -->
+      @else if (errorMessage()) {
+        <div class="state-card error-state">
+          <mat-icon>error_outline</mat-icon>
 
-            <span class="detail-value">
-              {{ currentStudent.studentNumber }}
-            </span>
-          </div>
+          <h3>
+            {{ 'STUDENTS_DETAILS.ERROR_TITLE' | translate }}
+          </h3>
 
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS.LOGIN_ID' | translate }}
-            </span>
+          <p>
+            {{ errorMessage() | translate }}
+          </p>
 
-            <span class="detail-value">
-              {{ currentStudent.loginId }}
-            </span>
-          </div>
+          <button mat-flat-button color="primary" type="button" (click)="retry()">
+            <mat-icon>refresh</mat-icon>
 
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS_DETAILS.PHONE' | translate }}
-            </span>
-
-            <span class="detail-value">
-              {{ currentStudent.phoneNumber || '-' }}
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS.CLASS' | translate }}
-            </span>
-
-            <span class="detail-value">
-              {{ currentStudent.classId }}
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS.SECTION' | translate }}
-            </span>
-
-            <span class="detail-value">
-              {{ currentStudent.sectionId }}
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS_DETAILS.PASSWORD_STATUS' | translate }}
-            </span>
-
-            <span class="detail-value">
-              {{
-                currentStudent.mustChangePassword
-                  ? ('STUDENTS_DETAILS.MUST_CHANGE_PASSWORD' | translate)
-                  : ('STUDENTS_DETAILS.PASSWORD_NORMAL' | translate)
-              }}
-            </span>
-          </div>
+            {{ 'STUDENTS.RETRY' | translate }}
+          </button>
         </div>
-      </section>
+      }
 
-      <!-- Account Information -->
-      <section class="details-section">
-        <div class="section-header">
-          <div class="section-icon">
-            <mat-icon>manage_accounts</mat-icon>
-          </div>
+      <!-- Student Information -->
+      @else if (student(); as currentStudent) {
+        <div class="dialog-content">
+          <!-- Student Profile -->
+          <div class="student-profile">
+            <div class="student-avatar">
+              <mat-icon>person</mat-icon>
+            </div>
 
-          <div>
-            <h3>
-              {{ 'STUDENTS_DETAILS.ACCOUNT_INFORMATION' | translate }}
-            </h3>
+            <div class="student-name">
+              <h2>
+                {{ getStudentName(currentStudent) }}
+              </h2>
 
-            <p>
-              {{ 'STUDENTS_DETAILS.ACCOUNT_INFORMATION_DESCRIPTION' | translate }}
-            </p>
-          </div>
-        </div>
-
-        <div class="details-grid">
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS.LOGIN_ID' | translate }}
-            </span>
-
-            <span class="detail-value">
-              {{ currentStudent.loginId }}
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS_DETAILS.ROLE' | translate }}
-            </span>
-
-            <span class="detail-value">
-              {{ getRoleTranslationKey(currentStudent.role) | translate }}
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'STUDENTS_DETAILS.ACCOUNT_STATUS' | translate }}
-            </span>
+              <span>
+                {{ currentStudent.studentNumber }}
+              </span>
+            </div>
 
             <span
-              class="status-badge inline"
+              class="status-badge"
               [class.active]="currentStudent.isActive"
               [class.inactive]="!currentStudent.isActive"
             >
@@ -236,15 +154,163 @@
               }}
             </span>
           </div>
-        </div>
-      </section>
-    </div>
 
-    <!-- Dialog Footer -->
-    <div class="dialog-actions">
-      <button mat-button type="button" (click)="close()">
-        {{ 'STUDENTS_DETAILS.CLOSE' | translate }}
-      </button>
-    </div>
-  }
+          <!-- Personal Information -->
+          <section class="details-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <mat-icon>person</mat-icon>
+              </div>
+
+              <div>
+                <h3>
+                  {{ 'STUDENTS_DETAILS.PERSONAL_INFORMATION' | translate }}
+                </h3>
+
+                <p>
+                  {{ 'STUDENTS_DETAILS.PERSONAL_INFORMATION_DESCRIPTION' | translate }}
+                </p>
+              </div>
+            </div>
+
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS.STUDENT_NUMBER' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  {{ currentStudent.studentNumber }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS.LOGIN_ID' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  {{ currentStudent.loginId }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS_DETAILS.PHONE' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  {{ currentStudent.phoneNumber || '-' }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS.CLASS' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  {{ currentStudent.classId }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS.SECTION' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  {{ currentStudent.sectionId }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS_DETAILS.PASSWORD_STATUS' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  {{
+                    currentStudent.mustChangePassword
+                      ? ('STUDENTS_DETAILS.MUST_CHANGE_PASSWORD' | translate)
+                      : ('STUDENTS_DETAILS.PASSWORD_NORMAL' | translate)
+                  }}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Account Information -->
+          <section class="details-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <mat-icon>manage_accounts</mat-icon>
+              </div>
+
+              <div>
+                <h3>
+                  {{ 'STUDENTS_DETAILS.ACCOUNT_INFORMATION' | translate }}
+                </h3>
+
+                <p>
+                  {{ 'STUDENTS_DETAILS.ACCOUNT_INFORMATION_DESCRIPTION' | translate }}
+                </p>
+              </div>
+            </div>
+
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS.LOGIN_ID' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  {{ currentStudent.loginId }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS_DETAILS.ROLE' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  {{ getRoleTranslationKey(currentStudent.role) | translate }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS_DETAILS.ACCOUNT_STATUS' | translate }}
+                </span>
+
+                <span
+                  class="status-badge inline"
+                  [class.active]="currentStudent.isActive"
+                  [class.inactive]="!currentStudent.isActive"
+                >
+                  <span class="status-dot"></span>
+
+                  {{
+                    currentStudent.isActive
+                      ? ('STUDENTS.ACTIVE' | translate)
+                      : ('STUDENTS.INACTIVE' | translate)
+                  }}
+                </span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Dialog Footer -->
+        <div class="dialog-actions">
+          <button mat-button type="button" (click)="close()">
+            {{ 'STUDENTS_DETAILS.CLOSE' | translate }}
+          </button>
+        </div>
+      }
+
+    }
+
+  </mat-tab-nav-panel>
 </div>

@@ -11,8 +11,10 @@ export const ATTENDANCE_ABSENT: AttendanceStatus = 1;
 
 
 // GET /api/attendance/my-access
-// (Not used yet. It will be needed when the page content
-// is customized for each role.)
+// Tells whether the current user can record attendance, and for which dates:
+//   Admin / AssistantPrincipal  -> canRecord: true,  todayOnly: false
+//   The attendance officer      -> canRecord: true,  todayOnly: true
+//   Any other teacher           -> canRecord: false, todayOnly: false
 export interface AttendanceAccess {
   canRecord: boolean;
   todayOnly: boolean;
@@ -56,6 +58,33 @@ export interface RecordAttendanceRequest {
 // PUT /api/attendance/{attendanceId}
 export interface UpdateAttendanceRequest {
   status: AttendanceStatus;
+}
+
+
+// One saved attendance record (AttendanceDto in the backend).
+// Returned by:
+//   POST /api/attendance                        (the records just created)
+//   GET  /api/attendance/by-student/{studentId} (one student's history)
+//   GET  /api/attendance/by-date/{date}         (every student on one day)
+export interface AttendanceRecord {
+  attendanceId: number;
+  studentId: number;
+  studentNumber: string;
+  studentFirstNameAr: string;
+  studentFirstNameEn: string;
+  academicTermId: number;
+
+  // Date only: "YYYY-MM-DD".
+  date: string;
+
+  status: AttendanceStatus;
+
+  // Audit info. The two time fields are UTC without a trailing "Z":
+  // always read them with fromApiDateTime().
+  recordedByUserId: number;
+  recordedAt: string;
+  editedByUserId: number | null;
+  editedAt: string | null;
 }
 
 
@@ -108,6 +137,13 @@ export interface AttendanceSheetStats {
 
 export type AttendanceTab = 'record' | 'summary';
 
+// Counters shown above a student's attendance history.
+export interface AttendanceHistoryStats {
+  recorded: number;
+  present: number;
+  absent: number;
+}
+
 
 // =====================================================
 // Date helpers
@@ -154,4 +190,39 @@ export function formatAttendanceDate(
       year: 'numeric'
     }
   ).format(fromApiDate(value));
+}
+
+
+// =====================================================
+// Date + time helpers (recordedAt / editedAt)
+// =====================================================
+
+// Time fields arrive in UTC but WITHOUT a trailing "Z"
+// (for example "2026-10-08T19:18:38.8039322", which is 22:18 in Amman).
+// Parsed as-is, the browser treats them as local time and shows them
+// 3 hours early. So the "Z" is added here before converting.
+export function fromApiDateTime(value: string): Date {
+
+  // The first 19 characters are "2026-10-08T19:18:38".
+  // The fraction of a second is dropped: it is not shown anywhere,
+  // and the backend sends it with a different number of digits each time.
+  return new Date(`${value.slice(0, 19)}Z`);
+}
+
+// UTC time from the API -> local time of the browser:
+// "08/10/2026 10:18 م" or "08/10/2026, 22:18".
+export function formatAttendanceDateTime(
+  value: string,
+  isArabic: boolean
+): string {
+  return new Intl.DateTimeFormat(
+    isArabic ? ATTENDANCE_LOCALE_AR : ATTENDANCE_LOCALE_EN,
+    {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }
+  ).format(fromApiDateTime(value));
 }

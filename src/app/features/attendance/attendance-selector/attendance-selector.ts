@@ -11,7 +11,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Language } from '../../../core/services/language';
 import { ActiveSectionDto } from '../../../core/services/sections';
 import { SchoolClassSimpleDto } from '../../classes/school-class';
-import { fromApiDate, toApiDate } from '../attendance';
+import {
+  formatAttendanceDate,
+  fromApiDate,
+  toApiDate
+} from '../attendance';
 
 @Component({
   selector: 'app-attendance-selector',
@@ -49,6 +53,10 @@ export class AttendanceSelector {
   readonly date = input.required<string>();
   readonly maxDate = input.required<string>();
 
+  // True for the attendance officer (my-access -> todayOnly: true):
+  // the date is locked to today and no date picker is shown.
+  readonly todayOnly = input(false);
+
   // True while the sheet has unsaved changes or is being saved.
   // The selection cannot be changed then, so nothing is lost by mistake.
   readonly locked = input(false);
@@ -65,6 +73,11 @@ export class AttendanceSelector {
 
   private readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'
+  );
+
+  // The locked date as text: "السبت، 10/10/2026" or "Saturday, 10/10/2026".
+  readonly displayDate = computed(() =>
+    formatAttendanceDate(this.date(), this.isArabic())
   );
 
 

@@ -51,29 +51,60 @@
     </mat-form-field>
 
 
-    <!-- Date (today or any past day, never a future date) -->
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    @if (todayOnly()) {
 
-      <mat-label>
-        {{ 'ATTENDANCE.SELECTOR.DATE' | translate }}
-      </mat-label>
+      <!-- Date: the attendance officer records today only (no date picker) -->
+      <mat-form-field
+        appearance="outline"
+        subscriptSizing="dynamic"
+        class="today-only-field"
+      >
 
-      <input
-        matInput
-        readonly
-        [matDatepicker]="datePicker"
-        [value]="dateValue()"
-        [max]="maxDateValue()"
-        [disabled]="locked()"
-        (dateChange)="onDateChange($event.value)"
-        (click)="datePicker.open()"
-      />
+        <mat-label>
+          {{ 'ATTENDANCE.SELECTOR.DATE' | translate }}
+        </mat-label>
 
-      <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+        <input
+          matInput
+          readonly
+          [value]="displayDate()"
+        />
 
-      <mat-datepicker #datePicker></mat-datepicker>
+        <mat-icon matIconSuffix>event_available</mat-icon>
 
-    </mat-form-field>
+        <mat-hint>
+          {{ 'ATTENDANCE.SELECTOR.TODAY_ONLY_HINT' | translate }}
+        </mat-hint>
+
+      </mat-form-field>
+
+    } @else {
+
+      <!-- Date (today or any past day, never a future date) -->
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <mat-label>
+          {{ 'ATTENDANCE.SELECTOR.DATE' | translate }}
+        </mat-label>
+
+        <input
+          matInput
+          readonly
+          [matDatepicker]="datePicker"
+          [value]="dateValue()"
+          [max]="maxDateValue()"
+          [disabled]="locked()"
+          (dateChange)="onDateChange($event.value)"
+          (click)="datePicker.open()"
+        />
+
+        <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+
+        <mat-datepicker #datePicker></mat-datepicker>
+
+      </mat-form-field>
+
+    }
 
   </div>
 
