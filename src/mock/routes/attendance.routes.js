@@ -20,7 +20,8 @@ const DELAY_MS = 0;
 const STAFF_ROLES = [0, 1, 2];
 
 // Admin and Assistant Principal: any past day or today,
-// plus by-student, by-date and daily-summary.
+// plus by-student and by-date.
+// (daily-summary is also open to the attendance officer, today only.)
 const FULL_ACCESS_ROLES = [0, 1];
 
 // The teacher who is the school's attendance officer (userId in data/users.js).
@@ -44,8 +45,11 @@ const STATUS_ABSENT = 1;
 // 2. sheet / POST / PUT: Admin, Assistant Principal, the attendance officer.
 //    A teacher who is not the officer gets 400.
 //    The officer gets 400 for any day other than today.
-// 3. by-student / by-date / daily-summary: Admin and Assistant Principal
-//    only. A teacher (the officer included) gets 403.
+// 3. by-student / by-date: Admin and Assistant Principal only.
+//    A teacher (the officer included) gets 403.
+//    daily-summary: Admin, Assistant Principal and the attendance officer.
+//    The officer gets 400 for any day other than today.
+//    A teacher who is not the officer gets 403.
 // 4. A future date is rejected with 400, for everyone.
 // 5. A date that no academic term covers is rejected with 400.
 // 6. Recording a student twice on the same day is rejected with 400,
@@ -55,6 +59,9 @@ const STATUS_ABSENT = 1;
 // 8. recordedAt / editedAt are UTC without a trailing "Z".
 //
 // ASSUMPTIONS (not taken from the real backend):
+// - daily-summary is open to the attendance officer (today only).
+//   The SMS API Reference says the officer gets 403 here, so the real
+//   backend must be changed the same way before this works without the mock.
 // - The sheet shows the ACTIVE students of the section (the real backend
 //   reads them from StudentAcademicRecord in the term that covers the date).
 // - The daily summary shows only ACTIVE sections of ACTIVE classes
@@ -667,7 +674,7 @@ function handleAttendance(req, res, url, pathname) {
 
   // =====================================================
   // GET /api/attendance/daily-summary?date=..
-  // (Admin, Assistant Principal)
+  // (Admin, Assistant Principal, the attendance officer: today only)
   // date is optional: without it, today is used.
   // =====================================================
 
@@ -676,7 +683,10 @@ function handleAttendance(req, res, url, pathname) {
     pathname === '/api/attendance/daily-summary'
   ) {
 
-    if (!hasFullAccess) {
+    const access = getAccess(currentUser);
+
+    // A teacher who is not the attendance officer.
+    if (!access.canRecord) {
       sendEmpty(res, 403);
       return;
     }
@@ -687,6 +697,18 @@ function handleAttendance(req, res, url, pathname) {
     const term = validateDate(res, date);
 
     if (!term) {
+      return;
+    }
+
+    if (access.todayOnly && date !== getToday()) {
+
+      sendError(
+        res,
+        400,
+        'مسؤول الحضور يستطيع عرض ملخص اليوم الحالي فقط',
+        'The attendance officer can view the summary for today only'
+      );
+
       return;
     }
 

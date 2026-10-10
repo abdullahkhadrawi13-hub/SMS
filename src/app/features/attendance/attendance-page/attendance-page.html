@@ -3,8 +3,8 @@
   <!-- Page Header -->
   <app-attendance-header></app-attendance-header>
 
-  <!-- Tabs: Admin and Assistant Principal only.
-       The attendance officer has one screen (record), so no tabs are shown. -->
+  <!-- Tabs: Admin, Assistant Principal and the attendance officer.
+       (The attendance officer sees the summary of today only.) -->
   @if (canViewSummary()) {
     <nav
       mat-tab-nav-bar
@@ -87,6 +87,7 @@
         [summary]="summary()"
         [date]="summaryDate()"
         [maxDate]="today"
+        [todayOnly]="todayOnly()"
         [loading]="summaryLoading()"
         [errorMessage]="summaryError()"
         (dateChange)="onSummaryDateChange($event)"

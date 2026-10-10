@@ -199,6 +199,10 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 16px;
+
+  /* Each field keeps its own height: when one field in a row shows a
+     two-line error, the field next to it is not stretched. */
+  align-items: start;
 }
 
 
@@ -208,6 +212,27 @@
 
 mat-form-field {
   width: 100%;
+}
+
+
+/* ================================
+   Validation Messages Space
+   ================================ */
+
+/*
+  The fields use subscriptSizing="dynamic" (see teacher-form.html), so the
+  error message is part of the field's height instead of floating over the
+  field below it.
+
+  This rule keeps one empty line reserved under every field:
+  - a normal one-line message appears without moving anything;
+  - a long message that wraps to two lines makes its own row taller,
+    so it never overlaps the next field.
+
+  ::ng-deep is needed because this element lives inside mat-form-field.
+*/
+.teacher-form ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  min-height: 20px;
 }
 
 

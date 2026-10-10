@@ -92,9 +92,9 @@ export class AttendancePage implements OnInit {
   // The attendance officer records today only: the date is locked.
   readonly todayOnly = this.attendanceAccess.todayOnly;
 
-  // The daily summary is for Admin and AssistantPrincipal only
-  // (the attendance officer gets 403 from daily-summary).
-  readonly canViewSummary = this.attendanceAccess.fullAccess;
+  // The daily summary is for everyone who records attendance.
+  // The attendance officer sees the summary of today only.
+  readonly canViewSummary = this.attendanceAccess.canViewSummary;
 
   readonly activeTab = signal<AttendanceTab>('record');
 
@@ -243,7 +243,7 @@ export class AttendancePage implements OnInit {
 
   selectTab(tab: AttendanceTab): void {
 
-    // The summary tab is not available for the attendance officer
+    // The summary tab is only for users who can record attendance
     if (tab === 'summary' && !this.canViewSummary()) {
       return;
     }
@@ -610,6 +610,12 @@ export class AttendancePage implements OnInit {
   }
 
   onSummaryDateChange(date: string): void {
+
+    // The attendance officer cannot leave today
+    if (this.todayOnly()) {
+      return;
+    }
+
     this.summaryDate.set(date);
     this.loadSummary();
   }

@@ -1,39 +1,44 @@
 <!-- Date -->
 <div class="date-card">
 
-  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+  <!-- The attendance officer sees today only: no date picker. -->
+  @if (!todayOnly()) {
 
-    <mat-label>
-      {{ 'ATTENDANCE.SELECTOR.DATE' | translate }}
-    </mat-label>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
 
-    <input
-      matInput
-      readonly
-      [matDatepicker]="datePicker"
-      [value]="dateValue()"
-      [max]="maxDateValue()"
-      (dateChange)="onDateChange($event.value)"
-      (click)="datePicker.open()"
-    />
+      <mat-label>
+        {{ 'ATTENDANCE.SELECTOR.DATE' | translate }}
+      </mat-label>
 
-    <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <input
+        matInput
+        readonly
+        [matDatepicker]="datePicker"
+        [value]="dateValue()"
+        [max]="maxDateValue()"
+        (dateChange)="onDateChange($event.value)"
+        (click)="datePicker.open()"
+      />
 
-    <mat-datepicker #datePicker></mat-datepicker>
+      <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
 
-  </mat-form-field>
+      <mat-datepicker #datePicker></mat-datepicker>
 
-  <button
-    mat-stroked-button
-    type="button"
-    class="today-button"
-    [disabled]="isToday()"
-    (click)="goToToday()"
-  >
-    <mat-icon>today</mat-icon>
+    </mat-form-field>
 
-    {{ 'ATTENDANCE.SUMMARY.TODAY' | translate }}
-  </button>
+    <button
+      mat-stroked-button
+      type="button"
+      class="today-button"
+      [disabled]="isToday()"
+      (click)="goToToday()"
+    >
+      <mat-icon>today</mat-icon>
+
+      {{ 'ATTENDANCE.SUMMARY.TODAY' | translate }}
+    </button>
+
+  }
 
   <span class="date-text">{{ displayDate() }}</span>
 

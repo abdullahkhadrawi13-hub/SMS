@@ -61,6 +61,10 @@ export class AttendanceSummary {
   readonly date = input.required<string>();
   readonly maxDate = input.required<string>();
 
+  // True for the attendance officer (my-access -> todayOnly: true):
+  // the summary is for today only, so no date picker is shown.
+  readonly todayOnly = input(false);
+
   readonly loading = input(false);
 
   // Error message text (already in the current language).

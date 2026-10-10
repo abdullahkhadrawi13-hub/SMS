@@ -24,7 +24,8 @@ interface AttendanceAccessState {
 // It is used by:
 // - the sidebar            (hide the attendance screen when canRecord is false),
 // - attendanceAccessGuard  (block /attendance when canRecord is false),
-// - the attendance page    (lock the date to today when todayOnly is true),
+// - the attendance page    (lock the date to today when todayOnly is true,
+//                           show the daily summary when canRecord is true),
 // - the student details    (attendance history is for full access only).
 @Injectable({
   providedIn: 'root'
@@ -87,11 +88,18 @@ export class AttendanceAccessService {
     return this.role() === 2;
   });
 
-  // Admin and AssistantPrincipal: any past day or today, the daily
-  // summary and the student history. (The attendance officer gets 403
-  // from daily-summary, by-student and by-date.)
+  // Admin and AssistantPrincipal: any past day or today, and the
+  // student history. (The attendance officer gets 403 from by-student
+  // and by-date.)
   readonly fullAccess = computed(
     () => this.canRecord() && !this.todayOnly()
+  );
+
+  // The daily summary is for everyone who records attendance:
+  // Admin and AssistantPrincipal see any day,
+  // the attendance officer sees today only (todayOnly).
+  readonly canViewSummary = computed(
+    () => this.canRecord()
   );
 
   // The attendance screen is hidden from the sidebar for a staff user

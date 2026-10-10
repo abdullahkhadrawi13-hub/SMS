@@ -11,7 +11,7 @@ const academicTermsRoutes = require('./routes/academic-terms.routes');
 
 const attendanceRoutes = require('./routes/attendance.routes');
 
-const PORT =5253;
+const PORT =3000//5253;
 
 const server = http.createServer((req, res) => {
 
