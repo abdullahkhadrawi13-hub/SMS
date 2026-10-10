@@ -11,17 +11,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { forkJoin, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-
 import {
   Students,
   PagedResult
 } from '../../../core/services/students';
-
-import { SchoolClassesService } from '../../../core/services/school-classes';
-
-import {SectionsService,SectionSimpleDto} from '../../../core/services/sections';
 
 import { ApiMessageService } from '../../../core/services/api-message';
 import { ActionResult } from '../../../shared/services/action-result';
@@ -70,25 +63,10 @@ export class StudentsPage {
   private readonly dialog =
     inject(MatDialog);
 
-  private readonly classesService =
-    inject(SchoolClassesService);
-
-  private readonly sectionsService =
-    inject(SectionsService);
-
   private readonly apiMessageService =
     inject(ApiMessageService);
 
   private readonly actionResult = inject(ActionResult);
-
-  // id -> { ar, en }
-  // (protected: read by the template and passed to <app-students-table>)
-  protected readonly classNames =
-    signal<Map<number, { ar: string; en: string }>>(new Map());
-
-  protected readonly sectionNames =
-    signal<Map<number, { ar: string; en: string }>>(new Map());
-
 
   readonly students =
     signal<Student[]>([]);
@@ -123,93 +101,7 @@ export class StudentsPage {
 
   constructor() {
 
-    this.loadLookups();
-
     this.loadStudents();
-
-  }
-
-
-  private loadLookups(): void {
-
-    this.classesService
-      .getSchoolClasses(1, 1000)
-      .pipe(
-
-        // 1) أسماء الصفوف
-        tap(classes => {
-
-          if (!classes.success) {
-            return;
-          }
-
-          this.classNames.set(
-            new Map(
-              classes.data.items.map(c => [
-                c.schoolClassId,
-                { ar: c.classNameAr, en: c.classNameEn }
-              ])
-            )
-          );
-
-        }),
-
-        // 2) كل شعب كل صف عبر by-class
-        //    (بدل GET /api/Sections الذي يعيد فقط الشعب المرتبطة بسجلات أكاديمية)
-        switchMap(classes => {
-
-          if (!classes.success || classes.data.items.length === 0) {
-            return of([] as SectionSimpleDto[]);
-          }
-
-          const requests = classes.data.items.map(c =>
-            this.sectionsService
-              .getSectionsByClass(c.schoolClassId)
-              .pipe(
-                map(r => (r.success ? r.data : [])),
-                catchError(error => {
-                  console.error(
-                    `Failed to load sections for class ${c.schoolClassId}:`,
-                    error
-                  );
-
-                  return of([] as SectionSimpleDto[]);
-                })
-              )
-          );
-
-          return forkJoin(requests).pipe(
-            map(groups => groups.flat())
-          );
-
-        }),
-
-        takeUntilDestroyed(this.destroyRef)
-
-      )
-      .subscribe({
-
-        next: sections => {
-
-          this.sectionNames.set(
-            new Map(
-              sections.map(s => [
-                s.sectionId,
-                { ar: s.sectionAr, en: s.sectionEn }
-              ])
-            )
-          );
-
-        },
-
-        error: error => {
-          console.error(
-            'Failed to load classes/sections:',
-            error
-          );
-        }
-
-      });
 
   }
 

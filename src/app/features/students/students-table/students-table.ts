@@ -11,9 +11,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Student } from '../student';
 
-// id -> { ar, en } lookup used to display class and section names.
-type NameLookup = Map<number, { ar: string; en: string }>;
-
 @Component({
   selector: 'app-students-table',
   imports: [
@@ -34,10 +31,6 @@ export class StudentsTable {
 
   // Students of the current page.
   readonly students = input<Student[]>([]);
-
-  // Class and section names used to replace ids with readable names.
-  readonly classNames = input<NameLookup>(new Map());
-  readonly sectionNames = input<NameLookup>(new Map());
 
   // Loading and error state of the list.
   readonly isLoading = input(false);
@@ -68,32 +61,26 @@ export class StudentsTable {
   ];
 
 
+  // The class name comes with the student (classNameAr / classNameEn).
   getClassName(student: Student): string {
 
-    const name = this.classNames().get(student.classId);
+    const name = document.documentElement.lang === 'ar'
+      ? student.classNameAr || student.classNameEn
+      : student.classNameEn || student.classNameAr;
 
-    if (!name) {
-      return '—';
-    }
-
-    return document.documentElement.lang === 'ar'
-      ? name.ar
-      : name.en;
+    return name || '—';
 
   }
 
 
+  // The section name comes with the student (sectionAr / sectionEn).
   getSectionName(student: Student): string {
 
-    const name = this.sectionNames().get(student.sectionId);
+    const name = document.documentElement.lang === 'ar'
+      ? student.sectionAr || student.sectionEn
+      : student.sectionEn || student.sectionAr;
 
-    if (!name) {
-      return '—';
-    }
-
-    return document.documentElement.lang === 'ar'
-      ? name.ar
-      : name.en;
+    return name || '—';
 
   }
 

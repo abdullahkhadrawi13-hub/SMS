@@ -39,6 +39,49 @@ function getRequestBody(req) {
 
 
 // =====================================================
+// Student response shape
+// Adds the class and section names to the student
+// (classNameAr / classNameEn / sectionAr / sectionEn),
+// so the frontend does not need extra requests.
+// The names are read at response time, so they stay
+// correct after a student is moved or a name is edited.
+// =====================================================
+
+function toStudentDto(student) {
+
+  const schoolClass =
+    schoolClasses.find(
+      item =>
+        item.schoolClassId ===
+        student.classId
+    );
+
+  const section =
+    sections.find(
+      item =>
+        item.sectionId ===
+        student.sectionId
+    );
+
+  return {
+    ...student,
+
+    classNameAr:
+      schoolClass ? schoolClass.classNameAr : null,
+
+    classNameEn:
+      schoolClass ? schoolClass.classNameEn : null,
+
+    sectionAr:
+      section ? section.sectionAr : null,
+
+    sectionEn:
+      section ? section.sectionEn : null
+  };
+}
+
+
+// =====================================================
 // Students Routes
 // =====================================================
 
@@ -104,7 +147,7 @@ function studentsRoutes(req, res) {
       success: true,
       messageAr: 'تم جلب بيانات الطالب بنجاح',
       messageEn: 'Student retrieved successfully',
-      data: student
+      data: toStudentDto(student)
     });
 
     return true;
@@ -305,10 +348,12 @@ function studentsRoutes(req, res) {
 
 
     const items =
-      filteredStudents.slice(
-        startIndex,
-        startIndex + pageSize
-      );
+      filteredStudents
+        .slice(
+          startIndex,
+          startIndex + pageSize
+        )
+        .map(toStudentDto);
 
 
     // ===================================================
@@ -579,7 +624,7 @@ function studentsRoutes(req, res) {
           success: true,
           messageAr: 'تمت إضافة الطالب بنجاح',
           messageEn: 'Student created successfully',
-          data: newStudent
+          data: toStudentDto(newStudent)
         });
 
       })
@@ -822,7 +867,7 @@ function studentsRoutes(req, res) {
           success: true,
           messageAr: 'تم تعديل بيانات الطالب بنجاح',
           messageEn: 'Student updated successfully',
-          data: student
+          data: toStudentDto(student)
         });
 
       })
@@ -943,7 +988,7 @@ function studentsRoutes(req, res) {
           ? 'Student activated successfully'
           : 'Student deactivated successfully',
 
-      data: student
+      data: toStudentDto(student)
     });
 
     return true;

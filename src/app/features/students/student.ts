@@ -23,5 +23,12 @@ export interface Student {
   classId: number;
   sectionId: number;
 
+  // Class and section names come with the student itself
+  // (list and single student), so no extra requests are needed.
+  classNameAr: string;
+  classNameEn: string;
+  sectionAr: string;
+  sectionEn: string;
+
   role: number;
 }

@@ -153,6 +153,26 @@ export class StudentsDetails {
       .join(' ');
   }
 
+  // The class name comes with the student (classNameAr / classNameEn).
+  // Falls back to the id if the names are missing.
+  getClassName(student: Student): string {
+    const name = document.documentElement.lang === 'ar'
+      ? student.classNameAr || student.classNameEn
+      : student.classNameEn || student.classNameAr;
+
+    return name || String(student.classId ?? '-');
+  }
+
+  // The section name comes with the student (sectionAr / sectionEn).
+  // Falls back to the id if the names are missing.
+  getSectionName(student: Student): string {
+    const name = document.documentElement.lang === 'ar'
+      ? student.sectionAr || student.sectionEn
+      : student.sectionEn || student.sectionAr;
+
+    return name || String(student.sectionId ?? '-');
+  }
+
   getRoleTranslationKey(role: number): string {
     switch (role) {
       case 0:
