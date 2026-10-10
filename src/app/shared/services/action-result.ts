@@ -22,6 +22,15 @@ export class ActionResult {
     });
   }
 
+  info(message: string): void {
+    this.dialog.open(ActionResultDialog, {
+      data: {
+        type: 'info',
+        message
+      } satisfies ActionResultDialogData
+    });
+  }
+
   error(message: string): void {
     this.dialog.open(ActionResultDialog, {
       data: {

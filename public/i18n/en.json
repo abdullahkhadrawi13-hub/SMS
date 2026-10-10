@@ -14,13 +14,13 @@
     "BUTTON": "Login",
     "REQUIRED": "Please enter username and password",
     "ERROR": "Invalid username or password",
-    "FIRST_LOGIN_SUCCESS": "You have logged in successfully. Please change your password now to continue to the site.",
+    "FIRST_LOGIN_NOTICE": "Since this is your first time signing in, you must change your password before continuing.",
     "LOADING": "Logging in..."
   },
 
   "CHANGE_PASSWORD": {
     "TITLE": "Change Password",
-    "SUBTITLE": "You must change your password before continuing",
+    "SUBTITLE": "You can change your password here",
     "CURRENT_PASSWORD": "Current Password",
     "CURRENT_PASSWORD_PLACEHOLDER": "Enter your current password",
     "NEW_PASSWORD": "New Password",
@@ -379,6 +379,7 @@
     "ACTION_RESULT": {
       "SUCCESS": "Success",
       "ERROR": "Error",
+      "INFO": "Info",
       "OK": "OK"
     }
   },

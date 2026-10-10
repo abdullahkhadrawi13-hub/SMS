@@ -10,6 +10,9 @@ import { User } from '../../../core/services/user';
 import { LoginRequest } from '../../../core/models/login-request';
 import { ActionResult } from '../../../shared/services/action-result';
 
+// المدة (بالميلي ثانية) بين الوصول لصفحة تغيير كلمة المرور وظهور الرسالة
+const FIRST_LOGIN_NOTICE_DELAY_MS = 300;
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -74,14 +77,18 @@ export class Login {
         if (userData.mustChangePassword) {
 
           // أول تسجيل دخول: ننتقل لصفحة تغيير كلمة المرور
-          // ثم نعرض رسالة النجاح فوقها
+          // ثم بعد مدة قصيرة جدًا نعرض رسالة توضح سبب الانتقال
           this.router.navigate(['/change-password']).then(navigated => {
 
-            if (navigated) {
-              this.actionResult.success(
-                this.translate.instant('LOGIN.FIRST_LOGIN_SUCCESS')
-              );
+            if (!navigated) {
+              return;
             }
+
+            setTimeout(() => {
+              this.actionResult.info(
+                this.translate.instant('LOGIN.FIRST_LOGIN_NOTICE')
+              );
+            }, FIRST_LOGIN_NOTICE_DELAY_MS);
 
           });
 

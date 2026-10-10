@@ -67,7 +67,7 @@ const users = [
     loginId: 'teacher',
     password: '123',
 
-    mustChangePassword: false,
+    mustChangePassword: true,
     isActive: true,
 
     role: 2,

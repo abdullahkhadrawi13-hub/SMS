@@ -1,21 +1,13 @@
 <div class="action-result-dialog">
 
-  <div
-    class="result-icon"
-    [class.success]="data.type === 'success'"
-    [class.error]="data.type === 'error'"
-  >
+  <div class="result-icon" [class]="data.type">
     <mat-icon>
-      {{ icon }}
+      {{ config.icon }}
     </mat-icon>
   </div>
 
   <h2 class="result-title">
-    {{
-      data.type === 'success'
-        ? ('SHARED.ACTION_RESULT.SUCCESS' | translate)
-        : ('SHARED.ACTION_RESULT.ERROR' | translate)
-    }}
+    {{ config.titleKey | translate }}
   </h2>
 
   <p class="result-message">

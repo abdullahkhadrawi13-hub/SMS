@@ -41,3 +41,7 @@ button {
 .error mat-icon {
   color: #c62828;
 }
+
+.info mat-icon {
+  color: #1565c0;
+}
