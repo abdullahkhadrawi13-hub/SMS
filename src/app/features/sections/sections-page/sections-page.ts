@@ -1,4 +1,5 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -84,7 +85,7 @@ export class SectionsPage {
         this.sections.set(response.data.items);
         this.totalCount.set(response.data.totalCount);
       },
-      error: (error) => {
+      error: (error: HttpErrorResponse) => {
         console.error('Failed to load sections:', error);
         this.sections.set([]);
         this.totalCount.set(0);
@@ -175,7 +176,8 @@ export class SectionsPage {
         this.togglingSectionId.set(null);
 
         if (!response.success) {
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getMessage(response)
           );
           return;
@@ -183,12 +185,13 @@ export class SectionsPage {
 
         this.loadSections();
 
-        this.actionResult.success(
+        this.actionResult.show(
+          'success',
           this.apiMessageService.getMessage(response)
         );
       },
 
-      error: (error) => {
+      error: (error: HttpErrorResponse) => {
         console.error(
           'Failed to update section status:',
           error
@@ -196,7 +199,8 @@ export class SectionsPage {
 
         this.togglingSectionId.set(null);
 
-        this.actionResult.error(
+        this.actionResult.show(
+          'error',
           this.apiMessageService.getErrorMessage(error)
         );
       }

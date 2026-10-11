@@ -128,7 +128,8 @@ export class ChangePassword {
 
         if (!response.success || !response.data) {
 
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getMessage(response)
           );
 
@@ -153,19 +154,21 @@ export class ChangePassword {
         }
 
 
-        this.actionResult.success(
+        this.actionResult.show(
+          'success',
           this.apiMessageService.getMessage(response)
         );
 
       },
 
 
-      error: error => {
+      error: (error: HttpErrorResponse) => {
         console.error('Change password error:', error);
 
         this.isLoading.set(false);
 
-        this.actionResult.error(
+        this.actionResult.show(
+          'error',
           this.apiMessageService.getErrorMessage(error)
         );
       }

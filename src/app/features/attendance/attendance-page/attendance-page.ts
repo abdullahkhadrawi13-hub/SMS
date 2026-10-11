@@ -50,6 +50,13 @@ import {
 import { ActionResult } from '../../../shared/services/action-result';
 import { SchoolClassSimpleDto } from '../../classes/school-class';
 
+// The result of one save request (one POST or one PUT).
+// The message always comes from the backend (Arabic or English).
+interface AttendanceSaveResult {
+  success: boolean;
+  message: string;
+}
+
 @Component({
   selector: 'app-attendance-page',
   imports: [
@@ -481,7 +488,7 @@ export class AttendancePage implements OnInit {
     const draft = this.draft();
 
     const newEntries: AttendanceEntry[] = [];
-    const requests: Observable<string | null>[] = [];
+    const requests: Observable<AttendanceSaveResult>[] = [];
 
     for (const student of sheet.students) {
 
@@ -531,13 +538,29 @@ export class AttendancePage implements OnInit {
 
         this.saving.set(false);
 
-        // Each result is null on success, or an error message.
-        const firstError = results.find(result => result !== null);
+        const firstError = results.find(result => !result.success);
 
         if (firstError) {
-          this.actionResult.error(firstError);
+
+          // The message of the first request that failed.
+          this.actionResult.show('error', firstError.message);
+
+        } else if (results.length === 1) {
+
+          // One request only: show the message the backend sent for it.
+          // (The translated message is used only if the backend sent none.)
+          this.actionResult.show(
+            'success',
+            results[0].message
+            || this.translate.instant('ATTENDANCE.SHEET.SAVE_SUCCESS')
+          );
+
         } else {
-          this.actionResult.success(
+
+          // Several requests: there is no single backend message for all
+          // of them, so one general message is shown.
+          this.actionResult.show(
+            'success',
             this.translate.instant('ATTENDANCE.SHEET.SAVE_SUCCESS')
           );
         }
@@ -548,22 +571,24 @@ export class AttendancePage implements OnInit {
       });
   }
 
-  // Turns a save request into: null (saved) or an error message.
+  // Turns a save request into a result: saved or not, with its message.
   // Errors are caught here so one failed request does not cancel the others.
   private toSaveResult(
     request: Observable<ApiResponse<unknown>>
-  ): Observable<string | null> {
+  ): Observable<AttendanceSaveResult> {
 
     return request.pipe(
-      map(response =>
-        response.success
-          ? null
-          : this.apiMessageService.getMessage(response)
-      ),
+      map(response => ({
+        success: response.success,
+        message: this.apiMessageService.getMessage(response)
+      })),
       catchError((error: HttpErrorResponse) => {
         console.error('Failed to save attendance:', error);
 
-        return of(this.getErrorMessage(error));
+        return of({
+          success: false,
+          message: this.getErrorMessage(error)
+        });
       })
     );
   }
@@ -627,7 +652,8 @@ export class AttendancePage implements OnInit {
     if (this.selectionLocked()) {
       this.activeTab.set('record');
 
-      this.actionResult.warning(
+      this.actionResult.show(
+        'warning',
         this.translate.instant('ATTENDANCE.SHEET.UNSAVED_BLOCK')
       );
       return;

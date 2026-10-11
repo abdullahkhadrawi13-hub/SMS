@@ -5,6 +5,7 @@ import {
   inject,
   signal
 } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -187,7 +188,7 @@ export class StudentsForm {
           this.isLoadingClasses.set(false);
         },
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
           console.error('Failed to load classes:', error);
           this.classes.set([]);
           this.isLoadingClasses.set(false);
@@ -209,7 +210,7 @@ export class StudentsForm {
         of(response.success ? response.data : [])
       ),
 
-      catchError(error => {
+      catchError((error: HttpErrorResponse) => {
         console.error('Failed to load sections:', error);
         return of<ActiveSectionDto[]>([]);
       })
@@ -298,7 +299,7 @@ export class StudentsForm {
             });
         },
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
           console.error('Failed to load student:', error);
 
           this.errorMessage.set(
@@ -362,7 +363,8 @@ export class StudentsForm {
           this.isSubmitting.set(false);
 
           if (!response.success) {
-            this.actionResult.error(
+            this.actionResult.show(
+              'error',
               this.apiMessageService.getMessage(response)
             );
 
@@ -374,17 +376,19 @@ export class StudentsForm {
             action: 'created'
           });
 
-          this.actionResult.success(
+          this.actionResult.show(
+            'success',
             this.apiMessageService.getMessage(response)
           );
         },
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
           console.error('Failed to create student:', error);
 
           this.isSubmitting.set(false);
 
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getErrorMessage(error)
           );
         }
@@ -432,7 +436,8 @@ export class StudentsForm {
           this.isSubmitting.set(false);
 
           if (!response.success) {
-            this.actionResult.error(
+            this.actionResult.show(
+              'error',
               this.apiMessageService.getMessage(response)
             );
             return;
@@ -443,17 +448,19 @@ export class StudentsForm {
             action: 'updated'
           });
 
-          this.actionResult.success(
+          this.actionResult.show(
+            'success',
             this.apiMessageService.getMessage(response)
           );
         },
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
           console.error('Failed to update student:', error);
 
           this.isSubmitting.set(false);
 
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getErrorMessage(error)
           );
         }

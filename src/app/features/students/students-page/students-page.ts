@@ -1,4 +1,5 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -177,7 +178,7 @@ export class StudentsPage {
         },
 
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
 
           console.error(
             'Failed to load students:',
@@ -392,7 +393,8 @@ export class StudentsPage {
 
         if (!response.success) {
 
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getMessage(response)
           );
 
@@ -402,14 +404,15 @@ export class StudentsPage {
 
         this.loadStudents();
 
-        this.actionResult.success(
+        this.actionResult.show(
+          'success',
           this.apiMessageService.getMessage(response)
         );
 
       },
 
 
-      error: error => {
+      error: (error: HttpErrorResponse) => {
 
         console.error(
           'Failed to update student status:',
@@ -417,7 +420,8 @@ export class StudentsPage {
         );
 
 
-        this.actionResult.error(
+        this.actionResult.show(
+          'error',
           this.apiMessageService.getErrorMessage(error)
         );
 

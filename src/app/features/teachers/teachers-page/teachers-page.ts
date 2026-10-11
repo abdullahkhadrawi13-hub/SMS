@@ -1,4 +1,5 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -149,7 +150,7 @@ export class TeachersPage {
           this.isLoading.set(false);
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to load teachers:', error);
 
@@ -281,7 +282,8 @@ export class TeachersPage {
         next: (response) => {
 
           if (!response.success) {
-            this.actionResult.error(
+            this.actionResult.show(
+              'error',
               this.apiMessageService.getMessage(response)
             );
             return;
@@ -289,16 +291,18 @@ export class TeachersPage {
 
           this.loadTeachers();
 
-          this.actionResult.success(
+          this.actionResult.show(
+            'success',
             this.apiMessageService.getMessage(response)
           );
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to update teacher status:', error);
 
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getErrorMessage(error)
           );
         },

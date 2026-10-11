@@ -1,4 +1,5 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
@@ -266,7 +267,7 @@ export class TeacherForm {
           this.isLoading.set(false);
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to load teacher:', error);
 
@@ -315,7 +316,8 @@ export class TeacherForm {
           this.isSubmitting.set(false);
 
           if (!response.success) {
-            this.actionResult.error(
+            this.actionResult.show(
+              'error',
               this.apiMessageService.getMessage(response)
             );
             return;
@@ -326,18 +328,20 @@ export class TeacherForm {
             action: 'created',
           });
 
-          this.actionResult.success(
+          this.actionResult.show(
+            'success',
             this.apiMessageService.getMessage(response)
           );
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to create teacher:', error);
 
           this.isSubmitting.set(false);
 
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getErrorMessage(error)
           );
         },
@@ -383,7 +387,8 @@ export class TeacherForm {
           this.isSubmitting.set(false);
 
           if (!response.success) {
-            this.actionResult.error(
+            this.actionResult.show(
+              'error',
               this.apiMessageService.getMessage(response)
             );
             return;
@@ -394,18 +399,20 @@ export class TeacherForm {
             action: 'updated',
           });
 
-          this.actionResult.success(
+          this.actionResult.show(
+            'success',
             this.apiMessageService.getMessage(response)
           );
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to update teacher:', error);
 
           this.isSubmitting.set(false);
 
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getErrorMessage(error)
           );
         },

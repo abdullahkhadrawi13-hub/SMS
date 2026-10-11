@@ -3,7 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 
 import {
   ActionResultDialog,
-  ActionResultDialogData
+  ActionResultDialogData,
+  ActionResultType
 } from '../components/action-result-dialog/action-result-dialog';
 
 @Injectable({
@@ -13,37 +14,16 @@ export class ActionResult {
 
   private readonly dialog = inject(MatDialog);
 
-  success(message: string): void {
+  // Shows the result dialog with the given type and message.
+  //
+  // - 'success' / 'error': the result of a backend request.
+  //   The message comes from the backend (ApiMessageService).
+  // - 'info' / 'warning': a notice from the frontend
+  //   (not the result of a request).
+  show(type: ActionResultType, message: string): void {
     this.dialog.open(ActionResultDialog, {
       data: {
-        type: 'success',
-        message
-      } satisfies ActionResultDialogData
-    });
-  }
-
-  info(message: string): void {
-    this.dialog.open(ActionResultDialog, {
-      data: {
-        type: 'info',
-        message
-      } satisfies ActionResultDialogData
-    });
-  }
-
-  warning(message: string): void {
-    this.dialog.open(ActionResultDialog, {
-      data: {
-        type: 'warning',
-        message
-      } satisfies ActionResultDialogData
-    });
-  }
-
-  error(message: string): void {
-    this.dialog.open(ActionResultDialog, {
-      data: {
-        type: 'error',
+        type,
         message
       } satisfies ActionResultDialogData
     });

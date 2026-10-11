@@ -1,4 +1,5 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
@@ -164,7 +165,7 @@ export class AttendanceOfficerPage {
           this.loadOfficerDetails(officerId);
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to load attendance officer data:', error);
 
@@ -197,7 +198,7 @@ export class AttendanceOfficerPage {
           this.isLoading.set(false);
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to load the attendance officer:', error);
 
@@ -255,7 +256,8 @@ export class AttendanceOfficerPage {
           this.isSaving.set(false);
 
           if (!response.success) {
-            this.actionResult.error(
+            this.actionResult.show(
+              'error',
               this.apiMessageService.getMessage(response)
             );
             return;
@@ -265,18 +267,20 @@ export class AttendanceOfficerPage {
           this.officer.set(teacher);
           this.selectedId.set(null);
 
-          this.actionResult.success(
+          this.actionResult.show(
+            'success',
             this.apiMessageService.getMessage(response)
           );
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to set the attendance officer:', error);
 
           this.isSaving.set(false);
 
-          this.actionResult.error(
+          this.actionResult.show(
+            'error',
             this.apiMessageService.getErrorMessage(error)
           );
         },

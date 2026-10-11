@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -85,7 +86,8 @@ export class Login {
             }
 
             setTimeout(() => {
-              this.actionResult.info(
+              this.actionResult.show(
+                'info',
                 this.translate.instant('LOGIN.FIRST_LOGIN_NOTICE')
               );
             }, FIRST_LOGIN_NOTICE_DELAY_MS);
@@ -97,7 +99,7 @@ export class Login {
         }
       },
 
-      error: (error) => {
+      error: (error: HttpErrorResponse) => {
 
         this.isLoading.set(false);
 
