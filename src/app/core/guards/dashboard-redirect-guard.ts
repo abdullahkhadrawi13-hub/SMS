@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { User } from '../services/user';
+import { UserRole } from '../models/user-role';
 
 export const dashboardRedirectGuard: CanActivateFn = () => {
 
@@ -12,19 +13,19 @@ export const dashboardRedirectGuard: CanActivateFn = () => {
 
   switch (currentRole) {
 
-    case 0:
+    case UserRole.Admin:
       return router.createUrlTree(['/dashboard/admin']);
 
-    case 1:
+    case UserRole.AssistantPrincipal:
       return router.createUrlTree(['/dashboard/assistant-principal']);
 
-    case 2:
+    case UserRole.Teacher:
       return router.createUrlTree(['/dashboard/teacher']);
 
-    case 3:
+    case UserRole.Student:
       return router.createUrlTree(['/dashboard/student']);
 
-    case 4:
+    case UserRole.Parent:
       return router.createUrlTree(['/dashboard/parent']);
 
     default:

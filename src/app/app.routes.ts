@@ -13,6 +13,8 @@ import { mustChangePasswordGuard } from './core/guards/must-change-password-guar
 
 import { DASHBOARD_ROUTES } from './features/dashboard/dashboard.routes';
 
+import { UserRole } from './core/models/user-role';
+
 export const routes: Routes = [
 
   {
@@ -58,7 +60,7 @@ export const routes: Routes = [
         path: 'students',
         canActivate: [roleGuard],
         data: {
-          roles: [0, 1, 2]
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher]
         },
         loadChildren: () =>
           import('./features/students/students.routes')
@@ -72,7 +74,7 @@ export const routes: Routes = [
             .then(m => m.CLASSES_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
-          roles: [0, 1, 2]
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher]
         }
       },
 
@@ -83,7 +85,7 @@ export const routes: Routes = [
             .then(m => m.SECTIONS_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
-          roles: [0, 1, 2]
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher]
         }
       },
 
@@ -105,7 +107,7 @@ export const routes: Routes = [
             .then(m => m.SUBJECTS_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
-          roles: [0, 1, 2]
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher]
         }
       },
 
@@ -129,7 +131,7 @@ export const routes: Routes = [
             .then(m => m.SETTINGS_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
-          roles: [0]
+          roles: [UserRole.Admin]
         }
       },
 

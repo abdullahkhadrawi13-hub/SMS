@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanMatchFn } from '@angular/router';
 
 import { User } from '../services/user';
+import { UserRole } from '../models/user-role';
 
 // Same idea as roleGuard, but for "canMatch":
 // when the role is not in route.data.roles the route is skipped
@@ -12,7 +13,7 @@ export const roleMatchGuard: CanMatchFn = (route) => {
   const currentRole = inject(User).getRole();
 
   const allowedRoles =
-    (route.data?.['roles'] ?? []) as number[];
+    (route.data?.['roles'] ?? []) as UserRole[];
 
   return (
     currentRole !== null &&

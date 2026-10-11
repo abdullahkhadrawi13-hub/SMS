@@ -20,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Students } from '../../../core/services/students';
 import { ApiMessageService } from '../../../core/services/api-message';
 import { AttendanceAccessService } from '../../../core/services/attendance-access';
+import { getRoleTranslationKey } from '../../../core/models/user-role';
 
 import { AttendanceHistory } from '../../attendance/attendance-history/attendance-history';
 
@@ -173,22 +174,9 @@ export class StudentsDetails {
     return name || String(student.sectionId ?? '-');
   }
 
-  getRoleTranslationKey(role: number): string {
-    switch (role) {
-      case 0:
-        return 'ROLES.ADMIN';
-      case 1:
-        return 'ROLES.ASSISTANT_PRINCIPAL';
-      case 2:
-        return 'ROLES.TEACHER';
-      case 3:
-        return 'ROLES.STUDENT';
-      case 4:
-        return 'ROLES.PARENT';
-      default:
-        return 'ROLES.UNKNOWN';
-    }
-  }
+  // The shared function from user-role.ts, kept here under the same
+  // name so the template can call it.
+  readonly getRoleTranslationKey = getRoleTranslationKey;
 
   close(): void {
     this.dialogRef.close();

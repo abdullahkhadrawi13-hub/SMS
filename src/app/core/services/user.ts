@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 
 import { LoginResponse } from '../models/login-response';
+import { UserRole } from '../models/user-role';
 
 // بيانات المستخدم بدون رمز الدخول.
 // الرمز (JWT) تديره خدمة Auth فقط، وهذه الخدمة مسؤولة عن بيانات المستخدم ودوره.
@@ -53,7 +54,7 @@ export class User {
   }
 
 
-  getRole(): number | null {
+  getRole(): UserRole | null {
 
     return this.currentUser()?.role ?? null;
 

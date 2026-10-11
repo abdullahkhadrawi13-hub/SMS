@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { roleGuard } from '../../core/guards/role-guard';
+import { UserRole } from '../../core/models/user-role';
 
 export const SUBJECTS_ROUTES: Routes = [
   {
@@ -11,7 +12,7 @@ export const SUBJECTS_ROUTES: Routes = [
       ),
     canActivate: [roleGuard],
     data: {
-      roles: [0, 1, 2],
+      roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher],
     },
   },
 ];

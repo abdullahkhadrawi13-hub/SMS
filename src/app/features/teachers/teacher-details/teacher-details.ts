@@ -19,6 +19,7 @@ import {
 } from '../../../core/services/teachers';
 
 import { ApiMessageService } from '../../../core/services/api-message';
+import { getRoleTranslationKey } from '../../../core/models/user-role';
 
 
 // Data passed when the details dialog is opened.
@@ -166,24 +167,9 @@ export class TeacherDetails {
   }
 
 
-  // Returns the translation key of a role number.
-  getRoleTranslationKey(role: number): string {
-
-    switch (role) {
-      case 0:
-        return 'ROLES.ADMIN';
-      case 1:
-        return 'ROLES.ASSISTANT_PRINCIPAL';
-      case 2:
-        return 'ROLES.TEACHER';
-      case 3:
-        return 'ROLES.STUDENT';
-      case 4:
-        return 'ROLES.PARENT';
-      default:
-        return 'ROLES.UNKNOWN';
-    }
-  }
+  // The shared function from user-role.ts, kept here under the same
+  // name so the template can call it.
+  readonly getRoleTranslationKey = getRoleTranslationKey;
 
 
   // Closes the dialog.

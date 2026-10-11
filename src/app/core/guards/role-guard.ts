@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { User } from '../services/user';
+import { UserRole } from '../models/user-role';
 
 export const roleGuard: CanActivateFn = (route, state) => {
 
@@ -10,7 +11,7 @@ export const roleGuard: CanActivateFn = (route, state) => {
 
   const currentRole = user.getRole();
 
-  const allowedRoles = route.data['roles'] as number[];
+  const allowedRoles = route.data['roles'] as UserRole[];
 
   if (
     currentRole !== null &&

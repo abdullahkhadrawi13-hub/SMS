@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { UserRole } from '../models/user-role';
 
 
 // Represents one teacher returned by the API.
@@ -26,7 +27,7 @@ export interface TeacherListDto {
 
   isActive: boolean;
   mustChangePassword: boolean;
-  role: number;
+  role: UserRole;
 }
 
 

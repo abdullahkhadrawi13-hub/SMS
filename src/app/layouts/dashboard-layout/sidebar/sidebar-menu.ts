@@ -1,9 +1,17 @@
+import { UserRole } from '../../../core/models/user-role';
+
 export interface MenuItem {
   label: string;
   icon: string;
   route: string;
-  roles: number[];
+
+  // The roles that see this item in the sidebar.
+  roles: UserRole[];
 }
+
+// Short names for the roles, so the lists below stay easy to read.
+// Admin is the same as UserRole.Admin, and so on.
+const { Admin, AssistantPrincipal, Teacher, Student, Parent } = UserRole;
 
 export const SIDEBAR_MENU: MenuItem[] = [
 
@@ -11,98 +19,98 @@ export const SIDEBAR_MENU: MenuItem[] = [
     label: 'SIDEBAR.DASHBOARD',
     icon: 'dashboard',
     route: '/dashboard',
-    roles: [0, 1, 2, 3, 4]
+    roles: [Admin, AssistantPrincipal, Teacher, Student, Parent]
   },
 
   {
     label: 'SIDEBAR.STUDENTS',
     icon: 'school',
     route: '/students',
-    roles: [0, 1, 2]
+    roles: [Admin, AssistantPrincipal, Teacher]
   },
 
   {
     label: 'SIDEBAR.TEACHERS',
     icon: 'person',
     route: '/teachers',
-    roles: [0, 1]
+    roles: [Admin, AssistantPrincipal]
   },
 
   {
     label: 'SIDEBAR.PARENTS',
     icon: 'family_restroom',
     route: '/parents',
-    roles: [0, 1]
+    roles: [Admin, AssistantPrincipal]
   },
 
   {
     label: 'SIDEBAR.CLASSES',
     icon: 'class',
     route: '/classes',
-    roles: [0, 1, 2]
+    roles: [Admin, AssistantPrincipal, Teacher]
   },
 
   {
     label: 'SIDEBAR.SECTIONS',
     icon: 'groups',
     route: '/sections',
-    roles: [0, 1, 2]
+    roles: [Admin, AssistantPrincipal, Teacher]
   },
 
   {
     label: 'SIDEBAR.SUBJECTS',
     icon: 'menu_book',
     route: '/subjects',
-    roles: [0, 1, 2]
+    roles: [Admin, AssistantPrincipal, Teacher]
   },
 
   {
     label: 'SIDEBAR.TIMETABLE',
     icon: 'schedule',
     route: '/timetable',
-    roles: [0, 1, 2, 3, 4]
+    roles: [Admin, AssistantPrincipal, Teacher, Student, Parent]
   },
 
   {
     label: 'SIDEBAR.ATTENDANCE',
     icon: 'fact_check',
     route: '/attendance',
-    roles: [0, 1, 2, 3, 4]
+    roles: [Admin, AssistantPrincipal, Teacher, Student, Parent]
   },
 
   {
     label: 'SIDEBAR.GRADES',
     icon: 'grade',
     route: '/grades',
-    roles: [0, 1, 2, 3, 4]
+    roles: [Admin, AssistantPrincipal, Teacher, Student, Parent]
   },
 
   {
     label: 'SIDEBAR.RESULTS',
     icon: 'assessment',
     route: '/results',
-    roles: [0, 1, 2, 3, 4]
+    roles: [Admin, AssistantPrincipal, Teacher, Student, Parent]
   },
 
   {
     label: 'SIDEBAR.ACADEMIC_HISTORY',
     icon: 'history_edu',
     route: '/academic-history',
-    roles: [0, 3, 4]
+    roles: [Admin, Student, Parent]
   },
 
   {
     label: 'SIDEBAR.REPORTS',
     icon: 'description',
     route: '/reports',
-    roles: [0, 1]
+    roles: [Admin, AssistantPrincipal]
   },
 
   {
     label: 'SIDEBAR.SETTINGS',
     icon: 'settings',
     route: '/settings',
-    roles: [0]
+    roles: [Admin]
   }
 
 ];

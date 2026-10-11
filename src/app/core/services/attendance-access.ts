@@ -6,12 +6,16 @@ import { catchError, map, Observable, of, tap } from 'rxjs';
 import { AttendanceAccess } from '../../features/attendance/attendance';
 import { AttendanceService } from './attendance';
 import { User } from './user';
+import { UserRole } from '../models/user-role';
 
-// Roles that have the attendance screen:
-// 0 = Admin, 1 = Assistant Principal, 2 = Teacher.
+// Roles that have the attendance screen.
 // GET /api/attendance/my-access is open to these roles only.
-// (Student = 3 and Parent = 4 have no attendance endpoints yet.)
-export const ATTENDANCE_STAFF_ROLES = [0, 1, 2];
+// (Student and Parent have no attendance endpoints yet.)
+export const ATTENDANCE_STAFF_ROLES: UserRole[] = [
+  UserRole.Admin,
+  UserRole.AssistantPrincipal,
+  UserRole.Teacher
+];
 
 // The answer of my-access, kept together with the user it belongs to,
 // so one user never gets the answer of the user that logged in before.
@@ -72,7 +76,10 @@ export class AttendanceAccessService {
       return access.canRecord;
     }
 
-    return this.role() === 0 || this.role() === 1;
+    return (
+      this.role() === UserRole.Admin ||
+      this.role() === UserRole.AssistantPrincipal
+    );
   });
 
   // True for the attendance officer: today only, no date picker.
@@ -85,7 +92,7 @@ export class AttendanceAccessService {
       return access.todayOnly;
     }
 
-    return this.role() === 2;
+    return this.role() === UserRole.Teacher;
   });
 
   // Admin and AssistantPrincipal: any past day or today, and the

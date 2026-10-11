@@ -1,3 +1,5 @@
+import { UserRole } from './user-role';
+
 export interface LoginResponse {
   userId: number;
 
@@ -16,7 +18,8 @@ export interface LoginResponse {
   mustChangePassword: boolean;
   isActive: boolean;
 
-  role: number;
+  // The role of the user (Admin, AssistantPrincipal, Teacher, Student, Parent).
+  role: UserRole;
 
   phoneNumber: string;
 

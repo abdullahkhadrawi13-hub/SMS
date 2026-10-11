@@ -15,6 +15,7 @@ import {
 
 import { ApiMessageService } from '../../../core/services/api-message';
 import { User } from '../../../core/services/user';
+import { UserRole } from '../../../core/models/user-role';
 import { ActionResult } from '../../../shared/services/action-result';
 
 import { TeacherHeader } from '../teacher-header/teacher-header';
@@ -63,10 +64,10 @@ export class TeachersPage {
   private readonly user = inject(User);
 
 
-  // Only the Admin (role 0) can add, edit, activate or deactivate teachers.
-  // The Assistant Principal (role 1) can only read.
+  // Only the Admin can add, edit, activate or deactivate teachers.
+  // The Assistant Principal can only read.
   readonly canManage = computed(
-    () => this.user.user()?.role === 0
+    () => this.user.user()?.role === UserRole.Admin
   );
 
 

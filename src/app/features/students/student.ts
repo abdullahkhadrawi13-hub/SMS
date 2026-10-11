@@ -1,3 +1,5 @@
+import { UserRole } from '../../core/models/user-role';
+
 export interface Student {
   studentId: number;
   studentNumber: string;
@@ -30,5 +32,5 @@ export interface Student {
   sectionAr: string;
   sectionEn: string;
 
-  role: number;
+  role: UserRole;
 }

@@ -8,6 +8,7 @@ import { ParentDashboard } from './parent/parent-dashboard/parent-dashboard';
 
 import { roleGuard } from '../../core/guards/role-guard';
 import { dashboardRedirectGuard } from '../../core/guards/dashboard-redirect-guard';
+import { UserRole } from '../../core/models/user-role';
 
 // هذه المسارات أبناء لـ 'dashboard' (معرّف في app.routes.ts)
 // الـ Layout والـ authGuard صاروا في الأب، فما بنكررهم هون
@@ -24,7 +25,7 @@ export const DASHBOARD_ROUTES: Routes = [
     component: AdminDashboard,
     canActivate: [roleGuard],
     data: {
-      roles: [0]
+      roles: [UserRole.Admin]
     }
   },
 
@@ -33,7 +34,7 @@ export const DASHBOARD_ROUTES: Routes = [
     component: AssistantPrincipalDashboard,
     canActivate: [roleGuard],
     data: {
-      roles: [1]
+      roles: [UserRole.AssistantPrincipal]
     }
   },
 
@@ -42,7 +43,7 @@ export const DASHBOARD_ROUTES: Routes = [
     component: TeacherDashboard,
     canActivate: [roleGuard],
     data: {
-      roles: [2]
+      roles: [UserRole.Teacher]
     }
   },
 
@@ -51,7 +52,7 @@ export const DASHBOARD_ROUTES: Routes = [
     component: StudentDashboard,
     canActivate: [roleGuard],
     data: {
-      roles: [3]
+      roles: [UserRole.Student]
     }
   },
 
@@ -60,7 +61,7 @@ export const DASHBOARD_ROUTES: Routes = [
     component: ParentDashboard,
     canActivate: [roleGuard],
     data: {
-      roles: [4]
+      roles: [UserRole.Parent]
     }
   }
 

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { roleGuard } from '../../core/guards/role-guard';
+import { UserRole } from '../../core/models/user-role';
 
 export const STUDENTS_ROUTES: Routes = [
 
@@ -16,7 +17,7 @@ export const STUDENTS_ROUTES: Routes = [
   {
     path: 'new',
     canActivate: [roleGuard],
-    data: { roles: [0, 1] },
+    data: { roles: [UserRole.Admin, UserRole.AssistantPrincipal] },
     loadComponent: () =>
       import('./students-form/students-form')
         .then(m => m.StudentsForm)
@@ -26,7 +27,7 @@ export const STUDENTS_ROUTES: Routes = [
   {
     path: ':id/edit',
     canActivate: [roleGuard],
-    data: { roles: [0, 1] },
+    data: { roles: [UserRole.Admin, UserRole.AssistantPrincipal] },
     loadComponent: () =>
       import('./students-form/students-form')
         .then(m => m.StudentsForm)
