@@ -3,10 +3,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { forkJoin } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -20,13 +21,13 @@ import { ApiMessageService } from '../../../../core/services/api-message';
 import { ActionResult } from '../../../../shared/services/action-result';
 
 import { OfficerCurrentCard } from '../officer-current-card/officer-current-card';
+import { OfficerSaveBar } from '../officer-save-bar/officer-save-bar';
 import { OfficerTeacherList } from '../officer-teacher-list/officer-teacher-list';
-import { getTeacherName } from '../teacher-name';
+import { OfficerTeacherSearch } from '../officer-teacher-search/officer-teacher-search';
 
 
-// The API reference asks for the active teachers in one request:
-// GET /api/teachers?isActive=true&pageSize=100
-const TEACHERS_PAGE_SIZE = 100;
+// Number of teachers shown in one page of the list.
+const TEACHERS_PAGE_SIZE = 10;
 
 
 @Component({
@@ -40,7 +41,9 @@ const TEACHERS_PAGE_SIZE = 100;
     TranslatePipe,
 
     OfficerCurrentCard,
+    OfficerSaveBar,
     OfficerTeacherList,
+    OfficerTeacherSearch,
   ],
   templateUrl: './attendance-officer-page.html',
   styleUrl: './attendance-officer-page.css',
@@ -63,23 +66,60 @@ export class AttendanceOfficerPage {
   private readonly actionResult = inject(ActionResult);
 
 
-  // Active teachers the Admin can choose from.
-  readonly teachers = signal<TeacherListDto[]>([]);
+  // ===== Current officer =====
 
   // The current attendance officer, or null when none is assigned.
   readonly officer = signal<TeacherListDto | null>(null);
 
-  // ID of the teacher selected in the list (not saved yet).
-  readonly selectedId = signal<number | null>(null);
-
-  // Indicates whether the page data is currently loading.
+  // Indicates whether the current officer is loading.
   readonly isLoading = signal(false);
-
-  // Indicates whether the new officer is currently being saved.
-  readonly isSaving = signal(false);
 
   // Error message (API message or translation key) shown instead of the page.
   readonly errorMessage = signal('');
+
+
+  // ===== Teachers list =====
+
+  // The list is empty until the Admin searches:
+  // no teachers are loaded when the page is opened.
+
+  // Active teachers of the current page (searched in the backend).
+  readonly teachers = signal<TeacherListDto[]>([]);
+
+  // Total number of active teachers matching the current search.
+  readonly totalCount = signal(0);
+
+  // Current page number (1-based, like the API).
+  readonly pageNumber = signal(1);
+
+  // Number of teachers per page.
+  readonly pageSize = TEACHERS_PAGE_SIZE;
+
+  // The search text that was sent to the backend.
+  // Empty = the Admin has not searched yet (or cleared the search).
+  readonly search = signal('');
+
+  // Indicates whether the teachers list is loading.
+  readonly isListLoading = signal(false);
+
+  // Error message (API message or translation key) shown instead of the list.
+  readonly listErrorMessage = signal('');
+
+  // The running teachers request.
+  // It is cancelled when a new search or page is requested,
+  // so an old answer never replaces a newer one.
+  private teachersRequest?: Subscription;
+
+
+  // ===== Selection =====
+
+  // The teacher selected in the list (not saved yet).
+  // The whole teacher is kept, not only his ID, so the selection
+  // stays when the Admin searches again or opens another page.
+  readonly selectedTeacher = signal<TeacherListDto | null>(null);
+
+  // Indicates whether the new officer is currently being saved.
+  readonly isSaving = signal(false);
 
 
   // ID of the current officer, used to mark his row in the list.
@@ -87,61 +127,44 @@ export class AttendanceOfficerPage {
     () => this.officer()?.teacherId ?? null
   );
 
-  // The teacher selected in the list, or null when nothing is selected.
-  readonly selectedTeacher = computed(
-    () => this.teachers().find(
-      teacher => teacher.teacherId === this.selectedId()
-    ) ?? null
+  // ID of the selected teacher, used to mark his row in the list.
+  readonly selectedId = computed(
+    () => this.selectedTeacher()?.teacherId ?? null
   );
 
 
   constructor() {
 
-    // Load the officer and the teachers when the page is opened.
-    this.loadData();
+    // Load the officer when the page is opened.
+    // The teachers are loaded only after the Admin searches.
+    this.loadOfficer();
   }
 
 
-  // Loads the current officer and the active teachers together.
-  loadData(): void {
+  // Loads the ID of the current officer
+  // (GET /api/schoolsettings/attendance-officer).
+  loadOfficer(): void {
 
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    forkJoin({
-      officer: this.schoolSettingsService.getAttendanceOfficer(),
-      teachers: this.teachersService.getTeachers(
-        1,
-        TEACHERS_PAGE_SIZE,
-        undefined,
-        true
-      ),
-    })
+    this.schoolSettingsService
+      .getAttendanceOfficer()
       .pipe(
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-        next: ({ officer, teachers }) => {
+        next: (response) => {
 
-          if (!officer.success) {
-            this.showLoadError(
-              this.apiMessageService.getMessage(officer)
+          if (!response.success) {
+            this.showOfficerError(
+              this.apiMessageService.getMessage(response)
             );
             return;
           }
-
-          if (!teachers.success) {
-            this.showLoadError(
-              this.apiMessageService.getMessage(teachers)
-            );
-            return;
-          }
-
-          this.teachers.set(teachers.data.items);
-          this.selectedId.set(null);
 
           // The API returns only the teacherId of the officer (or null).
-          const officerId = officer.data;
+          const officerId = response.data;
 
           if (officerId === null) {
             this.officer.set(null);
@@ -149,34 +172,21 @@ export class AttendanceOfficerPage {
             return;
           }
 
-          // The name and number are taken from the loaded teachers.
-          const officerTeacher = teachers.data.items.find(
-            teacher => teacher.teacherId === officerId
-          );
-
-          if (officerTeacher) {
-            this.officer.set(officerTeacher);
-            this.isLoading.set(false);
-            return;
-          }
-
-          // The officer is not in the first 100 teachers:
-          // load him alone.
+          // The name, number and phone are loaded by the ID.
           this.loadOfficerDetails(officerId);
         },
 
         error: (error: HttpErrorResponse) => {
 
-          console.error('Failed to load attendance officer data:', error);
+          console.error('Failed to load the attendance officer:', error);
 
-          this.showLoadError('ATTENDANCE_OFFICER.ERROR.LOAD_FAILED');
+          this.showOfficerError('ATTENDANCE_OFFICER.ERROR.LOAD_FAILED');
         },
       });
   }
 
 
-  // Loads one teacher (GET /api/teachers/{teacherId}).
-  // Used only when the officer is not in the loaded teachers.
+  // Loads the details of the officer (GET /api/teachers/{teacherId}).
   private loadOfficerDetails(teacherId: number): void {
 
     this.teachersService
@@ -188,7 +198,7 @@ export class AttendanceOfficerPage {
         next: (response) => {
 
           if (!response.success) {
-            this.showLoadError(
+            this.showOfficerError(
               this.apiMessageService.getMessage(response)
             );
             return;
@@ -202,18 +212,16 @@ export class AttendanceOfficerPage {
 
           console.error('Failed to load the attendance officer:', error);
 
-          this.showLoadError('ATTENDANCE_OFFICER.ERROR.LOAD_FAILED');
+          this.showOfficerError('ATTENDANCE_OFFICER.ERROR.LOAD_FAILED');
         },
       });
   }
 
 
-  // Clears the page data and shows the error state.
-  private showLoadError(message: string): void {
+  // Clears the officer and shows the error state of the page.
+  private showOfficerError(message: string): void {
 
-    this.teachers.set([]);
     this.officer.set(null);
-    this.selectedId.set(null);
 
     this.errorMessage.set(message);
 
@@ -221,15 +229,112 @@ export class AttendanceOfficerPage {
   }
 
 
+  // Loads one page of the active teachers matching the current search
+  // (GET /api/teachers?pageNumber=..&pageSize=..&search=..&isActive=true).
+  loadTeachers(): void {
+
+    // Cancel the previous request if it has not answered yet.
+    this.teachersRequest?.unsubscribe();
+
+    this.isListLoading.set(true);
+    this.listErrorMessage.set('');
+
+    this.teachersRequest = this.teachersService
+      .getTeachers(
+        this.pageNumber(),
+        this.pageSize,
+        this.search(),
+        true
+      )
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: (response) => {
+
+          if (!response.success) {
+            this.showListError(
+              this.apiMessageService.getMessage(response)
+            );
+            return;
+          }
+
+          this.teachers.set(response.data.items);
+          this.totalCount.set(response.data.totalCount);
+
+          this.isListLoading.set(false);
+        },
+
+        error: (error: HttpErrorResponse) => {
+
+          console.error('Failed to load teachers:', error);
+
+          this.showListError('TEACHERS.ERROR.LOAD_FAILED');
+        },
+      });
+  }
+
+
+  // Clears the list and shows its error state.
+  private showListError(message: string): void {
+
+    this.teachers.set([]);
+    this.totalCount.set(0);
+
+    this.listErrorMessage.set(message);
+
+    this.isListLoading.set(false);
+  }
+
+
+  // Runs when the Admin submits or clears the search field.
+  onSearch(value: string): void {
+
+    this.search.set(value);
+    this.pageNumber.set(1);
+
+    // Empty search: nothing is requested, the list goes back to empty.
+    if (!value) {
+      this.clearTeachers();
+      return;
+    }
+
+    this.loadTeachers();
+  }
+
+
+  // Empties the list and stops the running request, if any.
+  private clearTeachers(): void {
+
+    this.teachersRequest?.unsubscribe();
+
+    this.teachers.set([]);
+    this.totalCount.set(0);
+
+    this.listErrorMessage.set('');
+
+    this.isListLoading.set(false);
+  }
+
+
+  // Runs when the Admin opens another page of the list.
+  onPageChange(event: PageEvent): void {
+
+    this.pageNumber.set(event.pageIndex + 1);
+
+    this.loadTeachers();
+  }
+
+
   // Runs when the Admin selects a teacher in the list.
-  onSelectTeacher(teacherId: number): void {
-    this.selectedId.set(teacherId);
+  onSelectTeacher(teacher: TeacherListDto): void {
+    this.selectedTeacher.set(teacher);
   }
 
 
   // Cancels the selection and hides the save bar.
   cancelSelection(): void {
-    this.selectedId.set(null);
+    this.selectedTeacher.set(null);
   }
 
 
@@ -265,7 +370,7 @@ export class AttendanceOfficerPage {
 
           // The selected teacher is now the officer.
           this.officer.set(teacher);
-          this.selectedId.set(null);
+          this.selectedTeacher.set(null);
 
           this.actionResult.show(
             'success',
@@ -288,14 +393,8 @@ export class AttendanceOfficerPage {
   }
 
 
-  // Reloads the page data after a failed request.
+  // Reloads the officer after he failed to load.
   retry(): void {
-    this.loadData();
-  }
-
-
-  // Returns the teacher name according to the current language.
-  getTeacherName(teacher: TeacherListDto): string {
-    return getTeacherName(teacher);
+    this.loadOfficer();
   }
 }

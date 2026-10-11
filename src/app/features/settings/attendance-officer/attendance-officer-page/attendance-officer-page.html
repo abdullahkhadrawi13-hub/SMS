@@ -80,62 +80,55 @@
       ></app-officer-current-card>
 
       <!-- Teachers to choose from -->
-      <app-officer-teacher-list
-        [teachers]="teachers()"
-        [officerId]="officerId()"
-        [selectedId]="selectedId()"
-        [disabled]="isSaving()"
-        (selectTeacher)="onSelectTeacher($event)"
-      ></app-officer-teacher-list>
+      <section class="teachers-section">
 
-      <!-- Save Bar: shown only after a teacher is selected.
-           It stays at the bottom of the screen while scrolling the list. -->
-      @if (selectedTeacher(); as teacher) {
+        <!-- Section Title -->
+        <div class="teachers-header">
 
-        <div class="save-bar">
+          <h2 class="section-title">
+            {{ 'ATTENDANCE_OFFICER.LIST.TITLE' | translate }}
+          </h2>
 
-          <div class="save-bar-text">
-
-            <span class="save-bar-label">
-              {{ 'ATTENDANCE_OFFICER.SAVE_BAR.SELECTED' | translate }}
-            </span>
-
-            <span class="save-bar-name">
-              {{ getTeacherName(teacher) }}
-            </span>
-
-          </div>
-
-          <div class="save-bar-actions">
-
-            <button
-              mat-stroked-button
-              type="button"
-              [disabled]="isSaving()"
-              (click)="cancelSelection()"
-            >
-              {{ 'ATTENDANCE_OFFICER.SAVE_BAR.CANCEL' | translate }}
-            </button>
-
-            <button
-              mat-flat-button
-              color="primary"
-              type="button"
-              [disabled]="isSaving()"
-              (click)="save()"
-            >
-              <mat-icon>how_to_reg</mat-icon>
-
-              {{
-                (isSaving()
-                  ? 'ATTENDANCE_OFFICER.SAVE_BAR.SAVING'
-                  : 'ATTENDANCE_OFFICER.SAVE_BAR.SAVE') | translate
-              }}
-            </button>
-
-          </div>
+          <p>
+            {{ 'ATTENDANCE_OFFICER.LIST.SUBTITLE' | translate }}
+          </p>
 
         </div>
+
+        <!-- Teacher Search (the search is done by the backend) -->
+        <app-officer-teacher-search
+          (searchSubmit)="onSearch($event)"
+        ></app-officer-teacher-search>
+
+        <!-- Teacher List
+             (hint / error / loading / rows / no results / pagination) -->
+        <app-officer-teacher-list
+          [teachers]="teachers()"
+          [isLoading]="isListLoading()"
+          [errorMessage]="listErrorMessage()"
+          [totalCount]="totalCount()"
+          [pageNumber]="pageNumber()"
+          [pageSize]="pageSize"
+          [hasSearched]="search() !== ''"
+          [officerId]="officerId()"
+          [selectedId]="selectedId()"
+          [disabled]="isSaving()"
+          (pageChange)="onPageChange($event)"
+          (retry)="loadTeachers()"
+          (selectTeacher)="onSelectTeacher($event)"
+        ></app-officer-teacher-list>
+
+      </section>
+
+      <!-- Save Bar: shown only after a teacher is selected. -->
+      @if (selectedTeacher(); as teacher) {
+
+        <app-officer-save-bar
+          [teacher]="teacher"
+          [isSaving]="isSaving()"
+          (cancelSelection)="cancelSelection()"
+          (saveSelection)="save()"
+        ></app-officer-save-bar>
 
       }
 

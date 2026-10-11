@@ -115,67 +115,33 @@
 
 
 /* ================================
-   Save Bar
+   Teachers Section
+   (title + search + list)
    ================================ */
 
-.save-bar {
-  /* Stays visible at the bottom while scrolling the teachers. */
-  position: sticky;
-  bottom: 0;
-
-  z-index: 2;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 16px;
-
-  padding: 14px 20px;
-
-  background: #ffffff;
-
-  border: 1px solid #bfdbfe;
-  border-radius: 12px;
-
-  box-shadow: 0 6px 18px rgba(32, 45, 73, 0.12);
-
-  box-sizing: border-box;
-}
-
-.save-bar-text {
-  min-width: 0;
-
+.teachers-section {
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
+  gap: 14px;
 }
 
-.save-bar-label {
-  font-size: 13px;
+.section-title {
+  margin: 0 0 4px;
+
+  font-size: 14px;
+  font-weight: 600;
 
   color: #6b7280;
 }
 
-.save-bar-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.teachers-header p {
+  margin: 0;
 
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.5;
 
-  color: #111827;
-}
-
-.save-bar-actions {
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
+  color: #9ca3af;
 }
 
 
@@ -249,15 +215,6 @@
 
   .title-section h1 {
     font-size: 24px;
-  }
-
-  .save-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .save-bar-actions > button {
-    flex: 1;
   }
 
 }

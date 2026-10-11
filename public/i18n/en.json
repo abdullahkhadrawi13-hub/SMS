@@ -711,7 +711,7 @@
       "TITLE": "Current officer",
       "BADGE": "Attendance officer",
       "EMPTY_TITLE": "No attendance officer assigned yet",
-      "EMPTY_TEXT": "Choose a teacher from the list below.",
+      "EMPTY_TEXT": "Search for a teacher below to assign one.",
       "NOTE": "The attendance officer records today's attendance only and sees today's summary. The Admin and the Assistant Principal can always record and edit attendance."
     },
     "LIST": {
@@ -721,8 +721,8 @@
       "SEARCH_PLACEHOLDER": "Name, number or phone...",
       "SEARCH_CLEAR": "Clear search",
       "CURRENT_TAG": "Current officer",
-      "EMPTY": "No active teachers to choose from",
-      "NO_RESULTS": "No teacher matches your search"
+      "NO_RESULTS": "No teacher matches your search",
+      "SEARCH_HINT": "Search for a teacher to see the results"
     },
     "SAVE_BAR": {
       "SELECTED": "New attendance officer",

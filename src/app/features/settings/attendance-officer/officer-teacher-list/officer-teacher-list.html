@@ -1,149 +1,150 @@
-<section class="teacher-list">
+<!-- Before any search: the list is empty and a hint is shown -->
+@if (!hasSearched()) {
 
-  <!-- Section Title + Search -->
-  <div class="list-header">
+  <div class="state-card hint-state">
 
-    <div class="list-title">
+    <mat-icon>person_search</mat-icon>
 
-      <h2 class="section-title">
-        {{ 'ATTENDANCE_OFFICER.LIST.TITLE' | translate }}
-      </h2>
-
-      <p>
-        {{ 'ATTENDANCE_OFFICER.LIST.SUBTITLE' | translate }}
-      </p>
-
-    </div>
-
-    <!-- Search field: filters the list while typing. -->
-    <mat-form-field
-      appearance="outline"
-      subscriptSizing="dynamic"
-      class="search-field"
-    >
-
-      <mat-label>
-        {{ 'ATTENDANCE_OFFICER.LIST.SEARCH_LABEL' | translate }}
-      </mat-label>
-
-      <mat-icon matPrefix>search</mat-icon>
-
-      <input
-        matInput
-        [value]="search()"
-        (input)="search.set($any($event.target).value)"
-        [placeholder]="'ATTENDANCE_OFFICER.LIST.SEARCH_PLACEHOLDER' | translate"
-      />
-
-      <!-- Clear search button -->
-      @if (search()) {
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          (click)="clearSearch()"
-          [attr.aria-label]="'ATTENDANCE_OFFICER.LIST.SEARCH_CLEAR' | translate"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-      }
-
-    </mat-form-field>
+    <p>
+      {{ 'ATTENDANCE_OFFICER.LIST.SEARCH_HINT' | translate }}
+    </p>
 
   </div>
 
+}
 
-  <!-- There are no active teachers at all -->
-  @if (teachers().length === 0) {
+<!-- Error -->
+@else if (errorMessage()) {
 
-    <div class="empty-state">
+  <div class="state-card error-state">
 
-      <mat-icon>groups</mat-icon>
+    <mat-icon>error_outline</mat-icon>
 
-      <p>
-        {{ 'ATTENDANCE_OFFICER.LIST.EMPTY' | translate }}
-      </p>
+    <p>
+      {{ errorMessage() | translate }}
+    </p>
 
-    </div>
-
-  }
-
-  <!-- No teacher matches the search -->
-  @else if (filteredTeachers().length === 0) {
-
-    <div class="empty-state">
-
-      <mat-icon>search_off</mat-icon>
-
-      <p>
-        {{ 'ATTENDANCE_OFFICER.LIST.NO_RESULTS' | translate }}
-      </p>
-
-    </div>
-
-  }
-
-  <!-- Teachers: only one can be selected (radio group) -->
-  @else {
-
-    <div
-      class="teacher-rows"
-      role="radiogroup"
-      [attr.aria-label]="'ATTENDANCE_OFFICER.LIST.TITLE' | translate"
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="retry.emit()"
     >
+      <mat-icon>refresh</mat-icon>
 
-      @for (teacher of filteredTeachers(); track teacher.teacherId) {
+      {{ 'ATTENDANCE_OFFICER.STATE.RETRY' | translate }}
+    </button>
 
-        <!-- The whole row is one button.
-             selected: the teacher chosen by the Admin.
-             current : the teacher who is already the officer. -->
-        <button
-          type="button"
-          class="teacher-row"
-          role="radio"
-          [class.selected]="teacher.teacherId === selectedId()"
-          [class.current]="teacher.teacherId === officerId()"
-          [attr.aria-checked]="teacher.teacherId === selectedId()"
-          [disabled]="disabled() || teacher.teacherId === officerId()"
-          (click)="onSelect(teacher)"
-        >
+  </div>
 
-          <!-- Radio circle -->
-          <span class="row-radio"></span>
+}
 
-          <!-- Name + Number + Phone -->
-          <span class="row-text">
+<!-- Loading -->
+@else if (isLoading()) {
 
-            <span class="row-name">
-              {{ getTeacherName(teacher) }}
-            </span>
+  <div class="state-card">
 
-            <span class="row-details">
+    <mat-spinner diameter="42"></mat-spinner>
 
-              <span>{{ teacher.teacherNumber }}</span>
+    <p>
+      {{ 'TEACHERS.TABLE.LOADING' | translate }}
+    </p>
 
-              <span class="details-dot"></span>
+  </div>
 
-              <!-- dir="ltr" keeps the phone number readable in Arabic. -->
-              <span dir="ltr">{{ teacher.phoneNumber }}</span>
+}
 
-            </span>
+<!-- No teacher matches the search -->
+@else if (teachers().length === 0) {
+
+  <div class="state-card">
+
+    <mat-icon>search_off</mat-icon>
+
+    <p>
+      {{ 'ATTENDANCE_OFFICER.LIST.NO_RESULTS' | translate }}
+    </p>
+
+  </div>
+
+}
+
+<!-- Teachers: only one can be selected (radio group) -->
+@else {
+
+  <div
+    class="teacher-rows"
+    role="radiogroup"
+    [attr.aria-label]="'ATTENDANCE_OFFICER.LIST.TITLE' | translate"
+  >
+
+    @for (teacher of teachers(); track teacher.teacherId) {
+
+      <!-- The whole row is one button.
+           selected: the teacher chosen by the Admin.
+           current : the teacher who is already the officer. -->
+      <button
+        type="button"
+        class="teacher-row"
+        role="radio"
+        [class.selected]="teacher.teacherId === selectedId()"
+        [class.current]="teacher.teacherId === officerId()"
+        [attr.aria-checked]="teacher.teacherId === selectedId()"
+        [disabled]="disabled() || teacher.teacherId === officerId()"
+        (click)="onSelect(teacher)"
+      >
+
+        <!-- Radio circle -->
+        <span class="row-radio"></span>
+
+        <!-- Name + Number + Phone -->
+        <span class="row-text">
+
+          <span class="row-name">
+            {{ getTeacherName(teacher) }}
+          </span>
+
+          <span class="row-details">
+
+            <span>{{ teacher.teacherNumber }}</span>
+
+            <span class="details-dot"></span>
+
+            <!-- dir="ltr" keeps the phone number readable in Arabic. -->
+            <span dir="ltr">{{ teacher.phoneNumber }}</span>
 
           </span>
 
-          <!-- Tag of the current officer -->
-          @if (teacher.teacherId === officerId()) {
-            <span class="row-tag">
-              {{ 'ATTENDANCE_OFFICER.LIST.CURRENT_TAG' | translate }}
-            </span>
-          }
+        </span>
 
-        </button>
+        <!-- Tag of the current officer -->
+        @if (teacher.teacherId === officerId()) {
+          <span class="row-tag">
+            {{ 'ATTENDANCE_OFFICER.LIST.CURRENT_TAG' | translate }}
+          </span>
+        }
 
-      }
+      </button>
 
-    </div>
+    }
+
+  </div>
+
+  <!-- Pagination: shown only when the teachers need more than one page. -->
+  @if (totalCount() > pageSize()) {
+
+    <mat-paginator
+      class="list-paginator"
+      [length]="totalCount()"
+      [pageIndex]="pageNumber() - 1"
+      [pageSize]="pageSize()"
+      [hidePageSize]="true"
+      [disabled]="disabled()"
+      (page)="pageChange.emit($event)"
+      [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
+    >
+    </mat-paginator>
 
   }
 
-</section>
+}

@@ -1,0 +1,14 @@
+/* The search component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Search Field
+   As wide as the teachers list under it.
+   ================================ */
+
+.search-field {
+  width: 100%;
+}

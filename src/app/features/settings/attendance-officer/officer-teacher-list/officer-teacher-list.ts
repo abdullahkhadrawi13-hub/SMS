@@ -1,9 +1,12 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import {
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -16,9 +19,9 @@ import { getTeacherName } from '../teacher-name';
   selector: 'app-officer-teacher-list',
   imports: [
     MatButtonModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
     TranslatePipe,
   ],
   templateUrl: './officer-teacher-list.html',
@@ -28,8 +31,21 @@ export class OfficerTeacherList {
 
   // ===== Inputs (all data is owned and loaded by the parent page) =====
 
-  // Active teachers the Admin can choose from.
+  // Active teachers matching the search (current page).
   readonly teachers = input<TeacherListDto[]>([]);
+
+  // Loading and error state of the list.
+  readonly isLoading = input(false);
+  readonly errorMessage = input('');
+
+  // Pagination state (pageNumber is 1-based).
+  readonly totalCount = input(0);
+  readonly pageNumber = input(1);
+  readonly pageSize = input(10);
+
+  // False until the Admin searches: the list is empty
+  // and a hint asks him to search for a teacher.
+  readonly hasSearched = input(false);
 
   // ID of the current officer: his row is marked and cannot be selected.
   readonly officerId = input<number | null>(null);
@@ -41,45 +57,11 @@ export class OfficerTeacherList {
   readonly disabled = input(false);
 
 
-  // ===== Output (the parent page keeps the selection and saves it) =====
+  // ===== Outputs (the parent page loads, keeps the selection and saves) =====
 
-  readonly selectTeacher = output<number>();
-
-
-  // Current value of the search field.
-  readonly search = signal('');
-
-  // Teachers matching the search text.
-  // The search is done here (no request): the teachers are already loaded.
-  // It matches the Arabic name, the English name, the number and the phone.
-  readonly filteredTeachers = computed(() => {
-
-    const text = this.search().trim().toLowerCase();
-
-    if (!text) {
-      return this.teachers();
-    }
-
-    return this.teachers().filter(teacher => {
-
-      const values = [
-        `${teacher.firstNameAr} ${teacher.fatherNameAr} ${teacher.grandFatherNameAr} ${teacher.familyNameAr}`,
-        `${teacher.firstNameEn} ${teacher.fatherNameEn} ${teacher.grandFatherNameEn} ${teacher.familyNameEn}`,
-        teacher.teacherNumber,
-        teacher.phoneNumber,
-      ];
-
-      return values.some(
-        value => value.toLowerCase().includes(text)
-      );
-    });
-  });
-
-
-  // Clears the search field.
-  clearSearch(): void {
-    this.search.set('');
-  }
+  readonly pageChange = output<PageEvent>();
+  readonly retry = output<void>();
+  readonly selectTeacher = output<TeacherListDto>();
 
 
   // Runs when a row is clicked.
@@ -90,7 +72,7 @@ export class OfficerTeacherList {
       return;
     }
 
-    this.selectTeacher.emit(teacher.teacherId);
+    this.selectTeacher.emit(teacher);
   }
 
 

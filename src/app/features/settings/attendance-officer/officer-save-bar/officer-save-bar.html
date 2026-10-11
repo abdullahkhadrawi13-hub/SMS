@@ -1,0 +1,52 @@
+<!-- Save Bar: shown by the parent page only after a teacher is selected.
+     It stays at the bottom of the screen while scrolling the list. -->
+<div class="save-bar">
+
+  <!-- Icon -->
+  <span class="save-bar-icon">
+    <mat-icon>person</mat-icon>
+  </span>
+
+  <!-- Selected teacher -->
+  <div class="save-bar-text">
+
+    <span class="save-bar-label">
+      {{ 'ATTENDANCE_OFFICER.SAVE_BAR.SELECTED' | translate }}
+    </span>
+
+    <span class="save-bar-name">
+      {{ getTeacherName(teacher()) }}
+    </span>
+
+  </div>
+
+  <!-- Cancel + Save -->
+  <div class="save-bar-actions">
+
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSaving()"
+      (click)="cancelSelection.emit()"
+    >
+      {{ 'ATTENDANCE_OFFICER.SAVE_BAR.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="button"
+      [disabled]="isSaving()"
+      (click)="saveSelection.emit()"
+    >
+      <mat-icon>how_to_reg</mat-icon>
+
+      {{
+        (isSaving()
+          ? 'ATTENDANCE_OFFICER.SAVE_BAR.SAVING'
+          : 'ATTENDANCE_OFFICER.SAVE_BAR.SAVE') | translate
+      }}
+    </button>
+
+  </div>
+
+</div>

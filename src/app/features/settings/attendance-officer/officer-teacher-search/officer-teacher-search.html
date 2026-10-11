@@ -1,0 +1,46 @@
+<!-- Search field: as wide as the teachers list under it.
+     The search is done by the backend when the Admin
+     presses Enter or clicks the search button. -->
+<mat-form-field
+  appearance="outline"
+  subscriptSizing="dynamic"
+  class="search-field"
+>
+
+  <mat-label>
+    {{ 'ATTENDANCE_OFFICER.LIST.SEARCH_LABEL' | translate }}
+  </mat-label>
+
+  <input
+    matInput
+    [value]="searchText()"
+    (input)="searchText.set($any($event.target).value)"
+    (keyup.enter)="onSearch()"
+    [placeholder]="'ATTENDANCE_OFFICER.LIST.SEARCH_PLACEHOLDER' | translate"
+  />
+
+  <!-- Clear search button -->
+  @if (searchText()) {
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="clearSearch()"
+      [attr.aria-label]="'ATTENDANCE_OFFICER.LIST.SEARCH_CLEAR' | translate"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+
+  <!-- Submit search button -->
+  <button
+    mat-icon-button
+    matSuffix
+    type="button"
+    (click)="onSearch()"
+    [attr.aria-label]="'TEACHERS.SEARCH.SUBMIT' | translate"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+
+</mat-form-field>

@@ -1,0 +1,187 @@
+/* The bar is sticky on the host itself:
+   the host is the direct child of .page-content in the parent page,
+   so it stays visible at the bottom while scrolling the teachers. */
+:host {
+  display: block;
+
+  position: sticky;
+  bottom: 16px;
+
+  z-index: 2;
+}
+
+
+/* ================================
+   Save Bar
+   Orange is the color of the "Attendance Officer" section
+   (the settings option and the current officer card),
+   so the bar looks like the card of the next officer
+   and is clear above the white teacher rows.
+   ================================ */
+
+.save-bar {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 12px 16px;
+
+  background: #fef3c7;
+
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 20px rgba(180, 83, 9, 0.16);
+
+  box-sizing: border-box;
+
+  /* The bar comes up gently when a teacher is selected. */
+  animation: save-bar-in 0.2s ease;
+
+
+  /* ----- Buttons -----
+     The Angular Material buttons read their colors
+     from these variables. */
+
+  /* Cancel: brown text with an orange border. */
+  --mat-button-outlined-label-text-color: #92400e;
+  --mat-button-outlined-outline-color: #f59e0b;
+  --mat-button-outlined-state-layer-color: #92400e;
+  --mat-button-outlined-ripple-color: rgba(146, 64, 14, 0.12);
+
+  --mat-button-outlined-disabled-label-text-color: rgba(146, 64, 14, 0.45);
+  --mat-button-outlined-disabled-outline-color: rgba(146, 64, 14, 0.2);
+
+  /* Save: dark orange button with white text (the main action). */
+  --mat-button-filled-container-color: #b45309;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-state-layer-color: #ffffff;
+  --mat-button-filled-ripple-color: rgba(255, 255, 255, 0.2);
+
+  --mat-button-filled-disabled-container-color: rgba(146, 64, 14, 0.14);
+  --mat-button-filled-disabled-label-text-color: rgba(146, 64, 14, 0.5);
+}
+
+@keyframes save-bar-in {
+
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+}
+
+
+/* ================================
+   Icon
+   ================================ */
+
+.save-bar-icon {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  color: #b45309;
+
+  background: #ffffff;
+
+  border-radius: 10px;
+}
+
+.save-bar-icon mat-icon {
+  width: 22px;
+  height: 22px;
+
+  font-size: 22px;
+}
+
+
+/* ================================
+   Selected Teacher
+   ================================ */
+
+.save-bar-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.save-bar-label {
+  font-size: 13px;
+
+  color: #92400e;
+}
+
+.save-bar-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+
+/* ================================
+   Actions
+   ================================ */
+
+.save-bar-actions {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+/* ================================
+   Reduced Motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .save-bar {
+    animation: none;
+  }
+
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  :host {
+    bottom: 12px;
+  }
+
+  /* The buttons move to their own line under the name. */
+  .save-bar {
+    flex-wrap: wrap;
+  }
+
+  .save-bar-actions {
+    flex-basis: 100%;
+  }
+
+  .save-bar-actions > button {
+    flex: 1;
+  }
+
+}
