@@ -45,3 +45,7 @@ button {
 .info mat-icon {
   color: #1565c0;
 }
+
+.warning mat-icon {
+  color: #ef6c00;
+}

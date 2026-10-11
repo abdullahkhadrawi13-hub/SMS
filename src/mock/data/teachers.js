@@ -20,6 +20,8 @@
 //   role: 2                      // 2 = Teacher
 // }
 
+const users = require('./users');
+
 // One row per teacher:
 // [ Arabic name (4 parts), English name (4 parts), isActive, mustChangePassword ]
 const rows = [
@@ -73,5 +75,53 @@ const teachers = rows.map((row, index) => {
     role: 2
   };
 });
+
+
+// =====================================================
+// Teachers who can log in
+// =====================================================
+//
+// The teachers above have no login account in the mock.
+// The teachers below are the teacher users of data/users.js
+// (teacher, officer, teacher2), added with the SAME userId,
+// so the Admin can choose one of them as the attendance officer
+// and then log in as that teacher to see the result.
+// Their teacherId comes after the teachers above (19, 20, 21).
+
+const loginTeachers = users
+  .filter(user => user.role === 2)
+  .map((user, index) => {
+
+    const teacherId = rows.length + index + 1;
+
+    return {
+      teacherId,
+      teacherNumber: `T-${String(teacherId).padStart(4, '0')}`,
+
+      // Same userId as the login user: this is the link between them.
+      userId: user.userId,
+
+      firstNameAr: user.firstNameAr,
+      fatherNameAr: user.fatherNameAr,
+      grandFatherNameAr: user.grandFatherNameAr,
+      familyNameAr: user.familyNameAr,
+
+      firstNameEn: user.firstNameEn,
+      fatherNameEn: user.fatherNameEn,
+      grandFatherNameEn: user.grandFatherNameEn,
+      familyNameEn: user.familyNameEn,
+
+      loginId: user.loginId,
+      phoneNumber: user.phoneNumber,
+
+      isActive: user.isActive,
+      mustChangePassword: user.mustChangePassword,
+
+      role: 2
+    };
+  });
+
+teachers.push(...loginTeachers);
+
 
 module.exports = teachers;

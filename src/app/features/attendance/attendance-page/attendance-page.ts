@@ -627,7 +627,7 @@ export class AttendancePage implements OnInit {
     if (this.selectionLocked()) {
       this.activeTab.set('record');
 
-      this.actionResult.error(
+      this.actionResult.warning(
         this.translate.instant('ATTENDANCE.SHEET.UNSAVED_BLOCK')
       );
       return;

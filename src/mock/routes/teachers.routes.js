@@ -1,6 +1,7 @@
 const teachers = require('../data/teachers');
 const students = require('../data/students');
 const users = require('../data/users');
+const schoolSettings = require('../data/school-settings');
 
 
 // =====================================================
@@ -67,8 +68,6 @@ const CREATE_FIELDS = [
 // 6. The mock does not create a login account for a new teacher,
 //    and deactivating a teacher does not block any login.
 //    (Login uses data/users.js only.)
-// 7. The mock does not clear the attendance officer setting
-//    when a teacher is deactivated.
 
 
 // =====================================================
@@ -778,6 +777,15 @@ function handleTeachers(req, res, url, pathname) {
 
     teacher.isActive =
       isActive === 'true';
+
+    // A deactivated teacher cannot stay the attendance officer:
+    // the setting is cleared (SMS API Reference - section 5).
+    if (
+      !teacher.isActive &&
+      schoolSettings.attendanceOfficerTeacherId === teacher.teacherId
+    ) {
+      schoolSettings.attendanceOfficerTeacherId = null;
+    }
 
 
     sendJson(res, 200, {

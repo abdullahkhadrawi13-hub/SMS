@@ -1,0 +1,317 @@
+/* The list component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Section Title + Search
+   ================================ */
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 14px;
+}
+
+.list-title {
+  min-width: 0;
+}
+
+.section-title {
+  margin: 0 0 4px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #6b7280;
+}
+
+.list-title p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #9ca3af;
+}
+
+.search-field {
+  width: 320px;
+  max-width: 100%;
+
+  flex-shrink: 0;
+}
+
+.search-field mat-icon[matPrefix] {
+  color: #9ca3af;
+}
+
+
+/* ================================
+   Teacher Rows
+   ================================ */
+
+.teacher-rows {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.teacher-row {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 12px 16px;
+
+  /* Reset of the default button look. */
+  font: inherit;
+  color: inherit;
+  text-align: start;
+
+  cursor: pointer;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Hover: a very light blue, like the options of the settings list.
+   :focus-visible gives the same look when using the keyboard (Tab). */
+.teacher-row:hover:not(:disabled),
+.teacher-row:focus-visible {
+  background: #f3f8ff;
+
+  border-color: #bfdbfe;
+}
+
+.teacher-row:focus-visible {
+  outline: 2px solid #2554a4;
+  outline-offset: 2px;
+}
+
+
+/* ================================
+   Radio Circle
+   ================================ */
+
+.row-radio {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  border: 2px solid #9ca3af;
+  border-radius: 50%;
+
+  box-sizing: border-box;
+
+  transition: border 0.2s ease;
+}
+
+
+/* ================================
+   Name + Details
+   ================================ */
+
+.row-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.row-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+
+  color: #111827;
+}
+
+.row-details {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  color: #6b7280;
+}
+
+.details-dot {
+  width: 4px;
+  height: 4px;
+
+  border-radius: 50%;
+
+  background: #9ca3af;
+}
+
+
+/* ================================
+   Selected Row (chosen, not saved yet)
+   ================================ */
+
+.teacher-row.selected {
+  background: #f3f8ff;
+
+  border-color: #2554a4;
+
+  /* A second line inside the border makes it look 2px thick
+     without moving the content of the row. */
+  box-shadow: inset 0 0 0 1px #2554a4;
+}
+
+.teacher-row.selected .row-radio {
+  border: 5px solid #2554a4;
+}
+
+.teacher-row.selected .row-name {
+  color: #1e3a8a;
+}
+
+
+/* ================================
+   Current Officer Row
+   ================================ */
+
+.teacher-row.current {
+  cursor: default;
+
+  background: #f9fafb;
+}
+
+.teacher-row.current .row-radio {
+  border-color: #d1d5db;
+}
+
+.teacher-row.current .row-name {
+  color: #6b7280;
+}
+
+.row-tag {
+  flex-shrink: 0;
+
+  padding: 4px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Rows that cannot be clicked while saving. */
+.teacher-row:disabled:not(.current) {
+  cursor: default;
+
+  opacity: 0.6;
+}
+
+
+/* ================================
+   Empty State
+   ================================ */
+
+.empty-state {
+  min-height: 180px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  color: #6b7280;
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.empty-state mat-icon {
+  width: 40px;
+  height: 40px;
+
+  font-size: 40px;
+
+  color: #9ca3af;
+}
+
+.empty-state p {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+/* ================================
+   Reduced Motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .teacher-row,
+  .row-radio {
+    transition: none;
+  }
+
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .list-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-field {
+    width: 100%;
+  }
+
+  .teacher-row {
+    flex-wrap: wrap;
+
+    padding: 12px;
+  }
+
+}

@@ -1,0 +1,146 @@
+<div class="attendance-officer-page">
+
+  <!-- Back to Settings -->
+  <a
+    class="back-link"
+    routerLink="/settings"
+  >
+    <mat-icon>arrow_back</mat-icon>
+
+    {{ 'ATTENDANCE_OFFICER.HEADER.BACK' | translate }}
+  </a>
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div class="title-section">
+      <h1>
+        {{ 'ATTENDANCE_OFFICER.HEADER.TITLE' | translate }}
+      </h1>
+
+      <p>
+        {{ 'ATTENDANCE_OFFICER.HEADER.SUBTITLE' | translate }}
+      </p>
+    </div>
+
+  </div>
+
+  <hr class="header-divider" />
+
+
+  <!-- Error -->
+  @if (errorMessage()) {
+
+    <div class="state-card error-state">
+
+      <mat-icon>error_outline</mat-icon>
+
+      <p>
+        {{ errorMessage() | translate }}
+      </p>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="retry()"
+      >
+        <mat-icon>refresh</mat-icon>
+
+        {{ 'ATTENDANCE_OFFICER.STATE.RETRY' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+  <!-- Loading -->
+  @else if (isLoading()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>
+        {{ 'ATTENDANCE_OFFICER.STATE.LOADING' | translate }}
+      </p>
+
+    </div>
+
+  }
+
+  <!-- Page Content -->
+  @else {
+
+    <div class="page-content">
+
+      <!-- Current Officer -->
+      <app-officer-current-card
+        [officer]="officer()"
+      ></app-officer-current-card>
+
+      <!-- Teachers to choose from -->
+      <app-officer-teacher-list
+        [teachers]="teachers()"
+        [officerId]="officerId()"
+        [selectedId]="selectedId()"
+        [disabled]="isSaving()"
+        (selectTeacher)="onSelectTeacher($event)"
+      ></app-officer-teacher-list>
+
+      <!-- Save Bar: shown only after a teacher is selected.
+           It stays at the bottom of the screen while scrolling the list. -->
+      @if (selectedTeacher(); as teacher) {
+
+        <div class="save-bar">
+
+          <div class="save-bar-text">
+
+            <span class="save-bar-label">
+              {{ 'ATTENDANCE_OFFICER.SAVE_BAR.SELECTED' | translate }}
+            </span>
+
+            <span class="save-bar-name">
+              {{ getTeacherName(teacher) }}
+            </span>
+
+          </div>
+
+          <div class="save-bar-actions">
+
+            <button
+              mat-stroked-button
+              type="button"
+              [disabled]="isSaving()"
+              (click)="cancelSelection()"
+            >
+              {{ 'ATTENDANCE_OFFICER.SAVE_BAR.CANCEL' | translate }}
+            </button>
+
+            <button
+              mat-flat-button
+              color="primary"
+              type="button"
+              [disabled]="isSaving()"
+              (click)="save()"
+            >
+              <mat-icon>how_to_reg</mat-icon>
+
+              {{
+                (isSaving()
+                  ? 'ATTENDANCE_OFFICER.SAVE_BAR.SAVING'
+                  : 'ATTENDANCE_OFFICER.SAVE_BAR.SAVE') | translate
+              }}
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

@@ -129,8 +129,9 @@ const users = [
     token: 'mock-parent-token'
   },
 
-  // A teacher who IS the attendance officer
-  // (see ATTENDANCE_OFFICER_USER_ID in routes/attendance.routes.js).
+  // The teacher who is the attendance officer when the mock starts
+  // (see data/school-settings.js). The Admin can change the officer
+  // from Settings > Attendance Officer.
   {
     userId: 6,
 
@@ -157,7 +158,7 @@ const users = [
     token: 'mock-officer-token'
   },
 
-  // A teacher who is NOT the attendance officer.
+  // A teacher who is NOT the attendance officer when the mock starts.
   {
     userId: 7,
 

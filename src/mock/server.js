@@ -10,8 +10,9 @@ const academicYearsRoutes = require('./routes/academic-years.routes');
 const academicTermsRoutes = require('./routes/academic-terms.routes');
 
 const attendanceRoutes = require('./routes/attendance.routes');
+const schoolSettingsRoutes = require('./routes/school-settings.routes');
 
-const PORT = 3000//5253;
+const PORT = 5253;
 
 const server = http.createServer((req, res) => {
 
@@ -126,6 +127,15 @@ if (academicTermsRoutes(req, res)) {
   // =========================
 
   if (attendanceRoutes(req, res)) {
+    return;
+  }
+
+
+  // =========================
+  // School Settings API
+  // =========================
+
+  if (schoolSettingsRoutes(req, res)) {
     return;
   }
 

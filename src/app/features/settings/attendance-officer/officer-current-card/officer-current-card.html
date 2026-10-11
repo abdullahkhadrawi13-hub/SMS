@@ -1,0 +1,85 @@
+<section class="current-officer">
+
+  <!-- Section Title -->
+  <h2 class="section-title">
+    {{ 'ATTENDANCE_OFFICER.CURRENT.TITLE' | translate }}
+  </h2>
+
+  <!-- An officer is assigned -->
+  @if (officer(); as teacher) {
+
+    <div class="officer-card">
+
+      <!-- Icon -->
+      <span class="officer-icon">
+        <mat-icon>how_to_reg</mat-icon>
+      </span>
+
+      <!-- Name + Number + Phone -->
+      <div class="officer-text">
+
+        <span class="officer-name">
+          {{ getTeacherName(teacher) }}
+        </span>
+
+        <span class="officer-details">
+
+          <span>{{ teacher.teacherNumber }}</span>
+
+          <span class="details-dot"></span>
+
+          <!-- dir="ltr" keeps the phone number readable in Arabic. -->
+          <span dir="ltr">{{ teacher.phoneNumber }}</span>
+
+        </span>
+
+      </div>
+
+      <!-- Badge -->
+      <span class="officer-badge">
+        <span class="badge-dot"></span>
+
+        {{ 'ATTENDANCE_OFFICER.CURRENT.BADGE' | translate }}
+      </span>
+
+    </div>
+
+  }
+
+  <!-- No officer is assigned yet -->
+  @else {
+
+    <div class="officer-card empty">
+
+      <span class="officer-icon">
+        <mat-icon>person_off</mat-icon>
+      </span>
+
+      <div class="officer-text">
+
+        <span class="officer-name">
+          {{ 'ATTENDANCE_OFFICER.CURRENT.EMPTY_TITLE' | translate }}
+        </span>
+
+        <span class="officer-details">
+          {{ 'ATTENDANCE_OFFICER.CURRENT.EMPTY_TEXT' | translate }}
+        </span>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- What the attendance officer can do -->
+  <p class="officer-note">
+
+    <mat-icon>info</mat-icon>
+
+    <span>
+      {{ 'ATTENDANCE_OFFICER.CURRENT.NOTE' | translate }}
+    </span>
+
+  </p>
+
+</section>

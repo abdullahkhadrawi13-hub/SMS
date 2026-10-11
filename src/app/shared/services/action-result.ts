@@ -31,6 +31,15 @@ export class ActionResult {
     });
   }
 
+  warning(message: string): void {
+    this.dialog.open(ActionResultDialog, {
+      data: {
+        type: 'warning',
+        message
+      } satisfies ActionResultDialogData
+    });
+  }
+
   error(message: string): void {
     this.dialog.open(ActionResultDialog, {
       data: {

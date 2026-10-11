@@ -4,6 +4,8 @@ const sections = require('../data/sections');
 const schoolClasses = require('../data/school-classes');
 const academicTerms = require('../data/academic-terms');
 const users = require('../data/users');
+const teachers = require('../data/teachers');
+const schoolSettings = require('../data/school-settings');
 
 
 // =====================================================
@@ -24,11 +26,11 @@ const STAFF_ROLES = [0, 1, 2];
 // (daily-summary is also open to the attendance officer, today only.)
 const FULL_ACCESS_ROLES = [0, 1];
 
-// The teacher who is the school's attendance officer (userId in data/users.js).
-// 6 = the user "officer". The user "teacher2" is a normal teacher.
-// Set it to null to test a school with no attendance officer.
-// (The real backend keeps a teacherId in SchoolSettings.)
-const ATTENDANCE_OFFICER_USER_ID = 6;
+// The school's attendance officer is kept in data/school-settings.js
+// (a teacherId, like SchoolSettings in the real backend) and is changed by
+// PUT /api/schoolsettings/attendance-officer/{teacherId}.
+// When the mock starts, it is the user "officer".
+// See isAttendanceOfficer() below.
 
 const STATUS_PRESENT = 0;
 const STATUS_ABSENT = 1;
@@ -280,6 +282,20 @@ function findRecord(studentId, date) {
 }
 
 
+// True when the user is the teacher saved as the attendance officer.
+// The officer is a teacherId: the teacher and the login user
+// are linked by the same userId (see data/teachers.js).
+function isAttendanceOfficer(user) {
+
+  const officer = teachers.find(
+    teacher =>
+      teacher.teacherId === schoolSettings.attendanceOfficerTeacherId
+  );
+
+  return Boolean(officer) && officer.userId === user.userId;
+}
+
+
 // The answer of GET /api/attendance/my-access for one user.
 function getAccess(user) {
 
@@ -289,7 +305,7 @@ function getAccess(user) {
 
   if (
     user.role === 2 &&
-    user.userId === ATTENDANCE_OFFICER_USER_ID
+    isAttendanceOfficer(user)
   ) {
     return { canRecord: true, todayOnly: true };
   }

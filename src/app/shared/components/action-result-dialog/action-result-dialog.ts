@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-export type ActionResultType = 'success' | 'error' | 'info';
+export type ActionResultType = 'success' | 'error' | 'info' | 'warning';
 
 export interface ActionResultDialogData {
   type: ActionResultType;
@@ -21,9 +21,9 @@ const RESULT_CONFIG: Record<
   { icon: string; titleKey: string }
 > = {
   success: { icon: 'check_circle', titleKey: 'SHARED.ACTION_RESULT.SUCCESS' },
-  error:   { icon: 'cancel',       titleKey: 'SHARED.ACTION_RESULT.ERROR' },
-  // اسم الأيقونة في Material هو "error" لكنها هنا دائرة ! للمعلومة
-  info:    { icon: 'error',        titleKey: 'SHARED.ACTION_RESULT.INFO' }
+  error: { icon: 'cancel', titleKey: 'SHARED.ACTION_RESULT.ERROR' },
+  info: { icon: 'info', titleKey: 'SHARED.ACTION_RESULT.INFO' },
+  warning: { icon: 'error', titleKey: 'SHARED.ACTION_RESULT.WARNING' }
 };
 
 @Component({

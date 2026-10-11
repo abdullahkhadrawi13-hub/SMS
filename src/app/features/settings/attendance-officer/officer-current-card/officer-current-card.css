@@ -1,0 +1,227 @@
+/* The card component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Section Title
+   ================================ */
+
+.section-title {
+  margin: 0 0 10px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Officer Card
+   Orange is the color of the "Attendance Officer"
+   option in the settings list.
+   ================================ */
+
+.officer-card {
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 18px 20px;
+
+  background: #fffbeb;
+
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Icon
+   ================================ */
+
+.officer-icon {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  color: #b45309;
+
+  background: #fef3c7;
+
+  border-radius: 12px;
+}
+
+.officer-icon mat-icon {
+  width: 26px;
+  height: 26px;
+
+  font-size: 26px;
+}
+
+
+/* ================================
+   Name + Details
+   ================================ */
+
+.officer-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.officer-name {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+
+  color: #111827;
+}
+
+.officer-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #6b7280;
+}
+
+.details-dot {
+  width: 4px;
+  height: 4px;
+
+  border-radius: 50%;
+
+  background: #9ca3af;
+}
+
+
+/* ================================
+   Badge
+   ================================ */
+
+.officer-badge {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+
+/* ================================
+   Empty Card (no officer yet)
+   ================================ */
+
+.officer-card.empty {
+  background: #ffffff;
+
+  border: 1px dashed #d1d5db;
+}
+
+.officer-card.empty .officer-icon {
+  color: #6b7280;
+
+  background: #f1f5f9;
+}
+
+.officer-card.empty .officer-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+/* ================================
+   Note
+   ================================ */
+
+.officer-note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin: 10px 0 0;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+.officer-note mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  margin-top: 1px;
+
+  font-size: 18px;
+
+  color: #9ca3af;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .officer-card {
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    padding: 16px;
+  }
+
+  .officer-name {
+    font-size: 16px;
+  }
+
+}

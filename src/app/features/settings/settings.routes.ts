@@ -20,14 +20,12 @@ export const SETTINGS_ROUTES: Routes = [
         .then(m => m.ComingSoon)
   },
 
-  // /settings/attendance-officer
-  // Temporary: shows "Coming Soon" until the
-  // attendance officer page is built.
+  // /settings/attendance-officer : choose the attendance officer
   {
     path: 'attendance-officer',
     loadComponent: () =>
-      import('../../shared/components/coming-soon/coming-soon')
-        .then(m => m.ComingSoon)
+      import('./attendance-officer/attendance-officer-page/attendance-officer-page')
+        .then(m => m.AttendanceOfficerPage)
   }
 
 ];
