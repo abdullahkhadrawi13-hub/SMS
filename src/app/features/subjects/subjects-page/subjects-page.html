@@ -1,7 +1,9 @@
 <div class="subjects-page">
 
   <!-- Page Header -->
-  <app-subjects-header></app-subjects-header>
+  <app-subjects-header
+    [canManage]="canManage()"
+  ></app-subjects-header>
 
   <!-- Search and Filter -->
   <div class="filters-card">
@@ -26,6 +28,8 @@
   </div>
 
   <!-- Subject Table -->
-  <app-subjects-table></app-subjects-table>
+  <app-subjects-table
+    [canManage]="canManage()"
+  ></app-subjects-table>
 
 </div>

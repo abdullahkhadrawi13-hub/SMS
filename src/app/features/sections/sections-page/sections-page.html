@@ -1,6 +1,7 @@
 <div class="section-list">
   <!-- Page Header -->
   <app-sections-header
+    [canManage]="canManage()"
     (addSection)="openAddSectionDialog()"
   ></app-sections-header>
 
@@ -23,6 +24,7 @@
     [totalCount]="totalCount()"
     [pageNumber]="pageNumber()"
     [pageSize]="pageSize()"
+    [canManage]="canManage()"
     (pageChange)="onPageChange($event)"
     (editSection)="openEditSectionDialog($event)"
     (toggleStatus)="toggleSectionStatus($event)"

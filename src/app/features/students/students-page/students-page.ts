@@ -17,6 +17,7 @@ import {
 } from '../../../core/services/students';
 
 import { ApiMessageService } from '../../../core/services/api-message';
+import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
 
 import { Student } from '../student';
@@ -67,6 +68,13 @@ export class StudentsPage {
     inject(ApiMessageService);
 
   private readonly actionResult = inject(ActionResult);
+
+  // Says what the current user is allowed to do.
+  private readonly permissions = inject(Permissions);
+
+  // Only the Admin can add, edit, activate or deactivate students.
+  // The Assistant Principal and the teacher can only read.
+  readonly canManage = this.permissions.canManageStudents;
 
   readonly students =
     signal<Student[]>([]);

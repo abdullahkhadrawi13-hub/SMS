@@ -138,25 +138,30 @@
                   {{ 'STUDENTS.VIEW' | translate }}
                 </button>
 
-                <!-- Edit -->
-                <button mat-menu-item type="button" (click)="editStudent.emit(student.studentId)">
-                  <mat-icon>edit</mat-icon>
+                <!-- Edit and Activate / Deactivate (Admin only) -->
+                @if (canManage()) {
 
-                  {{ 'STUDENTS.EDIT' | translate }}
-                </button>
+                  <!-- Edit -->
+                  <button mat-menu-item type="button" (click)="editStudent.emit(student.studentId)">
+                    <mat-icon>edit</mat-icon>
 
-                <!-- Activate / Deactivate -->
-                <button mat-menu-item type="button" (click)="toggleStatus.emit(student)">
-                  <mat-icon>
-                    {{ student.isActive ? 'person_off' : 'person' }}
-                  </mat-icon>
+                    {{ 'STUDENTS.EDIT' | translate }}
+                  </button>
 
-                  {{
-                    student.isActive
-                      ? ('STUDENTS.DEACTIVATE' | translate)
-                      : ('STUDENTS.ACTIVATE' | translate)
-                  }}
-                </button>
+                  <!-- Activate / Deactivate -->
+                  <button mat-menu-item type="button" (click)="toggleStatus.emit(student)">
+                    <mat-icon>
+                      {{ student.isActive ? 'person_off' : 'person' }}
+                    </mat-icon>
+
+                    {{
+                      student.isActive
+                        ? ('STUDENTS.DEACTIVATE' | translate)
+                        : ('STUDENTS.ACTIVATE' | translate)
+                    }}
+                  </button>
+
+                }
               </mat-menu>
             </td>
           </ng-container>

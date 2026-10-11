@@ -1,6 +1,7 @@
 <div class="classes-page">
   <div class="page-content">
     <app-classes-header
+      [canManage]="canManage()"
       (addClass)="openAddClass()"
     />
 

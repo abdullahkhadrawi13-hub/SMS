@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,6 +19,9 @@ import { SubjectsForm } from '../subjects-form/subjects-form';
   styleUrl: './subjects-header.css',
 })
 export class SubjectsHeader {
+
+  // Shows the "Add subject" button only for users allowed to add subjects.
+  readonly canManage = input(false);
 
   // Reference used to open the subject form dialog.
   private readonly dialog = inject(MatDialog);

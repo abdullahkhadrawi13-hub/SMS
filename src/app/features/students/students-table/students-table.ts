@@ -41,6 +41,10 @@ export class StudentsTable {
   readonly pageNumber = input(1);
   readonly pageSize = input(10);
 
+  // Shows "Edit" and "Activate / Deactivate" only for users
+  // allowed to manage students. "View" is shown for everyone.
+  readonly canManage = input(false);
+
   // ===== Outputs (the parent page performs the actual actions) =====
 
   readonly retry = output<void>();

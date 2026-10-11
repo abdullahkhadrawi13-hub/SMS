@@ -12,15 +12,18 @@
 
   </div>
 
-  <button
-    mat-flat-button
-    color="primary"
-    type="button"
-    (click)="openSubjectForm()"
-  >
-    <mat-icon>menu_book</mat-icon>
+  <!-- Add subject (Admin only) -->
+  @if (canManage()) {
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="openSubjectForm()"
+    >
+      <mat-icon>menu_book</mat-icon>
 
-    {{ 'SUBJECTS.HEADER.ADD' | translate }}
-  </button>
+      {{ 'SUBJECTS.HEADER.ADD' | translate }}
+    </button>
+  }
 
 </div>

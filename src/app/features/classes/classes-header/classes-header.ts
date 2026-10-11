@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +16,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: './classes-header.css',
 })
 export class ClassesHeader {
+
+  // Shows the "Add class" button only for users allowed to add classes.
+  readonly canManage = input(false);
 
   readonly addClass = output<void>();
 

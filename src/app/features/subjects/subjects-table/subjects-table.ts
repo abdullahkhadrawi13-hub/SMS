@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +32,10 @@ interface SubjectRow {
   styleUrl: './subjects-table.css',
 })
 export class SubjectsTable {
+
+  // Shows "Edit" and "Activate / Deactivate" only for users
+  // allowed to manage subjects. "View" is shown for everyone.
+  readonly canManage = input(false);
 
   // Columns displayed in the subject table.
   readonly displayedColumns = [

@@ -2,6 +2,7 @@
 
   <!-- Page Header -->
   <app-students-header
+    [canManage]="canManage()"
     (addStudent)="openAddStudent()"
   ></app-students-header>
 
@@ -40,6 +41,7 @@
     [totalCount]="totalCount()"
     [pageNumber]="pageNumber()"
     [pageSize]="pageSize()"
+    [canManage]="canManage()"
     (retry)="retry()"
     (pageChange)="onPageChange($event)"
     (viewStudent)="openStudentDetails($event)"

@@ -27,6 +27,7 @@ import { SectionsTable } from '../sections-table/sections-table';
 import { Section } from '../section';
 import { SectionsService } from '../../../core/services/sections';
 import { ApiMessageService } from '../../../core/services/api-message';
+import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
 
 @Component({
@@ -52,6 +53,13 @@ export class SectionsPage {
   private readonly actionResult = inject(ActionResult);
 
   private readonly destroyRef = inject(DestroyRef);
+
+  // Says what the current user is allowed to do.
+  private readonly permissions = inject(Permissions);
+
+  // Only the Admin can add, edit, activate or deactivate sections.
+  // The Assistant Principal can only read.
+  readonly canManage = this.permissions.canManageSections;
 
   readonly sections = signal<Section[]>([]);
 

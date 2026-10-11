@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -14,8 +14,7 @@ import {
 } from '../../../core/services/teachers';
 
 import { ApiMessageService } from '../../../core/services/api-message';
-import { User } from '../../../core/services/user';
-import { UserRole } from '../../../core/models/user-role';
+import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
 
 import { TeacherHeader } from '../teacher-header/teacher-header';
@@ -60,15 +59,13 @@ export class TeachersPage {
   // Shows the success / error result dialog after an action.
   private readonly actionResult = inject(ActionResult);
 
-  // Current logged-in user, used to know the role.
-  private readonly user = inject(User);
+  // Says what the current user is allowed to do.
+  private readonly permissions = inject(Permissions);
 
 
   // Only the Admin can add, edit, activate or deactivate teachers.
   // The Assistant Principal can only read.
-  readonly canManage = computed(
-    () => this.user.user()?.role === UserRole.Admin
-  );
+  readonly canManage = this.permissions.canManageTeachers;
 
 
   // Teachers of the current page.

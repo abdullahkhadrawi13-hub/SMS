@@ -10,15 +10,18 @@
     </p>
   </div>
 
-  <button
-    mat-flat-button
-    color="primary"
-    type="button"
-    (click)="addStudent.emit()"
-  >
-    <mat-icon>person_add</mat-icon>
+  <!-- Add student (Admin only) -->
+  @if (canManage()) {
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="addStudent.emit()"
+    >
+      <mat-icon>person_add</mat-icon>
 
-    {{ 'STUDENTS.ADD_STUDENT' | translate }}
-  </button>
+      {{ 'STUDENTS.ADD_STUDENT' | translate }}
+    </button>
+  }
 
 </div>

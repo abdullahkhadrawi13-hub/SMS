@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -42,6 +42,11 @@ export class SectionsTable {
   readonly pageNumber = input(1);
   readonly pageSize = input(10);
 
+  // True for users allowed to manage sections (edit, activate, deactivate).
+  // The actions column has only these two actions,
+  // so the whole column is hidden when this is false.
+  readonly canManage = input(false);
+
   // ===== Outputs (the parent page performs the actual actions) =====
 
   readonly pageChange = output<PageEvent>();
@@ -49,13 +54,22 @@ export class SectionsTable {
   readonly toggleStatus = output<Section>();
 
   // Columns displayed in the sections table.
-  readonly displayedColumns = [
-    'className',
-    'section',
-    'studentCount',
-    'status',
-    'actions'
-  ];
+  // The actions column is added only for users allowed to manage sections.
+  readonly displayedColumns = computed(() => {
+
+    const columns = [
+      'className',
+      'section',
+      'studentCount',
+      'status'
+    ];
+
+    if (this.canManage()) {
+      columns.push('actions');
+    }
+
+    return columns;
+  });
 
 
   getClassName(section: Section): string {

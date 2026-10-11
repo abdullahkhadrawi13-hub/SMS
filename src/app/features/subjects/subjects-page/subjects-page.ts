@@ -5,6 +5,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
+import { Permissions } from '../../../core/services/permissions';
+
 import { SubjectsHeader } from '../subjects-header/subjects-header';
 import { SubjectsSearch } from '../subjects-search/subjects-search';
 import {
@@ -31,6 +33,13 @@ export class SubjectsPage {
 
   // Reference used to open subject filter dialogs.
   private readonly dialog = inject(MatDialog);
+
+  // Says what the current user is allowed to do.
+  private readonly permissions = inject(Permissions);
+
+  // Only the Admin can add, edit, activate or deactivate subjects.
+  // The Assistant Principal can only read.
+  readonly canManage = this.permissions.canManageSubjects;
 
   // Stores the currently selected subject status filter.
   readonly statusFilter = signal<boolean | undefined>(undefined);

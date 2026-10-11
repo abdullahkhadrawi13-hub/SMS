@@ -136,32 +136,37 @@
               {{ 'SUBJECTS.TABLE.VIEW' | translate }}
             </button>
 
-            <!-- Edit subject -->
-            <button
-              mat-menu-item
-              type="button"
-            >
-              <mat-icon>edit</mat-icon>
+            <!-- Edit and Activate / deactivate (Admin only) -->
+            @if (canManage()) {
 
-              {{ 'SUBJECTS.TABLE.EDIT' | translate }}
-            </button>
+              <!-- Edit subject -->
+              <button
+                mat-menu-item
+                type="button"
+              >
+                <mat-icon>edit</mat-icon>
 
-            <!-- Activate / deactivate subject -->
-            <button
-              mat-menu-item
-              type="button"
-            >
-              <mat-icon>
-                {{ subject.isActive ? 'block' : 'check_circle' }}
-              </mat-icon>
+                {{ 'SUBJECTS.TABLE.EDIT' | translate }}
+              </button>
 
-              {{
-                subject.isActive
-                  ? ('SUBJECTS.TABLE.DEACTIVATE' | translate)
-                  : ('SUBJECTS.TABLE.ACTIVATE' | translate)
-              }}
+              <!-- Activate / deactivate subject -->
+              <button
+                mat-menu-item
+                type="button"
+              >
+                <mat-icon>
+                  {{ subject.isActive ? 'block' : 'check_circle' }}
+                </mat-icon>
 
-            </button>
+                {{
+                  subject.isActive
+                    ? ('SUBJECTS.TABLE.DEACTIVATE' | translate)
+                    : ('SUBJECTS.TABLE.ACTIVATE' | translate)
+                }}
+
+              </button>
+
+            }
 
           </mat-menu>
 
