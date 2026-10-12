@@ -1,0 +1,90 @@
+<!-- Term / Class / Section -->
+<div class="selector-card">
+
+  <div class="selector-fields">
+
+    <!-- Academic term (the current term is selected by default) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+      <mat-label>
+        {{ 'SUBJECTS.CLASS_SELECTOR.TERM' | translate }}
+      </mat-label>
+
+      <mat-select
+        [value]="termId()"
+        [disabled]="termsLoading()"
+        (selectionChange)="termChange.emit($event.value)"
+      >
+
+        @for (term of terms(); track term.academicTermId) {
+          <mat-option [value]="term.academicTermId">
+            {{ getTermLabel(term) }}
+
+            @if (term.isCurrent) {
+              {{ 'SUBJECTS.CLASS_SELECTOR.CURRENT' | translate }}
+            }
+          </mat-option>
+        }
+
+      </mat-select>
+
+      @if (termsLoading()) {
+        <mat-spinner matSuffix diameter="18"></mat-spinner>
+      }
+
+    </mat-form-field>
+
+
+    <!-- Class (Active only) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+      <mat-label>
+        {{ 'SUBJECTS.CLASS_SELECTOR.CLASS' | translate }}
+      </mat-label>
+
+      <mat-select
+        [value]="classId()"
+        (selectionChange)="classChange.emit($event.value)"
+      >
+
+        @for (c of classes(); track c.schoolClassId) {
+          <mat-option [value]="c.schoolClassId">
+            {{ getClassName(c) }}
+          </mat-option>
+        }
+
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <!-- Section (disabled until a class is chosen) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+      <mat-label>
+        {{ 'SUBJECTS.CLASS_SELECTOR.SECTION' | translate }}
+      </mat-label>
+
+      <mat-select
+        [value]="sectionId()"
+        [disabled]="classId() === null || sectionsLoading()"
+        (selectionChange)="sectionChange.emit($event.value)"
+      >
+
+        @for (s of sections(); track s.sectionId) {
+          <mat-option [value]="s.sectionId">
+            {{ getSectionName(s) }}
+          </mat-option>
+        }
+
+      </mat-select>
+
+      @if (sectionsLoading()) {
+        <mat-spinner matSuffix diameter="18"></mat-spinner>
+      }
+
+    </mat-form-field>
+
+  </div>
+
+</div>

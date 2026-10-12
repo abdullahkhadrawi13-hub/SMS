@@ -1,73 +1,60 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { Permissions } from '../../../core/services/permissions';
 
+import { SubjectsTab } from '../subject';
 import { SubjectsHeader } from '../subjects-header/subjects-header';
-import { SubjectsSearch } from '../subjects-search/subjects-search';
-import {
-  SubjectsFilter,
-  SubjectFilterValues,
-} from '../subjects-filter/subjects-filter';
-import { SubjectsTable } from '../subjects-table/subjects-table';
+import { ClassSubjects } from '../class-subjects/class-subjects';
+import { SubjectsCatalog } from '../subjects-catalog/subjects-catalog';
+import { MySubjects } from '../my-subjects/my-subjects';
 
 @Component({
   selector: 'app-subjects-page',
   imports: [
     SubjectsHeader,
-    SubjectsSearch,
-    MatButtonModule,
+    ClassSubjects,
+    SubjectsCatalog,
+    MySubjects,
     MatIconModule,
-    MatDialogModule,
+    MatTabsModule,
     TranslatePipe,
-    SubjectsTable,
   ],
   templateUrl: './subjects-page.html',
   styleUrl: './subjects-page.css',
 })
 export class SubjectsPage {
 
-  // Reference used to open subject filter dialogs.
-  private readonly dialog = inject(MatDialog);
-
   // Says what the current user is allowed to do.
   private readonly permissions = inject(Permissions);
 
-  // Only the Admin can add, edit, activate or deactivate subjects.
+  // Only the Admin can add, edit, activate or deactivate
+  // subjects and the subjects of a section.
   // The Assistant Principal can only read.
   readonly canManage = this.permissions.canManageSubjects;
 
-  // Stores the currently selected subject status filter.
-  readonly statusFilter = signal<boolean | undefined>(undefined);
+  // The teacher sees only "My subjects" (GET /api/teacherassignments/mine).
+  readonly ownSubjectsOnly = this.permissions.seesOwnSubjectsOnly;
 
-  // Opens the subject filter dialog and applies the selected values.
-  openFilter(): void {
-    const current: SubjectFilterValues = {
-      isActive: this.statusFilter() ?? null,
-    };
+  // The open tab (Admin and Assistant Principal).
+  // Both tabs stay alive while switching, so the chosen
+  // term / class / section is not lost.
+  readonly activeTab = signal<SubjectsTab>('class');
 
-    this.dialog
-      .open(SubjectsFilter, {
-        width: '420px',
-        data: current,
-      })
-      .afterClosed()
-      .subscribe((result?: SubjectFilterValues) => {
+  // The subjects list tab: the header's "Add subject" button opens its form.
+  private readonly catalog = viewChild(SubjectsCatalog);
 
-        // Ignore the result when the dialog is cancelled or closed.
-        if (!result) {
-          return;
-        }
 
-        this.statusFilter.set(
-          result.isActive ?? undefined
-        );
+  selectTab(tab: SubjectsTab): void {
+    this.activeTab.set(tab);
+  }
 
-        // Later, this is where the subject list will be reloaded.
-      });
+
+  // Header "Add subject" button (subjects list tab only).
+  openAddSubject(): void {
+    this.catalog()?.openAddSubject();
   }
 }

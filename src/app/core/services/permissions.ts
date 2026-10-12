@@ -34,6 +34,10 @@ export class Permissions {
     () => this.role() === UserRole.Admin
   );
 
+  readonly isTeacher = computed(
+    () => this.role() === UserRole.Teacher
+  );
+
 
   // ===== Students (API Reference, section 4) =====
 
@@ -59,6 +63,13 @@ export class Permissions {
   // AssistantPrincipal can only read.
   readonly canManageSubjects = computed(
     () => this.isAdmin()
+  );
+
+  // A teacher cannot read the subjects list or the assignments list (403).
+  // The Subjects page shows them "My subjects" instead
+  // (GET /api/teacherassignments/mine, API Reference section 8).
+  readonly seesOwnSubjectsOnly = computed(
+    () => this.isTeacher()
   );
 
 

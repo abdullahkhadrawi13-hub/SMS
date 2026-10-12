@@ -1,3 +1,9 @@
+/* The table component behaves like a block inside the parent. */
+:host {
+  display: block;
+}
+
+
 /* ================================
    Table Card
    ================================ */
@@ -28,7 +34,7 @@
 
 .table-wrapper table {
   width: 100%;
-  min-width: 700px;
+  min-width: 680px;
 }
 
 .table-wrapper th {
@@ -49,9 +55,7 @@
   white-space: nowrap;
 }
 
-
 /* Row hover */
-
 .table-wrapper tr.mat-mdc-row:hover {
   background: #f8fafc;
 }
@@ -65,18 +69,17 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 220px;
+  min-width: 200px;
 }
 
 .subject-name-cell span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #111827;
 }
 
-
 /* Subject icon */
-
 .subject-icon {
   width: 36px;
   height: 36px;
@@ -86,7 +89,7 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  border-radius: 8px;
   background: #f1f5f9;
 }
 
@@ -141,35 +144,14 @@
    Actions
    ================================ */
 
-.table-wrapper td:last-child {
-  width: 64px;
+.table-wrapper td.mat-column-actions,
+.table-wrapper th.mat-column-actions {
+  width: 76px;
   text-align: center;
 }
 
-.table-wrapper td:last-child button {
+.table-wrapper td.mat-column-actions button {
   color: #6b7280;
-}
-
-
-/* ================================
-   Paginator
-   ================================ */
-
-.table-card mat-paginator {
-  border-top: 1px solid #e5e7eb;
-  background: #ffffff;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-
-  .table-card {
-    border-radius: 10px;
-  }
 }
 
 
@@ -203,4 +185,61 @@
 
   font-size: 14px;
   font-weight: 500;
+}
+
+
+/* ================================
+   State Card (loading / error)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+.state-card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.error-state > mat-icon {
+  width: 42px;
+  height: 42px;
+
+  font-size: 42px;
+
+  color: #dc2626;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .table-card {
+    border-radius: 10px;
+  }
+
 }

@@ -1,0 +1,254 @@
+<!-- Add a subject to a section / edit the subject of a section -->
+
+<h2 mat-dialog-title>
+  {{
+    isEditMode
+      ? ('SUBJECTS.ASSIGNMENT_FORM.EDIT_TITLE' | translate)
+      : ('SUBJECTS.ASSIGNMENT_FORM.ADD_TITLE' | translate)
+  }}
+</h2>
+
+
+<mat-dialog-content>
+
+  <div class="form-content">
+
+    <!-- Fixed values (read-only) -->
+    <div class="context-box">
+
+      <div class="context-items">
+
+        @if (isEditMode) {
+          <div class="context-item">
+            <span class="context-label">
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.SUBJECT' | translate }}
+            </span>
+
+            <span class="context-value">{{ data.subjectName }}</span>
+          </div>
+        }
+
+        <div class="context-item">
+          <span class="context-label">
+            {{ 'SUBJECTS.ASSIGNMENT_FORM.TERM' | translate }}
+          </span>
+
+          <span class="context-value">{{ data.termLabel }}</span>
+        </div>
+
+        <div class="context-item">
+          <span class="context-label">
+            {{ 'SUBJECTS.ASSIGNMENT_FORM.CLASS' | translate }}
+          </span>
+
+          <span class="context-value">{{ data.className }}</span>
+        </div>
+
+        <div class="context-item">
+          <span class="context-label">
+            {{ 'SUBJECTS.ASSIGNMENT_FORM.SECTION' | translate }}
+          </span>
+
+          <span class="context-value">{{ data.sectionName }}</span>
+        </div>
+
+      </div>
+
+      @if (isEditMode) {
+        <p class="context-note">
+          <mat-icon>lock</mat-icon>
+
+          <span>
+            {{ 'SUBJECTS.ASSIGNMENT_FORM.LOCKED_NOTE' | translate }}
+          </span>
+        </p>
+      }
+
+    </div>
+
+
+    <!-- Edit: the current teacher's account is inactive -->
+    @if (isEditMode && data.currentTeacherInactive) {
+      <div class="message-card warning" role="alert">
+        <mat-icon>warning</mat-icon>
+
+        <span>
+          {{
+            'SUBJECTS.ASSIGNMENT_FORM.TEACHER_INACTIVE'
+              | translate: { name: data.currentTeacherName }
+          }}
+        </span>
+      </div>
+    }
+
+
+    <form
+      [formGroup]="assignmentForm"
+      class="assignment-form"
+      (ngSubmit)="onSubmit()"
+    >
+
+      <!-- Subject (add mode only) -->
+      @if (!isEditMode) {
+
+        @if (noSubjects) {
+
+          <div class="message-card info">
+            <mat-icon>info</mat-icon>
+
+            <span>
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.NO_SUBJECTS' | translate }}
+            </span>
+          </div>
+
+        } @else {
+
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.SUBJECT' | translate }}
+            </mat-label>
+
+            <mat-select formControlName="subjectId">
+
+              @for (subject of data.subjects; track subject.subjectId) {
+                <mat-option [value]="subject.subjectId">
+                  {{ getSubjectName(subject) }}
+                </mat-option>
+              }
+
+            </mat-select>
+
+            <mat-hint>
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.SUBJECT_HINT' | translate }}
+            </mat-hint>
+
+            @if (isFieldInvalid('subjectId')) {
+              <mat-error>
+                {{ 'SUBJECTS.ASSIGNMENT_FORM.REQUIRED' | translate }}
+              </mat-error>
+            }
+
+          </mat-form-field>
+
+        }
+
+      }
+
+
+      <!-- Teacher (active teachers only) -->
+      <mat-form-field appearance="outline">
+
+        <mat-label>
+          {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER' | translate }}
+        </mat-label>
+
+        <mat-select formControlName="teacherId">
+
+          @for (teacher of data.teachers; track teacher.teacherId) {
+            <mat-option [value]="teacher.teacherId">
+              {{ getTeacherName(teacher) }} — <span dir="ltr">{{ teacher.teacherNumber }}</span>
+            </mat-option>
+          }
+
+        </mat-select>
+
+        @if (noTeachers) {
+          <mat-hint>
+            {{ 'SUBJECTS.ASSIGNMENT_FORM.NO_TEACHERS' | translate }}
+          </mat-hint>
+        }
+
+        @if (isFieldInvalid('teacherId')) {
+          <mat-error>
+            {{ 'SUBJECTS.ASSIGNMENT_FORM.REQUIRED' | translate }}
+          </mat-error>
+        }
+
+      </mat-form-field>
+
+
+      <!-- Passing mark (above 0, at most 100) -->
+      <mat-form-field appearance="outline">
+
+        <mat-label>
+          {{ 'SUBJECTS.ASSIGNMENT_FORM.PASSING_MARK' | translate }}
+        </mat-label>
+
+        <input
+          matInput
+          type="number"
+          min="0"
+          max="100"
+          step="any"
+          formControlName="passingMark"
+        />
+
+        <span matTextSuffix>
+          {{ 'SUBJECTS.ASSIGNMENT_FORM.OUT_OF' | translate }}
+        </span>
+
+        <mat-hint>
+          {{ 'SUBJECTS.ASSIGNMENT_FORM.PASSING_MARK_HINT' | translate }}
+        </mat-hint>
+
+        @if (isFieldInvalid('passingMark')) {
+          <mat-error>
+            @if (assignmentForm.controls.passingMark.hasError('required')) {
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.REQUIRED' | translate }}
+            } @else {
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.PASSING_MARK_ERROR' | translate }}
+            }
+          </mat-error>
+        }
+
+      </mat-form-field>
+
+    </form>
+
+
+    <!-- Add: automatic enrollment + fixed fields -->
+    @if (!isEditMode) {
+      <p class="form-note">
+        <mat-icon>info</mat-icon>
+
+        <span>
+          {{ 'SUBJECTS.ASSIGNMENT_FORM.ADD_NOTE' | translate }}
+        </span>
+      </p>
+    }
+
+  </div>
+
+</mat-dialog-content>
+
+
+<!-- Dialog actions -->
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    [disabled]="isSubmitting()"
+    (click)="cancel()"
+  >
+    {{ 'SUBJECTS.ASSIGNMENT_FORM.CANCEL' | translate }}
+  </button>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    [disabled]="assignmentForm.invalid || noSubjects || isSubmitting()"
+    (click)="onSubmit()"
+  >
+    <mat-icon>save</mat-icon>
+
+    {{
+      isSubmitting()
+        ? ('SUBJECTS.ASSIGNMENT_FORM.SAVING' | translate)
+        : ('SUBJECTS.ASSIGNMENT_FORM.SAVE' | translate)
+    }}
+  </button>
+
+</mat-dialog-actions>

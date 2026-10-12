@@ -3,22 +3,22 @@
   <div class="title-section">
 
     <h1>
-      {{ 'SUBJECTS.HEADER.TITLE' | translate }}
+      {{ titleKey() | translate }}
     </h1>
 
     <p>
-      {{ 'SUBJECTS.HEADER.SUBTITLE' | translate }}
+      {{ subtitleKey() | translate }}
     </p>
 
   </div>
 
-  <!-- Add subject (Admin only) -->
-  @if (canManage()) {
+  <!-- Add subject (Admin only, subjects list tab) -->
+  @if (showAdd()) {
     <button
       mat-flat-button
       color="primary"
       type="button"
-      (click)="openSubjectForm()"
+      (click)="addSubject.emit()"
     >
       <mat-icon>menu_book</mat-icon>
 

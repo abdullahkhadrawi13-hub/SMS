@@ -1,0 +1,382 @@
+<!-- Error -->
+@if (errorMessage()) {
+
+  <div class="state-card error-state">
+
+    <mat-icon>error_outline</mat-icon>
+
+    <p>
+      {{ errorMessage() | translate }}
+    </p>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="retry.emit()"
+    >
+      <mat-icon>refresh</mat-icon>
+
+      {{ 'SUBJECTS.CLASS_TABLE.RETRY' | translate }}
+    </button>
+
+  </div>
+
+}
+
+<!-- Nothing selected yet -->
+@else if (!hasSelection()) {
+
+  <div class="state-card">
+
+    <mat-icon>assignment_ind</mat-icon>
+
+    <h3>
+      {{ 'SUBJECTS.CLASS_TABLE.SELECT_TITLE' | translate }}
+    </h3>
+
+    <p>
+      {{ 'SUBJECTS.CLASS_TABLE.SELECT_MESSAGE' | translate }}
+    </p>
+
+  </div>
+
+}
+
+<!-- Loading -->
+@else if (isLoading()) {
+
+  <div class="state-card">
+
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <p>
+      {{ 'SUBJECTS.CLASS_TABLE.LOADING' | translate }}
+    </p>
+
+  </div>
+
+}
+
+<!-- The section has no subjects in this term -->
+@else if (rows().length === 0) {
+
+  <div class="state-card">
+
+    <mat-icon>menu_book</mat-icon>
+
+    <h3>
+      {{ 'SUBJECTS.CLASS_TABLE.EMPTY_TITLE' | translate }}
+    </h3>
+
+    @if (canManage()) {
+
+      <p>
+        {{
+          'SUBJECTS.CLASS_TABLE.EMPTY_MESSAGE'
+            | translate: { className: className(), sectionName: sectionName(), termName: termLabel() }
+        }}
+      </p>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        class="empty-add-button"
+        [disabled]="openingForm()"
+        (click)="addSubject.emit()"
+      >
+        <mat-icon>add</mat-icon>
+
+        {{ 'SUBJECTS.CLASS_TABLE.ADD_FIRST' | translate }}
+      </button>
+
+    } @else {
+
+      <p>
+        {{ 'SUBJECTS.CLASS_TABLE.EMPTY_MESSAGE_READONLY' | translate }}
+      </p>
+
+    }
+
+  </div>
+
+}
+
+<!-- Section subjects -->
+@else {
+
+  <div class="table-card">
+
+    <!-- Toolbar: title + counters + add -->
+    <div class="table-toolbar">
+
+      <div class="toolbar-title">
+        <h2>
+          {{
+            'SUBJECTS.CLASS_TABLE.TITLE'
+              | translate: { className: className(), sectionName: sectionName() }
+          }}
+        </h2>
+
+        <p>{{ termLabel() }}</p>
+      </div>
+
+      <div class="toolbar-counters">
+
+        <span class="counter total">
+          {{ 'SUBJECTS.CLASS_TABLE.TOTAL' | translate }}
+          <strong>{{ counts().total }}</strong>
+        </span>
+
+        <span class="counter active">
+          {{ 'SUBJECTS.ACTIVE' | translate }}
+          <strong>{{ counts().active }}</strong>
+        </span>
+
+        @if (counts().inactive > 0) {
+          <span class="counter inactive">
+            {{ 'SUBJECTS.INACTIVE' | translate }}
+            <strong>{{ counts().inactive }}</strong>
+          </span>
+        }
+
+        <!-- Add a subject to this section (Admin only) -->
+        @if (canManage()) {
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            class="add-button"
+            [disabled]="openingForm()"
+            (click)="addSubject.emit()"
+          >
+            <mat-icon>add</mat-icon>
+
+            {{ 'SUBJECTS.CLASS_TABLE.ADD' | translate }}
+          </button>
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- Table wrapper allows horizontal scrolling on smaller screens. -->
+    <div class="table-wrapper">
+
+      <table mat-table [dataSource]="rows()">
+
+        <!-- Subject -->
+        <ng-container matColumnDef="subject">
+
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'SUBJECTS.CLASS_TABLE.SUBJECT' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="subject-name-cell">
+
+              <div class="subject-icon">
+                <mat-icon>menu_book</mat-icon>
+              </div>
+
+              <span>{{ row.subjectName }}</span>
+
+            </div>
+          </td>
+
+        </ng-container>
+
+
+        <!-- Teacher -->
+        <ng-container matColumnDef="teacher">
+
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'SUBJECTS.CLASS_TABLE.TEACHER' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="teacher-cell">
+
+              <div class="teacher-avatar">
+                <mat-icon>person</mat-icon>
+              </div>
+
+              <div class="teacher-text">
+
+                <!-- The name is missing when the teachers list could not be loaded. -->
+                @if (row.teacherName) {
+                  <span class="teacher-name">{{ row.teacherName }}</span>
+                }
+
+                <span class="teacher-details">
+
+                  <span dir="ltr">{{ row.assignment.teacherNumber }}</span>
+
+                  @if (row.teacherInactive) {
+                    <span class="warning-badge">
+                      {{ 'SUBJECTS.CLASS_TABLE.TEACHER_INACTIVE' | translate }}
+                    </span>
+                  }
+
+                </span>
+
+              </div>
+
+            </div>
+          </td>
+
+        </ng-container>
+
+
+        <!-- Passing Mark -->
+        <ng-container matColumnDef="passingMark">
+
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'SUBJECTS.CLASS_TABLE.PASSING_MARK' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <strong class="mark">{{ row.assignment.passingMark }}</strong>
+
+            <span class="muted">
+              {{ 'SUBJECTS.CLASS_TABLE.OUT_OF' | translate }}
+            </span>
+          </td>
+
+        </ng-container>
+
+
+        <!-- Assessment Structure (locked / open) -->
+        <ng-container matColumnDef="structure">
+
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'SUBJECTS.CLASS_TABLE.STRUCTURE' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <span
+              class="structure-badge"
+              [class.locked]="row.assignment.isAssessmentStructureLocked"
+            >
+              <mat-icon>
+                {{ row.assignment.isAssessmentStructureLocked ? 'lock' : 'lock_open' }}
+              </mat-icon>
+
+              {{
+                row.assignment.isAssessmentStructureLocked
+                  ? ('SUBJECTS.CLASS_TABLE.LOCKED' | translate)
+                  : ('SUBJECTS.CLASS_TABLE.UNLOCKED' | translate)
+              }}
+            </span>
+          </td>
+
+        </ng-container>
+
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'SUBJECTS.CLASS_TABLE.STATUS' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <span
+              class="status-badge"
+              [class.active]="row.assignment.isActive"
+              [class.inactive]="!row.assignment.isActive"
+            >
+              <span class="status-dot"></span>
+
+              {{
+                row.assignment.isActive
+                  ? ('SUBJECTS.ACTIVE' | translate)
+                  : ('SUBJECTS.INACTIVE' | translate)
+              }}
+            </span>
+          </td>
+
+        </ng-container>
+
+
+        <!-- Actions (Admin only) -->
+        <ng-container matColumnDef="actions">
+
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'SUBJECTS.CLASS_TABLE.ACTIONS' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+
+            <button
+              mat-icon-button
+              type="button"
+              [matMenuTriggerFor]="rowMenu"
+              [attr.aria-label]="'SUBJECTS.CLASS_TABLE.ACTIONS' | translate"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+
+            <mat-menu #rowMenu="matMenu">
+
+              <!-- Edit the teacher and the passing mark -->
+              <button
+                mat-menu-item
+                type="button"
+                (click)="editSubject.emit(row)"
+              >
+                <mat-icon>edit</mat-icon>
+
+                {{ 'SUBJECTS.CLASS_TABLE.EDIT' | translate }}
+              </button>
+
+              <!-- Activate / deactivate the subject for this section -->
+              <button
+                mat-menu-item
+                type="button"
+                (click)="toggleStatus.emit(row)"
+              >
+                <mat-icon>
+                  {{ row.assignment.isActive ? 'block' : 'check_circle' }}
+                </mat-icon>
+
+                {{
+                  row.assignment.isActive
+                    ? ('SUBJECTS.CLASS_TABLE.DEACTIVATE' | translate)
+                    : ('SUBJECTS.CLASS_TABLE.ACTIVATE' | translate)
+                }}
+              </button>
+
+            </mat-menu>
+
+          </td>
+
+        </ng-container>
+
+
+        <!-- Header / Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns()"></tr>
+
+      </table>
+
+    </div>
+
+
+    <!-- Footer hint: automatic enrollment -->
+    <div class="table-footer">
+
+      <mat-icon>info</mat-icon>
+
+      <span>
+        {{ 'SUBJECTS.CLASS_TABLE.HINT' | translate }}
+      </span>
+
+    </div>
+
+  </div>
+
+}

@@ -1,4 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -6,12 +8,32 @@ import {
 } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 import { TranslatePipe } from '@ngx-translate/core';
-import { MatIcon } from '@angular/material/icon';
+
+import {
+  SubjectDto,
+  SubjectRequest,
+  SubjectsService,
+} from '../../../core/services/subjects';
+import { ApiMessageService } from '../../../core/services/api-message';
+import { ActionResult } from '../../../shared/services/action-result';
+
+
+// Data passed when the dialog is opened.
+// Without a subject the form adds a new one; with a subject it edits it.
+export interface SubjectFormData {
+  subject?: SubjectDto;
+}
+
 
 @Component({
   selector: 'app-subjects-form',
@@ -21,8 +43,8 @@ import { MatIcon } from '@angular/material/icon';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIconModule,
     TranslatePipe,
-    MatIcon,
   ],
   templateUrl: './subjects-form.html',
   styleUrl: './subjects-form.css',
@@ -36,23 +58,39 @@ export class SubjectsForm {
   private readonly dialogRef =
     inject(MatDialogRef<SubjectsForm>);
 
+  private readonly subjectsService = inject(SubjectsService);
+  private readonly apiMessageService = inject(ApiMessageService);
+  private readonly actionResult = inject(ActionResult);
+  private readonly destroyRef = inject(DestroyRef);
+
+  // The subject being edited (undefined = add mode).
+  private readonly subject =
+    inject<SubjectFormData | null>(MAT_DIALOG_DATA, { optional: true })
+      ?.subject;
+
+  readonly isEditMode = this.subject !== undefined;
+
+  // true while the request is running (prevents double clicks).
+  readonly isSubmitting = signal(false);
+
 
   // Subject form fields and validation rules.
+  // The API fields are subjectAr / subjectEn.
   readonly subjectForm = this.fb.nonNullable.group({
 
     // Arabic subject name.
-    nameAr: [
-      '',
+    subjectAr: [
+      this.subject?.subjectAr ?? '',
       [
         Validators.required,
         Validators.minLength(2),
-        Validators.pattern(/^[\u0600-\u06FF\s.-]+$/),
+        Validators.pattern(/^[؀-ۿ\s.-]+$/),
       ],
     ],
 
     // English subject name.
-    nameEn: [
-      '',
+    subjectEn: [
+      this.subject?.subjectEn ?? '',
       [
         Validators.required,
         Validators.minLength(2),
@@ -62,7 +100,7 @@ export class SubjectsForm {
   });
 
 
-  // Handles subject form submission.
+  // Saves the subject: POST /api/subjects or PUT /api/subjects/{id}.
   onSubmit(): void {
 
     if (this.subjectForm.invalid) {
@@ -70,11 +108,58 @@ export class SubjectsForm {
       return;
     }
 
-    // API integration will be added later.
-    console.log(
-      'Subject form value:',
-      this.subjectForm.getRawValue()
-    );
+    if (this.isSubmitting()) {
+      return;
+    }
+
+    const value = this.subjectForm.getRawValue();
+
+    const data: SubjectRequest = {
+      subjectAr: value.subjectAr.trim(),
+      subjectEn: value.subjectEn.trim(),
+    };
+
+    const request = this.subject
+      ? this.subjectsService.updateSubject(this.subject.subjectId, data)
+      : this.subjectsService.createSubject(data);
+
+    this.isSubmitting.set(true);
+
+    request
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+
+          this.isSubmitting.set(false);
+
+          if (!response.success) {
+            this.actionResult.show(
+              'error',
+              this.apiMessageService.getMessage(response)
+            );
+            return;
+          }
+
+          this.dialogRef.close({ success: true });
+
+          this.actionResult.show(
+            'success',
+            this.apiMessageService.getMessage(response)
+          );
+        },
+
+        error: (error: HttpErrorResponse) => {
+
+          console.error('Failed to save subject:', error);
+
+          this.isSubmitting.set(false);
+
+          this.actionResult.show(
+            'error',
+            this.apiMessageService.getErrorMessage(error)
+          );
+        },
+      });
   }
 
 

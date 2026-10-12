@@ -1,35 +1,79 @@
 <div class="subjects-page">
 
-  <!-- Page Header -->
-  <app-subjects-header
-    [canManage]="canManage()"
-  ></app-subjects-header>
+  @if (ownSubjectsOnly()) {
 
-  <!-- Search and Filter -->
-  <div class="filters-card">
+    <!-- Teacher: My subjects -->
+    <app-subjects-header
+      titleKey="SUBJECTS.MY_SUBJECTS.TITLE"
+      subtitleKey="SUBJECTS.MY_SUBJECTS.SUBTITLE"
+    ></app-subjects-header>
 
-    <div class="search-container">
+    <app-my-subjects></app-my-subjects>
 
-      <!-- Subject Search -->
-      <app-subjects-search></app-subjects-search>
+  } @else {
 
-      <!-- Subject Filter -->
-      <button
-        mat-stroked-button
-        type="button"
-        (click)="openFilter()"
+    <!-- Page Header -->
+    <app-subjects-header
+      [showAdd]="canManage() && activeTab() === 'catalog'"
+      (addSubject)="openAddSubject()"
+    ></app-subjects-header>
+
+    <!-- Tabs -->
+    <nav
+      mat-tab-nav-bar
+      mat-stretch-tabs="false"
+      class="subjects-tabs"
+      [tabPanel]="tabPanel"
+    >
+
+      <a
+        mat-tab-link
+        [active]="activeTab() === 'class'"
+        (click)="selectTab('class')"
       >
-        <mat-icon>filter_list</mat-icon>
-        {{ 'SUBJECTS.FILTER_BUTTON' | translate }}
-      </button>
+        <span class="tab-label">
+          <mat-icon>assignment_ind</mat-icon>
 
-    </div>
+          <span>
+            {{ 'SUBJECTS.TABS.CLASS' | translate }}
+          </span>
+        </span>
+      </a>
 
-  </div>
+      <a
+        mat-tab-link
+        [active]="activeTab() === 'catalog'"
+        (click)="selectTab('catalog')"
+      >
+        <span class="tab-label">
+          <mat-icon>menu_book</mat-icon>
 
-  <!-- Subject Table -->
-  <app-subjects-table
-    [canManage]="canManage()"
-  ></app-subjects-table>
+          <span>
+            {{ 'SUBJECTS.TABS.CATALOG' | translate }}
+          </span>
+        </span>
+      </a>
+
+    </nav>
+
+    <mat-tab-nav-panel #tabPanel>
+
+      <!-- Subjects of a section (class / section / term) -->
+      <div [hidden]="activeTab() !== 'class'">
+        <app-class-subjects
+          [canManage]="canManage()"
+        ></app-class-subjects>
+      </div>
+
+      <!-- General subjects list -->
+      <div [hidden]="activeTab() !== 'catalog'">
+        <app-subjects-catalog
+          [canManage]="canManage()"
+        ></app-subjects-catalog>
+      </div>
+
+    </mat-tab-nav-panel>
+
+  }
 
 </div>

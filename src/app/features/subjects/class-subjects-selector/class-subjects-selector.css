@@ -1,0 +1,52 @@
+/* The selector component behaves like a block inside the parent. */
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Selector Card
+   ================================ */
+
+.selector-card {
+  padding: 20px;
+  margin-bottom: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+.selector-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  align-items: start;
+
+  gap: 16px;
+}
+
+.selector-fields mat-form-field {
+  width: 100%;
+}
+
+/* Small spinner inside a field while its list is loading. */
+.selector-fields mat-spinner {
+  margin-inline-end: 12px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 900px) {
+
+  .selector-fields {
+    grid-template-columns: 1fr;
+  }
+
+}

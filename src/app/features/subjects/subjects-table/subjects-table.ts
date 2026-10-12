@@ -1,21 +1,14 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-
-// Temporary subject data used until the Subject API is ready.
-interface SubjectRow {
-  subjectId: number;
-  nameAr: string;
-  nameEn: string;
-  isActive: boolean;
-}
+import { SubjectDto } from '../../../core/services/subjects';
 
 
 @Component({
@@ -24,7 +17,7 @@ interface SubjectRow {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatPaginatorModule,
+    MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
   ],
@@ -33,73 +26,42 @@ interface SubjectRow {
 })
 export class SubjectsTable {
 
-  // Shows "Edit" and "Activate / Deactivate" only for users
-  // allowed to manage subjects. "View" is shown for everyone.
+  // ===== Inputs (all data is owned and loaded by the parent) =====
+
+  // Subjects after the search and the filter.
+  readonly subjects = input<SubjectDto[]>([]);
+
+  // Loading and error state of the list.
+  readonly isLoading = input(false);
+  readonly errorMessage = input('');
+
+  // true while a search or a filter is applied (changes the empty message).
+  readonly isFiltered = input(false);
+
+  // Shows the actions column: edit and activate / deactivate (Admin only).
   readonly canManage = input(false);
 
+
+  // ===== Outputs (the parent performs the actual actions) =====
+
+  readonly retry = output<void>();
+  readonly editSubject = output<SubjectDto>();
+  readonly toggleStatus = output<SubjectDto>();
+
+
   // Columns displayed in the subject table.
-  readonly displayedColumns = [
-    'subjectId',
-    'name',
-    'status',
-    'actions',
-  ];
+  // The Assistant Principal has no actions, so the column is hidden.
+  readonly displayedColumns = computed(() => {
 
+    const columns = [
+      'subjectId',
+      'nameAr',
+      'nameEn',
+      'status',
+    ];
 
-  // Temporary subject data for previewing the table.
-  readonly subjects: SubjectRow[] = [
-    {
-      subjectId: 1,
-      nameAr: 'الرياضيات',
-      nameEn: 'Mathematics',
-      isActive: true,
-    },
-    {
-      subjectId: 2,
-      nameAr: 'اللغة العربية',
-      nameEn: 'Arabic Language',
-      isActive: true,
-    },
-    {
-      subjectId: 3,
-      nameAr: 'اللغة الإنجليزية',
-      nameEn: 'English Language',
-      isActive: true,
-    },
-    {
-      subjectId: 4,
-      nameAr: 'العلوم',
-      nameEn: 'Science',
-      isActive: true,
-    },
-    {
-      subjectId: 5,
-      nameAr: 'الاجتماعيات',
-      nameEn: 'Social Studies',
-      isActive: false,
-    },
-  ];
-
-
-  // Current paginator page.
-  pageIndex = 0;
-
-
-  // Current number of rows displayed per page.
-  pageSize = 10;
-
-
-  // Returns the subject name according to the current language.
-  getSubjectName(subject: SubjectRow): string {
-    return document.documentElement.lang === 'ar'
-      ? subject.nameAr
-      : subject.nameEn;
-  }
-
-
-  // Handles paginator changes.
-  onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-  }
+    return this.canManage()
+      ? [...columns, 'actions']
+      : columns;
+  });
 }

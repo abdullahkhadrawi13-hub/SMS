@@ -506,20 +506,21 @@
 
   "SUBJECTS": {
     "HEADER": {
-      "TITLE": "Subjects Management",
-      "SUBTITLE": "Manage school subjects",
+      "TITLE": "Subjects",
+      "SUBTITLE": "Each class and section's subjects and teachers, by term",
       "ADD": "Add Subject"
     },
-
+    "TABS": {
+      "CLASS": "Class Subjects",
+      "CATALOG": "Subjects List"
+    },
     "SEARCH": {
       "LABEL": "Search",
       "PLACEHOLDER": "Search by subject name",
       "CLEAR": "Clear search",
       "SUBMIT": "Search"
     },
-
     "FILTER_BUTTON": "Filter",
-
     "FILTER": {
       "TITLE": "Filter Subjects",
       "STATUS": "Status",
@@ -528,39 +529,129 @@
       "CANCEL": "Cancel",
       "APPLY": "Apply"
     },
-
     "ACTIVE": "Active",
     "INACTIVE": "Inactive",
-
     "TABLE": {
       "SUBJECT_ID": "Subject ID",
-      "NAME": "Subject Name",
+      "NAME_AR": "Subject Name (Arabic)",
+      "NAME_EN": "Subject Name (English)",
       "STATUS": "Status",
       "ACTIONS": "Actions",
-      "VIEW": "View",
       "EDIT": "Edit",
       "ACTIVATE": "Activate",
       "DEACTIVATE": "Deactivate",
       "EMPTY": "No subjects found",
-      "PAGINATION": "Subjects pagination"
+      "NO_RESULTS": "No subject matches the search or filter",
+      "LOADING": "Loading subjects...",
+      "RETRY": "Retry"
     },
     "FORM": {
       "TITLE": "Add Subject",
-
+      "EDIT_TITLE": "Edit Subject",
       "NAME_AR": "Subject Name (Arabic)",
       "NAME_AR_PLACEHOLDER": "Enter subject name in Arabic",
       "NAME_AR_REQUIRED": "Arabic subject name is required",
       "NAME_AR_MIN_LENGTH": "Arabic subject name must be at least 2 characters",
       "NAME_AR_PATTERN": "Please enter a valid Arabic subject name",
-
       "NAME_EN": "Subject Name (English)",
       "NAME_EN_PLACEHOLDER": "Enter subject name in English",
       "NAME_EN_REQUIRED": "English subject name is required",
       "NAME_EN_MIN_LENGTH": "English subject name must be at least 2 characters",
       "NAME_EN_PATTERN": "Please enter a valid English subject name",
-
       "CANCEL": "Cancel",
-      "SAVE": "Save"
+      "SAVE": "Save",
+      "SAVING": "Saving..."
+    },
+    "CLASS_SELECTOR": {
+      "TERM": "Academic Term",
+      "CLASS": "Class",
+      "SECTION": "Section",
+      "CURRENT": "(Current)"
+    },
+    "CLASS_TABLE": {
+      "TITLE": "{{className}} — Section {{sectionName}} Subjects",
+      "TOTAL": "Subjects",
+      "ADD": "Add Subject to Section",
+      "ADD_FIRST": "Add the First Subject",
+      "SUBJECT": "Subject",
+      "TEACHER": "Teacher",
+      "PASSING_MARK": "Passing Mark",
+      "OUT_OF": "of 100",
+      "STRUCTURE": "Assessment Structure",
+      "LOCKED": "Locked",
+      "UNLOCKED": "Open",
+      "STATUS": "Status",
+      "ACTIONS": "Actions",
+      "EDIT": "Edit",
+      "ACTIVATE": "Activate",
+      "DEACTIVATE": "Deactivate",
+      "TEACHER_INACTIVE": "Teacher account inactive",
+      "HINT": "Adding a subject to the section enrolls its students automatically; deactivating it stops their enrollment until it is activated again.",
+      "LOADING": "Loading the section's subjects...",
+      "RETRY": "Retry",
+      "SELECT_TITLE": "Choose a class and a section",
+      "SELECT_MESSAGE": "Choose the academic term, the class and the section to see their subjects and teachers.",
+      "EMPTY_TITLE": "This section has no subjects yet",
+      "EMPTY_MESSAGE": "Add the subjects taught in {{className}} — Section {{sectionName}} during {{termName}} and choose each subject's teacher.",
+      "EMPTY_MESSAGE_READONLY": "No subjects have been added to this section in this term."
+    },
+    "ASSIGNMENT_FORM": {
+      "ADD_TITLE": "Add Subject to Section",
+      "EDIT_TITLE": "Edit Section Subject",
+      "TERM": "Academic Term",
+      "CLASS": "Class",
+      "SECTION": "Section",
+      "SUBJECT": "Subject",
+      "SUBJECT_HINT": "Only active subjects not yet added to this section",
+      "NO_SUBJECTS": "Every active subject is already added to this section. Add a new subject from the \"Subjects List\" first.",
+      "TEACHER": "Teacher",
+      "NO_TEACHERS": "There are no active teachers.",
+      "PASSING_MARK": "Passing Mark",
+      "OUT_OF": "of 100",
+      "PASSING_MARK_HINT": "Above 0 and at most 100",
+      "PASSING_MARK_ERROR": "The passing mark must be above 0 and at most 100",
+      "REQUIRED": "This field is required",
+      "ADD_NOTE": "After saving, the section's students are enrolled in the subject automatically. The subject, class, section and term cannot change later; only the teacher and the passing mark can be edited.",
+      "LOCKED_NOTE": "These fields are fixed after creation. To teach another subject or section, add a new subject to the section.",
+      "TEACHER_INACTIVE": "The current teacher's account ({{name}}) is inactive. Choose another teacher for this subject.",
+      "CANCEL": "Cancel",
+      "SAVE": "Save",
+      "SAVING": "Saving..."
+    },
+    "STATUS_DIALOG": {
+      "DEACTIVATE_TITLE": "Deactivate Section Subject",
+      "ACTIVATE_TITLE": "Activate Section Subject",
+      "DEACTIVATE_MESSAGE": "{{subject}} will be deactivated in {{className}} — Section {{sectionName}}, and the section's students will stop being enrolled in it until it is activated again.",
+      "ACTIVATE_MESSAGE": "{{subject}} will be activated in {{className}} — Section {{sectionName}}, and the section's students will be enrolled in it again automatically.",
+      "CANCEL": "Cancel",
+      "DEACTIVATE": "Deactivate",
+      "ACTIVATE": "Activate"
+    },
+    "MY_SUBJECTS": {
+      "TITLE": "My Subjects",
+      "SUBTITLE": "The subjects and sections you teach in the current term",
+      "STAT_SUBJECTS": "Subjects",
+      "STAT_SECTIONS": "Sections",
+      "STAT_LOCKED": "Locked Assessment Structures",
+      "OF_TOTAL": "of {{total}}",
+      "CURRENT_TERM": "Current academic term",
+      "TOTAL": "Total",
+      "SUBJECT": "Subject",
+      "CLASS": "Class",
+      "SECTION": "Section",
+      "PASSING_MARK": "Passing Mark",
+      "OUT_OF": "of 100",
+      "STRUCTURE": "Assessment Structure",
+      "LOCKED": "Locked",
+      "UNLOCKED": "Open",
+      "HINT": "Subjects are assigned to you by the administrator. Grades can be entered once the assessment structure is locked.",
+      "LOADING": "Loading your subjects...",
+      "RETRY": "Retry",
+      "EMPTY_TITLE": "No subjects assigned to you",
+      "EMPTY_MESSAGE": "You have no subjects in the current term."
+    },
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load the data. Please try again."
     }
   },
 

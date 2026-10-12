@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>
+  {{
+    data.activate
+      ? ('SUBJECTS.STATUS_DIALOG.ACTIVATE_TITLE' | translate)
+      : ('SUBJECTS.STATUS_DIALOG.DEACTIVATE_TITLE' | translate)
+  }}
+</h2>
+
+
+<mat-dialog-content>
+
+  <div
+    class="status-message"
+    [class.activate]="data.activate"
+  >
+
+    <mat-icon>
+      {{ data.activate ? 'check_circle' : 'warning' }}
+    </mat-icon>
+
+    <p>
+      {{
+        (data.activate
+          ? 'SUBJECTS.STATUS_DIALOG.ACTIVATE_MESSAGE'
+          : 'SUBJECTS.STATUS_DIALOG.DEACTIVATE_MESSAGE')
+          | translate: {
+              subject: data.subjectName,
+              className: data.className,
+              sectionName: data.sectionName
+            }
+      }}
+    </p>
+
+  </div>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()"
+  >
+    {{ 'SUBJECTS.STATUS_DIALOG.CANCEL' | translate }}
+  </button>
+
+  <button
+    mat-flat-button
+    type="button"
+    [class.danger]="!data.activate"
+    (click)="confirm()"
+  >
+    {{
+      data.activate
+        ? ('SUBJECTS.STATUS_DIALOG.ACTIVATE' | translate)
+        : ('SUBJECTS.STATUS_DIALOG.DEACTIVATE' | translate)
+    }}
+  </button>
+
+</mat-dialog-actions>

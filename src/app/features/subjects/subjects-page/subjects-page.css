@@ -10,43 +10,23 @@
 
 
 /* ================================
-   Search and Filter Card
+   Tabs
    ================================ */
 
-.filters-card {
-  padding: 20px;
-  margin-bottom: 24px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  box-sizing: border-box;
+.subjects-tabs {
+  margin-bottom: 20px;
+
+  border-bottom: 1px solid #e5e7eb;
 }
 
-
-/* Keeps search and filter on the same row. */
-.search-container {
-  display: flex;
+/* Icon + text of a tab.
+   gap is used (not a margin on the icon) so the space is correct
+   in both Arabic (RTL) and English (LTR). */
+.tab-label {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  width: 100%;
-}
 
-
-/* Makes the search area fill the available space. */
-.search-container app-subjects-search {
-  flex: 1;
-  min-width: 0;
-}
-
-
-/* Filter button */
-.search-container > button {
-  height: 56px;
-  display: flex;
-  align-items: center;
   gap: 8px;
-  padding: 0 20px;
-  flex-shrink: 0;
 }
 
 
@@ -56,17 +36,8 @@
 
 @media (max-width: 650px) {
 
-  .search-container {
-    flex-direction: column;
-    align-items: stretch;
+  .subjects-page {
+    padding: 16px;
   }
 
-  .search-container app-subjects-search {
-    width: 100%;
-  }
-
-  .search-container > button {
-    width: 100%;
-    justify-content: center;
-  }
 }

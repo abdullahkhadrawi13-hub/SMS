@@ -1,0 +1,32 @@
+<!-- Term / Class / Section -->
+<app-class-subjects-selector
+  [terms]="terms()"
+  [termsLoading]="termsLoading()"
+  [termId]="termId()"
+  [classes]="classes()"
+  [classId]="classId()"
+  [sections]="sections()"
+  [sectionsLoading]="sectionsLoading()"
+  [sectionId]="sectionId()"
+  (termChange)="onTermChange($event)"
+  (classChange)="onClassChange($event)"
+  (sectionChange)="onSectionChange($event)"
+></app-class-subjects-selector>
+
+<!-- Subjects of the section (error / loading / select / empty / table) -->
+<app-class-subjects-table
+  [rows]="rows()"
+  [counts]="counts()"
+  [hasSelection]="hasSelection()"
+  [isLoading]="assignmentsLoading()"
+  [errorMessage]="errorMessage()"
+  [className]="selectedClassName()"
+  [sectionName]="selectedSectionName()"
+  [termLabel]="selectedTermLabel()"
+  [canManage]="canManage()"
+  [openingForm]="openingForm()"
+  (retry)="loadAssignments()"
+  (addSubject)="openAddAssignment()"
+  (editSubject)="openEditAssignment($event)"
+  (toggleStatus)="toggleAssignmentStatus($event)"
+></app-class-subjects-table>

@@ -1,7 +1,11 @@
 <!-- Subject form dialog -->
 
 <h2 mat-dialog-title>
-  {{ 'SUBJECTS.FORM.TITLE' | translate }}
+  {{
+    isEditMode
+      ? ('SUBJECTS.FORM.EDIT_TITLE' | translate)
+      : ('SUBJECTS.FORM.TITLE' | translate)
+  }}
 </h2>
 
 
@@ -24,23 +28,24 @@
 
       <input
         matInput
-        formControlName="nameAr"
+        formControlName="subjectAr"
+        dir="rtl"
         [placeholder]="'SUBJECTS.FORM.NAME_AR_PLACEHOLDER' | translate"
       />
 
-      @if (isFieldInvalid('nameAr')) {
+      @if (isFieldInvalid('subjectAr')) {
 
         <mat-error>
 
-          @if (subjectForm.controls.nameAr.hasError('required')) {
+          @if (subjectForm.controls.subjectAr.hasError('required')) {
             {{ 'SUBJECTS.FORM.NAME_AR_REQUIRED' | translate }}
           }
 
-          @else if (subjectForm.controls.nameAr.hasError('minlength')) {
+          @else if (subjectForm.controls.subjectAr.hasError('minlength')) {
             {{ 'SUBJECTS.FORM.NAME_AR_MIN_LENGTH' | translate }}
           }
 
-          @else if (subjectForm.controls.nameAr.hasError('pattern')) {
+          @else if (subjectForm.controls.subjectAr.hasError('pattern')) {
             {{ 'SUBJECTS.FORM.NAME_AR_PATTERN' | translate }}
           }
 
@@ -63,23 +68,24 @@
 
       <input
         matInput
-        formControlName="nameEn"
+        formControlName="subjectEn"
+        dir="ltr"
         [placeholder]="'SUBJECTS.FORM.NAME_EN_PLACEHOLDER' | translate"
       />
 
-      @if (isFieldInvalid('nameEn')) {
+      @if (isFieldInvalid('subjectEn')) {
 
         <mat-error>
 
-          @if (subjectForm.controls.nameEn.hasError('required')) {
+          @if (subjectForm.controls.subjectEn.hasError('required')) {
             {{ 'SUBJECTS.FORM.NAME_EN_REQUIRED' | translate }}
           }
 
-          @else if (subjectForm.controls.nameEn.hasError('minlength')) {
+          @else if (subjectForm.controls.subjectEn.hasError('minlength')) {
             {{ 'SUBJECTS.FORM.NAME_EN_MIN_LENGTH' | translate }}
           }
 
-          @else if (subjectForm.controls.nameEn.hasError('pattern')) {
+          @else if (subjectForm.controls.subjectEn.hasError('pattern')) {
             {{ 'SUBJECTS.FORM.NAME_EN_PATTERN' | translate }}
           }
 
@@ -102,6 +108,7 @@
   <button
     mat-button
     type="button"
+    [disabled]="isSubmitting()"
     (click)="cancel()"
   >
     {{ 'SUBJECTS.FORM.CANCEL' | translate }}
@@ -112,13 +119,17 @@
   <button
     mat-flat-button
     color="primary"
-    type="submit"
-    [disabled]="subjectForm.invalid"
+    type="button"
+    [disabled]="subjectForm.invalid || isSubmitting()"
     (click)="onSubmit()"
   >
     <mat-icon>save</mat-icon>
 
-    {{ 'SUBJECTS.FORM.SAVE' | translate }}
+    {{
+      isSubmitting()
+        ? ('SUBJECTS.FORM.SAVING' | translate)
+        : ('SUBJECTS.FORM.SAVE' | translate)
+    }}
   </button>
 
 </mat-dialog-actions>
