@@ -1,0 +1,68 @@
+<div class="statistics">
+
+  <!-- Sections -->
+  <div class="stat-card">
+
+    <div class="stat-icon">
+      <mat-icon>groups</mat-icon>
+    </div>
+
+    <div class="stat-info">
+      <h3>
+        {{ 'MY_CLASSES.STATS.SECTIONS' | translate }}
+      </h3>
+
+      <div class="stat-value">
+        <span>{{ stats().sectionsCount }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Subjects -->
+  <div class="stat-card">
+
+    <div class="stat-icon">
+      <mat-icon>menu_book</mat-icon>
+    </div>
+
+    <div class="stat-info">
+      <h3>
+        {{ 'MY_CLASSES.STATS.SUBJECTS' | translate }}
+      </h3>
+
+      <div class="stat-value">
+        <span>{{ stats().subjectsCount }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Locked assessment structures -->
+  <div class="stat-card">
+
+    <div class="stat-icon">
+      <mat-icon>lock</mat-icon>
+    </div>
+
+    <div class="stat-info">
+      <h3>
+        {{ 'MY_CLASSES.STATS.LOCKED' | translate }}
+      </h3>
+
+      <div class="stat-value">
+        <span>{{ stats().lockedCount }}</span>
+
+        <small>
+          {{ 'MY_CLASSES.STATS.OF_TOTAL' | translate: { total: stats().totalAssignments } }}
+        </small>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-bar" [style.width.%]="lockedProgress()"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

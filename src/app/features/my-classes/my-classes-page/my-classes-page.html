@@ -1,0 +1,109 @@
+<div class="my-classes-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <h1>
+      {{ 'MY_CLASSES.HEADER.TITLE' | translate }}
+    </h1>
+
+    <p>
+      @if (termName()) {
+        <span class="term-name">{{ termName() }}</span>
+        <span class="dot">·</span>
+      }
+
+      {{ 'MY_CLASSES.HEADER.SUBTITLE' | translate }}
+    </p>
+
+  </div>
+
+
+  <!-- Error -->
+  @if (errorMessage()) {
+
+    <div class="state-card error-state">
+
+      <mat-icon>error_outline</mat-icon>
+
+      <p>
+        {{ errorMessage() | translate }}
+      </p>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="loadMyClasses()"
+      >
+        <mat-icon>refresh</mat-icon>
+
+        {{ 'MY_CLASSES.PAGE.RETRY' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+  <!-- Loading -->
+  @else if (isLoading()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>
+        {{ 'MY_CLASSES.PAGE.LOADING' | translate }}
+      </p>
+
+    </div>
+
+  }
+
+  <!-- No assignments in the current term -->
+  @else if (groups().length === 0) {
+
+    <div class="state-card">
+
+      <mat-icon>co_present</mat-icon>
+
+      <h3>
+        {{ 'MY_CLASSES.PAGE.EMPTY_TITLE' | translate }}
+      </h3>
+
+      <p>
+        {{ 'MY_CLASSES.PAGE.EMPTY_MESSAGE' | translate }}
+      </p>
+
+    </div>
+
+  }
+
+  @else {
+
+    <!-- Statistics -->
+    <app-my-classes-stats [stats]="stats()"></app-my-classes-stats>
+
+    <!-- One card per class + section -->
+    <div class="cards-grid">
+
+      @for (group of groups(); track group.classId + '-' + group.sectionId) {
+        <app-my-class-card [group]="group"></app-my-class-card>
+      }
+
+    </div>
+
+    <!-- Hint -->
+    <div class="page-hint">
+
+      <mat-icon>info</mat-icon>
+
+      <span>
+        {{ 'MY_CLASSES.PAGE.HINT' | translate }}
+      </span>
+
+    </div>
+
+  }
+
+</div>

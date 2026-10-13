@@ -1,0 +1,71 @@
+<div class="class-card">
+
+  <!-- Card header: class + section -->
+  <div class="card-header">
+
+    <div class="class-icon">
+      <mat-icon>school</mat-icon>
+    </div>
+
+    <div class="class-info">
+
+      <h3>{{ group().className }}</h3>
+
+      <span>
+        {{ 'MY_CLASSES.CARD.SUBJECTS_COUNT' | translate: { count: group().subjects.length } }}
+      </span>
+
+    </div>
+
+    <span class="section-badge">
+      {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: group().sectionName } }}
+    </span>
+
+  </div>
+
+
+  <!-- One line per subject -->
+  <div class="subjects-list">
+
+    @for (line of group().subjects; track line.assignment.teacherAssignmentId) {
+
+      <div class="subject-line">
+
+        <div class="subject-icon">
+          <mat-icon>menu_book</mat-icon>
+        </div>
+
+        <div class="subject-info">
+
+          <span class="subject-name">{{ line.subjectName }}</span>
+
+          <span class="passing-mark">
+            {{ 'MY_CLASSES.CARD.PASSING_MARK' | translate: { mark: line.assignment.passingMark } }}
+          </span>
+
+        </div>
+
+        <span
+          class="structure-badge"
+          [class.locked]="line.assignment.isAssessmentStructureLocked"
+        >
+          <mat-icon>
+            {{ line.assignment.isAssessmentStructureLocked ? 'lock' : 'lock_open' }}
+          </mat-icon>
+
+          {{
+            line.assignment.isAssessmentStructureLocked
+              ? ('MY_CLASSES.CARD.LOCKED' | translate)
+              : ('MY_CLASSES.CARD.UNLOCKED' | translate)
+          }}
+        </span>
+
+        <mat-icon class="line-arrow">chevron_right</mat-icon>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

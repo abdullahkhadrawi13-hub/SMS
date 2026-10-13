@@ -39,6 +39,7 @@
   "SIDEBAR": {
     "MENU": "Main Menu",
     "DASHBOARD": "Dashboard",
+    "MY_CLASSES": "My Classes",
     "STUDENTS": "Students",
     "TEACHERS": "Teachers",
     "PARENTS": "Parents",
@@ -619,40 +620,35 @@
       "SAVE": "Save",
       "SAVING": "Saving..."
     },
-    "STATUS_DIALOG": {
-      "DEACTIVATE_TITLE": "Deactivate Section Subject",
-      "ACTIVATE_TITLE": "Activate Section Subject",
-      "DEACTIVATE_MESSAGE": "{{subject}} will be deactivated in {{className}} — Section {{sectionName}}, and the section's students will stop being enrolled in it until it is activated again.",
-      "ACTIVATE_MESSAGE": "{{subject}} will be activated in {{className}} — Section {{sectionName}}, and the section's students will be enrolled in it again automatically.",
-      "CANCEL": "Cancel",
-      "DEACTIVATE": "Deactivate",
-      "ACTIVATE": "Activate"
-    },
-    "MY_SUBJECTS": {
-      "TITLE": "My Subjects",
-      "SUBTITLE": "The subjects and sections you teach in the current term",
-      "STAT_SUBJECTS": "Subjects",
-      "STAT_SECTIONS": "Sections",
-      "STAT_LOCKED": "Locked Assessment Structures",
-      "OF_TOTAL": "of {{total}}",
-      "CURRENT_TERM": "Current academic term",
-      "TOTAL": "Total",
-      "SUBJECT": "Subject",
-      "CLASS": "Class",
-      "SECTION": "Section",
-      "PASSING_MARK": "Passing Mark",
-      "OUT_OF": "of 100",
-      "STRUCTURE": "Assessment Structure",
-      "LOCKED": "Locked",
-      "UNLOCKED": "Open",
-      "HINT": "Subjects are assigned to you by the administrator. Grades can be entered once the assessment structure is locked.",
-      "LOADING": "Loading your subjects...",
-      "RETRY": "Retry",
-      "EMPTY_TITLE": "No subjects assigned to you",
-      "EMPTY_MESSAGE": "You have no subjects in the current term."
-    },
     "ERROR": {
       "LOAD_FAILED": "Failed to load the data. Please try again."
+    }
+  },
+
+  "MY_CLASSES": {
+    "HEADER": {
+      "TITLE": "My Classes",
+      "SUBTITLE": "The classes, sections and subjects you teach"
+    },
+    "STATS": {
+      "SECTIONS": "Sections",
+      "SUBJECTS": "Subjects",
+      "LOCKED": "Locked Assessment Structures",
+      "OF_TOTAL": "of {{total}}"
+    },
+    "CARD": {
+      "SECTION": "Section {{name}}",
+      "SUBJECTS_COUNT": "Subjects: {{count}}",
+      "PASSING_MARK": "Passing mark {{mark}} of 100",
+      "LOCKED": "Locked",
+      "UNLOCKED": "Open"
+    },
+    "PAGE": {
+      "HINT": "Subjects are assigned to you by the administrator. Grades can be entered once the assessment structure is locked.",
+      "LOADING": "Loading your classes...",
+      "RETRY": "Retry",
+      "EMPTY_TITLE": "No classes assigned to you",
+      "EMPTY_MESSAGE": "You have no subjects in the current term."
     }
   },
 

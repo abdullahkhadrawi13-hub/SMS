@@ -48,10 +48,6 @@ import {
   AssignmentForm,
   AssignmentFormData,
 } from '../assignment-form/assignment-form';
-import {
-  AssignmentStatusDialog,
-  AssignmentStatusDialogData,
-} from '../assignment-status-dialog/assignment-status-dialog';
 
 
 // The largest page the teachers API returns (API Reference, section 5).
@@ -541,65 +537,43 @@ export class ClassSubjects implements OnInit {
   }
 
 
-  // Activate / deactivate after a confirmation
+  // Activate / deactivate directly, like the rest of the site
   // (PATCH /api/teacherassignments/{id}/status).
   toggleAssignmentStatus(row: ClassSubjectRow): void {
 
     const assignment = row.assignment;
-    const activate = !assignment.isActive;
 
-    const data: AssignmentStatusDialogData = {
-      activate,
-      subjectName: row.subjectName,
-      className: this.selectedClassName(),
-      sectionName: this.selectedSectionName(),
-    };
+    this.assignmentsService
+      .updateAssignmentStatus(assignment.teacherAssignmentId, !assignment.isActive)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
 
-    this.dialog
-      .open(AssignmentStatusDialog, {
-        width: '460px',
-        maxWidth: '95vw',
-        data,
-      })
-      .afterClosed()
-      .subscribe((confirmed?: boolean) => {
+          if (!response.success) {
+            this.actionResult.show(
+              'error',
+              this.apiMessageService.getMessage(response)
+            );
+            return;
+          }
 
-        if (!confirmed) {
-          return;
-        }
+          this.loadAssignments();
 
-        this.assignmentsService
-          .updateAssignmentStatus(assignment.teacherAssignmentId, activate)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-            next: (response) => {
+          this.actionResult.show(
+            'success',
+            this.apiMessageService.getMessage(response)
+          );
+        },
 
-              if (!response.success) {
-                this.actionResult.show(
-                  'error',
-                  this.apiMessageService.getMessage(response)
-                );
-                return;
-              }
+        error: (error: HttpErrorResponse) => {
 
-              this.loadAssignments();
+          console.error('Failed to update section subject status:', error);
 
-              this.actionResult.show(
-                'success',
-                this.apiMessageService.getMessage(response)
-              );
-            },
-
-            error: (error: HttpErrorResponse) => {
-
-              console.error('Failed to update section subject status:', error);
-
-              this.actionResult.show(
-                'error',
-                this.apiMessageService.getErrorMessage(error)
-              );
-            },
-          });
+          this.actionResult.show(
+            'error',
+            this.apiMessageService.getErrorMessage(error)
+          );
+        },
       });
   }
 

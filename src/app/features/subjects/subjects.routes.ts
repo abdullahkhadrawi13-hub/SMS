@@ -12,7 +12,7 @@ export const SUBJECTS_ROUTES: Routes = [
       ),
     canActivate: [roleGuard],
     data: {
-      roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher],
+      roles: [UserRole.Admin, UserRole.AssistantPrincipal],
     },
   },
 ];

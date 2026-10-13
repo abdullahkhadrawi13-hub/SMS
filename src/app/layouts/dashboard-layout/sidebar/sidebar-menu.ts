@@ -22,6 +22,16 @@ export const SIDEBAR_MENU: MenuItem[] = [
     roles: [Admin, AssistantPrincipal, Teacher, Student, Parent]
   },
 
+  // "My classes": the teacher's own classes and subjects
+  // (GET /api/teacherassignments/mine). It replaces Classes, Sections
+  // and Subjects for the teacher, who gets 403 on those lists.
+  {
+    label: 'SIDEBAR.MY_CLASSES',
+    icon: 'co_present',
+    route: '/my-classes',
+    roles: [Teacher]
+  },
+
   {
     label: 'SIDEBAR.STUDENTS',
     icon: 'school',
@@ -47,21 +57,21 @@ export const SIDEBAR_MENU: MenuItem[] = [
     label: 'SIDEBAR.CLASSES',
     icon: 'class',
     route: '/classes',
-    roles: [Admin, AssistantPrincipal, Teacher]
+    roles: [Admin, AssistantPrincipal]
   },
 
   {
     label: 'SIDEBAR.SECTIONS',
     icon: 'groups',
     route: '/sections',
-    roles: [Admin, AssistantPrincipal, Teacher]
+    roles: [Admin, AssistantPrincipal]
   },
 
   {
     label: 'SIDEBAR.SUBJECTS',
     icon: 'menu_book',
     route: '/subjects',
-    roles: [Admin, AssistantPrincipal, Teacher]
+    roles: [Admin, AssistantPrincipal]
   },
 
   {

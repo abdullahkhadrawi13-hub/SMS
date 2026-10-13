@@ -10,7 +10,6 @@ import { SubjectsTab } from '../subject';
 import { SubjectsHeader } from '../subjects-header/subjects-header';
 import { ClassSubjects } from '../class-subjects/class-subjects';
 import { SubjectsCatalog } from '../subjects-catalog/subjects-catalog';
-import { MySubjects } from '../my-subjects/my-subjects';
 
 @Component({
   selector: 'app-subjects-page',
@@ -18,7 +17,6 @@ import { MySubjects } from '../my-subjects/my-subjects';
     SubjectsHeader,
     ClassSubjects,
     SubjectsCatalog,
-    MySubjects,
     MatIconModule,
     MatTabsModule,
     TranslatePipe,
@@ -35,9 +33,6 @@ export class SubjectsPage {
   // subjects and the subjects of a section.
   // The Assistant Principal can only read.
   readonly canManage = this.permissions.canManageSubjects;
-
-  // The teacher sees only "My subjects" (GET /api/teacherassignments/mine).
-  readonly ownSubjectsOnly = this.permissions.seesOwnSubjectsOnly;
 
   // The open tab (Admin and Assistant Principal).
   // Both tabs stay alive while switching, so the chosen

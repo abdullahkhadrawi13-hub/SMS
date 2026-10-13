@@ -1,0 +1,157 @@
+/* ================================
+   My Classes Page
+   ================================ */
+
+.my-classes-page {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Page Header
+   ================================ */
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #111827;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.term-name {
+  color: #374151;
+  font-weight: 600;
+}
+
+.dot {
+  margin: 0 6px;
+}
+
+
+/* ================================
+   Cards Grid
+   ================================ */
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+
+/* ================================
+   Hint
+   ================================ */
+
+.page-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 20px;
+  padding: 14px 20px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #f8fafc;
+
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.page-hint mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  flex-shrink: 0;
+  color: #6b7280;
+}
+
+
+/* ================================
+   State Card (error / loading / empty)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.state-card > mat-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+  margin-bottom: 4px;
+  color: #9ca3af;
+}
+
+.state-card h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.state-card p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.error-state > mat-icon {
+  color: #dc2626;
+}
+
+.error-state button {
+  margin-top: 12px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .my-classes-page {
+    padding: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+}

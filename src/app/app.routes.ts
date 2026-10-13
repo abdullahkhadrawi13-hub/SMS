@@ -74,7 +74,7 @@ export const routes: Routes = [
             .then(m => m.CLASSES_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
-          roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher]
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal]
         }
       },
 
@@ -85,7 +85,7 @@ export const routes: Routes = [
             .then(m => m.SECTIONS_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
-          roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher]
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal]
         }
       },
 
@@ -107,11 +107,25 @@ export const routes: Routes = [
             .then(m => m.SUBJECTS_ROUTES),
         canActivate: [authGuard, roleGuard],
         data: {
-          roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher]
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal]
         }
       },
 
 
+
+
+      // صفوفي: صفوف المعلم وشعبه والمواد التي يدرّسها (Teacher فقط)
+      // GET /api/teacherassignments/mine
+      {
+        path: 'my-classes',
+        loadChildren: () =>
+          import('./features/my-classes/my-classes.routes')
+            .then(m => m.MY_CLASSES_ROUTES),
+        canActivate: [authGuard, roleGuard],
+        data: {
+          roles: [UserRole.Teacher]
+        }
+      },
 
 
       // الحضور والغياب: الصفحة المعروضة تُحدَّد حسب الدور داخل attendance.routes.ts

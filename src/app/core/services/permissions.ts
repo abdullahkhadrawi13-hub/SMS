@@ -65,13 +65,6 @@ export class Permissions {
     () => this.isAdmin()
   );
 
-  // A teacher cannot read the subjects list or the assignments list (403).
-  // The Subjects page shows them "My subjects" instead
-  // (GET /api/teacherassignments/mine, API Reference section 8).
-  readonly seesOwnSubjectsOnly = computed(
-    () => this.isTeacher()
-  );
-
 
   // ===== Classes and sections (API Reference, section 7) =====
 

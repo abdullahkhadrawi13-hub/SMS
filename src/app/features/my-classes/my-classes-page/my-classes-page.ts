@@ -12,7 +12,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -23,23 +22,32 @@ import {
   TeacherAssignmentsService,
 } from '../../../core/services/teacher-assignments';
 
+import { MyClassesStats as MyClassesStatsData, MyClassGroup } from '../my-class';
+import { MyClassesStats } from '../my-classes-stats/my-classes-stats';
+import { MyClassCard } from '../my-class-card/my-class-card';
 
-// "My subjects" for the teacher: the subjects and sections they teach
-// in the current term (GET /api/teacherassignments/mine).
-// Read-only. The teacher cannot read the subjects or assignments lists (403).
+
+// "My classes" for the teacher (parent page).
+// Loads the teacher's assignments in the current term
+// (GET /api/teacherassignments/mine, API Reference section 8),
+// groups them by class + section, and passes the result to the children:
+//   - my-classes-stats: the numbers above the cards
+//   - my-class-card: one card per class + section
+// Read-only. The teacher cannot read the classes, sections or subjects lists (403).
 @Component({
-  selector: 'app-my-subjects',
+  selector: 'app-my-classes-page',
   imports: [
+    MyClassesStats,
+    MyClassCard,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatTableModule,
     TranslatePipe,
   ],
-  templateUrl: './my-subjects.html',
-  styleUrl: './my-subjects.css',
+  templateUrl: './my-classes-page.html',
+  styleUrl: './my-classes-page.css',
 })
-export class MySubjects implements OnInit {
+export class MyClassesPage implements OnInit {
 
   private readonly assignmentsService = inject(TeacherAssignmentsService);
   private readonly apiMessageService = inject(ApiMessageService);
@@ -53,37 +61,68 @@ export class MySubjects implements OnInit {
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
 
-  readonly displayedColumns = [
-    'subject',
-    'className',
-    'section',
-    'passingMark',
-    'structure',
-  ];
-
   private readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'
   );
 
 
-  // Sorted by subject, then class, then section.
-  readonly rows = computed(() => {
+  // One group per class + section.
+  // Cards sorted by class, then section; subjects inside a card sorted by name.
+  readonly groups = computed<MyClassGroup[]>(() => {
 
     const isArabic = this.isArabic();
+    const byKey = new Map<string, MyClassGroup>();
 
-    return this.assignments()
-      .map(assignment => ({
+    for (const assignment of this.assignments()) {
+
+      const key = `${assignment.classId}-${assignment.sectionId}`;
+
+      let group = byKey.get(key);
+
+      if (!group) {
+        group = {
+          classId: assignment.classId,
+          sectionId: assignment.sectionId,
+          className: isArabic ? assignment.classNameAr : assignment.classNameEn,
+          sectionName: isArabic ? assignment.sectionAr : assignment.sectionEn,
+          subjects: [],
+        };
+
+        byKey.set(key, group);
+      }
+
+      group.subjects.push({
         assignment,
         subjectName: isArabic ? assignment.subjectAr : assignment.subjectEn,
-        className: isArabic ? assignment.classNameAr : assignment.classNameEn,
-        sectionName: isArabic ? assignment.sectionAr : assignment.sectionEn,
-      }))
-      .sort((a, b) =>
-        a.subjectName.localeCompare(b.subjectName)
-        || a.className.localeCompare(b.className)
-        || a.sectionName.localeCompare(b.sectionName)
-      );
+      });
+    }
+
+    const groups = [...byKey.values()];
+
+    for (const group of groups) {
+      group.subjects.sort((a, b) => a.subjectName.localeCompare(b.subjectName));
+    }
+
+    // The assignment has no class level, so classes are sorted by classId.
+    return groups.sort((a, b) =>
+      a.classId - b.classId
+      || a.sectionName.localeCompare(b.sectionName)
+    );
   });
+
+
+  readonly stats = computed<MyClassesStatsData>(() => {
+
+    const assignments = this.assignments();
+
+    return {
+      sectionsCount: this.groups().length,
+      subjectsCount: new Set(assignments.map(a => a.subjectId)).size,
+      lockedCount: assignments.filter(a => a.isAssessmentStructureLocked).length,
+      totalAssignments: assignments.length,
+    };
+  });
+
 
   // The term name comes from the assignments (the teacher cannot read the terms list).
   readonly termName = computed(() => {
@@ -99,40 +138,16 @@ export class MySubjects implements OnInit {
       : first.academicTermNameEn;
   });
 
-  // Number of different subjects.
-  readonly subjectsCount = computed(
-    () => new Set(this.assignments().map(a => a.subjectId)).size
-  );
-
-  // Number of different sections.
-  readonly sectionsCount = computed(
-    () => new Set(this.assignments().map(a => a.sectionId)).size
-  );
-
-  // Assessment structures that are locked (grades can be entered).
-  readonly lockedCount = computed(
-    () => this.assignments().filter(a => a.isAssessmentStructureLocked).length
-  );
-
-  readonly lockedProgress = computed(() => {
-
-    const total = this.assignments().length;
-
-    return total === 0
-      ? 0
-      : Math.round((this.lockedCount() / total) * 100);
-  });
-
 
   ngOnInit(): void {
-    this.loadMySubjects();
+    this.loadMyClasses();
   }
 
 
   // GET /api/teacherassignments/mine (current term).
   // 400 when the user has no teacher profile or no current term is set:
   // the backend message is shown.
-  loadMySubjects(): void {
+  loadMyClasses(): void {
 
     this.isLoading.set(true);
     this.errorMessage.set('');
@@ -158,7 +173,7 @@ export class MySubjects implements OnInit {
 
         error: (error: HttpErrorResponse) => {
 
-          console.error('Failed to load my subjects:', error);
+          console.error('Failed to load my classes:', error);
 
           this.assignments.set([]);
           this.errorMessage.set(

@@ -1,0 +1,196 @@
+/* The component behaves like a block inside the cards grid. */
+:host {
+  display: block;
+}
+
+.class-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Card Header
+   ================================ */
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 16px 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.class-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+  background: #f1f5f9;
+}
+
+.class-icon mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  color: #475569;
+}
+
+.class-info {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.class-info h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #111827;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.class-info span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.section-badge {
+  flex-shrink: 0;
+
+  padding: 6px 12px;
+  border-radius: 20px;
+
+  background: #eff6ff;
+  color: #1d4ed8;
+
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+
+/* ================================
+   Subject Lines
+   ================================ */
+
+.subject-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 20px;
+}
+
+.subject-line + .subject-line {
+  border-top: 1px solid #f1f5f9;
+}
+
+.subject-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.subject-icon mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #64748b;
+}
+
+.subject-info {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.subject-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.passing-mark {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+
+/* ================================
+   Assessment Structure Badge
+   ================================ */
+
+.structure-badge {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 10px;
+  border-radius: 20px;
+
+  background: #fffbeb;
+  color: #92400e;
+
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.structure-badge.locked {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.structure-badge mat-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+
+
+/* ================================
+   Arrow (no action yet)
+   ================================ */
+
+.line-arrow {
+  flex-shrink: 0;
+  color: #9ca3af;
+}
+
+/* Arabic (RTL): the arrow points to the left. */
+:host-context([dir='rtl']) .line-arrow {
+  transform: scaleX(-1);
+}
