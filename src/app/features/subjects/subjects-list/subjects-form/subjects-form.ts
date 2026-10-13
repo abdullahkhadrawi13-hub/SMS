@@ -23,9 +23,9 @@ import {
   SubjectDto,
   SubjectRequest,
   SubjectsService,
-} from '../../../core/services/subjects';
-import { ApiMessageService } from '../../../core/services/api-message';
-import { ActionResult } from '../../../shared/services/action-result';
+} from '../../../../core/services/subjects';
+import { ApiMessageService } from '../../../../core/services/api-message';
+import { ActionResult } from '../../../../shared/services/action-result';
 
 
 // Data passed when the dialog is opened.

@@ -1,4 +1,4 @@
-/* The catalog component behaves like a block inside the parent page. */
+/* The subjects list tab behaves like a block inside the parent page. */
 :host {
   display: block;
 }

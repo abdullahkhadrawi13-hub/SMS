@@ -6,9 +6,9 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ActiveSectionDto } from '../../../core/services/sections';
-import { SchoolClassSimpleDto } from '../../classes/school-class';
-import { getTermLabel as formatTermLabel, TermOption } from '../subject';
+import { ActiveSectionDto } from '../../../../core/services/sections';
+import { SchoolClassSimpleDto } from '../../../classes/school-class';
+import { getTermLabel as formatTermLabel, TermOption } from '../../subject';
 
 
 // Term / Class / Section dropdowns of the "Class subjects" tab.

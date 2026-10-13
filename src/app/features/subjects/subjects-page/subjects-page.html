@@ -48,16 +48,16 @@
 
     <!-- Subjects of a section (class / section / term) -->
     <div [hidden]="activeTab() !== 'class'">
-      <app-class-subjects
+      <app-class-subjects-tab
         [canManage]="canManage()"
-      ></app-class-subjects>
+      ></app-class-subjects-tab>
     </div>
 
     <!-- General subjects list -->
     <div [hidden]="activeTab() !== 'catalog'">
-      <app-subjects-catalog
+      <app-subjects-list-tab
         [canManage]="canManage()"
-      ></app-subjects-catalog>
+      ></app-subjects-list-tab>
     </div>
 
   </mat-tab-nav-panel>

@@ -9,7 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ClassSubjectRow, ClassSubjectsCounts } from '../subject';
+import { ClassSubjectRow, ClassSubjectsCounts } from '../../subject';
 
 
 // The subjects of one section: toolbar (title, counters, add),

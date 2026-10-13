@@ -15,4 +15,4 @@ export const SUBJECTS_ROUTES: Routes = [
       roles: [UserRole.Admin, UserRole.AssistantPrincipal],
     },
   },
-];
+];

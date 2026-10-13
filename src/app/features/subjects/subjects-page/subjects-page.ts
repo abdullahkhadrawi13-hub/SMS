@@ -8,15 +8,15 @@ import { Permissions } from '../../../core/services/permissions';
 
 import { SubjectsTab } from '../subject';
 import { SubjectsHeader } from '../subjects-header/subjects-header';
-import { ClassSubjects } from '../class-subjects/class-subjects';
-import { SubjectsCatalog } from '../subjects-catalog/subjects-catalog';
+import { ClassSubjectsTab } from '../class-subjects/class-subjects-tab/class-subjects-tab';
+import { SubjectsListTab } from '../subjects-list/subjects-list-tab/subjects-list-tab';
 
 @Component({
   selector: 'app-subjects-page',
   imports: [
     SubjectsHeader,
-    ClassSubjects,
-    SubjectsCatalog,
+    ClassSubjectsTab,
+    SubjectsListTab,
     MatIconModule,
     MatTabsModule,
     TranslatePipe,
@@ -40,7 +40,7 @@ export class SubjectsPage {
   readonly activeTab = signal<SubjectsTab>('class');
 
   // The subjects list tab: the header's "Add subject" button opens its form.
-  private readonly catalog = viewChild(SubjectsCatalog);
+  private readonly subjectsListTab = viewChild(SubjectsListTab);
 
 
   selectTab(tab: SubjectsTab): void {
@@ -50,6 +50,6 @@ export class SubjectsPage {
 
   // Header "Add subject" button (subjects list tab only).
   openAddSubject(): void {
-    this.catalog()?.openAddSubject();
+    this.subjectsListTab()?.openAddSubject();
   }
 }

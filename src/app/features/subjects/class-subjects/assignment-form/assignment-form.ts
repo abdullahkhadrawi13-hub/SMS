@@ -22,16 +22,16 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ApiMessageService } from '../../../core/services/api-message';
-import { SubjectDto } from '../../../core/services/subjects';
+import { ApiMessageService } from '../../../../core/services/api-message';
+import { SubjectDto } from '../../../../core/services/subjects';
 import {
   TeacherAssignment,
   TeacherAssignmentsService,
-} from '../../../core/services/teacher-assignments';
-import { TeacherListDto } from '../../../core/services/teachers';
-import { ActionResult } from '../../../shared/services/action-result';
+} from '../../../../core/services/teacher-assignments';
+import { TeacherListDto } from '../../../../core/services/teachers';
+import { ActionResult } from '../../../../shared/services/action-result';
 
-import { DEFAULT_PASSING_MARK, getTeacherFullName } from '../subject';
+import { DEFAULT_PASSING_MARK, getTeacherFullName } from '../../subject';
 
 
 // Data passed by the parent (class-subjects) when the dialog is opened.

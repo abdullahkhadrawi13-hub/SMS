@@ -19,9 +19,9 @@ import { MatIconModule } from '@angular/material/icon';
 import {
   SubjectDto,
   SubjectsService,
-} from '../../../core/services/subjects';
-import { ApiMessageService } from '../../../core/services/api-message';
-import { ActionResult } from '../../../shared/services/action-result';
+} from '../../../../core/services/subjects';
+import { ApiMessageService } from '../../../../core/services/api-message';
+import { ActionResult } from '../../../../shared/services/action-result';
 
 import { SubjectsSearch } from '../subjects-search/subjects-search';
 import {
@@ -39,7 +39,7 @@ import {
 // GET /api/subjects has no search or status filter,
 // so the search and the filter are applied here, on the loaded list.
 @Component({
-  selector: 'app-subjects-catalog',
+  selector: 'app-subjects-list-tab',
   imports: [
     SubjectsSearch,
     SubjectsTable,
@@ -48,10 +48,10 @@ import {
     MatDialogModule,
     TranslatePipe,
   ],
-  templateUrl: './subjects-catalog.html',
-  styleUrl: './subjects-catalog.css',
+  templateUrl: './subjects-list-tab.html',
+  styleUrl: './subjects-list-tab.css',
 })
-export class SubjectsCatalog implements OnInit {
+export class SubjectsListTab implements OnInit {
 
   private readonly subjectsService = inject(SubjectsService);
   private readonly apiMessageService = inject(ApiMessageService);
