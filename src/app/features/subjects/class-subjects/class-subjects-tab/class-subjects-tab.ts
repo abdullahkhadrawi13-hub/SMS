@@ -119,8 +119,9 @@ export class ClassSubjectsTab implements OnInit {
   // Every assignment of the selected term (all classes and sections).
   readonly assignments = signal<TeacherAssignment[]>([]);
 
-  // Every teacher (active and inactive): used for the names in the table
-  // and, filtered to active teachers, for the teacher dropdown.
+  // Every teacher (active and inactive): used only for the names in the
+  // table, since the assignments response has the teacher id, not the name.
+  // The add/edit form searches teachers in the backend by itself.
   readonly teachers = signal<TeacherListDto[]>([]);
 
   readonly assignmentsLoading = signal(false);
@@ -494,7 +495,6 @@ export class ClassSubjectsTab implements OnInit {
             className: this.selectedClassName(),
             sectionName: this.selectedSectionName(),
             subjects,
-            teachers: this.activeTeachers(),
           });
         },
 
@@ -528,8 +528,8 @@ export class ClassSubjectsTab implements OnInit {
       className: isArabic ? assignment.classNameAr : assignment.classNameEn,
       sectionName: isArabic ? assignment.sectionAr : assignment.sectionEn,
       subjects: [],
-      teachers: this.activeTeachers(),
       assignment,
+      currentTeacher: this.findActiveTeacher(assignment.teacherId),
       subjectName: row.subjectName,
       currentTeacherName: row.teacherName || assignment.teacherNumber,
       currentTeacherInactive: row.teacherInactive,
@@ -582,17 +582,13 @@ export class ClassSubjectsTab implements OnInit {
   // Helpers
   // =========================
 
-  // Active teachers only, sorted by name (for the teacher dropdown).
-  private activeTeachers(): TeacherListDto[] {
+  // The teacher, only when found and still active
+  // (preselected in the edit form).
+  private findActiveTeacher(teacherId: number): TeacherListDto | undefined {
 
-    const isArabic = this.isArabic();
-
-    return this.teachers()
-      .filter(t => t.isActive)
-      .sort((a, b) =>
-        getTeacherFullName(a, isArabic)
-          .localeCompare(getTeacherFullName(b, isArabic))
-      );
+    return this.teachers().find(
+      t => t.teacherId === teacherId && t.isActive
+    );
   }
 
 
@@ -614,4 +610,4 @@ export class ClassSubjectsTab implements OnInit {
         }
       });
   }
-}
+}

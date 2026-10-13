@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -18,7 +19,10 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+
+import { catchError, debounceTime, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -28,7 +32,10 @@ import {
   TeacherAssignment,
   TeacherAssignmentsService,
 } from '../../../../core/services/teacher-assignments';
-import { TeacherListDto } from '../../../../core/services/teachers';
+import {
+  TeacherListDto,
+  TeachersService,
+} from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
 
 import { DEFAULT_PASSING_MARK, getTeacherFullName } from '../../subject';
@@ -51,11 +58,13 @@ export interface AssignmentFormData {
   // Add mode: the active subjects not yet added to this section.
   subjects: SubjectDto[];
 
-  // Active teachers only.
-  teachers: TeacherListDto[];
-
   // Edit mode only.
   assignment?: TeacherAssignment;
+
+  // Edit mode: the current teacher, passed only when still active
+  // (preselected in the teacher field).
+  currentTeacher?: TeacherListDto;
+
   subjectName?: string;
   currentTeacherName?: string;
   currentTeacherInactive?: boolean;
@@ -81,6 +90,31 @@ function passingMarkValidator(
 }
 
 
+// Teacher search (combobox): the search starts after this many characters,
+// waits this long after the last key, and shows at most this many results.
+const TEACHER_SEARCH_MIN_LENGTH = 2;
+const TEACHER_SEARCH_DEBOUNCE_MS = 300;
+const TEACHER_SEARCH_PAGE_SIZE = 20;
+
+
+// The teacher field holds the typed text (string) until a teacher is chosen
+// from the list (TeacherListDto). Only a chosen teacher is valid.
+function teacherSelectedValidator(
+  control: AbstractControl
+): ValidationErrors | null {
+
+  const value = control.value;
+
+  if (value === null || value === '') {
+    return null;
+  }
+
+  return typeof value === 'object'
+    ? null
+    : { teacherNotSelected: true };
+}
+
+
 // Add a subject to a section, or edit it (teacher and passing mark only).
 // POST /api/teacherassignments and PUT /api/teacherassignments/{id}.
 @Component({
@@ -90,15 +124,17 @@ function passingMarkValidator(
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatAutocompleteModule,
     MatIconModule,
     MatInputModule,
+    MatProgressSpinnerModule,
     MatSelectModule,
     TranslatePipe,
   ],
   templateUrl: './assignment-form.html',
   styleUrl: './assignment-form.css',
 })
-export class AssignmentForm {
+export class AssignmentForm implements OnInit {
 
   private readonly fb = inject(FormBuilder);
 
@@ -106,6 +142,7 @@ export class AssignmentForm {
     inject(MatDialogRef<AssignmentForm>);
 
   private readonly assignmentsService = inject(TeacherAssignmentsService);
+  private readonly teachersService = inject(TeachersService);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
@@ -117,13 +154,15 @@ export class AssignmentForm {
   // true while the request is running (prevents double clicks).
   readonly isSubmitting = signal(false);
 
-  // Edit mode: the current teacher is preselected only when still active.
-  // An inactive teacher is not in the list, so the admin must pick another one.
-  private readonly currentTeacherId =
-    this.data.assignment
-    && this.data.teachers.some(t => t.teacherId === this.data.assignment?.teacherId)
-      ? this.data.assignment.teacherId
-      : null;
+  readonly minSearchLength = TEACHER_SEARCH_MIN_LENGTH;
+
+  // Teacher search (GET /api/teachers?search=...&isActive=true).
+  readonly teacherResults = signal<TeacherListDto[]>([]);
+  readonly teachersLoading = signal(false);
+  readonly teachersError = signal(false);
+
+  // The text of the last finished search ('' = no search yet).
+  readonly searchedText = signal('');
 
 
   readonly assignmentForm = this.fb.group({
@@ -134,9 +173,11 @@ export class AssignmentForm {
       this.isEditMode ? [] : [Validators.required],
     ],
 
-    teacherId: [
-      this.currentTeacherId,
-      [Validators.required],
+    // Edit mode: the current teacher is preselected only when still active.
+    // An inactive teacher is not passed, so the admin must pick another one.
+    teacher: [
+      (this.data.currentTeacher ?? null) as TeacherListDto | string | null,
+      [Validators.required, teacherSelectedValidator],
     ],
 
     passingMark: [
@@ -144,6 +185,100 @@ export class AssignmentForm {
       [Validators.required, passingMarkValidator],
     ],
   });
+
+
+  ngOnInit(): void {
+    this.listenToTeacherSearch();
+  }
+
+
+  // Searches the backend while the admin types (one request after a short
+  // pause; a newer search cancels the older one).
+  private listenToTeacherSearch(): void {
+
+    this.assignmentForm.controls.teacher.valueChanges
+      .pipe(
+        // A chosen teacher (object) is not a search.
+        filter((value): value is string => typeof value === 'string'),
+        map(value => value.trim()),
+
+        tap(text => {
+          this.teacherResults.set([]);
+          this.teachersError.set(false);
+          this.searchedText.set('');
+          this.teachersLoading.set(text.length >= TEACHER_SEARCH_MIN_LENGTH);
+        }),
+
+        debounceTime(TEACHER_SEARCH_DEBOUNCE_MS),
+
+        switchMap(text => {
+
+          if (text.length < TEACHER_SEARCH_MIN_LENGTH) {
+            return of(null);
+          }
+
+          return this.teachersService
+            .getTeachers(1, TEACHER_SEARCH_PAGE_SIZE, text, true)
+            .pipe(
+              map(response => ({ text, response })),
+              catchError((error: HttpErrorResponse) => {
+                console.error('Failed to search teachers:', error);
+                return of({ text, response: null });
+              })
+            );
+        }),
+
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(result => {
+
+        this.teachersLoading.set(false);
+
+        if (!result) {
+          return;
+        }
+
+        if (!result.response?.success) {
+          this.teachersError.set(true);
+          return;
+        }
+
+        this.teacherResults.set(result.response.data.items);
+        this.searchedText.set(result.text);
+      });
+  }
+
+
+  // The text shown in the teacher field after a teacher is chosen.
+  readonly displayTeacher = (value: TeacherListDto | string | null): string => {
+
+    if (!value) {
+      return '';
+    }
+
+    return typeof value === 'string'
+      ? value
+      : this.getTeacherName(value);
+  };
+
+
+  // The typed text, used to show the hint and the clear button.
+  get teacherText(): string {
+
+    const value = this.assignmentForm.controls.teacher.value;
+
+    return typeof value === 'string' ? value.trim() : '';
+  }
+
+
+  get hasTeacherValue(): boolean {
+    return !!this.assignmentForm.controls.teacher.value;
+  }
+
+
+  clearTeacher(): void {
+    this.assignmentForm.controls.teacher.setValue(null);
+  }
 
 
   isArabic(): boolean {
@@ -162,10 +297,6 @@ export class AssignmentForm {
   // Add mode: nothing to choose when every active subject is already added.
   get noSubjects(): boolean {
     return !this.isEditMode && this.data.subjects.length === 0;
-  }
-
-  get noTeachers(): boolean {
-    return this.data.teachers.length === 0;
   }
 
 
@@ -192,7 +323,7 @@ export class AssignmentForm {
 
     const value = this.assignmentForm.getRawValue();
 
-    const teacherId = value.teacherId as number;
+    const teacherId = (value.teacher as TeacherListDto).teacherId;
     const passingMark = Number(value.passingMark);
 
     const assignment = this.data.assignment;

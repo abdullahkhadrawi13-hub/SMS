@@ -136,32 +136,97 @@
       }
 
 
-      <!-- Teacher (active teachers only) -->
+      <!-- Teacher: combobox searching active teachers in the backend -->
       <mat-form-field appearance="outline">
 
         <mat-label>
           {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER' | translate }}
         </mat-label>
 
-        <mat-select formControlName="teacherId">
+        <!-- The search icon turns into a spinner while searching -->
+        @if (teachersLoading()) {
+          <mat-spinner matPrefix diameter="18" class="teacher-prefix teacher-spinner"></mat-spinner>
+        } @else {
+          <mat-icon matPrefix class="teacher-prefix teacher-search-icon">search</mat-icon>
+        }
 
-          @for (teacher of data.teachers; track teacher.teacherId) {
-            <mat-option [value]="teacher.teacherId">
-              {{ getTeacherName(teacher) }} — <span dir="ltr">{{ teacher.teacherNumber }}</span>
+        <input
+          matInput
+          type="text"
+          autocomplete="off"
+          formControlName="teacher"
+          [matAutocomplete]="teacherAuto"
+          [placeholder]="'SUBJECTS.ASSIGNMENT_FORM.TEACHER_PLACEHOLDER' | translate"
+        />
+
+        @if (hasTeacherValue && !isSubmitting()) {
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="clearTeacher()"
+            [attr.aria-label]="'SUBJECTS.ASSIGNMENT_FORM.TEACHER_CLEAR' | translate"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+
+        <mat-autocomplete
+          #teacherAuto="matAutocomplete"
+          [displayWith]="displayTeacher"
+          class="teacher-autocomplete-panel"
+        >
+
+          @for (teacher of teacherResults(); track teacher.teacherId) {
+            <mat-option [value]="teacher" class="teacher-option">
+              <span class="teacher-option-content">
+
+                <span class="teacher-avatar" aria-hidden="true">
+                  <mat-icon>person</mat-icon>
+                </span>
+
+                <span class="teacher-text">
+                  <span class="teacher-name">{{ getTeacherName(teacher) }}</span>
+                  <span class="teacher-number"><bdi>{{ teacher.teacherNumber }}</bdi></span>
+                </span>
+
+              </span>
             </mat-option>
           }
 
-        </mat-select>
+          <!-- Status rows (not selectable) -->
+          @if (teachersLoading()) {
+            <mat-option disabled class="teacher-status">
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER_SEARCHING' | translate }}
+            </mat-option>
+          } @else if (teachersError()) {
+            <mat-option disabled class="teacher-status error">
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER_SEARCH_ERROR' | translate }}
+            </mat-option>
+          } @else if (searchedText() && teacherResults().length === 0) {
+            <mat-option disabled class="teacher-status">
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER_NO_RESULTS' | translate }}
+            </mat-option>
+          }
 
-        @if (noTeachers) {
+        </mat-autocomplete>
+
+        @if (teacherText && teacherText.length < minSearchLength) {
           <mat-hint>
-            {{ 'SUBJECTS.ASSIGNMENT_FORM.NO_TEACHERS' | translate }}
+            {{
+              'SUBJECTS.ASSIGNMENT_FORM.TEACHER_MIN_CHARS'
+                | translate: { count: minSearchLength }
+            }}
           </mat-hint>
         }
 
-        @if (isFieldInvalid('teacherId')) {
+        @if (isFieldInvalid('teacher')) {
           <mat-error>
-            {{ 'SUBJECTS.ASSIGNMENT_FORM.REQUIRED' | translate }}
+            @if (assignmentForm.controls.teacher.hasError('teacherNotSelected')) {
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER_NOT_SELECTED' | translate }}
+            } @else {
+              {{ 'SUBJECTS.ASSIGNMENT_FORM.REQUIRED' | translate }}
+            }
           </mat-error>
         }
 
