@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -17,6 +19,8 @@ import { Section } from '../section';
     MatIconModule,
     MatMenuModule,
     MatPaginatorModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe
   ],
@@ -34,6 +38,9 @@ export class SectionsTable {
   // (used to prevent repeated clicks).
   readonly togglingSectionId = input<number | null>(null);
 
+  // true while a page of sections is loading.
+  readonly isLoading = input(false);
+
   // Error message key shown above the table (translated here).
   readonly errorMessage = input<string | null>(null);
 
@@ -46,6 +53,21 @@ export class SectionsTable {
   // The actions column has only these two actions,
   // so the whole column is hidden when this is false.
   readonly canManage = input(false);
+
+  // ===== Loading modes =====
+
+  // First load: there is nothing on the screen yet,
+  // so the big spinner replaces the table.
+  readonly isInitialLoading = computed(() =>
+    this.isLoading() && this.sections().length === 0
+  );
+
+  // Reload (page change, after activate / deactivate):
+  // the old rows stay on the screen with a thin progress bar on top,
+  // so the table and the paginator do not disappear and jump.
+  readonly isRefreshing = computed(() =>
+    this.isLoading() && this.sections().length > 0
+  );
 
   // ===== Outputs (the parent page performs the actual actions) =====
 

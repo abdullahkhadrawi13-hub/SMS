@@ -39,8 +39,8 @@
 
 }
 
-<!-- Loading -->
-@else if (isLoading()) {
+<!-- First load only (nothing to show yet) -->
+@else if (isInitialLoading()) {
 
   <div class="state-card">
 
@@ -72,79 +72,92 @@
 <!-- Teachers: only one can be selected (radio group) -->
 @else {
 
-  <div
-    class="teacher-rows"
-    role="radiogroup"
-    [attr.aria-label]="'ATTENDANCE_OFFICER.LIST.TITLE' | translate"
-  >
+  <!-- Rows + paginator: stay on the screen while the next page loads -->
+  <div class="list-body" [class.is-refreshing]="isRefreshing()">
 
-    @for (teacher of teachers(); track teacher.teacherId) {
+    <!-- Reload indicator: sits on top of the content without taking any height -->
+    @if (isRefreshing()) {
+      <mat-progress-bar
+        class="refresh-bar"
+        mode="indeterminate"
+      ></mat-progress-bar>
+    }
 
-      <!-- The whole row is one button.
-           selected: the teacher chosen by the Admin.
-           current : the teacher who is already the officer. -->
-      <button
-        type="button"
-        class="teacher-row"
-        role="radio"
-        [class.selected]="teacher.teacherId === selectedId()"
-        [class.current]="teacher.teacherId === officerId()"
-        [attr.aria-checked]="teacher.teacherId === selectedId()"
-        [disabled]="disabled() || teacher.teacherId === officerId()"
-        (click)="onSelect(teacher)"
+    <div
+      class="teacher-rows"
+      role="radiogroup"
+      [attr.aria-label]="'ATTENDANCE_OFFICER.LIST.TITLE' | translate"
+    >
+
+      @for (teacher of teachers(); track teacher.teacherId) {
+
+        <!-- The whole row is one button.
+             selected: the teacher chosen by the Admin.
+             current : the teacher who is already the officer. -->
+        <button
+          type="button"
+          class="teacher-row"
+          role="radio"
+          [class.selected]="teacher.teacherId === selectedId()"
+          [class.current]="teacher.teacherId === officerId()"
+          [attr.aria-checked]="teacher.teacherId === selectedId()"
+          [disabled]="disabled() || teacher.teacherId === officerId()"
+          (click)="onSelect(teacher)"
+        >
+
+          <!-- Radio circle -->
+          <span class="row-radio"></span>
+
+          <!-- Name + Number + Phone -->
+          <span class="row-text">
+
+            <span class="row-name">
+              {{ getTeacherName(teacher) }}
+            </span>
+
+            <span class="row-details">
+
+              <span>{{ teacher.teacherNumber }}</span>
+
+              <span class="details-dot"></span>
+
+              <!-- dir="ltr" keeps the phone number readable in Arabic. -->
+              <span dir="ltr">{{ teacher.phoneNumber }}</span>
+
+            </span>
+
+          </span>
+
+          <!-- Tag of the current officer -->
+          @if (teacher.teacherId === officerId()) {
+            <span class="row-tag">
+              {{ 'ATTENDANCE_OFFICER.LIST.CURRENT_TAG' | translate }}
+            </span>
+          }
+
+        </button>
+
+      }
+
+    </div>
+
+    <!-- Pagination: shown only when the teachers need more than one page. -->
+    @if (totalCount() > pageSize()) {
+
+      <mat-paginator
+        class="list-paginator"
+        [length]="totalCount()"
+        [pageIndex]="pageNumber() - 1"
+        [pageSize]="pageSize()"
+        [hidePageSize]="true"
+        [disabled]="disabled() || isLoading()"
+        (page)="pageChange.emit($event)"
+        [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
       >
-
-        <!-- Radio circle -->
-        <span class="row-radio"></span>
-
-        <!-- Name + Number + Phone -->
-        <span class="row-text">
-
-          <span class="row-name">
-            {{ getTeacherName(teacher) }}
-          </span>
-
-          <span class="row-details">
-
-            <span>{{ teacher.teacherNumber }}</span>
-
-            <span class="details-dot"></span>
-
-            <!-- dir="ltr" keeps the phone number readable in Arabic. -->
-            <span dir="ltr">{{ teacher.phoneNumber }}</span>
-
-          </span>
-
-        </span>
-
-        <!-- Tag of the current officer -->
-        @if (teacher.teacherId === officerId()) {
-          <span class="row-tag">
-            {{ 'ATTENDANCE_OFFICER.LIST.CURRENT_TAG' | translate }}
-          </span>
-        }
-
-      </button>
+      </mat-paginator>
 
     }
 
   </div>
-
-  <!-- Pagination: shown only when the teachers need more than one page. -->
-  @if (totalCount() > pageSize()) {
-
-    <mat-paginator
-      class="list-paginator"
-      [length]="totalCount()"
-      [pageIndex]="pageNumber() - 1"
-      [pageSize]="pageSize()"
-      [hidePageSize]="true"
-      [disabled]="disabled()"
-      (page)="pageChange.emit($event)"
-      [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
-    >
-    </mat-paginator>
-
-  }
 
 }

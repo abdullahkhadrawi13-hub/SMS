@@ -317,7 +317,8 @@
       "SECTION": "الشعبة",
       "STUDENT_COUNT": "عدد الطلاب",
       "STATUS": "الحالة",
-      "ACTIONS": "العمليات"
+      "ACTIONS": "العمليات",
+      "LOADING": "جاري تحميل الشعب..."
     },
 
     "ACTIVE": "فعال",

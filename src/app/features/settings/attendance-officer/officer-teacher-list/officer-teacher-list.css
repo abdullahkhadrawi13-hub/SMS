@@ -289,3 +289,35 @@
   }
 
 }
+
+
+/* ================================
+   Refreshing (reload while data is shown)
+   ================================ */
+
+/* So the refresh bar can sit on top of the card. */
+.list-body {
+  position: relative;
+}
+
+/* Thin bar on the top edge; absolute, so the card height never changes. */
+.refresh-bar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 2;
+}
+
+.teacher-rows {
+  transition: opacity 0.15s ease;
+}
+
+/* Old data fades a little and cannot be clicked until the new data arrives. */
+.list-body.is-refreshing .teacher-rows {
+  opacity: 0.55;
+
+  pointer-events: none;
+}

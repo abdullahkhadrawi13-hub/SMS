@@ -16,10 +16,11 @@
     </button>
   </div>
 
-  <!-- Sections Table (error / table / empty state / pagination) -->
+  <!-- Sections Table (error / loading / table / empty state / pagination) -->
   <app-sections-table
     [sections]="sections()"
     [togglingSectionId]="togglingSectionId()"
+    [isLoading]="isLoading()"
     [errorMessage]="errorMessage()"
     [totalCount]="totalCount()"
     [pageNumber]="pageNumber()"

@@ -68,6 +68,9 @@ export class SectionsPage {
   readonly togglingSectionId = signal<number | null>(null);
   readonly errorMessage = signal<string | null>(null);
 
+  // true while a page of sections is loading.
+  readonly isLoading = signal(false);
+
   readonly totalCount = signal(0);
   readonly pageNumber = signal(1);
   readonly pageSize = signal(10);
@@ -77,6 +80,8 @@ export class SectionsPage {
   }
 
   loadSections(): void {
+    this.isLoading.set(true);
+
     this.sectionsService.getSections({
       pageNumber: this.pageNumber(),
       pageSize: this.pageSize()
@@ -84,11 +89,13 @@ export class SectionsPage {
       next: (response) => {
         this.sections.set(response.data.items);
         this.totalCount.set(response.data.totalCount);
+        this.isLoading.set(false);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Failed to load sections:', error);
         this.sections.set([]);
         this.totalCount.set(0);
+        this.isLoading.set(false);
       }
     });
   }

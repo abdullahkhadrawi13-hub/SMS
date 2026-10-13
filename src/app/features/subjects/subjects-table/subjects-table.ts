@@ -3,6 +3,7 @@ import { Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
@@ -17,6 +18,7 @@ import { SubjectDto } from '../../../core/services/subjects';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
@@ -40,6 +42,20 @@ export class SubjectsTable {
 
   // Shows the actions column: edit and activate / deactivate (Admin only).
   readonly canManage = input(false);
+
+  // ===== Loading modes =====
+
+  // First load: there is nothing on the screen yet,
+  // so the big spinner replaces the content.
+  readonly isInitialLoading = computed(() =>
+    this.isLoading() && this.subjects().length === 0
+  );
+
+  // Reload: the old data stays on the screen with a thin progress bar
+  // on top, so the content does not disappear and jump.
+  readonly isRefreshing = computed(() =>
+    this.isLoading() && !(this.subjects().length === 0)
+  );
 
 
   // ===== Outputs (the parent performs the actual actions) =====

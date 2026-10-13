@@ -275,3 +275,88 @@
   }
 
 }
+
+
+/* =========================
+   Loading State (first load)
+   ========================= */
+
+.state-card {
+
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 16px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  box-sizing: border-box;
+
+}
+
+.state-card p {
+
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+
+}
+
+
+/* =========================
+   Refreshing (reload while rows are shown)
+   ========================= */
+
+/* So the refresh bar can sit on top of the card. */
+.table-card {
+
+  position: relative;
+
+}
+
+/* Thin bar on the top edge; absolute, so the card height never changes. */
+.refresh-bar {
+
+  position: absolute;
+
+  top: 0;
+
+  left: 0;
+
+  right: 0;
+
+  z-index: 2;
+
+}
+
+.sections-table {
+
+  transition: opacity 0.15s ease;
+
+}
+
+/* Old rows fade a little and cannot be clicked until the new page arrives. */
+.table-card.is-refreshing .sections-table {
+
+  opacity: 0.55;
+
+  pointer-events: none;
+
+}

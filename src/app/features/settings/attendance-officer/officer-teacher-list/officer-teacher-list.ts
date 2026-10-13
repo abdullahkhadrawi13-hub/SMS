@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +6,7 @@ import {
   MatPaginatorModule,
   PageEvent,
 } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -21,6 +22,7 @@ import { getTeacherName } from '../teacher-name';
     MatButtonModule,
     MatIconModule,
     MatPaginatorModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     TranslatePipe,
   ],
@@ -55,6 +57,20 @@ export class OfficerTeacherList {
 
   // True while the parent page is saving: the rows cannot be clicked.
   readonly disabled = input(false);
+
+  // ===== Loading modes =====
+
+  // First load: there is nothing on the screen yet,
+  // so the big spinner replaces the content.
+  readonly isInitialLoading = computed(() =>
+    this.isLoading() && this.teachers().length === 0
+  );
+
+  // Reload: the old data stays on the screen with a thin progress bar
+  // on top, so the content does not disappear and jump.
+  readonly isRefreshing = computed(() =>
+    this.isLoading() && !(this.teachers().length === 0)
+  );
 
 
   // ===== Outputs (the parent page loads, keeps the selection and saves) =====

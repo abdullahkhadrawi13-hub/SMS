@@ -19,12 +19,40 @@
   overflow: hidden;
 
   box-sizing: border-box;
+
+  /* So the refresh bar can sit on top of the card. */
+  position: relative;
 }
 
 .table-wrapper {
   width: 100%;
 
   overflow-x: auto;
+
+  transition: opacity 0.15s ease;
+}
+
+
+/* ================================
+   Refreshing (reload while rows are shown)
+   ================================ */
+
+/* Thin bar on the top edge; absolute, so the card height never changes. */
+.refresh-bar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 2;
+}
+
+/* Old rows fade a little and cannot be clicked until the new page arrives. */
+.table-card.is-refreshing .table-wrapper {
+  opacity: 0.55;
+
+  pointer-events: none;
 }
 
 

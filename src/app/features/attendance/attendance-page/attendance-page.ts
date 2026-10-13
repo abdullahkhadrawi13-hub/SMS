@@ -603,7 +603,8 @@ export class AttendancePage implements OnInit {
 
     this.summaryRequest?.unsubscribe();
 
-    this.summary.set(null);
+    // The old summary stays on the screen while the new one loads
+    // (the summary component shows a thin progress bar on top of it).
     this.summaryError.set(null);
     this.summaryLoading.set(true);
 
@@ -616,6 +617,7 @@ export class AttendancePage implements OnInit {
           this.summaryLoading.set(false);
 
           if (!response.success || !response.data) {
+            this.summary.set(null);
             this.summaryError.set(
               this.apiMessageService.getMessage(response)
             );
@@ -629,6 +631,7 @@ export class AttendancePage implements OnInit {
           console.error('Failed to load attendance summary:', error);
 
           this.summaryLoading.set(false);
+          this.summary.set(null);
           this.summaryError.set(this.getErrorMessage(error));
         }
       });

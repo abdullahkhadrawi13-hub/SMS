@@ -15,8 +15,8 @@
   </div>
 }
 
-<!-- Loading -->
-@else if (isLoading()) {
+<!-- First load only (nothing to show yet) -->
+@else if (isInitialLoading()) {
   <div class="state-card">
     <mat-spinner diameter="42"></mat-spinner>
 
@@ -28,7 +28,15 @@
 
 <!-- Students Table + Pagination (paginator no longer tied to students().length) -->
 @else {
-  <div class="table-card">
+  <div class="table-card" [class.is-refreshing]="isRefreshing()">
+
+    <!-- Reload indicator: sits on top of the card without taking any height -->
+    @if (isRefreshing()) {
+      <mat-progress-bar
+        class="refresh-bar"
+        mode="indeterminate"
+      ></mat-progress-bar>
+    }
 
     @if (students().length > 0) {
       <div class="table-wrapper">
@@ -193,6 +201,7 @@
         [pageIndex]="pageNumber() - 1"
         [pageSize]="pageSize()"
         [pageSizeOptions]="[10, 20, 50]"
+        [disabled]="isLoading()"
         (page)="pageChange.emit($event)"
         [attr.aria-label]="'STUDENTS.PAGINATION' | translate"
       >

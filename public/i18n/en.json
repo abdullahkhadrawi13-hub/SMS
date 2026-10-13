@@ -318,7 +318,8 @@
       "SECTION": "Section",
       "STUDENT_COUNT": "Student Count",
       "STATUS": "Status",
-      "ACTIONS": "Actions"
+      "ACTIONS": "Actions",
+      "LOADING": "Loading sections..."
     },
 
     "ACTIVE": "Active",

@@ -43,8 +43,8 @@
 
 }
 
-<!-- Loading -->
-@else if (isLoading()) {
+<!-- First load only (nothing to show yet) -->
+@else if (isInitialLoading()) {
 
   <div class="state-card">
 
@@ -106,7 +106,15 @@
 <!-- Section subjects -->
 @else {
 
-  <div class="table-card">
+  <div class="table-card" [class.is-refreshing]="isRefreshing()">
+
+    <!-- Reload indicator: sits on top of the card without taking any height -->
+    @if (isRefreshing()) {
+      <mat-progress-bar
+        class="refresh-bar"
+        mode="indeterminate"
+      ></mat-progress-bar>
+    }
 
     <!-- Toolbar: title + counters + add -->
     <div class="table-toolbar">

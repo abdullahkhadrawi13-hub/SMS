@@ -5,6 +5,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
@@ -41,6 +42,7 @@ interface AttendanceSummaryRow {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe
@@ -66,6 +68,19 @@ export class AttendanceSummary {
   readonly todayOnly = input(false);
 
   readonly loading = input(false);
+
+  // ===== Loading modes =====
+
+  // First load: no summary on the screen yet, so the big spinner shows.
+  readonly isInitialLoading = computed(() =>
+    this.loading() && this.summary() === null
+  );
+
+  // Reload (another date, or the tab opened again): the old numbers stay
+  // on the screen with a thin progress bar on top, so nothing jumps.
+  readonly isRefreshing = computed(() =>
+    this.loading() && this.summary() !== null
+  );
 
   // Error message text (already in the current language).
   readonly errorMessage = input<string | null>(null);

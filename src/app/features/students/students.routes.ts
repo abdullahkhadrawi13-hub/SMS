@@ -11,26 +11,6 @@ export const STUDENTS_ROUTES: Routes = [
     loadComponent: () =>
       import('./students-page/students-page')
         .then(m => m.StudentsPage)
-  },
-
-  // /students/new
-  {
-    path: 'new',
-    canActivate: [roleGuard],
-    data: { roles: [UserRole.Admin, UserRole.AssistantPrincipal] },
-    loadComponent: () =>
-      import('./students-form/students-form')
-        .then(m => m.StudentsForm)
-  },
-
-  // /students/:id/edit
-  {
-    path: ':id/edit',
-    canActivate: [roleGuard],
-    data: { roles: [UserRole.Admin, UserRole.AssistantPrincipal] },
-    loadComponent: () =>
-      import('./students-form/students-form')
-        .then(m => m.StudentsForm)
   }
-
+  
 ];

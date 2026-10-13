@@ -24,8 +24,8 @@
 
 }
 
-<!-- Loading -->
-@else if (isLoading()) {
+<!-- First load only (nothing to show yet) -->
+@else if (isInitialLoading()) {
 
   <div class="state-card">
 
@@ -42,7 +42,15 @@
 <!-- Teacher table card -->
 @else {
 
-  <div class="table-card">
+  <div class="table-card" [class.is-refreshing]="isRefreshing()">
+
+    <!-- Reload indicator: sits on top of the card without taking any height -->
+    @if (isRefreshing()) {
+      <mat-progress-bar
+        class="refresh-bar"
+        mode="indeterminate"
+      ></mat-progress-bar>
+    }
 
     @if (teachers().length > 0) {
 
@@ -303,6 +311,7 @@
         [pageIndex]="pageNumber() - 1"
         [pageSize]="pageSize()"
         [pageSizeOptions]="[10, 20, 50]"
+        [disabled]="isLoading()"
         (page)="pageChange.emit($event)"
         [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
       >

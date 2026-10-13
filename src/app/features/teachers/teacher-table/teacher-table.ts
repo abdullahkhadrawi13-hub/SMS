@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,7 @@ import {
   MatPaginatorModule,
   PageEvent,
 } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
@@ -22,6 +23,7 @@ import { TeacherListDto } from '../../../core/services/teachers';
     MatIconModule,
     MatMenuModule,
     MatPaginatorModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
@@ -47,6 +49,20 @@ export class TeacherTable {
 
   // Shows the edit and activate / deactivate actions (Admin only).
   readonly canManage = input(false);
+
+  // ===== Loading modes =====
+
+  // First load: there is nothing on the screen yet,
+  // so the big spinner replaces the content.
+  readonly isInitialLoading = computed(() =>
+    this.isLoading() && this.teachers().length === 0
+  );
+
+  // Reload: the old data stays on the screen with a thin progress bar
+  // on top, so the content does not disappear and jump.
+  readonly isRefreshing = computed(() =>
+    this.isLoading() && !(this.teachers().length === 0)
+  );
 
 
   // ===== Outputs (the parent page performs the actual actions) =====

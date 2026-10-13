@@ -24,8 +24,8 @@
 
 }
 
-<!-- Loading -->
-@else if (isLoading()) {
+<!-- First load only (nothing to show yet) -->
+@else if (isInitialLoading()) {
 
   <div class="state-card">
 
@@ -42,7 +42,15 @@
 <!-- Subject table card -->
 @else {
 
-  <div class="table-card">
+  <div class="table-card" [class.is-refreshing]="isRefreshing()">
+
+    <!-- Reload indicator: sits on top of the card without taking any height -->
+    @if (isRefreshing()) {
+      <mat-progress-bar
+        class="refresh-bar"
+        mode="indeterminate"
+      ></mat-progress-bar>
+    }
 
     @if (subjects().length > 0) {
 

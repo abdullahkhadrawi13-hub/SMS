@@ -1,9 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
@@ -18,6 +19,7 @@ import { Student } from '../student';
     MatIconModule,
     MatMenuModule,
     MatPaginatorModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
@@ -44,6 +46,21 @@ export class StudentsTable {
   // Shows "Edit" and "Activate / Deactivate" only for users
   // allowed to manage students. "View" is shown for everyone.
   readonly canManage = input(false);
+
+  // ===== Loading modes =====
+
+  // First load: there is nothing on the screen yet,
+  // so the big spinner replaces the table.
+  readonly isInitialLoading = computed(() =>
+    this.isLoading() && this.students().length === 0
+  );
+
+  // Reload (page change, search, filter, after an edit):
+  // the old rows stay on the screen with a thin progress bar on top,
+  // so the table and the paginator do not disappear and jump.
+  readonly isRefreshing = computed(() =>
+    this.isLoading() && this.students().length > 0
+  );
 
   // ===== Outputs (the parent page performs the actual actions) =====
 
