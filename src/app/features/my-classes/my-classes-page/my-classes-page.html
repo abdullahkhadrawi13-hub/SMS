@@ -87,8 +87,11 @@
     <!-- One card per class + section -->
     <div class="cards-grid">
 
-      @for (group of groups(); track group.classId + '-' + group.sectionId) {
-        <app-my-class-card [group]="group"></app-my-class-card>
+      @for (group of groups(); track group.classId + '-' + group.sectionId; let i = $index) {
+        <app-my-class-card
+          [group]="group"
+          [colorIndex]="i"
+        ></app-my-class-card>
       }
 
     </div>

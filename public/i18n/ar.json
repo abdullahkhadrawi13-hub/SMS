@@ -631,6 +631,7 @@
       "SECTION": "شعبة {{name}}",
       "SUBJECTS_COUNT": "عدد المواد: {{count}}",
       "PASSING_MARK": "علامة النجاح {{mark}} من 100",
+      "MORE_SUBJECTS": "+{{count}} أخرى",
       "LOCKED": "مقفل",
       "UNLOCKED": "مفتوح"
     },

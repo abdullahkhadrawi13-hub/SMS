@@ -640,6 +640,7 @@
       "SECTION": "Section {{name}}",
       "SUBJECTS_COUNT": "Subjects: {{count}}",
       "PASSING_MARK": "Passing mark {{mark}} of 100",
+      "MORE_SUBJECTS": "+{{count}} more",
       "LOCKED": "Locked",
       "UNLOCKED": "Open"
     },

@@ -1,6 +1,11 @@
-<div class="class-card">
+<div
+  class="class-card"
+  [style.--card-main]="color().main"
+  [style.--card-soft]="color().soft"
+  [style.--card-dark]="color().dark"
+>
 
-  <!-- Card header: class + section -->
+  <!-- Card header (colored): class, section under it, number of subjects -->
   <div class="card-header">
 
     <div class="class-icon">
@@ -11,29 +16,33 @@
 
       <h3>{{ group().className }}</h3>
 
-      <span>
-        {{ 'MY_CLASSES.CARD.SUBJECTS_COUNT' | translate: { count: group().subjects.length } }}
+      <span class="section-name">
+        <mat-icon>groups</mat-icon>
+        {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: group().sectionName } }}
       </span>
 
     </div>
 
-    <span class="section-badge">
-      {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: group().sectionName } }}
+    <!-- Number of subjects (the full text shows on hover) -->
+    <span
+      class="subjects-badge"
+      [title]="'MY_CLASSES.CARD.SUBJECTS_COUNT' | translate: { count: group().subjects.length }"
+    >
+      <mat-icon>menu_book</mat-icon>
+      {{ group().subjects.length }}
     </span>
 
   </div>
 
 
-  <!-- One line per subject -->
+  <!-- One line per subject (the first ones only, the card has a fixed height) -->
   <div class="subjects-list">
 
-    @for (line of group().subjects; track line.assignment.teacherAssignmentId) {
+    @for (line of visibleSubjects(); track line.assignment.teacherAssignmentId) {
 
       <div class="subject-line">
 
-        <div class="subject-icon">
-          <mat-icon>menu_book</mat-icon>
-        </div>
+        <span class="subject-dot"></span>
 
         <div class="subject-info">
 
@@ -67,5 +76,15 @@
     }
 
   </div>
+
+
+  <!-- The subjects that do not fit in the card -->
+  @if (hiddenSubjectsCount() > 0) {
+
+    <div class="more-subjects">
+      {{ 'MY_CLASSES.CARD.MORE_SUBJECTS' | translate: { count: hiddenSubjectsCount() } }}
+    </div>
+
+  }
 
 </div>

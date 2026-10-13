@@ -3,27 +3,53 @@
   display: block;
 }
 
+
+/* ================================
+   Card
+   The colors come from the component:
+   --card-main, --card-soft, --card-dark
+   ================================ */
+
 .class-card {
+  /* Fixed height: all cards have the same size,
+     whatever the number of subjects. */
+  height: 300px;
+
+  display: flex;
+  flex-direction: column;
+
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   box-sizing: border-box;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.class-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 
 /* ================================
-   Card Header
+   Card Header (colored)
    ================================ */
 
 .card-header {
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
   gap: 12px;
 
-  padding: 16px 20px;
+  padding: 16px 18px;
 
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--card-main);
+  color: #ffffff;
 }
 
 .class-icon {
@@ -35,15 +61,15 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 10px;
-  background: #f1f5f9;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .class-icon mat-icon {
   width: 24px;
   height: 24px;
   font-size: 24px;
-  color: #475569;
+  color: #ffffff;
 }
 
 .class-info {
@@ -59,30 +85,51 @@
   margin: 0;
   font-size: 17px;
   font-weight: 600;
-  color: #111827;
+  color: #ffffff;
 
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.class-info span {
+.section-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
   font-size: 13px;
-  color: #6b7280;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
 }
 
-.section-badge {
+.section-name mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.subjects-badge {
   flex-shrink: 0;
 
-  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 5px 11px;
   border-radius: 20px;
 
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--card-dark);
 
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
+}
+
+.subjects-badge mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
 }
 
 
@@ -90,36 +137,33 @@
    Subject Lines
    ================================ */
 
+.subjects-list {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+
+  padding: 4px 0;
+}
+
 .subject-line {
   display: flex;
   align-items: center;
   gap: 12px;
 
-  padding: 12px 20px;
+  padding: 10px 18px;
 }
 
 .subject-line + .subject-line {
   border-top: 1px solid #f1f5f9;
 }
 
-.subject-icon {
-  width: 36px;
-  height: 36px;
+.subject-dot {
+  width: 10px;
+  height: 10px;
   flex-shrink: 0;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 8px;
-  background: #f1f5f9;
-}
-
-.subject-icon mat-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-  color: #64748b;
+  border-radius: 50%;
+  background: var(--card-main);
 }
 
 .subject-info {
@@ -158,7 +202,7 @@
   align-items: center;
   gap: 6px;
 
-  padding: 6px 10px;
+  padding: 5px 10px;
   border-radius: 20px;
 
   background: #fffbeb;
@@ -193,4 +237,24 @@
 /* Arabic (RTL): the arrow points to the left. */
 :host-context([dir='rtl']) .line-arrow {
   transform: scaleX(-1);
+}
+
+
+/* ================================
+   More Subjects
+   ================================ */
+
+.more-subjects {
+  flex-shrink: 0;
+
+  margin: 0 18px 14px;
+  padding: 7px 12px;
+  border-radius: 10px;
+
+  background: var(--card-soft);
+  color: var(--card-dark);
+
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
 }

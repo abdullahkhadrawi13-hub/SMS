@@ -13,6 +13,11 @@ import {
   SectionSimpleDto,
   SectionsService
 } from '../../../core/services/sections';
+import {
+  TeacherAssignment,
+  TeacherAssignmentsService
+} from '../../../core/services/teacher-assignments';
+import { Permissions } from '../../../core/services/permissions';
 import { SchoolClassSimpleDto } from '../../classes/school-class';
 
 export interface StudentFilterValues {
@@ -27,6 +32,11 @@ export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
   isActive: null
 };
 
+// فلتر الطلاب.
+// المدير ومساعد المدير: الصفوف والشعب من خدمات الصفوف والشعب.
+// المعلم: يحصل على 403 من قوائم الصفوف والشعب، لذلك تُبنى القوائم
+// من تعييناته في الفصل الحالي (GET /api/teacherassignments/mine)،
+// فيرى فقط الصفوف والشعب التي يدرّسها.
 @Component({
   selector: 'app-student-filter',
   imports: [
@@ -46,9 +56,17 @@ export class StudentsFilter {
   private readonly destroyRef = inject(DestroyRef);
   private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);
+  private readonly assignmentsService = inject(TeacherAssignmentsService);
+  private readonly permissions = inject(Permissions);
   private readonly initial =
     inject<StudentFilterValues | null>(MAT_DIALOG_DATA, { optional: true })
     ?? EMPTY_STUDENT_FILTER;
+
+  // المعلم يأخذ القوائم من تعييناته
+  private readonly isTeacher = this.permissions.isTeacher();
+
+  // تعيينات المعلم (فارغة لغير المعلم)
+  private readonly myAssignments = signal<TeacherAssignment[]>([]);
 
   readonly classes = signal<SchoolClassSimpleDto[]>([]);
   readonly sections = signal<SectionSimpleDto[]>([]);
@@ -61,6 +79,11 @@ export class StudentsFilter {
   readonly isActive = signal<boolean | null>(this.initial.isActive);
 
   constructor() {
+    if (this.isTeacher) {
+      this.loadTeacherOptions();
+      return;
+    }
+
     this.loadClasses();
 
     // استعادة الفلتر السابق عند إعادة فتح النافذة
@@ -90,6 +113,13 @@ export class StudentsFilter {
 
   // شعب الصف المختار فقط
   private loadSections(classId: number, selectedSectionId: number | null = null): void {
+
+    // المعلم: الشعب من تعييناته، بدون طلب للـ backend
+    if (this.isTeacher) {
+      this.setTeacherSections(classId, selectedSectionId);
+      return;
+    }
+
     this.isLoadingSections.set(true);
 
     this.sectionsService
@@ -118,6 +148,91 @@ export class StudentsFilter {
         );
       });
   }
+
+
+  // =========================
+  // Teacher
+  // =========================
+
+  // تعيينات المعلم في الفصل الحالي، ومنها قائمة الصفوف.
+  private loadTeacherOptions(): void {
+    this.isLoadingClasses.set(true);
+
+    this.assignmentsService
+      .getMyAssignments()
+      .pipe(
+        catchError(error => {
+          console.error('Failed to load my assignments:', error);
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(response => {
+        const assignments = response?.success ? response.data : [];
+
+        this.myAssignments.set(assignments);
+        this.classes.set(this.buildTeacherClasses(assignments));
+        this.isLoadingClasses.set(false);
+
+        // استعادة الفلتر السابق عند إعادة فتح النافذة
+        const classId = this.initial.classId;
+
+        if (classId && this.classes().some(c => c.schoolClassId === classId)) {
+          this.setTeacherSections(classId, this.initial.sectionId);
+        } else {
+          this.classId.set(null);
+          this.sectionId.set(null);
+        }
+      });
+  }
+
+  // صف واحد لكل classId، مرتبة حسب classId (مثل صفحة صفوفي)
+  private buildTeacherClasses(assignments: TeacherAssignment[]): SchoolClassSimpleDto[] {
+    const byId = new Map<number, SchoolClassSimpleDto>();
+
+    for (const a of assignments) {
+      if (!byId.has(a.classId)) {
+        byId.set(a.classId, {
+          schoolClassId: a.classId,
+          classNameAr: a.classNameAr,
+          classNameEn: a.classNameEn
+        });
+      }
+    }
+
+    return [...byId.values()].sort((a, b) => a.schoolClassId - b.schoolClassId);
+  }
+
+  // شعب الصف المختار التي يدرّس فيها المعلم (بدون تكرار)
+  private setTeacherSections(classId: number, selectedSectionId: number | null): void {
+    const byId = new Map<number, SectionSimpleDto>();
+
+    for (const a of this.myAssignments()) {
+      if (a.classId === classId && !byId.has(a.sectionId)) {
+        byId.set(a.sectionId, {
+          sectionId: a.sectionId,
+          classId: a.classId,
+          sectionAr: a.sectionAr,
+          sectionEn: a.sectionEn,
+          isActive: true
+        });
+      }
+    }
+
+    const sections = [...byId.values()].sort((a, b) =>
+      this.getSectionName(a).localeCompare(this.getSectionName(b))
+    );
+
+    this.sections.set(sections);
+    this.isLoadingSections.set(false);
+
+    this.sectionId.set(
+      sections.some(s => s.sectionId === selectedSectionId)
+        ? selectedSectionId
+        : null
+    );
+  }
+
 
   onClassChange(classId: number | null): void {
     this.classId.set(classId);
