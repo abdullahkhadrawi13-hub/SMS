@@ -3,15 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { AcademicYear } from '../models/academic-year';
 import { environment } from '../../../environments/environment';
 
-export interface AcademicYear {
-  academicYearId: number;
-  yearName: string;
-  startDate: string;
-  endDate: string;
-  isCurrent: boolean;
-}
 
 @Injectable({
   providedIn: 'root'

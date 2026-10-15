@@ -17,16 +17,12 @@ import { catchError, of } from 'rxjs';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
 import { SectionsService } from '../../../core/services/sections';
-import {
-  AcademicYear,
-  AcademicYearsService
-} from '../../../core/services/academic-years';
-import {
-  AcademicTerm,
-  AcademicTermsService
-} from '../../../core/services/academic-terms';
+import { AcademicYearsService } from '../../../core/services/academic-years';
+import { AcademicTermsService } from '../../../core/services/academic-terms';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 import { SectionSimpleDto } from '../../../core/models/section';
+import { AcademicYear } from '../../../core/models/academic-year';
+import { AcademicTerm } from '../../../core/models/academic-term';
 
 export interface SectionFilterData {
   classId?: number;
