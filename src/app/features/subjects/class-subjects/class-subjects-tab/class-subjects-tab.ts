@@ -25,10 +25,7 @@ import {
   TeacherAssignment,
   TeacherAssignmentsService,
 } from '../../../../core/services/teacher-assignments';
-import {
-  TeacherListDto,
-  TeachersService,
-} from '../../../../core/services/teachers';
+import { TeachersService } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
 import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
 
@@ -46,6 +43,7 @@ import {
   AssignmentFormData,
 } from '../assignment-form/assignment-form';
 import { ActiveSectionDto } from '../../../../core/models/section';
+import { TeacherListDto } from '../../../../core/models/teacher';
 
 
 // The largest page the teachers API returns (API Reference, section 5).

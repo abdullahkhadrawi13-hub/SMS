@@ -13,7 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { TeacherListDto } from '../../../core/services/teachers';
+import { TeacherListDto } from '../../../core/models/teacher';
 
 
 @Component({

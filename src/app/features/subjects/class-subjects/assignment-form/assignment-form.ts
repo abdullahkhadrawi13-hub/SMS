@@ -32,13 +32,11 @@ import {
   TeacherAssignment,
   TeacherAssignmentsService,
 } from '../../../../core/services/teacher-assignments';
-import {
-  TeacherListDto,
-  TeachersService,
-} from '../../../../core/services/teachers';
+import { TeachersService } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
 
 import { DEFAULT_PASSING_MARK, getTeacherFullName } from '../../subject';
+import { TeacherListDto } from '../../../../core/models/teacher';
 
 
 // Data passed by the parent (class-subjects) when the dialog is opened.

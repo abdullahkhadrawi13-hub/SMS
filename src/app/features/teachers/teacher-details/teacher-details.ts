@@ -13,13 +13,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import {
-  TeacherListDto,
-  TeachersService,
-} from '../../../core/services/teachers';
+import { TeachersService } from '../../../core/services/teachers';
 
 import { ApiMessageService } from '../../../core/services/api-message';
 import { getRoleTranslationKey } from '../../../core/models/user-role';
+import { TeacherListDto } from '../../../core/models/teacher';
 
 
 // Data passed when the details dialog is opened.
