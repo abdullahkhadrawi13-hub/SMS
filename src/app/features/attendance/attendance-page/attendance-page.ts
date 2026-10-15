@@ -48,7 +48,7 @@ import {
   SectionsService
 } from '../../../core/services/sections';
 import { ActionResult } from '../../../shared/services/action-result';
-import { SchoolClassSimpleDto } from '../../classes/school-class';
+import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 
 // The result of one save request (one POST or one PUT).
 // The message always comes from the backend (Arabic or English).

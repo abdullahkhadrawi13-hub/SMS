@@ -28,7 +28,7 @@ import {
   AcademicTerm,
   AcademicTermsService
 } from '../../../core/services/academic-terms';
-import { SchoolClassSimpleDto } from '../../classes/school-class';
+import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 
 export interface SectionFilterData {
   classId?: number;

@@ -33,7 +33,7 @@ import {
   TeachersService,
 } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
-import { SchoolClassSimpleDto } from '../../../classes/school-class';
+import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
 
 import {
   ClassSubjectRow,

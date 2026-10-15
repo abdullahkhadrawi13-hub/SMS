@@ -9,7 +9,7 @@ import {
   SchoolClassSimpleDto,
   CreateSchoolClassRequest,
   UpdateSchoolClassRequest
-} from '../../features/classes/school-class';
+} from '../models/school-class';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
