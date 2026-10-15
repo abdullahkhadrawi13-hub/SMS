@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../core/services/language';
-import { ActiveSectionDto } from '../../../core/services/sections';
+import { ActiveSectionDto } from '../../../core/models/section';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 import {
   formatAttendanceDate,

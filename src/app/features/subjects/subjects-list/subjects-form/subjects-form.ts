@@ -19,13 +19,10 @@ import { MatInputModule } from '@angular/material/input';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import {
-  SubjectDto,
-  SubjectRequest,
-  SubjectsService,
-} from '../../../../core/services/subjects';
+import { SubjectsService } from '../../../../core/services/subjects';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { ActionResult } from '../../../../shared/services/action-result';
+import { SubjectDto, SubjectRequest } from '../../../../core/models/subject';
 
 
 // Data passed when the dialog is opened.

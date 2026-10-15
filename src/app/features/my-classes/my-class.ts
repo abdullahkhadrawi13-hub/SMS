@@ -1,4 +1,4 @@
-import { TeacherAssignment } from '../../core/services/teacher-assignments';
+import { TeacherAssignment } from '../../core/models/teacher-assignment';
 
 
 // One subject the teacher teaches in a section (one line inside a card).

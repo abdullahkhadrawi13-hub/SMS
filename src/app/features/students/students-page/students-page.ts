@@ -19,7 +19,7 @@ import { ApiMessageService } from '../../../core/services/api-message';
 import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
 
-import { Student } from '../student';
+import { Student } from '../../../core/models/student';
 
 import { StudentsDetails } from '../students-details/students-details';
 

@@ -13,10 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { SchoolSettingsService } from '../../../../core/services/school-settings';
-import {
-  TeacherListDto,
-  TeachersService,
-} from '../../../../core/services/teachers';
+import { TeachersService } from '../../../../core/services/teachers';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { ActionResult } from '../../../../shared/services/action-result';
 
@@ -24,6 +21,7 @@ import { OfficerCurrentCard } from '../officer-current-card/officer-current-card
 import { OfficerSaveBar } from '../officer-save-bar/officer-save-bar';
 import { OfficerTeacherList } from '../officer-teacher-list/officer-teacher-list';
 import { OfficerTeacherSearch } from '../officer-teacher-search/officer-teacher-search';
+import { TeacherListDto } from '../../../../core/models/teacher';
 
 
 // Number of teachers shown in one page of the list.

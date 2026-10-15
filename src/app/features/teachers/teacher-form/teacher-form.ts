@@ -20,14 +20,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
 
-import {
-  CreateTeacherRequest,
-  TeachersService,
-  UpdateTeacherRequest,
-} from '../../../core/services/teachers';
+import { TeachersService } from '../../../core/services/teachers';
 
 import { ApiMessageService } from '../../../core/services/api-message';
 import { ActionResult } from '../../../shared/services/action-result';
+import { CreateTeacherRequest, UpdateTeacherRequest } from '../../../core/models/teacher';
 
 
 // Data passed when the dialog is opened.

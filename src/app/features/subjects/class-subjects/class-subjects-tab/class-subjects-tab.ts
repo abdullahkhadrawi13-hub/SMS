@@ -19,19 +19,10 @@ import { AcademicYearsService } from '../../../../core/services/academic-years';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { Language } from '../../../../core/services/language';
 import { SchoolClassesService } from '../../../../core/services/school-classes';
-import {
-  ActiveSectionDto,
-  SectionsService,
-} from '../../../../core/services/sections';
+import { SectionsService } from '../../../../core/services/sections';
 import { SubjectsService } from '../../../../core/services/subjects';
-import {
-  TeacherAssignment,
-  TeacherAssignmentsService,
-} from '../../../../core/services/teacher-assignments';
-import {
-  TeacherListDto,
-  TeachersService,
-} from '../../../../core/services/teachers';
+import { TeacherAssignmentsService } from '../../../../core/services/teacher-assignments';
+import { TeachersService } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
 import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
 
@@ -48,6 +39,9 @@ import {
   AssignmentForm,
   AssignmentFormData,
 } from '../assignment-form/assignment-form';
+import { ActiveSectionDto } from '../../../../core/models/section';
+import { TeacherListDto } from '../../../../core/models/teacher';
+import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 
 // The largest page the teachers API returns (API Reference, section 5).

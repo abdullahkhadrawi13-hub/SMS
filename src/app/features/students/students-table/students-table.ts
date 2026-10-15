@@ -10,7 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Student } from '../student';
+import { Student } from '../../../core/models/student';
 
 @Component({
   selector: 'app-students-table',

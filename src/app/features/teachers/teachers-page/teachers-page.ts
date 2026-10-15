@@ -9,10 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { PageEvent } from '@angular/material/paginator';
 
-import {
-  TeacherListDto,
-  TeachersService,
-} from '../../../core/services/teachers';
+import { TeachersService } from '../../../core/services/teachers';
 
 import { ApiMessageService } from '../../../core/services/api-message';
 import { Permissions } from '../../../core/services/permissions';
@@ -27,6 +24,7 @@ import {
 import { TeacherTable } from '../teacher-table/teacher-table';
 import { TeacherForm } from '../teacher-form/teacher-form';
 import { TeacherDetails } from '../teacher-details/teacher-details';
+import { TeacherListDto } from '../../../core/models/teacher';
 
 
 @Component({

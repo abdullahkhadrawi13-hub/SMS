@@ -1,5 +1,5 @@
-import { TeacherListDto } from '../../core/services/teachers';
-import { TeacherAssignment } from '../../core/services/teacher-assignments';
+import { TeacherListDto } from '../../core/models/teacher';
+import { TeacherAssignment } from '../../core/models/teacher-assignment';
 
 
 // =========================

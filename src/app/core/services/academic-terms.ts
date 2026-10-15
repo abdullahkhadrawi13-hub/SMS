@@ -3,19 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { AcademicTerm } from '../models/academic-term';
 import { environment } from '../../../environments/environment';
 
-export interface AcademicTerm {
-  academicTermId: number;
-  academicYearId: number;
-  termNumber: number;
-  nameAr: string;
-  nameEn: string;
-  startDate: string;
-  endDate: string;
-  isActive: boolean;
-  isCurrent: boolean;
-}
 
 @Injectable({
   providedIn: 'root'

@@ -25,7 +25,7 @@ import {
 import { SectionsHeader } from '../sections-header/sections-header';
 import { SectionsTable } from '../sections-table/sections-table';
 
-import { Section } from '../section';
+import { Section } from '../../../core/models/section';
 import { SectionsService } from '../../../core/services/sections';
 import { ApiMessageService } from '../../../core/services/api-message';
 import { Permissions } from '../../../core/services/permissions';

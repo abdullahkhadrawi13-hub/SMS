@@ -25,7 +25,7 @@ import { getRoleTranslationKey } from '../../../core/models/user-role';
 
 import { AttendanceHistory } from '../../attendance/attendance-history/attendance-history';
 
-import { Student } from '../student';
+import { Student } from '../../../core/models/student';
 
 export interface StudentDetailsDialogData {
   studentId: number;

@@ -1,4 +1,4 @@
-import { TeacherListDto } from '../../../core/services/teachers';
+import { TeacherListDto } from '../../../core/models/teacher';
 
 // Returns the full name of a teacher according to the current language.
 // Shared by the three attendance officer components,

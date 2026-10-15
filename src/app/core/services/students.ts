@@ -5,30 +5,13 @@ import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
 import { PagedResult } from '../models/paged-result';
-import { Student } from '../../features/students/student';
+import {
+  Student,
+  StudentRequest,
+  CreateStudentRequest
+} from '../models/student';
 import { environment } from '../../../environments/environment';
 
-export interface StudentRequest {
-  firstNameAr: string;
-  fatherNameAr: string;
-  grandFatherNameAr: string;
-  familyNameAr: string;
-
-  firstNameEn: string;
-  fatherNameEn: string;
-  grandFatherNameEn: string;
-  familyNameEn: string;
-
-  loginId: string;
-  phoneNumber: string;
-
-  classId: number;
-  sectionId: number;
-}
-
-export interface CreateStudentRequest extends StudentRequest {
-  temporaryPassword: string;
-}
 
 @Injectable({
   providedIn: 'root'

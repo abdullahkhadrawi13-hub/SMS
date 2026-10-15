@@ -10,7 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Section } from '../section';
+import { Section } from '../../../core/models/section';
 
 @Component({
   selector: 'app-sections-table',

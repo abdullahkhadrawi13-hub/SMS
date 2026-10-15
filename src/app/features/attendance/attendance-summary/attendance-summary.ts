@@ -13,12 +13,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../core/services/language';
 import {
-  AttendanceDailySummary,
-  AttendanceSummarySection,
   formatAttendanceDate,
   fromApiDate,
   toApiDate
 } from '../attendance';
+import { AttendanceDailySummary, AttendanceSummarySection } from '../../../core/models/attendance';
 
 // Recording state of one section on the selected day.
 type SectionState = 'complete' | 'partial' | 'notStarted';
