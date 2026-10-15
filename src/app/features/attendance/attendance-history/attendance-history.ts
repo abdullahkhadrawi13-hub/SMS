@@ -24,15 +24,17 @@ import { ApiMessageService } from '../../../core/services/api-message';
 import { AttendanceService } from '../../../core/services/attendance';
 import { Language } from '../../../core/services/language';
 import {
-  ATTENDANCE_ABSENT,
-  ATTENDANCE_PRESENT,
   AttendanceHistoryStats,
-  AttendanceRecord,
-  AttendanceStatus,
   formatAttendanceDate,
   formatAttendanceDateTime
 } from '../attendance';
 import { AcademicTerm } from '../../../core/models/academic-term';
+import {
+  ATTENDANCE_ABSENT,
+  ATTENDANCE_PRESENT,
+  AttendanceRecord,
+  AttendanceStatus
+} from '../../../core/models/attendance';
 
 // One academic term in the term list.
 // name = null when the name of the term could not be loaded.

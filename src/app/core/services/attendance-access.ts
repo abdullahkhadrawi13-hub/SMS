@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { catchError, map, Observable, of, tap } from 'rxjs';
 
-import { AttendanceAccess } from '../../features/attendance/attendance';
+import { AttendanceAccess } from '../models/attendance';
 import { AttendanceService } from './attendance';
 import { User } from './user';
 import { UserRole } from '../models/user-role';

@@ -25,14 +25,9 @@ import { AttendanceSummary } from '../attendance-summary/attendance-summary';
 import {
   ATTENDANCE_LOCALE_AR,
   ATTENDANCE_LOCALE_EN,
-  ATTENDANCE_PRESENT,
-  AttendanceDailySummary,
   AttendanceDraft,
-  AttendanceEntry,
-  AttendanceSheet as AttendanceSheetData,
   AttendanceSheetStats,
   AttendanceStatusChange,
-  AttendanceSummarySection,
   AttendanceTab,
   todayApiDate
 } from '../attendance';
@@ -47,6 +42,13 @@ import { SectionsService } from '../../../core/services/sections';
 import { ActionResult } from '../../../shared/services/action-result';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 import { ActiveSectionDto } from '../../../core/models/section';
+import {
+  ATTENDANCE_PRESENT,
+  AttendanceDailySummary,
+  AttendanceEntry,
+  AttendanceSheet as AttendanceSheetData,
+  AttendanceSummarySection
+} from '../../../core/models/attendance';
 
 // The result of one save request (one POST or one PUT).
 // The message always comes from the backend (Arabic or English).

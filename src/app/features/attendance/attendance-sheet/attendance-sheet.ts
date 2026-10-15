@@ -10,15 +10,17 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../core/services/language';
 import {
-  ATTENDANCE_ABSENT,
-  ATTENDANCE_PRESENT,
   AttendanceDraft,
-  AttendanceSheet as AttendanceSheetData,
   AttendanceSheetStats,
-  AttendanceStatus,
   AttendanceStatusChange,
   formatAttendanceDate
 } from '../attendance';
+import {
+  ATTENDANCE_ABSENT,
+  ATTENDANCE_PRESENT,
+  AttendanceSheet as AttendanceSheetData,
+  AttendanceStatus
+} from '../../../core/models/attendance';
 
 // One row of the sheet table.
 interface AttendanceSheetRow {

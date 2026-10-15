@@ -12,7 +12,7 @@ import {
   AttendanceStatus,
   RecordAttendanceRequest,
   UpdateAttendanceRequest
-} from '../../features/attendance/attendance';
+} from '../models/attendance';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
