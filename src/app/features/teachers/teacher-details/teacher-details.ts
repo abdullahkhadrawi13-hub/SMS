@@ -134,8 +134,8 @@ export class TeacherDetails {
   getTeacherName(teacher: TeacherListDto): string {
 
     return document.documentElement.lang === 'ar'
-      ? this.getArabicName(teacher)
-      : this.getEnglishName(teacher);
+      ? this.getArabicName(teacher) || this.getEnglishName(teacher)
+      : this.getEnglishName(teacher) || this.getArabicName(teacher);
   }
 
 
@@ -166,6 +166,28 @@ export class TeacherDetails {
       .join(' ');
   }
 
+
+  // The first letter of the first name and of the family name,
+  // in the language of the page (the avatar of the profile header).
+  // A zero-width non-joiner (\u200C) keeps two Arabic letters
+  // apart, so they do not join into one word.
+  getInitials(teacher: TeacherListDto): string {
+    const isArabic = document.documentElement.lang === 'ar';
+
+    const first = isArabic
+      ? teacher.firstNameAr || teacher.firstNameEn
+      : teacher.firstNameEn || teacher.firstNameAr;
+
+    const family = isArabic
+      ? teacher.familyNameAr || teacher.familyNameEn
+      : teacher.familyNameEn || teacher.familyNameAr;
+
+    return [first, family]
+      .map(name => name?.trim().charAt(0) ?? '')
+      .filter(Boolean)
+      .join('\u200C')
+      .toUpperCase();
+  }
 
   // The shared function from user-role.ts, kept here under the same
   // name so the template can call it.

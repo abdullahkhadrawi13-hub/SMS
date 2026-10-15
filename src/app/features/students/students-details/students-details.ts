@@ -20,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Students } from '../../../core/services/students';
 import { ApiMessageService } from '../../../core/services/api-message';
 import { AttendanceAccessService } from '../../../core/services/attendance-access';
+import { Permissions } from '../../../core/services/permissions';
 import { getRoleTranslationKey } from '../../../core/models/user-role';
 
 import { AttendanceHistory } from '../../attendance/attendance-history/attendance-history';
@@ -52,6 +53,7 @@ export class StudentsDetails {
   private readonly studentsService = inject(Students);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly attendanceAccess = inject(AttendanceAccessService);
+  private readonly permissions = inject(Permissions);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly dialogRef =
@@ -68,6 +70,10 @@ export class StudentsDetails {
   readonly canViewAttendance = this.attendanceAccess.fullAccess;
 
   readonly activeTab = signal<StudentDetailsTab>('details');
+
+  // The phone number and the "Account Information" section
+  // are for Admin and AssistantPrincipal only (hidden from a teacher).
+  readonly canViewPrivateInfo = this.permissions.canViewStudentPrivateInfo;
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -129,21 +135,25 @@ export class StudentsDetails {
       });
   }
 
+  // The name in the language of the page (used in the profile header).
   getStudentName(student: Student): string {
-    const language = document.documentElement.lang;
+    return document.documentElement.lang === 'ar'
+      ? this.getStudentNameAr(student) || this.getStudentNameEn(student)
+      : this.getStudentNameEn(student) || this.getStudentNameAr(student);
+  }
 
-    if (language === 'ar') {
+  getStudentNameAr(student: Student): string {
+    return [
+      student.firstNameAr,
+      student.fatherNameAr,
+      student.grandFatherNameAr,
+      student.familyNameAr
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
 
-      return [
-        student.firstNameAr,
-        student.fatherNameAr,
-        student.grandFatherNameAr,
-        student.familyNameAr
-      ]
-        .filter(Boolean)
-        .join(' ');
-    }
-
+  getStudentNameEn(student: Student): string {
     return [
       student.firstNameEn,
       student.fatherNameEn,
@@ -152,6 +162,28 @@ export class StudentsDetails {
     ]
       .filter(Boolean)
       .join(' ');
+  }
+
+  // The first letter of the first name and of the family name,
+  // in the language of the page (the avatar of the profile header).
+  // A zero-width non-joiner (\u200C) keeps two Arabic letters
+  // apart, so they do not join into one word.
+  getInitials(student: Student): string {
+    const isArabic = document.documentElement.lang === 'ar';
+
+    const first = isArabic
+      ? student.firstNameAr || student.firstNameEn
+      : student.firstNameEn || student.firstNameAr;
+
+    const family = isArabic
+      ? student.familyNameAr || student.familyNameEn
+      : student.familyNameEn || student.familyNameAr;
+
+    return [first, family]
+      .map(name => name?.trim().charAt(0) ?? '')
+      .filter(Boolean)
+      .join('\u200C')
+      .toUpperCase();
   }
 
   // The class name comes with the student (classNameAr / classNameEn).

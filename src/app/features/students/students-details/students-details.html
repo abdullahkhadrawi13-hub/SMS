@@ -11,8 +11,13 @@
           {{ 'STUDENTS_DETAILS.TITLE' | translate }}
         </h2>
 
+        <!-- A teacher does not see the account information -->
         <p>
-          {{ 'STUDENTS_DETAILS.SUBTITLE' | translate }}
+          {{
+            (canViewPrivateInfo()
+              ? 'STUDENTS_DETAILS.SUBTITLE'
+              : 'STUDENTS_DETAILS.SUBTITLE_BASIC') | translate
+          }}
         </p>
       </div>
     </div>
@@ -124,10 +129,11 @@
       <!-- Student Information -->
       @else if (student(); as currentStudent) {
         <div class="dialog-content">
-          <!-- Student Profile -->
+
+          <!-- Student Profile: name (page language), number and status -->
           <div class="student-profile">
             <div class="student-avatar">
-              <mat-icon>person</mat-icon>
+              {{ getInitials(currentStudent) }}
             </div>
 
             <div class="student-name">
@@ -135,8 +141,9 @@
                 {{ getStudentName(currentStudent) }}
               </h2>
 
-              <span>
-                {{ currentStudent.studentNumber }}
+              <span class="student-number">
+                <mat-icon>tag</mat-icon>
+                <bdi>{{ currentStudent.studentNumber }}</bdi>
               </span>
             </div>
 
@@ -158,7 +165,7 @@
           <!-- Personal Information -->
           <section class="details-section">
             <div class="section-header">
-              <div class="section-icon">
+              <div class="section-icon personal">
                 <mat-icon>person</mat-icon>
               </div>
 
@@ -176,34 +183,68 @@
             <div class="details-grid">
               <div class="detail-item">
                 <span class="detail-label">
+                  {{ 'STUDENTS_DETAILS.NAME_AR' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  <bdi>{{ getStudentNameAr(currentStudent) || '-' }}</bdi>
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
+                  {{ 'STUDENTS_DETAILS.NAME_EN' | translate }}
+                </span>
+
+                <span class="detail-value">
+                  <bdi>{{ getStudentNameEn(currentStudent) || '-' }}</bdi>
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">
                   {{ 'STUDENTS.STUDENT_NUMBER' | translate }}
                 </span>
 
                 <span class="detail-value">
-                  {{ currentStudent.studentNumber }}
+                  <bdi>{{ currentStudent.studentNumber }}</bdi>
                 </span>
               </div>
 
-              <div class="detail-item">
-                <span class="detail-label">
-                  {{ 'STUDENTS.LOGIN_ID' | translate }}
-                </span>
+              <!-- Phone: Admin and Assistant Principal only -->
+              @if (canViewPrivateInfo()) {
+                <div class="detail-item">
+                  <span class="detail-label">
+                    {{ 'STUDENTS_DETAILS.PHONE' | translate }}
+                  </span>
 
-                <span class="detail-value">
-                  {{ currentStudent.loginId }}
-                </span>
+                  <span class="detail-value">
+                    <bdi>{{ currentStudent.phoneNumber || '-' }}</bdi>
+                  </span>
+                </div>
+              }
+            </div>
+          </section>
+
+          <!-- Academic Information -->
+          <section class="details-section">
+            <div class="section-header">
+              <div class="section-icon academic">
+                <mat-icon>school</mat-icon>
               </div>
 
-              <div class="detail-item">
-                <span class="detail-label">
-                  {{ 'STUDENTS_DETAILS.PHONE' | translate }}
-                </span>
+              <div>
+                <h3>
+                  {{ 'STUDENTS_DETAILS.ACADEMIC_INFORMATION' | translate }}
+                </h3>
 
-                <span class="detail-value">
-                  {{ currentStudent.phoneNumber || '-' }}
-                </span>
+                <p>
+                  {{ 'STUDENTS_DETAILS.ACADEMIC_INFORMATION_DESCRIPTION' | translate }}
+                </p>
               </div>
+            </div>
 
+            <div class="details-grid">
               <div class="detail-item">
                 <span class="detail-label">
                   {{ 'STUDENTS.CLASS' | translate }}
@@ -223,83 +264,72 @@
                   {{ getSectionName(currentStudent) }}
                 </span>
               </div>
-
-              <div class="detail-item">
-                <span class="detail-label">
-                  {{ 'STUDENTS_DETAILS.PASSWORD_STATUS' | translate }}
-                </span>
-
-                <span class="detail-value">
-                  {{
-                    currentStudent.mustChangePassword
-                      ? ('STUDENTS_DETAILS.MUST_CHANGE_PASSWORD' | translate)
-                      : ('STUDENTS_DETAILS.PASSWORD_NORMAL' | translate)
-                  }}
-                </span>
-              </div>
             </div>
           </section>
 
-          <!-- Account Information -->
-          <section class="details-section">
-            <div class="section-header">
-              <div class="section-icon">
-                <mat-icon>manage_accounts</mat-icon>
+          <!-- Account Information: Admin and Assistant Principal only -->
+          @if (canViewPrivateInfo()) {
+            <section class="details-section">
+              <div class="section-header">
+                <div class="section-icon account">
+                  <mat-icon>manage_accounts</mat-icon>
+                </div>
+
+                <div>
+                  <h3>
+                    {{ 'STUDENTS_DETAILS.ACCOUNT_INFORMATION' | translate }}
+                  </h3>
+
+                  <p>
+                    {{ 'STUDENTS_DETAILS.ACCOUNT_INFORMATION_DESCRIPTION' | translate }}
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <h3>
-                  {{ 'STUDENTS_DETAILS.ACCOUNT_INFORMATION' | translate }}
-                </h3>
+              <div class="details-grid">
+                <div class="detail-item">
+                  <span class="detail-label">
+                    {{ 'STUDENTS.LOGIN_ID' | translate }}
+                  </span>
 
-                <p>
-                  {{ 'STUDENTS_DETAILS.ACCOUNT_INFORMATION_DESCRIPTION' | translate }}
-                </p>
+                  <span class="detail-value">
+                    <bdi>{{ currentStudent.loginId }}</bdi>
+                  </span>
+                </div>
+
+                <div class="detail-item">
+                  <span class="detail-label">
+                    {{ 'STUDENTS_DETAILS.ROLE' | translate }}
+                  </span>
+
+                  <span class="detail-value">
+                    {{ getRoleTranslationKey(currentStudent.role) | translate }}
+                  </span>
+                </div>
+
+                <div class="detail-item">
+                  <span class="detail-label">
+                    {{ 'STUDENTS_DETAILS.PASSWORD_STATUS' | translate }}
+                  </span>
+
+                  <span
+                    class="password-badge"
+                    [class.must-change]="currentStudent.mustChangePassword"
+                  >
+                    <mat-icon>
+                      {{ currentStudent.mustChangePassword ? 'error_outline' : 'check_circle' }}
+                    </mat-icon>
+
+                    {{
+                      currentStudent.mustChangePassword
+                        ? ('STUDENTS_DETAILS.MUST_CHANGE_PASSWORD' | translate)
+                        : ('STUDENTS_DETAILS.PASSWORD_NORMAL' | translate)
+                    }}
+                  </span>
+                </div>
               </div>
-            </div>
-
-            <div class="details-grid">
-              <div class="detail-item">
-                <span class="detail-label">
-                  {{ 'STUDENTS.LOGIN_ID' | translate }}
-                </span>
-
-                <span class="detail-value">
-                  {{ currentStudent.loginId }}
-                </span>
-              </div>
-
-              <div class="detail-item">
-                <span class="detail-label">
-                  {{ 'STUDENTS_DETAILS.ROLE' | translate }}
-                </span>
-
-                <span class="detail-value">
-                  {{ getRoleTranslationKey(currentStudent.role) | translate }}
-                </span>
-              </div>
-
-              <div class="detail-item">
-                <span class="detail-label">
-                  {{ 'STUDENTS_DETAILS.ACCOUNT_STATUS' | translate }}
-                </span>
-
-                <span
-                  class="status-badge inline"
-                  [class.active]="currentStudent.isActive"
-                  [class.inactive]="!currentStudent.isActive"
-                >
-                  <span class="status-dot"></span>
-
-                  {{
-                    currentStudent.isActive
-                      ? ('STUDENTS.ACTIVE' | translate)
-                      : ('STUDENTS.INACTIVE' | translate)
-                  }}
-                </span>
-              </div>
-            </div>
-          </section>
+            </section>
+          }
         </div>
 
         <!-- Dialog Footer -->

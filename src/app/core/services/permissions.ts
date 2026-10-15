@@ -34,6 +34,10 @@ export class Permissions {
     () => this.role() === UserRole.Admin
   );
 
+  readonly isAssistantPrincipal = computed(
+    () => this.role() === UserRole.AssistantPrincipal
+  );
+
   readonly isTeacher = computed(
     () => this.role() === UserRole.Teacher
   );
@@ -45,6 +49,15 @@ export class Permissions {
   // AssistantPrincipal reads every student, a teacher reads their own students.
   readonly canManageStudents = computed(
     () => this.isAdmin()
+  );
+
+  // The student's phone number and account information
+  // (login id, role, password status): Admin and AssistantPrincipal only.
+  // A teacher sees the student's name, number, class and section.
+  // The rule names who is allowed (not who is blocked), so a new role
+  // (e.g. Parent) does not see this information until it is added here.
+  readonly canViewStudentPrivateInfo = computed(
+    () => this.isAdmin() || this.isAssistantPrincipal()
   );
 
 

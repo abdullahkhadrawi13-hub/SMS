@@ -55,9 +55,9 @@
 
   border-radius: 10px;
 
-  background: #eff6ff;
+  background: #e1f5ee;
 
-  color: #2563eb;
+  color: #085041;
 }
 
 .header-icon mat-icon {
@@ -118,7 +118,7 @@
 
 
 /* ================================
-   Student Profile
+   Student Profile (teal card)
    ================================ */
 
 .student-profile {
@@ -127,12 +127,15 @@
 
   gap: 16px;
 
-  padding-bottom: 24px;
-  margin-bottom: 24px;
+  padding: 16px;
+  margin-bottom: 18px;
 
-  border-bottom: 1px solid #f1f5f9;
+  border-radius: 14px;
+
+  background: #e1f5ee;
 }
 
+/* Initials of the student */
 .student-avatar {
   width: 60px;
   height: 60px;
@@ -145,16 +148,12 @@
 
   border-radius: 50%;
 
-  background: #f1f5f9;
+  background: #0f6e56;
 
-  color: #475569;
-}
+  color: #ffffff;
 
-.student-avatar mat-icon {
-  width: 30px;
-  height: 30px;
-
-  font-size: 30px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .student-name {
@@ -165,23 +164,34 @@
 .student-name h2 {
   margin: 0;
 
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 600;
   line-height: 1.4;
 
-  color: #111827;
+  color: #04342c;
 
   word-break: break-word;
 }
 
-.student-name span {
-  display: block;
+.student-number {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
 
   margin-top: 4px;
 
-  color: #6b7280;
+  color: #0f6e56;
 
   font-size: 13px;
+  font-weight: 500;
+}
+
+.student-number mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
 }
 
 
@@ -190,7 +200,11 @@
    ================================ */
 
 .details-section {
-  margin-bottom: 24px;
+  margin-bottom: 14px;
+  padding: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
 }
 
 .details-section:last-child {
@@ -203,12 +217,12 @@
 
   gap: 12px;
 
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .section-icon {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
 
   flex-shrink: 0;
 
@@ -216,11 +230,29 @@
   align-items: center;
   justify-content: center;
 
+  box-sizing: border-box;
+
   border-radius: 9px;
+}
 
-  background: #f8fafc;
+/* Each section has its own color:
+   light background, colored icon and a thin border */
+.section-icon.personal {
+  background: #eeedfe;
+  color: #534ab7;
+  border: 1px solid #afa9ec;
+}
 
-  color: #475569;
+.section-icon.academic {
+  background: #faeeda;
+  color: #854f0b;
+  border: 1px solid #fac775;
+}
+
+.section-icon.account {
+  background: #fbeaf0;
+  color: #993556;
+  border: 1px solid #ed93b1;
 }
 
 .section-icon mat-icon {
@@ -233,7 +265,7 @@
 .section-header h3 {
   margin: 0;
 
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   line-height: 1.4;
 
@@ -241,7 +273,7 @@
 }
 
 .section-header p {
-  margin: 3px 0 0;
+  margin: 2px 0 0;
 
   color: #6b7280;
 
@@ -252,24 +284,32 @@
 
 /* ================================
    Details Grid
+   Always two columns: when the phone is hidden (teacher),
+   the student number keeps half the width.
    ================================ */
 
 .details-grid {
   display: grid;
 
   grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+    repeat(2, minmax(0, 1fr));
 
-  gap: 18px;
+  gap: 10px;
 }
 
 .detail-item {
   display: flex;
   flex-direction: column;
 
-  gap: 6px;
+  gap: 4px;
 
   min-width: 0;
+
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  background: #f8fafc;
 }
 
 .detail-label {
@@ -301,8 +341,9 @@
   gap: 7px;
 
   width: fit-content;
+  flex-shrink: 0;
 
-  padding: 5px 10px;
+  padding: 5px 12px;
 
   border-radius: 999px;
 
@@ -311,17 +352,13 @@
 }
 
 .status-badge.active {
-  background: #ecfdf5;
+  background: #ffffff;
   color: #047857;
 }
 
 .status-badge.inactive {
   background: #fef2f2;
   color: #b91c1c;
-}
-
-.status-badge.inline {
-  margin-top: 1px;
 }
 
 .status-dot {
@@ -333,6 +370,43 @@
   border-radius: 50%;
 
   background: currentColor;
+}
+
+
+/* ================================
+   Password Status
+   green = up to date, orange = must change
+   ================================ */
+
+.password-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  width: fit-content;
+
+  padding: 3px 10px;
+
+  border-radius: 999px;
+
+  background: #ecfdf5;
+  color: #047857;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.password-badge.must-change {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.password-badge mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
 }
 
 
@@ -404,13 +478,6 @@
     padding: 18px;
   }
 
-  .details-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-
-    gap: 16px;
-  }
-
   .student-profile {
     align-items: flex-start;
   }
@@ -456,13 +523,12 @@
   .student-avatar {
     width: 50px;
     height: 50px;
+
+    font-size: 17px;
   }
 
-  .student-avatar mat-icon {
-    width: 26px;
-    height: 26px;
-
-    font-size: 26px;
+  .details-section {
+    padding: 14px;
   }
 
   .student-name h2 {

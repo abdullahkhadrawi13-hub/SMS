@@ -126,9 +126,9 @@
   },
 
   "STUDENTS": {
-    "TITLE": "Students",
+    "TITLE": "Student Management",
 
-    "SUBTITLE": "Manage and view student information",
+    "SUBTITLE": "Manage student information and accounts",
 
     "ADD_STUDENT": "Add Student",
 
@@ -187,6 +187,7 @@
   "STUDENTS_DETAILS": {
     "TITLE": "Student Details",
     "SUBTITLE": "View student information and account details",
+    "SUBTITLE_BASIC": "View student information",
     "BACK": "Back to Students",
     "EDIT": "Edit Student",
     "LOADING": "Loading student...",
@@ -194,7 +195,7 @@
     "INVALID_ID": "Invalid student ID.",
     "LOAD_FAILED": "Failed to load student. Please try again.",
     "PERSONAL_INFORMATION": "Personal Information",
-    "PERSONAL_INFORMATION_DESCRIPTION": "Student personal and academic information",
+    "PERSONAL_INFORMATION_DESCRIPTION": "Basic student information",
     "ACCOUNT_INFORMATION": "Account Information",
     "ACCOUNT_INFORMATION_DESCRIPTION": "Student account and access information",
     "PHONE": "Phone Number",
@@ -205,7 +206,11 @@
     "ACCOUNT_STATUS": "Account Status",
     "CLOSE": "Close",
     "TAB_DETAILS": "Details",
-    "TAB_ATTENDANCE": "Attendance"
+    "TAB_ATTENDANCE": "Attendance",
+    "ACADEMIC_INFORMATION": "Academic Information",
+    "ACADEMIC_INFORMATION_DESCRIPTION": "The class and section the student studies in",
+    "NAME_AR": "Name in Arabic",
+    "NAME_EN": "Name in English"
   },
 
   "ROLES": {
@@ -310,7 +315,7 @@
 
   "SECTIONS": {
     "TITLE": "Section Management",
-    "SUBTITLE": "Manage sections",
+    "SUBTITLE": "Manage section information and classes",
     "ADD_SECTION": "Add Section",
     "FILTER": "Filter",
 
