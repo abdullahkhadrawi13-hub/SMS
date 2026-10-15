@@ -276,9 +276,12 @@
   color: #92400e;
 }
 
+/* No subjects left to add: amber background with a border,
+   so it is noticed (the gray version was easy to miss). */
 .message-card.info {
-  background: #f1f5f9;
-  color: #374151;
+  background: #faeeda;
+  color: #633806;
+  border: 1px solid #fac775;
 }
 
 .form-note {
