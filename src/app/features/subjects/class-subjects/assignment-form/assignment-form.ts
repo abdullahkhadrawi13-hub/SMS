@@ -27,16 +27,14 @@ import { catchError, debounceTime, filter, map, of, switchMap, tap } from 'rxjs'
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../../core/services/api-message';
-import { SubjectDto } from '../../../../core/services/subjects';
-import {
-  TeacherAssignment,
-  TeacherAssignmentsService,
-} from '../../../../core/services/teacher-assignments';
+import { SubjectDto } from '../../../../core/models/subject';
+import { TeacherAssignmentsService } from '../../../../core/services/teacher-assignments';
 import { TeachersService } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
 
 import { DEFAULT_PASSING_MARK, getTeacherFullName } from '../../subject';
 import { TeacherListDto } from '../../../../core/models/teacher';
+import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 
 // Data passed by the parent (class-subjects) when the dialog is opened.

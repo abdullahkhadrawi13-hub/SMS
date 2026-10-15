@@ -10,13 +10,11 @@ import { catchError, of } from 'rxjs';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
 import { SectionsService } from '../../../core/services/sections';
-import {
-  TeacherAssignment,
-  TeacherAssignmentsService
-} from '../../../core/services/teacher-assignments';
+import { TeacherAssignmentsService } from '../../../core/services/teacher-assignments';
 import { Permissions } from '../../../core/services/permissions';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 import { SectionSimpleDto } from '../../../core/models/section';
+import { TeacherAssignment } from '../../../core/models/teacher-assignment';
 
 export interface StudentFilterValues {
   classId: number | null;

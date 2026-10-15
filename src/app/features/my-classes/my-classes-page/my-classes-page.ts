@@ -17,14 +17,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../core/services/api-message';
 import { Language } from '../../../core/services/language';
-import {
-  TeacherAssignment,
-  TeacherAssignmentsService,
-} from '../../../core/services/teacher-assignments';
+import { TeacherAssignmentsService } from '../../../core/services/teacher-assignments';
 
 import { MyClassesStats as MyClassesStatsData, MyClassGroup } from '../my-class';
 import { MyClassesStats } from '../my-classes-stats/my-classes-stats';
 import { MyClassCard } from '../my-class-card/my-class-card';
+import { TeacherAssignment } from '../../../core/models/teacher-assignment';
 
 
 // "My classes" for the teacher (parent page).

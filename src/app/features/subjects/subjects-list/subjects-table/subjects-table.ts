@@ -9,7 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { SubjectDto } from '../../../../core/services/subjects';
+import { SubjectDto } from '../../../../core/models/subject';
 
 
 @Component({

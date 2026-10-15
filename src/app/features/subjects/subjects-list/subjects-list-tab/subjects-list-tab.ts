@@ -16,10 +16,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-import {
-  SubjectDto,
-  SubjectsService,
-} from '../../../../core/services/subjects';
+import { SubjectsService } from '../../../../core/services/subjects';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { ActionResult } from '../../../../shared/services/action-result';
 
@@ -33,6 +30,7 @@ import {
   SubjectFormData,
   SubjectsForm,
 } from '../subjects-form/subjects-form';
+import { SubjectDto } from '../../../../core/models/subject';
 
 
 // The "Subjects list" tab: every school subject (SMS API Reference, section 6).
