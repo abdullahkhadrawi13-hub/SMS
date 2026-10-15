@@ -43,12 +43,10 @@ import { AttendanceService } from '../../../core/services/attendance';
 import { AttendanceAccessService } from '../../../core/services/attendance-access';
 import { Language } from '../../../core/services/language';
 import { SchoolClassesService } from '../../../core/services/school-classes';
-import {
-  ActiveSectionDto,
-  SectionsService
-} from '../../../core/services/sections';
+import { SectionsService } from '../../../core/services/sections';
 import { ActionResult } from '../../../shared/services/action-result';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
+import { ActiveSectionDto } from '../../../core/models/section';
 
 // The result of one save request (one POST or one PUT).
 // The message always comes from the backend (Arabic or English).

@@ -9,16 +9,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
-import {
-  SectionSimpleDto,
-  SectionsService
-} from '../../../core/services/sections';
+import { SectionsService } from '../../../core/services/sections';
 import {
   TeacherAssignment,
   TeacherAssignmentsService
 } from '../../../core/services/teacher-assignments';
 import { Permissions } from '../../../core/services/permissions';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
+import { SectionSimpleDto } from '../../../core/models/section';
 
 export interface StudentFilterValues {
   classId: number | null;

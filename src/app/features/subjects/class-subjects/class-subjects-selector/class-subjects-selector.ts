@@ -6,7 +6,7 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ActiveSectionDto } from '../../../../core/services/sections';
+import { ActiveSectionDto } from '../../../../core/models/section';
 import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
 import { getTermLabel as formatTermLabel, TermOption } from '../../subject';
 

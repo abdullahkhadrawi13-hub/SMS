@@ -4,43 +4,15 @@ import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
 import { PagedResult } from '../models/paged-result';
-import { Section } from '../../features/sections/section';
+import {
+  Section,
+  SectionSimpleDto,
+  ActiveSectionDto,
+  CreateSectionRequest,
+  UpdateSectionRequest,
+  SectionFilters
+} from '../models/section';
 import { environment } from '../../../environments/environment';
-
-export interface SectionSimpleDto {
-  sectionId: number;
-  classId: number;
-  sectionAr: string;
-  sectionEn: string;
-  isActive: boolean;
-}
-
-export interface ActiveSectionDto {
-  sectionId: number;
-  sectionAr: string;
-  sectionEn: string;
-}
-
-export interface CreateSectionRequest {
-  classId: number;
-  sectionAr: string;
-  sectionEn: string;
-}
-
-export interface UpdateSectionRequest {
-  sectionAr: string;
-  sectionEn: string;
-}
-
-export interface SectionFilters {
-  academicYearId?: number;
-  academicTermId?: number;
-  classId?: number;
-  sectionId?: number;
-  isActive?: boolean;
-  pageNumber?: number;
-  pageSize?: number;
-}
 
 @Injectable({
   providedIn: 'root'

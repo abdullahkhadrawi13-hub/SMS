@@ -16,10 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
-import {
-  SectionSimpleDto,
-  SectionsService
-} from '../../../core/services/sections';
+import { SectionsService } from '../../../core/services/sections';
 import {
   AcademicYear,
   AcademicYearsService
@@ -29,6 +26,7 @@ import {
   AcademicTermsService
 } from '../../../core/services/academic-terms';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
+import { SectionSimpleDto } from '../../../core/models/section';
 
 export interface SectionFilterData {
   classId?: number;

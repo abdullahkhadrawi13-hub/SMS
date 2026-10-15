@@ -30,10 +30,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
 
-import {
-  ActiveSectionDto,
-  SectionsService
-} from '../../../core/services/sections';
+import { SectionsService } from '../../../core/services/sections';
 
 import {
   CreateStudentRequest,
@@ -49,6 +46,7 @@ import { ActionResult } from '../../../shared/services/action-result';
 import { Language } from '../../../core/services/language';
 
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
+import { ActiveSectionDto } from '../../../core/models/section';
 
 
 export interface StudentFormDialogData {
