@@ -7,11 +7,13 @@ export interface SchoolClass {
   isActive: boolean;
 }
 
+
 export interface SchoolClassSimpleDto {
   schoolClassId: number;
   classNameAr: string;
   classNameEn: string;
 }
+
 
 export interface CreateSchoolClassRequest {
   classNameAr: string;
@@ -19,6 +21,7 @@ export interface CreateSchoolClassRequest {
   level: number;
   isGraduationGrade: boolean;
 }
+
 
 export interface UpdateSchoolClassRequest {
   classNameAr: string;

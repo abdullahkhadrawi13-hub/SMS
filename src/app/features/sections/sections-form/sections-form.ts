@@ -21,7 +21,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
-import { SchoolClassSimpleDto } from '../../classes/school-class';
+import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 
 export interface SectionFormData {
   mode: 'add' | 'edit';

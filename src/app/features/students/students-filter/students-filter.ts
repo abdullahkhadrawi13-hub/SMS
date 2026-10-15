@@ -18,7 +18,7 @@ import {
   TeacherAssignmentsService
 } from '../../../core/services/teacher-assignments';
 import { Permissions } from '../../../core/services/permissions';
-import { SchoolClassSimpleDto } from '../../classes/school-class';
+import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 
 export interface StudentFilterValues {
   classId: number | null;

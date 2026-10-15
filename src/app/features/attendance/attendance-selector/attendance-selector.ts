@@ -10,7 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../core/services/language';
 import { ActiveSectionDto } from '../../../core/services/sections';
-import { SchoolClassSimpleDto } from '../../classes/school-class';
+import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 import {
   formatAttendanceDate,
   fromApiDate,

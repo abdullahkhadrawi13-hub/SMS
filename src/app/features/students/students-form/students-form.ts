@@ -48,7 +48,7 @@ import { ActionResult } from '../../../shared/services/action-result';
 
 import { Language } from '../../../core/services/language';
 
-import { SchoolClassSimpleDto } from '../../classes/school-class';
+import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 
 
 export interface StudentFormDialogData {
