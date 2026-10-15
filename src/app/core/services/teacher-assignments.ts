@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { environment } from '../../../environments/environment';
 
 
 // One teacher assignment (TeacherAssignmentDto, SMS API Reference, section 8).
@@ -82,7 +83,7 @@ export class TeacherAssignmentsService {
 
   // Base URL of the TeacherAssignments API.
   private readonly apiUrl =
-    'http://localhost:5253/api/teacherassignments';
+    `${environment.apiUrl}/teacherassignments`;
 
   private readonly http = inject(HttpClient);
 

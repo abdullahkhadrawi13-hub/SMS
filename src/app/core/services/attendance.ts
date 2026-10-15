@@ -13,6 +13,7 @@ import {
   RecordAttendanceRequest,
   UpdateAttendanceRequest
 } from '../../features/attendance/attendance';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class AttendanceService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl =
-    'http://localhost:5253/api/attendance';
+    `${environment.apiUrl}/attendance`;
 
 
   // GET /api/attendance/my-access   (Admin, AssistantPrincipal, Teacher)

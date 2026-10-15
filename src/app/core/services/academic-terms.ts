@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { environment } from '../../../environments/environment';
 
 export interface AcademicTerm {
   academicTermId: number;
@@ -24,7 +25,7 @@ export class AcademicTermsService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl =
-    'http://localhost:5253/api/academicterms';
+    `${environment.apiUrl}/academicterms`;
 
 
   // GET /api/academicterms

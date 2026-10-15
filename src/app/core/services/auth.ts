@@ -7,6 +7,7 @@ import { LoginRequest } from '../models/login-request';
 import { LoginResponse } from '../models/login-response';
 import { ChangePasswordRequest } from '../models/change-password-request';
 import { User } from './user';
+import { environment } from '../../../environments/environment';
 
 // مفتاح تخزين رمز الدخول (JWT).
 // هذه الخدمة هي المكان الوحيد الذي يحفظ الرمز أو يقرؤه أو يحذفه.
@@ -21,7 +22,7 @@ export class Auth {
   private http = inject(HttpClient);
   private user = inject(User);
 
-  private readonly baseUrl = 'http://localhost:5253/api/Auth';
+  private readonly baseUrl = `${environment.apiUrl}/Auth`;
 
   // الرمز محفوظ في sessionStorage (نفس مكان بيانات المستخدم في User):
   // تحديث الصفحة يحافظ على الجلسة، وإغلاق التبويب ينهيها.

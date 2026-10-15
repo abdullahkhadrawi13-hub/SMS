@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { environment } from '../../../environments/environment';
 
 
 // One subject returned by the API (SMS API Reference, section 6).
@@ -32,7 +33,7 @@ export class SubjectsService {
 
   // Base URL of the Subjects API.
   private readonly apiUrl =
-    'http://localhost:5253/api/subjects';
+    `${environment.apiUrl}/subjects`;
 
   private readonly http = inject(HttpClient);
 

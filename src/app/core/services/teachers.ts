@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
 import { UserRole } from '../models/user-role';
+import { environment } from '../../../environments/environment';
 
 
 // Represents one teacher returned by the API.
@@ -84,7 +85,7 @@ export class TeachersService {
 
   // Base URL of the Teachers API.
   private readonly apiUrl =
-    'http://localhost:5253/api/teachers';
+    `${environment.apiUrl}/teachers`;
 
   private readonly http = inject(HttpClient);
 

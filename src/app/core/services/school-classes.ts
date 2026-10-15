@@ -9,6 +9,7 @@ import {
   CreateSchoolClassRequest,
   UpdateSchoolClassRequest
 } from '../../features/classes/school-class';
+import { environment } from '../../../environments/environment';
 
 export interface SchoolClassPagedResult {
   items: SchoolClass[];
@@ -26,7 +27,7 @@ export class SchoolClassesService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl =
-    'http://localhost:5253/api/SchoolClasses';
+    `${environment.apiUrl}/SchoolClasses`;
 
   // GET /api/SchoolClasses
   getSchoolClasses(

@@ -15,7 +15,7 @@ const schoolSettingsRoutes = require('./routes/school-settings.routes');
 const subjectsRoutes = require('./routes/subjects.routes');
 const teacherAssignmentsRoutes = require('./routes/teacher-assignments.routes');
 
-const PORT =5253;
+const PORT =3000;
 
 const server = http.createServer((req, res) => {
 

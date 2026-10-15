@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
 import { Section } from '../../features/sections/section';
+import { environment } from '../../../environments/environment';
 
 export interface SectionPagedResult {
   items: Section[];
@@ -56,7 +57,7 @@ export class SectionsService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl =
-    'http://localhost:5253/api/Sections';
+    `${environment.apiUrl}/Sections`;
 
 
   // GET /api/Sections

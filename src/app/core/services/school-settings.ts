@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class SchoolSettingsService {
   private readonly http = inject(HttpClient);
 
   // Base URL for School Settings API.
-  private readonly apiUrl = 'http://localhost:5253/api/schoolsettings';
+  private readonly apiUrl = `${environment.apiUrl}/schoolsettings`;
 
   // Get the current attendance officer teacher ID.
   // The API returns the teacherId directly in data,

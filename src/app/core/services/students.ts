@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
 import { Student } from '../../features/students/student';
+import { environment } from '../../../environments/environment';
 
 export interface PagedResult<T> {
   items: T[];
@@ -43,7 +44,7 @@ export class Students {
 
   private http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:5253/api/Students';
+  private readonly apiUrl = `${environment.apiUrl}/Students`;
 
 
   getStudents(
