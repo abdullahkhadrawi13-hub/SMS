@@ -12,10 +12,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import {
-  Students,
-  PagedResult
-} from '../../../core/services/students';
+import { Students } from '../../../core/services/students';
+import { PagedResult } from '../../../core/models/paged-result';
 
 import { ApiMessageService } from '../../../core/services/api-message';
 import { Permissions } from '../../../core/services/permissions';

@@ -1,18 +1,11 @@
 import { Routes } from '@angular/router';
 
-import { roleGuard } from '../../core/guards/role-guard';
-import { UserRole } from '../../core/models/user-role';
-
+// roleGuard للمواد موجود في app.routes.ts مثل باقي الأقسام
 export const SUBJECTS_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./subjects-page/subjects-page').then(
-        (m) => m.SubjectsPage
-      ),
-    canActivate: [roleGuard],
-    data: {
-      roles: [UserRole.Admin, UserRole.AssistantPrincipal],
-    },
-  },
-];
+      import('./subjects-page/subjects-page')
+        .then(m => m.SubjectsPage)
+  }
+];

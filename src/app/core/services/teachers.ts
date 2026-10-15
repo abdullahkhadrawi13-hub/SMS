@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { PagedResult } from '../models/paged-result';
 import { UserRole } from '../models/user-role';
 import { environment } from '../../../environments/environment';
 
@@ -31,15 +32,6 @@ export interface TeacherListDto {
   role: UserRole;
 }
 
-
-// Represents the paginated response returned by the API.
-export interface TeacherPagedResult {
-  items: TeacherListDto[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-}
 
 
 // Data required when creating a teacher.
@@ -96,7 +88,7 @@ export class TeachersService {
     pageSize = 10,
     search?: string,
     isActive?: boolean
-  ): Observable<ApiResponse<TeacherPagedResult>> {
+  ): Observable<ApiResponse<PagedResult<TeacherListDto>>> {
 
     let params = new HttpParams()
       .set('pageNumber', pageNumber)
@@ -110,7 +102,7 @@ export class TeachersService {
       params = params.set('isActive', isActive);
     }
 
-    return this.http.get<ApiResponse<TeacherPagedResult>>(
+    return this.http.get<ApiResponse<PagedResult<TeacherListDto>>>(
       this.apiUrl,
       { params }
     );

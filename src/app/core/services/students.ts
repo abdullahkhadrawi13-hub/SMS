@@ -4,16 +4,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { PagedResult } from '../models/paged-result';
 import { Student } from '../../features/students/student';
 import { environment } from '../../../environments/environment';
-
-export interface PagedResult<T> {
-  items: T[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-}
 
 export interface StudentRequest {
   firstNameAr: string;

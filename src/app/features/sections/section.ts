@@ -11,11 +11,3 @@ export interface Section {
   studentCount: number;
   isActive: boolean;
 }
-
-export interface PagedResult<T> {
-  items: T[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-}

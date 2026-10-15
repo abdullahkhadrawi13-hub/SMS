@@ -43,7 +43,9 @@ export const routes: Routes = [
   },
 
   // كل الصفحات المحمية داخل الـ Layout (navbar + sidebar)
+  // authGuard هنا يحمي كل الأبناء، فلا نكرره داخلهم
   // mustChangePasswordGuard: لا دخول لأي صفحة قبل تغيير كلمة المرور المؤقتة
+  // roleGuard + data.roles: يوضعان هنا لكل قسم (وليس داخل ملف routes الخاص بالقسم)
   {
     path: '',
     component: DashboardLayout,
@@ -72,7 +74,7 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/classes/classes.routes')
             .then(m => m.CLASSES_ROUTES),
-        canActivate: [authGuard, roleGuard],
+        canActivate: [roleGuard],
         data: {
           roles: [UserRole.Admin, UserRole.AssistantPrincipal]
         }
@@ -83,7 +85,7 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/sections/sections.routes')
             .then(m => m.SECTIONS_ROUTES),
-        canActivate: [authGuard, roleGuard],
+        canActivate: [roleGuard],
         data: {
           roles: [UserRole.Admin, UserRole.AssistantPrincipal]
         }
@@ -94,9 +96,12 @@ export const routes: Routes = [
       {
         path: 'teachers',
         loadChildren: () =>
-          import('./features/teachers/teachers.routes').then(
-            (m) => m.TEACHER_ROUTES
-          ),
+          import('./features/teachers/teachers.routes')
+            .then(m => m.TEACHER_ROUTES),
+        canActivate: [roleGuard],
+        data: {
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal]
+        }
       },
 
 
@@ -105,7 +110,7 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/subjects/subjects.routes')
             .then(m => m.SUBJECTS_ROUTES),
-        canActivate: [authGuard, roleGuard],
+        canActivate: [roleGuard],
         data: {
           roles: [UserRole.Admin, UserRole.AssistantPrincipal]
         }
@@ -121,7 +126,7 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/my-classes/my-classes.routes')
             .then(m => m.MY_CLASSES_ROUTES),
-        canActivate: [authGuard, roleGuard],
+        canActivate: [roleGuard],
         data: {
           roles: [UserRole.Teacher]
         }
@@ -143,7 +148,7 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/settings/settings.routes')
             .then(m => m.SETTINGS_ROUTES),
-        canActivate: [authGuard, roleGuard],
+        canActivate: [roleGuard],
         data: {
           roles: [UserRole.Admin]
         }
@@ -152,8 +157,6 @@ export const routes: Routes = [
 
 
 
-      // لاحقًا بنفس الطريقة:
-      // teachers, parents, classes, sections, subjects ...
 
 
 

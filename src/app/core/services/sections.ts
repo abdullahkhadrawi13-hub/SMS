@@ -3,16 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { PagedResult } from '../models/paged-result';
 import { Section } from '../../features/sections/section';
 import { environment } from '../../../environments/environment';
-
-export interface SectionPagedResult {
-  items: Section[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-}
 
 export interface SectionSimpleDto {
   sectionId: number;
@@ -63,7 +56,7 @@ export class SectionsService {
   // GET /api/Sections
   getSections(
     filters: SectionFilters = {}
-  ): Observable<ApiResponse<SectionPagedResult>> {
+  ): Observable<ApiResponse<PagedResult<Section>>> {
 
     let params = new HttpParams();
 
@@ -112,7 +105,7 @@ export class SectionsService {
       filters.pageSize ?? 10
     );
 
-    return this.http.get<ApiResponse<SectionPagedResult>>(
+    return this.http.get<ApiResponse<PagedResult<Section>>>(
       this.apiUrl,
       { params }
     );

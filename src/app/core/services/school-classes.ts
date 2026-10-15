@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { PagedResult } from '../models/paged-result';
 import {
   SchoolClass,
   SchoolClassSimpleDto,
@@ -10,14 +11,6 @@ import {
   UpdateSchoolClassRequest
 } from '../../features/classes/school-class';
 import { environment } from '../../../environments/environment';
-
-export interface SchoolClassPagedResult {
-  items: SchoolClass[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -33,14 +26,14 @@ export class SchoolClassesService {
   getSchoolClasses(
     pageNumber: number = 1,
     pageSize: number = 10
-  ): Observable<ApiResponse<SchoolClassPagedResult>> {
+  ): Observable<ApiResponse<PagedResult<SchoolClass>>> {
 
     const params = new HttpParams()
       .set('pageNumber', pageNumber)
       .set('pageSize', pageSize);
 
     return this.http.get<
-      ApiResponse<SchoolClassPagedResult>
+      ApiResponse<PagedResult<SchoolClass>>
     >(this.apiUrl, { params });
   }
 
