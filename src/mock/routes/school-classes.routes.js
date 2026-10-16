@@ -137,7 +137,12 @@ function schoolClassesRoutes(req, res) {
       1
     );
 
-    const totalCount = schoolClasses.length;
+    // Sorted by level, like the school order.
+    const sortedClasses = [...schoolClasses].sort(
+      (a, b) => a.level - b.level
+    );
+
+    const totalCount = sortedClasses.length;
 
     const totalPages = Math.ceil(
       totalCount / pageSize
@@ -146,7 +151,7 @@ function schoolClassesRoutes(req, res) {
     const startIndex =
       (pageNumber - 1) * pageSize;
 
-    const items = schoolClasses.slice(
+    const items = sortedClasses.slice(
       startIndex,
       startIndex + pageSize
     );
@@ -206,6 +211,41 @@ function schoolClassesRoutes(req, res) {
         }
 
 
+        // Level must be a whole number above 0
+        if (!Number.isInteger(Number(level)) || Number(level) <= 0) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'المستوى يجب أن يكون رقمًا صحيحًا أكبر من 0',
+            messageEn: 'Level must be a whole number greater than 0',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // Duplicate names (Arabic / English)
+        const duplicateName = schoolClasses.some(
+          item =>
+            item.classNameAr.trim() === String(classNameAr).trim() ||
+            item.classNameEn.trim().toLowerCase() ===
+              String(classNameEn).trim().toLowerCase()
+        );
+
+        if (duplicateName) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'يوجد صف بنفس الاسم',
+            messageEn: 'A school class with the same name already exists',
+            data: null
+          });
+
+          return;
+        }
+
+
         // Duplicate level
         const duplicateLevel = schoolClasses.some(
           item => item.level === Number(level)
@@ -213,7 +253,7 @@ function schoolClassesRoutes(req, res) {
 
         if (duplicateLevel) {
 
-          sendJson(res, 409, {
+          sendJson(res, 400, {
             success: false,
             messageAr: 'يوجد صف بنفس المستوى',
             messageEn: 'A school class with the same level already exists',
@@ -323,6 +363,42 @@ function schoolClassesRoutes(req, res) {
         }
 
 
+        if (!Number.isInteger(Number(level)) || Number(level) <= 0) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'المستوى يجب أن يكون رقمًا صحيحًا أكبر من 0',
+            messageEn: 'Level must be a whole number greater than 0',
+            data: null
+          });
+
+          return;
+        }
+
+
+        const duplicateName = schoolClasses.some(
+          item =>
+            item.schoolClassId !== schoolClassId &&
+            (
+              item.classNameAr.trim() === String(classNameAr).trim() ||
+              item.classNameEn.trim().toLowerCase() ===
+                String(classNameEn).trim().toLowerCase()
+            )
+        );
+
+        if (duplicateName) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'يوجد صف آخر بنفس الاسم',
+            messageEn: 'Another school class with the same name already exists',
+            data: null
+          });
+
+          return;
+        }
+
+
         const duplicateLevel = schoolClasses.some(
           item =>
             item.schoolClassId !== schoolClassId &&
@@ -331,7 +407,7 @@ function schoolClassesRoutes(req, res) {
 
         if (duplicateLevel) {
 
-          sendJson(res, 409, {
+          sendJson(res, 400, {
             success: false,
             messageAr: 'يوجد صف آخر بنفس المستوى',
             messageEn: 'Another school class with the same level already exists',

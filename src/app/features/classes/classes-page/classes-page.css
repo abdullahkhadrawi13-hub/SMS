@@ -10,11 +10,11 @@
 
 
 /* ================================
-   Page Content
+   Responsive
    ================================ */
 
-.page-content {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+@media (max-width: 650px) {
+  .classes-page {
+    padding: 16px;
+  }
 }

@@ -1,10 +1,21 @@
 <div class="classes-page">
-  <div class="page-content">
-    <app-classes-header
-      [canManage]="canManage()"
-      (addClass)="openAddClass()"
-    />
 
-    <!-- Classes table will be added later -->
-  </div>
+  <!-- Page Header -->
+  <app-classes-header
+    [canManage]="canManage()"
+    (addClass)="openAddClass()"
+  />
+
+  <!-- Classes Table (error / loading / table / empty state) -->
+  <app-classes-table
+    [classes]="classes()"
+    [isLoading]="isLoading()"
+    [errorMessage]="errorMessage()"
+    [canManage]="canManage()"
+    [togglingClassId]="togglingClassId()"
+    (retry)="retry()"
+    (editClass)="openEditClass($event)"
+    (toggleStatus)="toggleClassStatus($event)"
+  />
+
 </div>

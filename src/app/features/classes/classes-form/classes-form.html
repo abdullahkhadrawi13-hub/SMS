@@ -1,0 +1,160 @@
+<h2 mat-dialog-title>
+
+  {{
+    isEditMode
+      ? ('CLASSES.FORM.EDIT_TITLE' | translate)
+      : ('CLASSES.FORM.ADD_TITLE' | translate)
+  }}
+
+</h2>
+
+
+<mat-dialog-content>
+
+  <form
+    id="class-form"
+    [formGroup]="classForm"
+    class="class-form"
+    (ngSubmit)="submit()"
+    novalidate>
+
+    <!-- Arabic name -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FORM.NAME_AR' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="classNameAr"
+        dir="rtl"
+        autocomplete="off">
+
+      @if (isFieldInvalid('classNameAr')) {
+        <mat-error>
+          @if (classForm.controls.classNameAr.hasError('required')) {
+            {{ 'CLASSES.FORM.VALIDATION.NAME_AR_REQUIRED' | translate }}
+          } @else if (classForm.controls.classNameAr.hasError('pattern')) {
+            {{ 'CLASSES.FORM.VALIDATION.ARABIC_ONLY' | translate }}
+          } @else if (classForm.controls.classNameAr.hasError('maxlength')) {
+            {{ 'CLASSES.FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
+          }
+        </mat-error>
+      }
+
+    </mat-form-field>
+
+
+    <!-- English name -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FORM.NAME_EN' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="classNameEn"
+        dir="ltr"
+        autocomplete="off">
+
+      @if (isFieldInvalid('classNameEn')) {
+        <mat-error>
+          @if (classForm.controls.classNameEn.hasError('required')) {
+            {{ 'CLASSES.FORM.VALIDATION.NAME_EN_REQUIRED' | translate }}
+          } @else if (classForm.controls.classNameEn.hasError('pattern')) {
+            {{ 'CLASSES.FORM.VALIDATION.ENGLISH_ONLY' | translate }}
+          } @else if (classForm.controls.classNameEn.hasError('maxlength')) {
+            {{ 'CLASSES.FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
+          }
+        </mat-error>
+      }
+
+    </mat-form-field>
+
+
+    <!-- Level -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASSES.FORM.LEVEL' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="number"
+        min="1"
+        step="1"
+        inputmode="numeric"
+        formControlName="level"
+        dir="ltr">
+
+      <!-- The hint and the error use the same one-line space under the field. -->
+      @if (isFieldInvalid('level')) {
+        <mat-error>
+          @if (classForm.controls.level.hasError('required')) {
+            {{ 'CLASSES.FORM.VALIDATION.LEVEL_REQUIRED' | translate }}
+          } @else {
+            {{ 'CLASSES.FORM.VALIDATION.LEVEL_INVALID' | translate }}
+          }
+        </mat-error>
+      } @else {
+        <mat-hint>
+          {{ 'CLASSES.FORM.LEVEL_HINT' | translate }}
+        </mat-hint>
+      }
+
+    </mat-form-field>
+
+
+    <!-- Graduation class -->
+    <div class="graduation-field">
+
+      <mat-slide-toggle formControlName="isGraduationGrade">
+        {{ 'CLASSES.FORM.GRADUATION' | translate }}
+      </mat-slide-toggle>
+
+      <p class="graduation-hint">
+        {{ 'CLASSES.FORM.GRADUATION_HINT' | translate }}
+      </p>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    [disabled]="isSubmitting()"
+    (click)="cancel()">
+
+    {{ 'CLASSES.FORM.CANCEL' | translate }}
+
+  </button>
+
+
+  <button
+    mat-flat-button
+    type="submit"
+    form="class-form"
+    [disabled]="isSubmitting()">
+
+    {{
+      isSubmitting()
+        ? ('CLASSES.FORM.SAVING' | translate)
+        : isEditMode
+          ? ('CLASSES.FORM.SAVE' | translate)
+          : ('CLASSES.FORM.ADD' | translate)
+    }}
+
+  </button>
+
+</mat-dialog-actions>

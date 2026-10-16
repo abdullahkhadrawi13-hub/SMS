@@ -1,0 +1,318 @@
+/* The table component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+/* ================================
+   Table Card
+   ================================ */
+
+.table-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ================================
+   Table Wrapper
+   ================================ */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* ================================
+   Material Table
+   ================================ */
+
+.table-wrapper table {
+  width: 100%;
+  min-width: 700px;
+}
+
+.table-wrapper th {
+  height: 52px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f8fafc;
+  white-space: nowrap;
+}
+
+.table-wrapper td {
+  height: 64px;
+  padding: 0 16px;
+  font-size: 14px;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* Row hover */
+.table-wrapper tr.mat-mdc-row:hover {
+  background: #f8fafc;
+}
+
+/* ================================
+   Class Name
+   ================================ */
+
+.class-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 200px;
+}
+
+.class-name-cell span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Class icon */
+.class-avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #f1f5f9;
+}
+
+.class-avatar mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #64748b;
+}
+
+/* ================================
+   Level
+   ================================ */
+
+.table-wrapper td.level-cell {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ================================
+   Graduation Class
+   ================================ */
+
+.graduation-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.graduation-badge mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+/* Empty value (not a graduation class) */
+.no-value {
+  color: #c0c6cf;
+}
+
+/* ================================
+   Status
+   ================================ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 6px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.status-badge.active {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.status-badge.inactive {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ================================
+   Actions
+   ================================ */
+
+.table-wrapper td:last-child {
+  width: 64px;
+  text-align: center;
+}
+
+.table-wrapper td:last-child button {
+  color: #6b7280;
+}
+
+/* ================================
+   Last Row
+   ================================ */
+
+/* No paginator under the table, so the last row needs no bottom line. */
+.table-wrapper tr.mat-mdc-row:last-child td {
+  border-bottom: none;
+}
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+  .table-card {
+    border-radius: 10px;
+  }
+}
+
+
+
+/* ================================
+   Empty State
+   ================================ */
+
+.empty-state {
+  min-height: 220px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  color: #6b7280;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  color: #9ca3af;
+}
+
+.empty-state p {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+/* ================================
+   State Card (loading / error)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+.state-card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.error-state > mat-icon {
+  width: 42px;
+  height: 42px;
+
+  font-size: 42px;
+
+  color: #dc2626;
+}
+
+
+
+/* ================================
+   Refreshing (reload while data is shown)
+   ================================ */
+
+/* So the refresh bar can sit on top of the card. */
+.table-card {
+  position: relative;
+}
+
+/* Thin bar on the top edge; absolute, so the card height never changes. */
+.refresh-bar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 2;
+}
+
+.table-wrapper {
+  transition: opacity 0.15s ease;
+}
+
+/* Old data fades a little and cannot be clicked until the new data arrives. */
+.table-card.is-refreshing .table-wrapper {
+  opacity: 0.55;
+
+  pointer-events: none;
+}

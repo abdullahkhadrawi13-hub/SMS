@@ -310,7 +310,49 @@
       "TITLE": "Class Management",
       "SUBTITLE": "Manage school classes and their settings",
       "ADD": "Add Class"
-    }
+    },
+    "TABLE": {
+      "NAME": "Class Name",
+      "LEVEL": "Level",
+      "GRADUATION": "Graduation",
+      "GRADUATION_BADGE": "Graduation class",
+      "STATUS": "Status",
+      "ACTIONS": "Actions",
+      "EDIT": "Edit",
+      "ACTIVATE": "Activate",
+      "DEACTIVATE": "Deactivate",
+      "EMPTY": "No classes yet",
+      "LOADING": "Loading classes...",
+      "RETRY": "Retry"
+    },
+    "FORM": {
+      "ADD_TITLE": "Add Class",
+      "EDIT_TITLE": "Edit Class",
+      "NAME_AR": "Class Name in Arabic",
+      "NAME_EN": "Class Name in English",
+      "LEVEL": "Level",
+      "LEVEL_HINT": "A unique number above 0 that sets the class order",
+      "GRADUATION": "Graduation class",
+      "GRADUATION_HINT": "Students who pass this class are marked graduated during rollover instead of moving up.",
+      "CANCEL": "Cancel",
+      "ADD": "Add",
+      "SAVE": "Save",
+      "SAVING": "Saving...",
+      "VALIDATION": {
+        "NAME_AR_REQUIRED": "Please enter the class name in Arabic",
+        "NAME_EN_REQUIRED": "Please enter the class name in English",
+        "NAME_MAX_LENGTH": "Class name must not exceed 100 characters",
+        "ARABIC_ONLY": "Arabic letters, numbers and spaces only",
+        "ENGLISH_ONLY": "English letters, numbers and spaces only",
+        "LEVEL_REQUIRED": "Please enter the level",
+        "LEVEL_INVALID": "Level must be a whole number above 0"
+      }
+    },
+    "ERROR": {
+      "LOAD_FAILED": "Could not load classes. Please try again."
+    },
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive"
   },
 
   "SECTIONS": {
