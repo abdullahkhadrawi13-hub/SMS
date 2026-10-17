@@ -17,17 +17,21 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../core/services/api-message';
 import { Language } from '../../../core/services/language';
+import { SubjectPlansService } from '../../../core/services/subject-plans';
 import { TeacherAssignmentsService } from '../../../core/services/teacher-assignments';
 
 import { MyClassesStats as MyClassesStatsData, MyClassGroup } from '../my-class';
 import { MyClassesStats } from '../my-classes-stats/my-classes-stats';
 import { MyClassCard } from '../my-class-card/my-class-card';
+import { SubjectPlan } from '../../../core/models/subject-plan';
 import { TeacherAssignment } from '../../../core/models/teacher-assignment';
 
 
 // "My classes" for the teacher (parent page).
 // Loads the teacher's assignments in the current term
 // (GET /api/teacherassignments/mine, API Reference section 8),
+// then the subject plans of that term (GET /api/subjectplans?academicTermId=,
+// section 9) for the passing mark and the lock of each subject,
 // groups them by class + section, and passes the result to the children:
 //   - my-classes-stats: the numbers above the cards
 //   - my-class-card: one card per class + section
@@ -48,6 +52,7 @@ import { TeacherAssignment } from '../../../core/models/teacher-assignment';
 export class MyClassesPage implements OnInit {
 
   private readonly assignmentsService = inject(TeacherAssignmentsService);
+  private readonly plansService = inject(SubjectPlansService);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly language = inject(Language);
   private readonly destroyRef = inject(DestroyRef);
@@ -55,6 +60,10 @@ export class MyClassesPage implements OnInit {
 
   // Active assignments of the logged-in teacher (current term).
   readonly assignments = signal<TeacherAssignment[]>([]);
+
+  // The subject plans of the term, by subjectPlanId.
+  // Empty when the plans could not be loaded: the cards still show the subjects.
+  readonly plans = signal<Map<number, SubjectPlan>>(new Map());
 
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
@@ -92,6 +101,7 @@ export class MyClassesPage implements OnInit {
       group.subjects.push({
         assignment,
         subjectName: isArabic ? assignment.subjectAr : assignment.subjectEn,
+        plan: this.findPlan(assignment),
       });
     }
 
@@ -116,7 +126,7 @@ export class MyClassesPage implements OnInit {
     return {
       sectionsCount: this.groups().length,
       subjectsCount: new Set(assignments.map(a => a.subjectId)).size,
-      lockedCount: assignments.filter(a => a.isAssessmentStructureLocked).length,
+      lockedCount: assignments.filter(a => this.findPlan(a)?.isLocked).length,
       totalAssignments: assignments.length,
     };
   });
@@ -167,6 +177,8 @@ export class MyClassesPage implements OnInit {
 
           this.assignments.set(response.data);
           this.isLoading.set(false);
+
+          this.loadPlans(response.data);
         },
 
         error: (error: HttpErrorResponse) => {
@@ -180,5 +192,47 @@ export class MyClassesPage implements OnInit {
           this.isLoading.set(false);
         },
       });
+  }
+
+
+  // GET /api/subjectplans?academicTermId=... (the term of the assignments).
+  // The cards are shown before this answer arrives; the passing mark and
+  // the lock appear when it does. A failure only hides them.
+  private loadPlans(assignments: TeacherAssignment[]): void {
+
+    const termId = assignments[0]?.academicTermId;
+
+    if (termId === undefined) {
+      this.plans.set(new Map());
+      return;
+    }
+
+    this.plansService
+      .getPlans({ academicTermId: termId })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.plans.set(
+            new Map(
+              (response.success ? response.data : [])
+                .map(plan => [plan.subjectPlanId, plan])
+            )
+          );
+        },
+
+        error: (error: HttpErrorResponse) => {
+          console.error('Failed to load subject plans:', error);
+          this.plans.set(new Map());
+        },
+      });
+  }
+
+
+  // The plan an assignment follows, or null (no plan yet, or not loaded).
+  private findPlan(assignment: TeacherAssignment): SubjectPlan | null {
+
+    return assignment.subjectPlanId === null
+      ? null
+      : this.plans().get(assignment.subjectPlanId) ?? null;
   }
 }

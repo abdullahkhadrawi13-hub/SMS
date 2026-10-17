@@ -11,8 +11,10 @@ import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
 import { getTermLabel as formatTermLabel, TermOption } from '../../subject';
 
 
-// Term / Class / Section dropdowns of the "Class subjects" tab.
-// All data is owned by the parent (class-subjects).
+// Term / Class / Section dropdowns of the Subjects page.
+// Used by the "Subject assignments" tab (term, class and section)
+// and the "Subject plans" tab (term and class only: showSection = false).
+// All data is owned by the parent tab.
 @Component({
   selector: 'app-class-subjects-selector',
   imports: [
@@ -39,6 +41,9 @@ export class ClassSubjectsSelector {
   readonly sections = input<ActiveSectionDto[]>([]);
   readonly sectionsLoading = input(false);
   readonly sectionId = input<number | null>(null);
+
+  // false in the plans tab (a plan is for the whole class).
+  readonly showSection = input(true);
 
   readonly termChange = output<number>();
   readonly classChange = output<number>();

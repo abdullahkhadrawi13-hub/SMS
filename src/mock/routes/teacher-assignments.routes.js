@@ -5,6 +5,7 @@ const sections = require('../data/sections');
 const schoolClasses = require('../data/school-classes');
 const academicTerms = require('../data/academic-terms');
 const users = require('../data/users');
+const subjectPlans = require('../data/subject-plans');
 
 
 // =====================================================
@@ -34,12 +35,14 @@ const TEACHER_ROLE = 2;
 // =====================================================
 //
 // 1. The list is sorted by teacherAssignmentId.
-// 2. Creating an assignment with an INACTIVE teacher is allowed
-//    (the API Reference only says the teacher must exist).
+// 2. The teacher's account must be active (create and edit),
+//    like the real backend (2026-10-16).
 // 3. The same subject cannot be added twice to the same term, class
 //    and section, even when the old assignment is inactive.
 // 4. The mock does not keep student enrollments, assessments or grades.
 //    Activating / deactivating only changes isActive.
+// 6. The subject plan (term + class + subject) must exist before an
+//    assignment is created (data/subject-plans.js).
 // 5. The text of the messages is not the real text.
 
 
@@ -145,10 +148,13 @@ function readBoolean(value) {
 }
 
 
-// Passing mark: above 0 and at most 100.
-function isValidPassingMark(value) {
-  const mark = Number(value);
-  return typeof value === 'number' && mark > 0 && mark <= 100;
+// The subject plan with the same term, class and subject (or undefined).
+function findPlan(assignment) {
+  return subjectPlans.find(p =>
+    p.academicTermId === assignment.academicTermId &&
+    p.classId === assignment.classId &&
+    p.subjectId === assignment.subjectId
+  );
 }
 
 
@@ -206,8 +212,10 @@ function toDto(assignment) {
     subjectAr: subject ? subject.subjectAr : '',
     subjectEn: subject ? subject.subjectEn : '',
 
-    passingMark: assignment.passingMark,
-    isAssessmentStructureLocked: assignment.isAssessmentStructureLocked,
+    subjectPlanId: findPlan(assignment)
+      ? findPlan(assignment).subjectPlanId
+      : null,
+
     isActive: assignment.isActive
   };
 }
@@ -229,15 +237,24 @@ function validateCreate(data) {
     field => !Number.isInteger(data[field])
   );
 
-  if (missing.length > 0 || data.passingMark === undefined) {
+  if (missing.length > 0) {
     return [
       'يرجى تعبئة جميع الحقول المطلوبة.',
       'All required fields must be provided.'
     ];
   }
 
-  if (!teachers.some(t => t.teacherId === data.teacherId)) {
+  const teacher = teachers.find(t => t.teacherId === data.teacherId);
+
+  if (!teacher) {
     return ['المعلم غير موجود.', 'Teacher not found.'];
+  }
+
+  if (!teacher.isActive) {
+    return [
+      'حساب هذا المعلم غير فعال. اختر معلمًا آخر.',
+      "This teacher's account is inactive. Choose another teacher."
+    ];
   }
 
   if (!academicTerms.some(t => t.academicTermId === data.academicTermId)) {
@@ -281,10 +298,10 @@ function validateCreate(data) {
     return ['المادة غير فعالة.', 'The subject is inactive.'];
   }
 
-  if (!isValidPassingMark(data.passingMark)) {
+  if (!findPlan(data)) {
     return [
-      'علامة النجاح يجب أن تكون أكبر من 0 ولا تتجاوز 100.',
-      'Passing mark must be greater than 0 and at most 100.'
+      'لا توجد خطة لهذه المادة في هذا الصف والفصل. أنشئ خطة المادة أولًا.',
+      'There is no subject plan for this term, class and subject. Create the plan first.'
     ];
   }
 
@@ -565,8 +582,6 @@ async function handleAssignments(req, res, url, pathname) {
       classId: data.classId,
       sectionId: data.sectionId,
       subjectId: data.subjectId,
-      passingMark: Number(data.passingMark),
-      isAssessmentStructureLocked: false,
       isActive: true
     };
 
@@ -585,7 +600,7 @@ async function handleAssignments(req, res, url, pathname) {
 
   // =====================================================
   // PUT /api/teacherassignments/{assignmentId}
-  // Edit the teacher and the passing mark only (Admin).
+  // Edit the teacher only (Admin).
   // The term, class, section and subject are ignored if sent.
   // =====================================================
 
@@ -615,23 +630,24 @@ async function handleAssignments(req, res, url, pathname) {
       return;
     }
 
-    if (!teachers.some(t => t.teacherId === data.teacherId)) {
+    const teacher = teachers.find(t => t.teacherId === data.teacherId);
+
+    if (!teacher) {
       sendError(res, 400, 'المعلم غير موجود.', 'Teacher not found.');
       return;
     }
 
-    if (!isValidPassingMark(data.passingMark)) {
+    if (!teacher.isActive) {
       sendError(
         res,
         400,
-        'علامة النجاح يجب أن تكون أكبر من 0 ولا تتجاوز 100.',
-        'Passing mark must be greater than 0 and at most 100.'
+        'حساب هذا المعلم غير فعال. اختر معلمًا آخر.',
+        "This teacher's account is inactive. Choose another teacher."
       );
       return;
     }
 
     assignment.teacherId = data.teacherId;
-    assignment.passingMark = Number(data.passingMark);
 
     sendJson(res, 200, {
       success: true,

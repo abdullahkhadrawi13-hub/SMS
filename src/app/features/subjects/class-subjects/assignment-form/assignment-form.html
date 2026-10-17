@@ -109,11 +109,45 @@
               {{ 'SUBJECTS.ASSIGNMENT_FORM.SUBJECT' | translate }}
             </mat-label>
 
-            <mat-select formControlName="subjectId">
+            <!-- Each subject shows the state of its plan.
+                 A subject without a plan is disabled. -->
+            <mat-select
+              formControlName="subjectId"
+              panelClass="subject-plan-panel"
+            >
 
-              @for (subject of data.subjects; track subject.subjectId) {
-                <mat-option [value]="subject.subjectId">
-                  {{ getSubjectName(subject) }}
+              <!-- The closed field shows the name only (without the plan tag) -->
+              <mat-select-trigger>
+                {{ selectedSubjectName() }}
+              </mat-select-trigger>
+
+              @for (option of data.subjects; track option.subject.subjectId) {
+                <mat-option
+                  [value]="option.subject.subjectId"
+                  [disabled]="!option.plan"
+                >
+                  <span class="subject-option">
+
+                    <span class="subject-option-name">{{ getSubjectName(option) }}</span>
+
+                    @if (!option.plan) {
+                      <span class="plan-tag bad">
+                        {{ 'SUBJECTS.PLAN_STATUS.NONE' | translate }}
+                      </span>
+                    } @else if (!option.plan.isComplete) {
+                      <span class="plan-tag warn">
+                        {{
+                          'SUBJECTS.ASSIGNMENT_FORM.PLAN_WEIGHTS'
+                            | translate: { total: formatNumber(option.plan.totalWeight) }
+                        }}
+                      </span>
+                    } @else {
+                      <span class="plan-tag ok">
+                        {{ 'SUBJECTS.ASSIGNMENT_FORM.PLAN_READY' | translate }}
+                      </span>
+                    }
+
+                  </span>
                 </mat-option>
               }
 
@@ -130,6 +164,71 @@
             }
 
           </mat-form-field>
+
+
+          <!-- The plan of the chosen subject -->
+          @if (selectedPlan(); as plan) {
+
+            @if (plan.isComplete) {
+              <div class="message-card success">
+                <mat-icon>rule</mat-icon>
+
+                <span>
+                  {{
+                    'SUBJECTS.ASSIGNMENT_FORM.PLAN_INFO'
+                      | translate: { mark: formatNumber(plan.passingMark), count: plan.components.length }
+                  }}
+                </span>
+              </div>
+            } @else {
+              <div class="message-card warning">
+                <mat-icon>warning_amber</mat-icon>
+
+                <span>
+                  {{
+                    'SUBJECTS.ASSIGNMENT_FORM.PLAN_INCOMPLETE'
+                      | translate: { total: formatNumber(plan.totalWeight) }
+                  }}
+                </span>
+              </div>
+            }
+
+          }
+
+
+          <!-- Subjects without a plan: create the plan first -->
+          @if (subjectsWithoutPlan().length > 0) {
+
+            <div class="message-card info">
+              <mat-icon>warning_amber</mat-icon>
+
+              <div class="message-body">
+                <span>
+                  @if (noSubjectWithPlan) {
+                    {{ 'SUBJECTS.ASSIGNMENT_FORM.NO_PLANS' | translate }}
+                  }
+
+                  {{
+                    'SUBJECTS.ASSIGNMENT_FORM.NO_PLAN'
+                      | translate: { names: subjectsWithoutPlanNames(), className: data.className }
+                  }}
+                </span>
+
+                <button
+                  mat-button
+                  type="button"
+                  class="message-action"
+                  [disabled]="isSubmitting()"
+                  (click)="createPlanFirst()"
+                >
+                  <mat-icon>rule</mat-icon>
+
+                  {{ 'SUBJECTS.ASSIGNMENT_FORM.CREATE_PLAN' | translate }}
+                </button>
+              </div>
+            </div>
+
+          }
 
         }
 
@@ -232,43 +331,6 @@
 
       </mat-form-field>
 
-
-      <!-- Passing mark (above 0, at most 100) -->
-      <mat-form-field appearance="outline">
-
-        <mat-label>
-          {{ 'SUBJECTS.ASSIGNMENT_FORM.PASSING_MARK' | translate }}
-        </mat-label>
-
-        <input
-          matInput
-          type="number"
-          min="0"
-          max="100"
-          step="any"
-          formControlName="passingMark"
-        />
-
-        <span matTextSuffix>
-          {{ 'SUBJECTS.ASSIGNMENT_FORM.OUT_OF' | translate }}
-        </span>
-
-        <mat-hint>
-          {{ 'SUBJECTS.ASSIGNMENT_FORM.PASSING_MARK_HINT' | translate }}
-        </mat-hint>
-
-        @if (isFieldInvalid('passingMark')) {
-          <mat-error>
-            @if (assignmentForm.controls.passingMark.hasError('required')) {
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.REQUIRED' | translate }}
-            } @else {
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.PASSING_MARK_ERROR' | translate }}
-            }
-          </mat-error>
-        }
-
-      </mat-form-field>
-
     </form>
 
 
@@ -304,7 +366,7 @@
     mat-flat-button
     color="primary"
     type="button"
-    [disabled]="assignmentForm.invalid || noSubjects || isSubmitting()"
+    [disabled]="assignmentForm.invalid || noSubjects || noSubjectWithPlan || isSubmitting()"
     (click)="onSubmit()"
   >
     <mat-icon>save</mat-icon>

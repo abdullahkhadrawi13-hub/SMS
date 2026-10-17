@@ -2,55 +2,68 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   input,
-  OnInit,
+  output,
   signal,
+  untracked,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
-import { forkJoin, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
-import { AcademicTermsService } from '../../../../core/services/academic-terms';
-import { AcademicYearsService } from '../../../../core/services/academic-years';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { Language } from '../../../../core/services/language';
-import { SchoolClassesService } from '../../../../core/services/school-classes';
 import { SectionsService } from '../../../../core/services/sections';
+import { SubjectPlansService } from '../../../../core/services/subject-plans';
 import { SubjectsService } from '../../../../core/services/subjects';
 import { TeacherAssignmentsService } from '../../../../core/services/teacher-assignments';
 import { ActionResult } from '../../../../shared/services/action-result';
-import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
+import { SubjectDto } from '../../../../core/models/subject';
+import { SubjectPlan } from '../../../../core/models/subject-plan';
 
 import {
   ClassSubjectRow,
   ClassSubjectsCounts,
-  getTermLabel,
+  SubjectOption,
   teacherOptionFromAssignment,
-  TermOption,
 } from '../../subject';
+import { SubjectsSelection } from '../../subjects-selection';
 import { ClassSubjectsSelector } from '../class-subjects-selector/class-subjects-selector';
-import { ClassSubjectsTable } from '../class-subjects-table/class-subjects-table';
+import {
+  ClassSubjectsTable,
+  MissingPlanSubject,
+} from '../class-subjects-table/class-subjects-table';
 import {
   AssignmentForm,
   AssignmentFormData,
+  AssignmentFormResult,
 } from '../assignment-form/assignment-form';
 import { ActiveSectionDto } from '../../../../core/models/section';
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 
-// The "Class subjects" tab: the subjects of one section in one term
-// (teacher assignments, SMS API Reference, section 8).
+// The "Subject assignments" tab: the subjects of one section in one term
+// and their teachers (teacher assignments, SMS API Reference, section 8).
+//
+// The term and class come from SubjectsSelection (shared with the plans tab),
+// the section is chosen here.
 //
 // GET /api/teacherassignments has no class or section filter:
 // the assignments of the whole term are loaded once,
 // and the class / section choice filters them here (no new request).
 //
-// Each assignment carries its teacher's name and account status,
-// so no teachers list is loaded here.
+// The subject plans of the selected class are loaded too
+// (GET /api/subjectplans?academicTermId=&classId=), for:
+//   - the "Plan" column of the table
+//   - the subjects that have a plan but no teacher in this section
+//   - the plan state of each subject in the add form
+//     (a subject without a plan cannot be added: the backend answers 400)
 @Component({
   selector: 'app-class-subjects-tab',
   imports: [
@@ -61,24 +74,33 @@ import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
   templateUrl: './class-subjects-tab.html',
   styleUrl: './class-subjects-tab.css',
 })
-export class ClassSubjectsTab implements OnInit {
+export class ClassSubjectsTab {
 
-  private readonly termsService = inject(AcademicTermsService);
-  private readonly yearsService = inject(AcademicYearsService);
-  private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);
   private readonly assignmentsService = inject(TeacherAssignmentsService);
+  private readonly plansService = inject(SubjectPlansService);
   private readonly subjectsService = inject(SubjectsService);
 
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly language = inject(Language);
   private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+
+  // The term and class shared with the plans tab.
+  readonly selection = inject(SubjectsSelection);
 
 
   // Shows the add, edit and activate / deactivate actions (Admin only).
   readonly canManage = input(false);
+
+  // true while this tab is the open tab. The data is loaded only then.
+  readonly active = input(false);
+
+  // "Create the plan first" in the add form: the page opens the plans tab
+  // and its "New plan" form (for this subject, or none when null).
+  readonly createPlan = output<number | null>();
 
 
   private readonly isArabic = computed(
@@ -87,18 +109,11 @@ export class ClassSubjectsTab implements OnInit {
 
 
   // =========================
-  // Selection: term / class / section
+  // Selection: section (term and class are shared)
   // =========================
 
-  readonly terms = signal<TermOption[]>([]);
-  readonly classes = signal<SchoolClassSimpleDto[]>([]);
   readonly sections = signal<ActiveSectionDto[]>([]);
-
-  readonly termsLoading = signal(false);
   readonly sectionsLoading = signal(false);
-
-  readonly termId = signal<number | null>(null);
-  readonly classId = signal<number | null>(null);
   readonly sectionId = signal<number | null>(null);
 
 
@@ -108,6 +123,12 @@ export class ClassSubjectsTab implements OnInit {
 
   // Every assignment of the selected term (all classes and sections).
   readonly assignments = signal<TeacherAssignment[]>([]);
+
+  // The subject plans of the selected term and class.
+  readonly plans = signal<SubjectPlan[]>([]);
+
+  // Every subject (used to hide inactive subjects from the "no teacher" line).
+  private readonly subjects = signal<SubjectDto[]>([]);
 
   readonly assignmentsLoading = signal(false);
   readonly errorMessage = signal('');
@@ -122,13 +143,52 @@ export class ClassSubjectsTab implements OnInit {
 
   // true when a section is chosen (the table is shown).
   readonly hasSelection = computed(
-    () => this.termId() !== null
-      && this.classId() !== null
+    () => this.selection.termId() !== null
+      && this.selection.classId() !== null
       && this.sectionId() !== null
   );
 
+  // The plans by id, to find the plan of each assignment.
+  private readonly plansById = computed(
+    () => new Map(this.plans().map(p => [p.subjectPlanId, p]))
+  );
+
+  // The assignments of the selected section.
+  private readonly sectionAssignments = computed(() => {
+
+    if (!this.hasSelection()) {
+      return [];
+    }
+
+    return this.assignments().filter(a =>
+      a.classId === this.selection.classId()
+      && a.sectionId === this.sectionId()
+    );
+  });
+
   // The subjects of the selected section, sorted by name.
   readonly rows = computed<ClassSubjectRow[]>(() => {
+
+    const isArabic = this.isArabic();
+    const plansById = this.plansById();
+
+    return this.sectionAssignments()
+      .map(assignment => ({
+        assignment,
+        subjectName: isArabic ? assignment.subjectAr : assignment.subjectEn,
+        teacherName: isArabic ? assignment.teacherNameAr : assignment.teacherNameEn,
+        teacherInactive: !assignment.isTeacherActive,
+        plan: assignment.subjectPlanId === null
+          ? null
+          : plansById.get(assignment.subjectPlanId) ?? null,
+      }))
+      .sort((a, b) => a.subjectName.localeCompare(b.subjectName));
+  });
+
+  // Subjects with a plan for this class but no teacher in this section
+  // (no assignment at all, active or not). Their students would count as
+  // "missing marks" in the rollover, so the table shows them under the rows.
+  readonly missingSubjects = computed<MissingPlanSubject[]>(() => {
 
     if (!this.hasSelection()) {
       return [];
@@ -136,16 +196,22 @@ export class ClassSubjectsTab implements OnInit {
 
     const isArabic = this.isArabic();
 
-    return this.assignments()
-      .filter(a =>
-        a.classId === this.classId()
-        && a.sectionId === this.sectionId()
+    const assigned = new Set(
+      this.sectionAssignments().map(a => a.subjectId)
+    );
+
+    const activeSubjects = new Set(
+      this.subjects().filter(s => s.isActive).map(s => s.subjectId)
+    );
+
+    return this.plans()
+      .filter(plan =>
+        !assigned.has(plan.subjectId)
+        && activeSubjects.has(plan.subjectId)
       )
-      .map(assignment => ({
-        assignment,
-        subjectName: isArabic ? assignment.subjectAr : assignment.subjectEn,
-        teacherName: isArabic ? assignment.teacherNameAr : assignment.teacherNameEn,
-        teacherInactive: !assignment.isTeacherActive,
+      .map(plan => ({
+        subjectId: plan.subjectId,
+        subjectName: isArabic ? plan.subjectAr : plan.subjectEn,
       }))
       .sort((a, b) => a.subjectName.localeCompare(b.subjectName));
   });
@@ -160,30 +226,6 @@ export class ClassSubjectsTab implements OnInit {
       active,
       inactive: rows.length - active,
     };
-  });
-
-  readonly selectedTermLabel = computed(() => {
-
-    const term = this.terms().find(
-      t => t.academicTermId === this.termId()
-    );
-
-    return term ? getTermLabel(term, this.isArabic()) : '';
-  });
-
-  readonly selectedClassName = computed(() => {
-
-    const schoolClass = this.classes().find(
-      c => c.schoolClassId === this.classId()
-    );
-
-    if (!schoolClass) {
-      return '';
-    }
-
-    return this.isArabic()
-      ? schoolClass.classNameAr
-      : schoolClass.classNameEn;
   });
 
   readonly selectedSectionName = computed(() => {
@@ -206,90 +248,82 @@ export class ClassSubjectsTab implements OnInit {
   // so an old response never replaces a newer selection.
   private sectionsRequest?: Subscription;
   private assignmentsRequest?: Subscription;
+  private plansRequest?: Subscription;
+
+  // What is loaded now, so the same data is not loaded twice.
+  private sectionsClassId: number | null = null;
+  private assignmentsTermId: number | null = null;
+  private plansKey: string | null = null;
 
 
-  ngOnInit(): void {
-    this.loadTerms();
-    this.loadClasses();
-  }
+  constructor() {
+
+    // A new class (chosen here or in the plans tab):
+    // its sections are loaded and the section is cleared.
+    effect(() => {
+
+      const classId = this.selection.classId();
+
+      untracked(() => {
+
+        if (classId === this.sectionsClassId) {
+          return;
+        }
+
+        this.sectionsClassId = classId;
+        this.sectionId.set(null);
+        this.sections.set([]);
+
+        if (classId !== null) {
+          this.loadSections(classId);
+        }
+      });
+    });
 
 
-  // =========================
-  // Lookups
-  // =========================
+    // While the tab is open: the assignments of the term (once per term),
+    // and the plans of the class (again each time the tab is opened,
+    // because the plans tab may have changed them).
+    effect(() => {
 
-  // GET /api/academicterms + GET /api/academicyears (for the year name).
-  // The current term is selected by default.
-  private loadTerms(): void {
+      const active = this.active();
+      const termId = this.selection.termId();
+      const classId = this.selection.classId();
 
-    this.termsLoading.set(true);
+      untracked(() => {
 
-    forkJoin({
-      terms: this.termsService.getAcademicTerms(),
-      years: this.yearsService.getAcademicYears(),
-    })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: ({ terms, years }) => {
+        if (!active) {
+          this.plansKey = null;
+          return;
+        }
 
-          const yearNames = new Map(
-            (years.success ? years.data : [])
-              .map(y => [y.academicYearId, y.yearName])
-          );
+        if (termId !== null && termId !== this.assignmentsTermId) {
+          this.loadAssignments();
+        }
 
-          // Newest term first.
-          const options: TermOption[] = (terms.success ? terms.data : [])
-            .map(t => ({
-              academicTermId: t.academicTermId,
-              nameAr: t.nameAr,
-              nameEn: t.nameEn,
-              yearName: yearNames.get(t.academicYearId) ?? '',
-              startDate: t.startDate,
-              isCurrent: t.isCurrent,
-            }))
-            .sort((a, b) => b.startDate.localeCompare(a.startDate));
+        const plansKey = termId !== null && classId !== null
+          ? `${termId}-${classId}`
+          : null;
 
-          this.terms.set(options);
-          this.termsLoading.set(false);
+        if (plansKey !== this.plansKey) {
 
-          const selected =
-            options.find(t => t.isCurrent) ?? options[0];
+          this.plansKey = plansKey;
 
-          if (selected) {
-            this.onTermChange(selected.academicTermId);
+          if (plansKey === null) {
+            this.plans.set([]);
+          } else {
+            this.loadPlans();
+            this.loadSubjects();
           }
-        },
-
-        error: (error: HttpErrorResponse) => {
-
-          console.error('Failed to load academic terms:', error);
-
-          this.terms.set([]);
-          this.termsLoading.set(false);
-          this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
-        },
+        }
       });
+    });
   }
 
 
-  // GET /api/schoolclasses/active
-  private loadClasses(): void {
-
-    this.classesService
-      .getActiveSchoolClasses()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.classes.set(response.success ? response.data : []);
-        },
-
-        error: (error: HttpErrorResponse) => {
-          console.error('Failed to load classes:', error);
-          this.classes.set([]);
-        },
-      });
-  }
-
+  // =========================
+  // Loading
+  // =========================
 
   // GET /api/sections/active-by-class/{classId}
   private loadSections(classId: number): void {
@@ -318,12 +352,13 @@ export class ClassSubjectsTab implements OnInit {
   // GET /api/teacherassignments?academicTermId=...
   loadAssignments(): void {
 
-    const termId = this.termId();
+    const termId = this.selection.termId();
 
     if (termId === null) {
       return;
     }
 
+    this.assignmentsTermId = termId;
     this.assignmentsRequest?.unsubscribe();
 
     this.assignmentsLoading.set(true);
@@ -352,6 +387,8 @@ export class ClassSubjectsTab implements OnInit {
 
           console.error('Failed to load section subjects:', error);
 
+          // Loaded again the next time (retry, or another term and back).
+          this.assignmentsTermId = null;
           this.assignments.set([]);
           this.errorMessage.set('SUBJECTS.ERROR.LOAD_FAILED');
           this.assignmentsLoading.set(false);
@@ -360,22 +397,79 @@ export class ClassSubjectsTab implements OnInit {
   }
 
 
+  // GET /api/subjectplans?academicTermId=...&classId=...
+  // A failure only empties the "Plan" column (the table still works).
+  private loadPlans(): void {
+
+    const termId = this.selection.termId();
+    const classId = this.selection.classId();
+
+    if (termId === null || classId === null) {
+      return;
+    }
+
+    this.plansRequest?.unsubscribe();
+
+    this.plansRequest = this.plansService
+      .getPlans({ academicTermId: termId, classId })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.plans.set(response.success ? response.data : []);
+        },
+
+        error: (error: HttpErrorResponse) => {
+          console.error('Failed to load subject plans:', error);
+          this.plans.set([]);
+        },
+      });
+  }
+
+
+  // GET /api/subjects (to know which subjects are active).
+  private loadSubjects(): void {
+
+    this.subjectsService
+      .getSubjects()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.subjects.set(response.success ? response.data : []);
+        },
+
+        error: (error: HttpErrorResponse) => {
+          console.error('Failed to load subjects:', error);
+          this.subjects.set([]);
+        },
+      });
+  }
+
+
+  // The table's "Retry" button: the terms and classes again when they failed,
+  // otherwise the assignments and the plans.
+  retry(): void {
+
+    if (this.selection.errorMessage()) {
+      this.selection.load(this.selection.termId(), this.selection.classId());
+      return;
+    }
+
+    this.loadAssignments();
+    this.loadPlans();
+  }
+
+
   // =========================
   // Selection changes
   // =========================
 
-  // A new term: load its assignments (class and section stay selected).
   onTermChange(termId: number): void {
-    this.termId.set(termId);
-    this.loadAssignments();
+    this.selection.selectTerm(termId);
   }
 
-  // A new class: its sections are loaded and the section is cleared.
+  // The sections are loaded by the effect above.
   onClassChange(classId: number): void {
-    this.classId.set(classId);
-    this.sectionId.set(null);
-    this.sections.set([]);
-    this.loadSections(classId);
+    this.selection.selectClass(classId);
   }
 
   // A new section: no request, the loaded assignments are filtered.
@@ -391,10 +485,11 @@ export class ClassSubjectsTab implements OnInit {
   // Add a subject to the selected section (POST /api/teacherassignments).
   // The subjects list is loaded fresh each time, so a subject added in the
   // "Subjects list" tab appears here right away.
-  openAddAssignment(): void {
+  // preselectedSubjectId: the subject clicked in the "no teacher" line.
+  openAddAssignment(preselectedSubjectId: number | null = null): void {
 
-    const termId = this.termId();
-    const classId = this.classId();
+    const termId = this.selection.termId();
+    const classId = this.selection.classId();
     const sectionId = this.sectionId();
 
     if (
@@ -424,19 +519,32 @@ export class ClassSubjectsTab implements OnInit {
             return;
           }
 
+          this.subjects.set(response.data);
+
           // The same subject cannot be added twice to the same
           // section and term, so the subjects already added are hidden.
           const usedSubjectIds = new Set(
             this.rows().map(r => r.assignment.subjectId)
           );
 
+          const plansBySubject = new Map(
+            this.plans().map(p => [p.subjectId, p])
+          );
+
           const isArabic = this.isArabic();
 
-          const subjects = response.data
+          // Subjects with a plan first, then the ones without a plan
+          // (shown disabled), each group sorted by name.
+          const subjects: SubjectOption[] = response.data
             .filter(s => s.isActive && !usedSubjectIds.has(s.subjectId))
+            .map(subject => ({
+              subject,
+              plan: plansBySubject.get(subject.subjectId) ?? null,
+            }))
             .sort((a, b) =>
-              (isArabic ? a.subjectAr : a.subjectEn)
-                .localeCompare(isArabic ? b.subjectAr : b.subjectEn)
+              Number(a.plan === null) - Number(b.plan === null)
+              || (isArabic ? a.subject.subjectAr : a.subject.subjectEn)
+                .localeCompare(isArabic ? b.subject.subjectAr : b.subject.subjectEn)
             );
 
           this.openForm({
@@ -444,10 +552,11 @@ export class ClassSubjectsTab implements OnInit {
             academicTermId: termId,
             classId,
             sectionId,
-            termLabel: this.selectedTermLabel(),
-            className: this.selectedClassName(),
+            termLabel: this.selection.selectedTermLabel(),
+            className: this.selection.selectedClassName(),
             sectionName: this.selectedSectionName(),
             subjects,
+            preselectedSubjectId,
           });
         },
 
@@ -466,7 +575,7 @@ export class ClassSubjectsTab implements OnInit {
   }
 
 
-  // Edit the teacher and the passing mark (PUT /api/teacherassignments/{id}).
+  // Edit the teacher (PUT /api/teacherassignments/{id}).
   openEditAssignment(row: ClassSubjectRow): void {
 
     const assignment = row.assignment;
@@ -477,10 +586,11 @@ export class ClassSubjectsTab implements OnInit {
       academicTermId: assignment.academicTermId,
       classId: assignment.classId,
       sectionId: assignment.sectionId,
-      termLabel: this.selectedTermLabel(),
+      termLabel: this.selection.selectedTermLabel(),
       className: isArabic ? assignment.classNameAr : assignment.classNameEn,
       sectionName: isArabic ? assignment.sectionAr : assignment.sectionEn,
       subjects: [],
+      preselectedSubjectId: null,
       assignment,
       // The current teacher is preselected only when still active:
       // an inactive teacher stays out, so the admin must pick another one.
@@ -491,6 +601,15 @@ export class ClassSubjectsTab implements OnInit {
       currentTeacherName: row.teacherName || assignment.teacherNumber,
       currentTeacherInactive: row.teacherInactive,
     });
+  }
+
+
+  // Opens the plan details page of the row's subject.
+  viewPlan(row: ClassSubjectRow): void {
+
+    if (row.assignment.subjectPlanId !== null) {
+      this.router.navigate(['/subjects/plans', row.assignment.subjectPlanId]);
+    }
   }
 
 
@@ -539,7 +658,9 @@ export class ClassSubjectsTab implements OnInit {
   // Helpers
   // =========================
 
-  // The form saves the assignment itself and closes with { success: true }.
+  // The form saves the assignment itself and closes with { success: true },
+  // or with { createPlanFor: subjectId } when the admin chose
+  // "Create the plan first" for a subject without a plan.
   private openForm(data: AssignmentFormData): void {
 
     this.dialog
@@ -550,10 +671,15 @@ export class ClassSubjectsTab implements OnInit {
         data,
       })
       .afterClosed()
-      .subscribe((result) => {
+      .subscribe((result?: AssignmentFormResult) => {
 
         if (result?.success) {
           this.loadAssignments();
+          this.loadPlans();
+        }
+
+        if (result?.createPlanFor !== undefined) {
+          this.createPlan.emit(result.createPlanFor);
         }
       });
   }

@@ -1,0 +1,290 @@
+<!-- New subject plan -->
+
+<h2 mat-dialog-title>
+  {{ 'SUBJECTS.PLAN_FORM.TITLE' | translate }}
+</h2>
+
+
+<mat-dialog-content>
+
+  <div class="form-content">
+
+    <p class="form-subtitle">
+      {{ 'SUBJECTS.PLAN_FORM.SUBTITLE' | translate }}
+    </p>
+
+    <!-- Fixed values (read-only) -->
+    <div class="context-box">
+
+      <div class="context-item">
+        <span class="context-label">{{ 'SUBJECTS.PLAN_FORM.TERM' | translate }}</span>
+        <span class="context-value">{{ data.termLabel }}</span>
+      </div>
+
+      <div class="context-item">
+        <span class="context-label">{{ 'SUBJECTS.PLAN_FORM.CLASS' | translate }}</span>
+        <span class="context-value">{{ data.className }}</span>
+      </div>
+
+    </div>
+
+
+    @if (data.subjects.length === 0) {
+
+      <!-- Every active subject already has a plan for this class -->
+      <div class="message-card info">
+        <mat-icon>check_circle</mat-icon>
+
+        <span>
+          {{ 'SUBJECTS.PLAN_FORM.NO_SUBJECTS' | translate: { className: data.className } }}
+        </span>
+      </div>
+
+    } @else {
+
+      <form
+        [formGroup]="planForm"
+        class="plan-form"
+        (ngSubmit)="onSubmit()"
+      >
+
+        <div class="two-fields">
+
+          <!-- Subject (only subjects without a plan for this class) -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>{{ 'SUBJECTS.PLAN_FORM.SUBJECT' | translate }}</mat-label>
+
+            <mat-select formControlName="subjectId">
+              @for (subject of data.subjects; track subject.subjectId) {
+                <mat-option [value]="subject.subjectId">
+                  {{ getSubjectName(subject) }}
+                </mat-option>
+              }
+            </mat-select>
+
+            <mat-hint>{{ 'SUBJECTS.PLAN_FORM.SUBJECT_HINT' | translate }}</mat-hint>
+
+            @if (isInvalid(planForm.controls.subjectId)) {
+              <mat-error>{{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}</mat-error>
+            }
+
+          </mat-form-field>
+
+
+          <!-- Passing mark (above 0, at most 100) -->
+          <mat-form-field appearance="outline">
+
+            <mat-label>{{ 'SUBJECTS.PLAN_FORM.PASSING_MARK' | translate }}</mat-label>
+
+            <input
+              matInput
+              type="number"
+              min="0"
+              max="100"
+              step="any"
+              formControlName="passingMark"
+            />
+
+            <span matTextSuffix>{{ 'SUBJECTS.PLAN_FORM.OUT_OF' | translate }}</span>
+
+            @if (isInvalid(planForm.controls.passingMark)) {
+              <mat-error>
+                @if (planForm.controls.passingMark.hasError('required')) {
+                  {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
+                } @else {
+                  {{ 'SUBJECTS.PLAN_FORM.PASSING_MARK_ERROR' | translate }}
+                }
+              </mat-error>
+            }
+
+          </mat-form-field>
+
+        </div>
+
+
+        <!-- Components -->
+        <div class="components-head">
+
+          <div>
+            <h3>{{ 'SUBJECTS.PLAN_FORM.COMPONENTS' | translate }}</h3>
+            <p>{{ 'SUBJECTS.PLAN_FORM.COMPONENTS_HINT' | translate }}</p>
+          </div>
+
+          <button
+            mat-button
+            type="button"
+            (click)="addComponent()"
+          >
+            <mat-icon>add</mat-icon>
+            {{ 'SUBJECTS.PLAN_FORM.ADD_COMPONENT' | translate }}
+          </button>
+
+        </div>
+
+
+        <div class="component-rows" formArrayName="components">
+
+          @for (row of components.controls; track row; let i = $index) {
+
+            <div class="component-row" [formGroupName]="i">
+
+              <span class="row-dot" [style.background]="componentColor(i)"></span>
+
+              <div class="row-fields">
+
+                <!-- Names -->
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="name-field">
+                  <mat-label>{{ 'SUBJECTS.PLAN_FORM.NAME_AR' | translate }}</mat-label>
+                  <input matInput formControlName="nameAr" dir="rtl" [maxlength]="nameMaxLength" />
+                  @if (isInvalid(row.controls.nameAr)) {
+                    <mat-error>{{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="name-field">
+                  <mat-label>{{ 'SUBJECTS.PLAN_FORM.NAME_EN' | translate }}</mat-label>
+                  <input matInput formControlName="nameEn" dir="ltr" [maxlength]="nameMaxLength" />
+                  @if (isInvalid(row.controls.nameEn)) {
+                    <mat-error>{{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <!-- Type: fixed (one exam per section) or open (the teacher adds) -->
+                <mat-button-toggle-group
+                  formControlName="isOpen"
+                  class="type-toggle"
+                  [attr.aria-label]="'SUBJECTS.PLAN_FORM.TYPE' | translate"
+                >
+                  <mat-button-toggle [value]="false">
+                    {{ 'SUBJECTS.PLAN_FORM.FIXED' | translate }}
+                  </mat-button-toggle>
+                  <mat-button-toggle [value]="true">
+                    {{ 'SUBJECTS.PLAN_FORM.OPEN' | translate }}
+                  </mat-button-toggle>
+                </mat-button-toggle-group>
+
+                <!-- Weight -->
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="number-field">
+                  <mat-label>{{ 'SUBJECTS.PLAN_FORM.WEIGHT' | translate }}</mat-label>
+                  <input matInput type="number" min="0" max="100" step="any" formControlName="weight" />
+                  <span matTextSuffix>%</span>
+                  @if (isInvalid(row.controls.weight)) {
+                    <mat-error>
+                      @if (row.controls.weight.hasError('required')) {
+                        {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
+                      } @else {
+                        {{ 'SUBJECTS.PLAN_FORM.WEIGHT_ERROR' | translate }}
+                      }
+                    </mat-error>
+                  }
+                </mat-form-field>
+
+                <!-- Max mark (fixed components only) -->
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="number-field">
+                  <mat-label>{{ 'SUBJECTS.PLAN_FORM.MAX_MARK' | translate }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    min="0"
+                    step="any"
+                    formControlName="maxMark"
+                    [placeholder]="row.controls.isOpen.value ? ('SUBJECTS.PLAN_FORM.MAX_MARK_TEACHER' | translate) : ''"
+                  />
+                  @if (isMaxMarkMissing(row)) {
+                    <mat-error>{{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}</mat-error>
+                  } @else if (isInvalid(row.controls.maxMark)) {
+                    <mat-error>{{ 'SUBJECTS.PLAN_FORM.MAX_MARK_ERROR' | translate }}</mat-error>
+                  }
+                </mat-form-field>
+
+              </div>
+
+              <button
+                mat-icon-button
+                type="button"
+                class="remove-button"
+                (click)="removeComponent(i)"
+                [attr.aria-label]="'SUBJECTS.PLAN_FORM.REMOVE_COMPONENT' | translate"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+
+            </div>
+
+          } @empty {
+
+            <p class="no-components">
+              {{ 'SUBJECTS.PLAN_FORM.NO_COMPONENTS' | translate }}
+            </p>
+
+          }
+
+        </div>
+
+
+        <!-- Total of the weights -->
+        <app-plan-weight-bar [weights]="weights()"></app-plan-weight-bar>
+
+        @if (components.hasError('overWeight')) {
+
+          <div class="message-card error">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ 'SUBJECTS.PLAN_FORM.OVER_WEIGHT' | translate }}</span>
+          </div>
+
+        } @else if (total() < fullWeight) {
+
+          <div class="message-card warning">
+            <mat-icon>info</mat-icon>
+            <span>{{ 'SUBJECTS.PLAN_FORM.UNDER_WEIGHT' | translate: { remaining: remaining() } }}</span>
+          </div>
+
+        }
+
+        @if (components.hasError('repeatedName')) {
+          <div class="message-card error">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ 'SUBJECTS.PLAN_FORM.REPEATED_NAME' | translate }}</span>
+          </div>
+        }
+
+      </form>
+
+    }
+
+  </div>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    [disabled]="isSubmitting()"
+    (click)="cancel()"
+  >
+    {{ 'SUBJECTS.PLAN_FORM.CANCEL' | translate }}
+  </button>
+
+  @if (data.subjects.length > 0) {
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="onSubmit()"
+    >
+      <mat-icon>save</mat-icon>
+
+      {{
+        isSubmitting()
+          ? ('SUBJECTS.PLAN_FORM.SAVING' | translate)
+          : ('SUBJECTS.PLAN_FORM.SAVE' | translate)
+      }}
+    </button>
+  }
+
+</mat-dialog-actions>

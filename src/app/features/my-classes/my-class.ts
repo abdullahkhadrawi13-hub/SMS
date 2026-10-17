@@ -1,3 +1,4 @@
+import { SubjectPlan } from '../../core/models/subject-plan';
 import { TeacherAssignment } from '../../core/models/teacher-assignment';
 
 
@@ -6,6 +7,10 @@ import { TeacherAssignment } from '../../core/models/teacher-assignment';
 export interface MyClassSubject {
   assignment: TeacherAssignment;
   subjectName: string;
+
+  // The subject plan the section follows (passing mark and lock),
+  // or null when the administration has not made the plan yet.
+  plan: SubjectPlan | null;
 }
 
 

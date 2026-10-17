@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+
+.weight {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+.weight-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  font-size: 12.5px;
+
+  color: #6b7280;
+}
+
+.weight-total {
+  font-variant-numeric: tabular-nums;
+
+  color: #111827;
+}
+
+.weight-total.under {
+  color: #92400e;
+}
+
+.weight-total.over {
+  color: #b91c1c;
+}
+
+/* The bar: one part per component, a 2px gap between parts.
+   The parts shrink a little to make room for the gaps. */
+.bar {
+  display: flex;
+
+  gap: 2px;
+
+  height: 10px;
+
+  border-radius: 6px;
+
+  overflow: hidden;
+
+  background: #f1f5f9;
+}
+
+.bar-part {
+  display: block;
+
+  flex-shrink: 1;
+
+  min-width: 0;
+
+  height: 100%;
+}

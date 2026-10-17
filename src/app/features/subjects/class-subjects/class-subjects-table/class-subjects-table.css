@@ -277,27 +277,60 @@
 
 
 /* ================================
-   Passing Mark
+   Subject Plan
    ================================ */
 
-.mark {
-  color: #111827;
+/* The whole cell opens the plan: a badge + a short line. */
+.plan-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 4px 6px;
+  margin-inline-start: -6px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+
+  font: inherit;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease;
 }
 
-.muted {
-  margin-inline-start: 4px;
+.plan-link:hover {
+  background: #f1f5f9;
+}
 
+.plan-link:focus-visible {
+  outline: 2px solid #2554a4;
+  outline-offset: 2px;
+}
+
+.plan-meta {
   font-size: 12px;
 
   color: #6b7280;
 }
 
+.plan-link:hover .plan-meta {
+  color: #2554a4;
+}
+
+.muted {
+  color: #6b7280;
+}
+
 
 /* ================================
-   Assessment Structure / Status
+   Plan / Status Badges
    ================================ */
 
-.structure-badge,
+.plan-badge,
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -314,21 +347,31 @@
   white-space: nowrap;
 }
 
-.structure-badge {
-  background: #f1f5f9;
-  color: #374151;
-}
-
-.structure-badge.locked {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.structure-badge mat-icon {
+.plan-badge mat-icon {
   width: 14px;
   height: 14px;
 
   font-size: 14px;
+}
+
+.plan-badge.neutral {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.plan-badge.ok {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.plan-badge.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.plan-badge.bad {
+  background: #fef2f2;
+  color: #991b1b;
 }
 
 .status-badge {
@@ -354,6 +397,49 @@
   border-radius: 50%;
 
   background: currentColor;
+}
+
+
+/* ================================
+   Subjects With a Plan but No Teacher
+   ================================ */
+
+.missing-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px 20px;
+
+  border-top: 1px solid #fcd34d;
+
+  background: #fef3c7;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #92400e;
+}
+
+.missing-line > mat-icon {
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+
+  flex-shrink: 0;
+}
+
+.missing-text {
+  flex: 1;
+
+  min-width: 220px;
+}
+
+.missing-button {
+  flex-shrink: 0;
 }
 
 

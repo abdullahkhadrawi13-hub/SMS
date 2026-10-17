@@ -25,6 +25,13 @@
   line-height: 1.5;
 }
 
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .page-header button {
   min-height: 44px;
   display: flex;
@@ -45,8 +52,12 @@
     font-size: 24px;
   }
 
+  .header-actions {
+    flex-direction: column;
+  }
+
   .page-header button {
     width: 100%;
     justify-content: center;
   }
-}
+}

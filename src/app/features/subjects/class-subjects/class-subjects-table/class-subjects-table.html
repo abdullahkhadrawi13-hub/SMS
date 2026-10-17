@@ -84,7 +84,7 @@
         type="button"
         class="empty-add-button"
         [disabled]="openingForm()"
-        (click)="addSubject.emit()"
+        (click)="addSubject.emit(null)"
       >
         <mat-icon>add</mat-icon>
 
@@ -157,7 +157,7 @@
             type="button"
             class="add-button"
             [disabled]="openingForm()"
-            (click)="addSubject.emit()"
+            (click)="addSubject.emit(null)"
           >
             <mat-icon>add</mat-icon>
 
@@ -238,46 +238,58 @@
         </ng-container>
 
 
-        <!-- Passing Mark -->
-        <ng-container matColumnDef="passingMark">
+        <!-- Subject plan (state + passing mark), opens the plan -->
+        <ng-container matColumnDef="plan">
 
           <th mat-header-cell *matHeaderCellDef>
-            {{ 'SUBJECTS.CLASS_TABLE.PASSING_MARK' | translate }}
+            {{ 'SUBJECTS.CLASS_TABLE.PLAN' | translate }}
           </th>
 
           <td mat-cell *matCellDef="let row">
-            <strong class="mark">{{ row.assignment.passingMark }}</strong>
 
-            <span class="muted">
-              {{ 'SUBJECTS.CLASS_TABLE.OUT_OF' | translate }}
-            </span>
-          </td>
+            @if (row.plan; as plan) {
 
-        </ng-container>
+              <button
+                type="button"
+                class="plan-link"
+                (click)="viewPlan.emit(row)"
+                [attr.aria-label]="'SUBJECTS.CLASS_TABLE.VIEW_PLAN' | translate"
+              >
+                <span class="plan-badge {{ planBadge(plan).cssClass }}">
+                  <mat-icon>{{ planBadge(plan).icon }}</mat-icon>
+                  {{ planBadge(plan).labelKey | translate }}
+                </span>
 
+                <span class="plan-meta">
+                  @if (plan.isComplete) {
+                    {{
+                      'SUBJECTS.CLASS_TABLE.PLAN_META'
+                        | translate: { mark: formatNumber(plan.passingMark), count: plan.components.length }
+                    }}
+                  } @else {
+                    {{
+                      'SUBJECTS.CLASS_TABLE.PLAN_WEIGHTS'
+                        | translate: { total: formatNumber(plan.totalWeight) }
+                    }}
+                  }
+                </span>
+              </button>
 
-        <!-- Assessment Structure (locked / open) -->
-        <ng-container matColumnDef="structure">
+            } @else if (row.assignment.subjectPlanId === null) {
 
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'SUBJECTS.CLASS_TABLE.STRUCTURE' | translate }}
-          </th>
+              <!-- An old assignment made before subject plans existed -->
+              <span class="plan-badge bad">
+                <mat-icon>error_outline</mat-icon>
+                {{ 'SUBJECTS.PLAN_STATUS.NONE' | translate }}
+              </span>
 
-          <td mat-cell *matCellDef="let row">
-            <span
-              class="structure-badge"
-              [class.locked]="row.assignment.isAssessmentStructureLocked"
-            >
-              <mat-icon>
-                {{ row.assignment.isAssessmentStructureLocked ? 'lock' : 'lock_open' }}
-              </mat-icon>
+            } @else {
 
-              {{
-                row.assignment.isAssessmentStructureLocked
-                  ? ('SUBJECTS.CLASS_TABLE.LOCKED' | translate)
-                  : ('SUBJECTS.CLASS_TABLE.UNLOCKED' | translate)
-              }}
-            </span>
+              <!-- The plans could not be loaded -->
+              <span class="muted">—</span>
+
+            }
+
           </td>
 
         </ng-container>
@@ -329,7 +341,7 @@
 
             <mat-menu #rowMenu="matMenu">
 
-              <!-- Edit the teacher and the passing mark -->
+              <!-- Change the teacher -->
               <button
                 mat-menu-item
                 type="button"
@@ -339,6 +351,19 @@
 
                 {{ 'SUBJECTS.CLASS_TABLE.EDIT' | translate }}
               </button>
+
+              <!-- Open the subject plan -->
+              @if (row.assignment.subjectPlanId !== null) {
+                <button
+                  mat-menu-item
+                  type="button"
+                  (click)="viewPlan.emit(row)"
+                >
+                  <mat-icon>rule</mat-icon>
+
+                  {{ 'SUBJECTS.CLASS_TABLE.VIEW_PLAN' | translate }}
+                </button>
+              }
 
               <!-- Activate / deactivate the subject for this section -->
               <button
@@ -372,6 +397,39 @@
       </table>
 
     </div>
+
+
+    <!-- Subjects with a plan for the class but no teacher in this section -->
+    @if (missingSubjects().length > 0) {
+
+      <div class="missing-line" role="status">
+
+        <mat-icon>assignment_late</mat-icon>
+
+        <span class="missing-text">
+          {{
+            'SUBJECTS.CLASS_TABLE.MISSING'
+              | translate: { names: missingNames(), sectionName: sectionName(), count: missingSubjects().length }
+          }}
+        </span>
+
+        @if (canManage()) {
+          <button
+            mat-stroked-button
+            type="button"
+            class="missing-button"
+            [disabled]="openingForm()"
+            (click)="addSubject.emit(missingSubjects().length === 1 ? missingSubjects()[0].subjectId : null)"
+          >
+            <mat-icon>person_add</mat-icon>
+
+            {{ 'SUBJECTS.CLASS_TABLE.ASSIGN_TEACHER' | translate }}
+          </button>
+        }
+
+      </div>
+
+    }
 
 
     <!-- Footer hint: automatic enrollment -->

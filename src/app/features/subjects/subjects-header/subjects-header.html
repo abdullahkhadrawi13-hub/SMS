@@ -14,16 +14,44 @@
 
   <!-- Add subject (Admin only, subjects list tab) -->
   @if (showAdd()) {
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      (click)="addSubject.emit()"
-    >
-      <mat-icon>menu_book</mat-icon>
+    <div class="header-actions">
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="addSubject.emit()"
+      >
+        <mat-icon>menu_book</mat-icon>
 
-      {{ 'SUBJECTS.HEADER.ADD' | translate }}
-    </button>
+        {{ 'SUBJECTS.HEADER.ADD' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- Copy plans + new plan (Admin only, subject plans tab) -->
+  @if (showPlanActions()) {
+    <div class="header-actions">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="copyPlans.emit()"
+      >
+        <mat-icon>content_copy</mat-icon>
+
+        {{ 'SUBJECTS.HEADER.COPY_PLANS' | translate }}
+      </button>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="addPlan.emit()"
+      >
+        <mat-icon>add</mat-icon>
+
+        {{ 'SUBJECTS.HEADER.ADD_PLAN' | translate }}
+      </button>
+    </div>
   }
 
 </div>

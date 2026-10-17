@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -27,13 +27,13 @@ import { catchError, debounceTime, filter, map, of, switchMap, tap } from 'rxjs'
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../../core/services/api-message';
-import { SubjectDto } from '../../../../core/models/subject';
 import { TeacherAssignmentsService } from '../../../../core/services/teacher-assignments';
 import { TeachersService } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
 
 import {
-  DEFAULT_PASSING_MARK,
+  formatNumber,
+  SubjectOption,
   teacherOptionFromDto,
   TeacherOption,
 } from '../../subject';
@@ -54,8 +54,12 @@ export interface AssignmentFormData {
   className: string;
   sectionName: string;
 
-  // Add mode: the active subjects not yet added to this section.
-  subjects: SubjectDto[];
+  // Add mode: the active subjects not yet added to this section,
+  // each with its plan for the term and class (null = no plan: shown disabled).
+  subjects: SubjectOption[];
+
+  // Add mode: the subject chosen when the form opens (or null).
+  preselectedSubjectId: number | null;
 
   // Edit mode only.
   assignment?: TeacherAssignment;
@@ -70,22 +74,13 @@ export interface AssignmentFormData {
 }
 
 
-// The passing mark must be above 0 and at most 100 (API Reference, section 8).
-function passingMarkValidator(
-  control: AbstractControl
-): ValidationErrors | null {
-
-  const value = control.value;
-
-  if (value === null || value === '') {
-    return null;
-  }
-
-  const mark = Number(value);
-
-  return mark > 0 && mark <= 100
-    ? null
-    : { passingMark: true };
+// How the dialog closes:
+// - { success: true }: the assignment was saved (the parent reloads the table)
+// - { createPlanFor }: "Create the plan first" was clicked; the parent opens the
+//   plans tab and its "New plan" form (for this subject, or none when null)
+export interface AssignmentFormResult {
+  success?: boolean;
+  createPlanFor?: number | null;
 }
 
 
@@ -114,8 +109,13 @@ function teacherSelectedValidator(
 }
 
 
-// Add a subject to a section, or edit it (teacher and passing mark only).
+// Add a subject to a section, or edit it (the teacher only).
 // POST /api/teacherassignments and PUT /api/teacherassignments/{id}.
+//
+// The passing mark and the assessment components come from the subject plan
+// (API Reference, section 9). A subject without a plan for this term and class
+// cannot be added (the backend answers 400), so it is shown disabled,
+// with a link to create the plan first.
 @Component({
   selector: 'app-assignment-form',
   imports: [
@@ -168,8 +168,9 @@ export class AssignmentForm implements OnInit {
   readonly assignmentForm = this.fb.group({
 
     // Add mode only (the subject cannot change after creation).
+    // A preselected subject is used only when it has a plan.
     subjectId: [
-      null as number | null,
+      this.initialSubjectId(),
       this.isEditMode ? [] : [Validators.required],
     ],
 
@@ -179,16 +180,67 @@ export class AssignmentForm implements OnInit {
       (this.data.currentTeacher ?? null) as TeacherOption | string | null,
       [Validators.required, teacherSelectedValidator],
     ],
-
-    passingMark: [
-      (this.data.assignment?.passingMark ?? DEFAULT_PASSING_MARK) as number | null,
-      [Validators.required, passingMarkValidator],
-    ],
   });
+
+
+  // =========================
+  // Subjects and their plans (add mode)
+  // =========================
+
+  readonly formatNumber = formatNumber;
+
+  // The chosen subject (updated when the select changes).
+  private readonly selectedSubjectId = signal<number | null>(
+    this.assignmentForm.controls.subjectId.value
+  );
+
+  // The plan of the chosen subject, shown under the select.
+  readonly selectedPlan = computed(() => {
+
+    const id = this.selectedSubjectId();
+
+    return this.data.subjects.find(o => o.subject.subjectId === id)?.plan ?? null;
+  });
+
+  // The chosen subject's name, shown in the closed select.
+  readonly selectedSubjectName = computed(() => {
+
+    const id = this.selectedSubjectId();
+    const option = this.data.subjects.find(o => o.subject.subjectId === id);
+
+    return option ? this.getSubjectName(option) : '';
+  });
+
+  // The subjects that cannot be chosen yet (no plan for this term and class).
+  readonly subjectsWithoutPlan = computed(
+    () => this.data.subjects.filter(o => o.plan === null)
+  );
+
+  // Their names, joined: "Art Education، Computer".
+  readonly subjectsWithoutPlanNames = computed(
+    () => this.subjectsWithoutPlan()
+      .map(o => this.getSubjectName(o))
+      .join('، ')
+  );
 
 
   ngOnInit(): void {
     this.listenToTeacherSearch();
+
+    this.assignmentForm.controls.subjectId.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(id => this.selectedSubjectId.set(id));
+  }
+
+
+  // The preselected subject, when it can be chosen (it has a plan).
+  private initialSubjectId(): number | null {
+
+    const id = this.data.preselectedSubjectId;
+
+    const option = this.data.subjects.find(o => o.subject.subjectId === id);
+
+    return option?.plan ? option.subject.subjectId : null;
   }
 
 
@@ -287,8 +339,8 @@ export class AssignmentForm implements OnInit {
     return document.documentElement.lang === 'ar';
   }
 
-  getSubjectName(subject: SubjectDto): string {
-    return this.isArabic() ? subject.subjectAr : subject.subjectEn;
+  getSubjectName(option: SubjectOption): string {
+    return this.isArabic() ? option.subject.subjectAr : option.subject.subjectEn;
   }
 
   getTeacherName(teacher: TeacherOption): string {
@@ -299,6 +351,27 @@ export class AssignmentForm implements OnInit {
   // Add mode: nothing to choose when every active subject is already added.
   get noSubjects(): boolean {
     return !this.isEditMode && this.data.subjects.length === 0;
+  }
+
+  // Add mode: some subjects are left, but none of them has a plan yet.
+  get noSubjectWithPlan(): boolean {
+    return !this.isEditMode
+      && this.data.subjects.length > 0
+      && this.data.subjects.every(o => o.plan === null);
+  }
+
+
+  // "Create the plan first": the dialog closes and the parent opens the plans
+  // tab with its "New plan" form (for the subject when only one has no plan).
+  createPlanFirst(): void {
+
+    const withoutPlan = this.subjectsWithoutPlan();
+
+    this.dialogRef.close({
+      createPlanFor: withoutPlan.length === 1
+        ? withoutPlan[0].subject.subjectId
+        : null,
+    } satisfies AssignmentFormResult);
   }
 
 
@@ -326,14 +399,13 @@ export class AssignmentForm implements OnInit {
     const value = this.assignmentForm.getRawValue();
 
     const teacherId = (value.teacher as TeacherOption).teacherId;
-    const passingMark = Number(value.passingMark);
 
     const assignment = this.data.assignment;
 
     const request = this.isEditMode && assignment
       ? this.assignmentsService.updateAssignment(
           assignment.teacherAssignmentId,
-          { teacherId, passingMark }
+          { teacherId }
         )
       : this.assignmentsService.createAssignment({
           teacherId,
@@ -341,7 +413,6 @@ export class AssignmentForm implements OnInit {
           classId: this.data.classId,
           sectionId: this.data.sectionId,
           subjectId: value.subjectId as number,
-          passingMark,
         });
 
     this.isSubmitting.set(true);
@@ -361,7 +432,7 @@ export class AssignmentForm implements OnInit {
             return;
           }
 
-          this.dialogRef.close({ success: true });
+          this.dialogRef.close({ success: true } satisfies AssignmentFormResult);
 
           this.actionResult.show(
             'success',

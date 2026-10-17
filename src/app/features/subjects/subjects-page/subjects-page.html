@@ -1,9 +1,13 @@
 <div class="subjects-page">
 
-  <!-- Page Header -->
+  <!-- Page Header (the buttons change with the open tab) -->
   <app-subjects-header
+    [subtitleKey]="subtitleKey()"
     [showAdd]="canManage() && activeTab() === 'catalog'"
+    [showPlanActions]="canManage() && activeTab() === 'plans'"
     (addSubject)="openAddSubject()"
+    (addPlan)="openAddPlan()"
+    (copyPlans)="openCopyPlans()"
   ></app-subjects-header>
 
   <!-- Tabs -->
@@ -16,14 +20,28 @@
 
     <a
       mat-tab-link
-      [active]="activeTab() === 'class'"
-      (click)="selectTab('class')"
+      [active]="activeTab() === 'plans'"
+      (click)="selectTab('plans')"
+    >
+      <span class="tab-label">
+        <mat-icon>rule</mat-icon>
+
+        <span>
+          {{ 'SUBJECTS.TABS.PLANS' | translate }}
+        </span>
+      </span>
+    </a>
+
+    <a
+      mat-tab-link
+      [active]="activeTab() === 'assignments'"
+      (click)="selectTab('assignments')"
     >
       <span class="tab-label">
         <mat-icon>assignment_ind</mat-icon>
 
         <span>
-          {{ 'SUBJECTS.TABS.CLASS' | translate }}
+          {{ 'SUBJECTS.TABS.ASSIGNMENTS' | translate }}
         </span>
       </span>
     </a>
@@ -46,10 +64,21 @@
 
   <mat-tab-nav-panel #tabPanel>
 
-    <!-- Subjects of a section (class / section / term) -->
-    <div [hidden]="activeTab() !== 'class'">
+    <!-- Subject plans of a class (term / class) -->
+    <div [hidden]="activeTab() !== 'plans'">
+      <app-plans-tab
+        [canManage]="canManage()"
+        [active]="activeTab() === 'plans'"
+        (assignTeacher)="selectTab('assignments')"
+      ></app-plans-tab>
+    </div>
+
+    <!-- Subjects of a section and their teachers (class / section / term) -->
+    <div [hidden]="activeTab() !== 'assignments'">
       <app-class-subjects-tab
         [canManage]="canManage()"
+        [active]="activeTab() === 'assignments'"
+        (createPlan)="createPlanFromAssignments($event)"
       ></app-class-subjects-tab>
     </div>
 

@@ -1,7 +1,7 @@
 <!-- Term / Class / Section -->
 <div class="selector-card">
 
-  <div class="selector-fields">
+  <div class="selector-fields" [class.two-fields]="!showSection()">
 
     <!-- Academic term (the current term is selected by default) -->
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
@@ -59,31 +59,35 @@
 
 
     <!-- Section (disabled until a class is chosen) -->
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    @if (showSection()) {
 
-      <mat-label>
-        {{ 'SUBJECTS.CLASS_SELECTOR.SECTION' | translate }}
-      </mat-label>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
 
-      <mat-select
-        [value]="sectionId()"
-        [disabled]="classId() === null || sectionsLoading()"
-        (selectionChange)="sectionChange.emit($event.value)"
-      >
+        <mat-label>
+          {{ 'SUBJECTS.CLASS_SELECTOR.SECTION' | translate }}
+        </mat-label>
 
-        @for (s of sections(); track s.sectionId) {
-          <mat-option [value]="s.sectionId">
-            {{ getSectionName(s) }}
-          </mat-option>
+        <mat-select
+          [value]="sectionId()"
+          [disabled]="classId() === null || sectionsLoading()"
+          (selectionChange)="sectionChange.emit($event.value)"
+        >
+
+          @for (s of sections(); track s.sectionId) {
+            <mat-option [value]="s.sectionId">
+              {{ getSectionName(s) }}
+            </mat-option>
+          }
+
+        </mat-select>
+
+        @if (sectionsLoading()) {
+          <mat-spinner matSuffix diameter="18"></mat-spinner>
         }
 
-      </mat-select>
+      </mat-form-field>
 
-      @if (sectionsLoading()) {
-        <mat-spinner matSuffix diameter="18"></mat-spinner>
-      }
-
-    </mat-form-field>
+    }
 
   </div>
 

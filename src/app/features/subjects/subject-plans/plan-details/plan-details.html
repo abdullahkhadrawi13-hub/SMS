@@ -1,0 +1,473 @@
+<div class="plan-details-page">
+
+  <!-- Breadcrumb: Subjects › Subject plans › subject · class -->
+  <nav class="crumbs" [attr.aria-label]="'SUBJECTS.PLAN_DETAILS.BREADCRUMB' | translate">
+
+    <a routerLink="/subjects" [queryParams]="backQueryParams()">
+      {{ 'SUBJECTS.HEADER.TITLE' | translate }}
+    </a>
+
+    <mat-icon class="crumb-arrow">chevron_right</mat-icon>
+
+    <a routerLink="/subjects" [queryParams]="backQueryParams()">
+      {{ 'SUBJECTS.TABS.PLANS' | translate }}
+    </a>
+
+    @if (plan()) {
+      <mat-icon class="crumb-arrow">chevron_right</mat-icon>
+      <span>{{ subjectName() }} · {{ className() }}</span>
+    }
+
+  </nav>
+
+
+  <!-- Not found -->
+  @if (notFound()) {
+
+    <div class="state-card">
+
+      <mat-icon>search_off</mat-icon>
+
+      <h3>{{ 'SUBJECTS.PLAN_DETAILS.NOT_FOUND_TITLE' | translate }}</h3>
+
+      <p>{{ 'SUBJECTS.PLAN_DETAILS.NOT_FOUND_MESSAGE' | translate }}</p>
+
+      <a mat-flat-button color="primary" routerLink="/subjects" [queryParams]="{ tab: 'plans' }">
+        {{ 'SUBJECTS.PLAN_DETAILS.BACK' | translate }}
+      </a>
+
+    </div>
+
+  }
+
+  <!-- Error -->
+  @else if (errorMessage()) {
+
+    <div class="state-card error-state">
+
+      <mat-icon>error_outline</mat-icon>
+
+      <p>{{ errorMessage() | translate }}</p>
+
+      <button mat-flat-button color="primary" type="button" (click)="loadPlan()">
+        <mat-icon>refresh</mat-icon>
+        {{ 'SUBJECTS.CLASS_TABLE.RETRY' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+  <!-- First load -->
+  @else if (!plan()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>{{ 'SUBJECTS.PLAN_DETAILS.LOADING' | translate }}</p>
+
+    </div>
+
+  }
+
+  @else {
+
+    @let current = plan()!;
+
+    <!-- Header -->
+    <div class="page-header">
+
+      <div class="title-section">
+
+        <h1>
+          {{ 'SUBJECTS.PLAN_DETAILS.TITLE' | translate: { subject: subjectName() } }}
+
+          @if (badge(); as b) {
+            <span class="plan-badge {{ b.cssClass }}">
+              <mat-icon>{{ b.icon }}</mat-icon>
+              {{ b.labelKey | translate }}
+            </span>
+          }
+        </h1>
+
+        <p>{{ className() }} · {{ termName() }}</p>
+
+      </div>
+
+      @if (canManage()) {
+
+        <div class="header-actions">
+
+          @if (current.isLocked) {
+
+            <button
+              mat-stroked-button
+              type="button"
+              [disabled]="isBusy()"
+              (click)="toggleLock()"
+            >
+              <mat-icon>lock_open</mat-icon>
+              {{ 'SUBJECTS.PLAN_DETAILS.UNLOCK' | translate }}
+            </button>
+
+          } @else if (current.isComplete) {
+
+            <button
+              mat-stroked-button
+              type="button"
+              [disabled]="isBusy()"
+              (click)="toggleLock()"
+            >
+              <mat-icon>lock</mat-icon>
+              {{ 'SUBJECTS.PLAN_DETAILS.LOCK' | translate }}
+            </button>
+
+          }
+
+          <button
+            mat-icon-button
+            type="button"
+            [matMenuTriggerFor]="planMenu"
+            [attr.aria-label]="'SUBJECTS.PLAN_DETAILS.MORE' | translate"
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+
+          <mat-menu #planMenu="matMenu">
+
+            <!-- Delete: only when no section follows the plan -->
+            <button
+              mat-menu-item
+              type="button"
+              class="danger-item"
+              [disabled]="current.assignmentCount > 0 || isBusy()"
+              (click)="deletePlan()"
+            >
+              <mat-icon>delete</mat-icon>
+
+              <span class="menu-text">
+                {{ 'SUBJECTS.PLAN_DETAILS.DELETE_PLAN' | translate }}
+
+                @if (current.assignmentCount > 0) {
+                  <small>{{ 'SUBJECTS.PLAN_DETAILS.DELETE_PLAN_BLOCKED' | translate }}</small>
+                }
+              </span>
+            </button>
+
+          </mat-menu>
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- Notices -->
+    @if (current.isLocked) {
+
+      <div class="notice warn">
+        <mat-icon>lock</mat-icon>
+        <span>
+          @if (current.hasGrades) {
+            {{ 'SUBJECTS.PLAN_DETAILS.LOCKED_GRADES' | translate }}
+          } @else {
+            {{ 'SUBJECTS.PLAN_DETAILS.LOCKED_MANUAL' | translate }}
+          }
+        </span>
+      </div>
+
+    } @else if (current.hasGrades) {
+
+      <div class="notice info">
+        <mat-icon>info</mat-icon>
+        <span>{{ 'SUBJECTS.PLAN_DETAILS.UNLOCKED_GRADES' | translate }}</span>
+      </div>
+
+    }
+
+    @if (!current.isComplete) {
+
+      <div class="notice warn">
+        <mat-icon>warning_amber</mat-icon>
+        <span>
+          {{ 'SUBJECTS.PLAN_DETAILS.INCOMPLETE' | translate: { total: formatNumber(current.totalWeight), remaining: remainingWeight() } }}
+        </span>
+      </div>
+
+    }
+
+
+    <div class="details-grid">
+
+      <!-- Side card: passing mark, weights, sections -->
+      <aside class="side-card">
+
+        <!-- Passing mark -->
+        <section>
+
+          <div class="side-title">
+            <h2>{{ 'SUBJECTS.PLAN_DETAILS.PASSING_MARK' | translate }}</h2>
+
+            @if (canEdit() && !isEditingMark()) {
+              <button
+                mat-icon-button
+                type="button"
+                class="small-icon-button"
+                (click)="startEditMark()"
+                [attr.aria-label]="'SUBJECTS.PLAN_DETAILS.EDIT_PASSING_MARK' | translate"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            }
+          </div>
+
+          @if (isEditingMark()) {
+
+            <form class="mark-form" (ngSubmit)="saveMark()">
+
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="any"
+                  [formControl]="markControl"
+                  [attr.aria-label]="'SUBJECTS.PLAN_DETAILS.PASSING_MARK' | translate"
+                />
+                <span matTextSuffix>{{ 'SUBJECTS.PLAN_FORM.OUT_OF' | translate }}</span>
+
+                @if (markControl.invalid && markControl.touched) {
+                  <mat-error>{{ 'SUBJECTS.PLAN_FORM.PASSING_MARK_ERROR' | translate }}</mat-error>
+                }
+              </mat-form-field>
+
+              <div class="mark-actions">
+                <button mat-button type="button" [disabled]="isBusy()" (click)="cancelEditMark()">
+                  {{ 'SUBJECTS.PLAN_FORM.CANCEL' | translate }}
+                </button>
+
+                <button mat-flat-button color="primary" type="submit" [disabled]="isBusy()">
+                  {{ 'SUBJECTS.PLAN_FORM.SAVE' | translate }}
+                </button>
+              </div>
+
+            </form>
+
+          } @else {
+
+            <div class="big-mark">
+              <strong>{{ formatNumber(current.passingMark) }}</strong>
+              <span>{{ 'SUBJECTS.PLAN_FORM.OUT_OF' | translate }}</span>
+            </div>
+
+          }
+
+        </section>
+
+
+        <!-- Weights -->
+        <section>
+          <app-plan-weight-bar [weights]="weights()"></app-plan-weight-bar>
+        </section>
+
+
+        <!-- Sections that follow the plan -->
+        <section>
+
+          <h2>{{ 'SUBJECTS.PLAN_DETAILS.SECTIONS' | translate: { count: current.assignmentCount } }}</h2>
+
+          @if (sectionsLoading()) {
+
+            <mat-spinner diameter="24"></mat-spinner>
+
+          } @else if (sections().length === 0) {
+
+            <p class="side-empty">{{ 'SUBJECTS.PLAN_DETAILS.NO_SECTIONS' | translate }}</p>
+
+          } @else {
+
+            <ul class="sections">
+              @for (section of sections(); track section.assignmentId) {
+                <li [class.inactive]="!section.isActive">
+                  <span class="section-letter">{{ section.sectionName }}</span>
+
+                  <span class="section-text">
+                    {{ section.teacherName }}
+
+                    @if (!section.isActive) {
+                      <small>{{ 'SUBJECTS.INACTIVE' | translate }}</small>
+                    }
+                  </span>
+                </li>
+              }
+            </ul>
+
+          }
+
+          <a
+            class="side-link"
+            routerLink="/subjects"
+            [queryParams]="assignmentsQueryParams()"
+          >
+            {{ 'SUBJECTS.PLAN_DETAILS.OPEN_ASSIGNMENTS' | translate }}
+          </a>
+
+        </section>
+
+      </aside>
+
+
+      <!-- Components -->
+      <section class="table-card">
+
+        <div class="table-toolbar">
+
+          <div class="toolbar-title">
+            <h2>{{ 'SUBJECTS.PLAN_DETAILS.COMPONENTS' | translate }}</h2>
+            <p>{{ 'SUBJECTS.PLAN_DETAILS.COMPONENTS_HINT' | translate }}</p>
+          </div>
+
+          @if (canManage()) {
+            <button
+              mat-flat-button
+              color="primary"
+              type="button"
+              [disabled]="!canAddComponent() || isBusy()"
+              [matTooltip]="current.isLocked
+                ? ('SUBJECTS.PLAN_DETAILS.LOCKED_TOOLTIP' | translate)
+                : (current.totalWeight >= fullWeight ? ('SUBJECTS.PLAN_DETAILS.FULL_TOOLTIP' | translate) : '')"
+              (click)="openAddComponent()"
+            >
+              <mat-icon>add</mat-icon>
+              {{ 'SUBJECTS.PLAN_DETAILS.ADD_COMPONENT' | translate }}
+            </button>
+          }
+
+        </div>
+
+
+        @if (rows().length === 0) {
+
+          <div class="table-empty">
+            <mat-icon>playlist_add</mat-icon>
+            <p>{{ 'SUBJECTS.PLAN_DETAILS.NO_COMPONENTS' | translate }}</p>
+          </div>
+
+        } @else {
+
+          <div class="table-wrapper">
+
+            <table mat-table [dataSource]="rows()">
+
+              <!-- Name -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>{{ 'SUBJECTS.PLAN_DETAILS.COMPONENT' | translate }}</th>
+                <td mat-cell *matCellDef="let row">
+                  <div class="name-cell">
+                    <span class="dot" [style.background]="row.color"></span>
+                    <span class="name-text">
+                      {{ isArabic() ? row.nameAr : row.nameEn }}
+                      <small>{{ isArabic() ? row.nameEn : row.nameAr }}</small>
+                    </span>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Type -->
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>{{ 'SUBJECTS.PLAN_DETAILS.TYPE' | translate }}</th>
+                <td mat-cell *matCellDef="let row">
+                  @if (row.component.teacherAddsAssessments) {
+                    <span class="type-badge open">
+                      <mat-icon>playlist_add</mat-icon>
+                      {{ 'SUBJECTS.PLAN_DETAILS.TYPE_OPEN' | translate }}
+                    </span>
+                  } @else {
+                    <span class="type-badge">
+                      <mat-icon>push_pin</mat-icon>
+                      {{ 'SUBJECTS.PLAN_DETAILS.TYPE_FIXED' | translate }}
+                    </span>
+                  }
+                </td>
+              </ng-container>
+
+              <!-- Weight -->
+              <ng-container matColumnDef="weight">
+                <th mat-header-cell *matHeaderCellDef>{{ 'SUBJECTS.PLAN_DETAILS.WEIGHT' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="number-cell">
+                  <strong>{{ formatNumber(row.component.weight) }}%</strong>
+                </td>
+              </ng-container>
+
+              <!-- Max mark -->
+              <ng-container matColumnDef="maxMark">
+                <th mat-header-cell *matHeaderCellDef>{{ 'SUBJECTS.PLAN_DETAILS.MAX_MARK' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="number-cell">
+                  @if (row.component.teacherAddsAssessments) {
+                    <span class="muted">{{ 'SUBJECTS.PLAN_DETAILS.MAX_MARK_TEACHER' | translate }}</span>
+                  } @else {
+                    {{ formatNumber(row.component.maxMark) }}
+                  }
+                </td>
+              </ng-container>
+
+              <!-- Actions (Admin; disabled while locked) -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let row">
+
+                  <button
+                    mat-icon-button
+                    type="button"
+                    [disabled]="!canEdit() || isBusy()"
+                    [matMenuTriggerFor]="rowMenu"
+                    [attr.aria-label]="'SUBJECTS.CLASS_TABLE.ACTIONS' | translate"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+
+                  <mat-menu #rowMenu="matMenu">
+
+                    <button mat-menu-item type="button" (click)="openEditComponent(row)">
+                      <mat-icon>edit</mat-icon>
+                      {{ 'SUBJECTS.PLAN_DETAILS.EDIT_COMPONENT' | translate }}
+                    </button>
+
+                    <button mat-menu-item type="button" class="danger-item" (click)="deleteComponent(row)">
+                      <mat-icon>delete</mat-icon>
+                      {{ 'SUBJECTS.PLAN_DETAILS.DELETE_COMPONENT' | translate }}
+                    </button>
+
+                  </mat-menu>
+
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns()"></tr>
+
+            </table>
+
+          </div>
+
+        }
+
+
+        <!-- What stays protected after unlocking (Admin only) -->
+        @if (canManage()) {
+          <div class="table-footer">
+            <mat-icon>info</mat-icon>
+            <span>{{ 'SUBJECTS.PLAN_DETAILS.FOOTER_HINT' | translate }}</span>
+          </div>
+        }
+
+      </section>
+
+    </div>
+
+  }
+
+</div>

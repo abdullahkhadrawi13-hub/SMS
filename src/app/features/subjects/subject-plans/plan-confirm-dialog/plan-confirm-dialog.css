@@ -1,0 +1,54 @@
+.confirm {
+  max-width: 440px;
+
+  padding-top: 20px;
+}
+
+.confirm-icon {
+  width: 48px;
+  height: 48px;
+
+  margin: 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.confirm.danger .confirm-icon {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.confirm-icon mat-icon {
+  width: 24px;
+  height: 24px;
+
+  font-size: 24px;
+}
+
+mat-dialog-content p {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.7;
+
+  color: #374151;
+}
+
+/* Delete: a red confirm button. */
+.confirm.danger .confirm-button {
+  --mat-button-filled-container-color: #b91c1c;
+  --mat-button-filled-label-text-color: #ffffff;
+}
+
+mat-dialog-actions {
+  gap: 8px;
+
+  padding: 16px 24px 20px;
+}

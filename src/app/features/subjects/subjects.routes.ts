@@ -7,5 +7,13 @@ export const SUBJECTS_ROUTES: Routes = [
     loadComponent: () =>
       import('./subjects-page/subjects-page')
         .then(m => m.SubjectsPage)
+  },
+
+  // تفاصيل خطة مادة واحدة (بنودها وأوزانها وعلامة النجاح)
+  {
+    path: 'plans/:planId',
+    loadComponent: () =>
+      import('./subject-plans/plan-details/plan-details')
+        .then(m => m.PlanDetails)
   }
 ];

@@ -48,26 +48,34 @@
 
           <span class="subject-name">{{ line.subjectName }}</span>
 
+          <!-- The passing mark comes from the subject plan -->
           <span class="passing-mark">
-            {{ 'MY_CLASSES.CARD.PASSING_MARK' | translate: { mark: line.assignment.passingMark } }}
+            @if (line.plan) {
+              {{ 'MY_CLASSES.CARD.PASSING_MARK' | translate: { mark: line.plan.passingMark } }}
+            } @else {
+              {{ 'MY_CLASSES.CARD.NO_PLAN' | translate }}
+            }
           </span>
 
         </div>
 
-        <span
-          class="structure-badge"
-          [class.locked]="line.assignment.isAssessmentStructureLocked"
-        >
-          <mat-icon>
-            {{ line.assignment.isAssessmentStructureLocked ? 'lock' : 'lock_open' }}
-          </mat-icon>
+        <!-- The plan's lock (the plan is set by the administration) -->
+        @if (line.plan) {
+          <span
+            class="structure-badge"
+            [class.locked]="line.plan.isLocked"
+          >
+            <mat-icon>
+              {{ line.plan.isLocked ? 'lock' : 'lock_open' }}
+            </mat-icon>
 
-          {{
-            line.assignment.isAssessmentStructureLocked
-              ? ('MY_CLASSES.CARD.LOCKED' | translate)
-              : ('MY_CLASSES.CARD.UNLOCKED' | translate)
-          }}
-        </span>
+            {{
+              line.plan.isLocked
+                ? ('MY_CLASSES.CARD.LOCKED' | translate)
+                : ('MY_CLASSES.CARD.UNLOCKED' | translate)
+            }}
+          </span>
+        }
 
         <mat-icon class="line-arrow">chevron_right</mat-icon>
 

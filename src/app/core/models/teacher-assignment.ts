@@ -33,32 +33,33 @@ export interface TeacherAssignment {
   subjectAr: string;
   subjectEn: string;
 
-  passingMark: number;
-
-  // true = the assessment structure is final and grades can be entered.
-  isAssessmentStructureLocked: boolean;
+  // The subject plan this section follows (term + class + subject),
+  // or null when there is no plan yet (API Reference, section 8, 2026-10-16).
+  // The passing mark, the components and the lock live on the plan:
+  // GET /api/subjectplans/{subjectPlanId}.
+  subjectPlanId: number | null;
 
   isActive: boolean;
 }
 
 
 // Body of POST /api/teacherassignments.
+// The subject plan must exist first for the same term, class and subject
+// (otherwise 400). The passing mark comes from the plan.
 export interface CreateTeacherAssignmentRequest {
   teacherId: number;
   academicTermId: number;
   classId: number;
   sectionId: number;
   subjectId: number;
-  passingMark: number;
 }
 
 
 // Body of PUT /api/teacherassignments/{id}.
-// Only the teacher and the passing mark can change:
+// Only the teacher can change:
 // the term, class, section and subject are fixed after creation.
 export interface UpdateTeacherAssignmentRequest {
   teacherId: number;
-  passingMark: number;
 }
 
 

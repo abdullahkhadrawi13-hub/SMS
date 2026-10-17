@@ -9,7 +9,22 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ClassSubjectRow, ClassSubjectsCounts } from '../../subject';
+import { SubjectPlan } from '../../../../core/models/subject-plan';
+
+import {
+  ClassSubjectRow,
+  ClassSubjectsCounts,
+  formatNumber,
+  getPlanStatus,
+  PLAN_STATUS_BADGE,
+} from '../../subject';
+
+
+// A subject with a plan for the class but no teacher in the section.
+export interface MissingPlanSubject {
+  subjectId: number;
+  subjectName: string;
+}
 
 
 // The subjects of one section: toolbar (title, counters, add),
@@ -35,6 +50,9 @@ export class ClassSubjectsTable {
 
   readonly rows = input<ClassSubjectRow[]>([]);
   readonly counts = input<ClassSubjectsCounts>({ total: 0, active: 0, inactive: 0 });
+
+  // Subjects with a plan for the class but no teacher in this section.
+  readonly missingSubjects = input<MissingPlanSubject[]>([]);
 
   // false until a term, a class and a section are chosen.
   readonly hasSelection = input(false);
@@ -71,8 +89,13 @@ export class ClassSubjectsTable {
   // ===== Outputs =====
 
   readonly retry = output<void>();
-  readonly addSubject = output<void>();
+
+  // null = the toolbar button (no subject chosen yet),
+  // a subjectId = a subject of the "no teacher" line (preselected in the form).
+  readonly addSubject = output<number | null>();
+
   readonly editSubject = output<ClassSubjectRow>();
+  readonly viewPlan = output<ClassSubjectRow>();
   readonly toggleStatus = output<ClassSubjectRow>();
 
 
@@ -82,8 +105,7 @@ export class ClassSubjectsTable {
     const columns = [
       'subject',
       'teacher',
-      'passingMark',
-      'structure',
+      'plan',
       'status',
     ];
 
@@ -91,4 +113,19 @@ export class ClassSubjectsTable {
       ? [...columns, 'actions']
       : columns;
   });
+
+
+  // ===== Plan column =====
+
+  readonly formatNumber = formatNumber;
+
+  // Icon, label and color of the plan's state (locked / ready / incomplete).
+  planBadge(plan: SubjectPlan) {
+    return PLAN_STATUS_BADGE[getPlanStatus(plan)];
+  }
+
+  // The names of the "no teacher" subjects, joined: "Islamic Education، Computer".
+  readonly missingNames = computed(
+    () => this.missingSubjects().map(s => s.subjectName).join('، ')
+  );
 }

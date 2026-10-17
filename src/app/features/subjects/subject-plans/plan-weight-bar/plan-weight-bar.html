@@ -1,0 +1,21 @@
+<div class="weight">
+
+  <div class="weight-top">
+    <span>{{ 'SUBJECTS.PLANS.TOTAL_WEIGHT' | translate }}</span>
+
+    <strong [class]="'weight-total ' + state()">
+      <bdi>{{ totalLabel() }} / {{ fullWeight }}</bdi>
+    </strong>
+  </div>
+
+  <div class="bar" role="presentation">
+    @for (part of parts(); track $index) {
+      <span
+        class="bar-part"
+        [style.width.%]="part.width"
+        [style.background]="part.color"
+      ></span>
+    }
+  </div>
+
+</div>

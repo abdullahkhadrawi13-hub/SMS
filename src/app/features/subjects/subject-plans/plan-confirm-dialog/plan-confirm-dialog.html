@@ -1,0 +1,39 @@
+<div class="confirm" [class.danger]="data.tone === 'danger'">
+
+  <div class="confirm-icon">
+    <mat-icon>{{ data.icon }}</mat-icon>
+  </div>
+
+  <h2 mat-dialog-title>
+    {{ data.titleKey | translate }}
+  </h2>
+
+  <mat-dialog-content>
+    <p>
+      {{ data.messageKey | translate: data.messageParams }}
+    </p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+
+    <button
+      mat-button
+      type="button"
+      (click)="cancel()"
+    >
+      {{ 'SUBJECTS.PLAN_CONFIRM.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      class="confirm-button"
+      (click)="confirm()"
+    >
+      {{ data.confirmKey | translate }}
+    </button>
+
+  </mat-dialog-actions>
+
+</div>

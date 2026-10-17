@@ -177,6 +177,65 @@
 
 
 /* ================================
+   Subject Options (name + plan state)
+   ::ng-deep: the list opens in an overlay; the panel class keeps it scoped.
+   ================================ */
+
+::ng-deep .subject-plan-panel .mdc-list-item__primary-text {
+  width: 100%;
+}
+
+::ng-deep .subject-plan-panel .subject-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  width: 100%;
+}
+
+::ng-deep .subject-plan-panel .subject-option-name {
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A disabled option (no plan) keeps its tag readable. */
+::ng-deep .subject-plan-panel .mat-mdc-option.mdc-list-item--disabled .plan-tag {
+  opacity: 1;
+}
+
+::ng-deep .subject-plan-panel .plan-tag {
+  flex-shrink: 0;
+
+  padding: 2px 8px;
+
+  border-radius: 20px;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+::ng-deep .subject-plan-panel .plan-tag.ok {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+::ng-deep .subject-plan-panel .plan-tag.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+::ng-deep .subject-plan-panel .plan-tag.bad {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+
+/* ================================
    Fixed Values (read-only box)
    ================================ */
 
@@ -274,6 +333,27 @@
 .message-card.warning {
   background: #fef3c7;
   color: #92400e;
+}
+
+/* The chosen subject's plan is ready. */
+.message-card.success {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+/* Text + a button under it ("Create the plan first"). */
+.message-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 4px;
+
+  min-width: 0;
+}
+
+.message-action {
+  margin-inline-start: -12px;
 }
 
 /* No subjects left to add: amber background with a border,

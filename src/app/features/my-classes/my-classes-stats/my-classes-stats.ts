@@ -22,7 +22,7 @@ export class MyClassesStats {
 
   readonly stats = input.required<MyClassesStatsData>();
 
-  // Share of assessment structures that are locked (0 to 100).
+  // Share of subjects whose plan is locked (0 to 100).
   readonly lockedProgress = computed(() => {
 
     const { lockedCount, totalAssignments } = this.stats();
