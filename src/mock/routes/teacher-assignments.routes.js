@@ -152,6 +152,26 @@ function isValidPassingMark(value) {
 }
 
 
+// The teacher's four-part name: each part trimmed, joined with one space
+// (like the real backend, updated 2026-10-16).
+function teacherFullName(teacher, lang) {
+
+  if (!teacher) {
+    return '';
+  }
+
+  return [
+    teacher['firstName' + lang],
+    teacher['fatherName' + lang],
+    teacher['grandFatherName' + lang],
+    teacher['familyName' + lang]
+  ]
+    .map(part => (part || '').trim())
+    .filter(part => part !== '')
+    .join(' ');
+}
+
+
 // The stored assignment + the names, like TeacherAssignmentDto.
 function toDto(assignment) {
 
@@ -166,6 +186,9 @@ function toDto(assignment) {
 
     teacherId: assignment.teacherId,
     teacherNumber: teacher ? teacher.teacherNumber : '',
+    teacherNameAr: teacherFullName(teacher, 'Ar'),
+    teacherNameEn: teacherFullName(teacher, 'En'),
+    isTeacherActive: teacher ? teacher.isActive : false,
 
     academicTermId: assignment.academicTermId,
     academicTermNameAr: term ? term.nameAr : '',

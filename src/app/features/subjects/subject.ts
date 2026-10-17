@@ -30,7 +30,7 @@ export interface ClassSubjectRow {
   // Subject name in the current language.
   subjectName: string;
 
-  // Teacher name in the current language ('' when the teacher is not in the teachers list).
+  // Teacher name in the current language (comes with the assignment).
   teacherName: string;
 
   // true when the teacher's account is inactive (the admin should pick another teacher).
@@ -50,15 +50,63 @@ export interface ClassSubjectsCounts {
 export const DEFAULT_PASSING_MARK = 50;
 
 
-// Teacher full name (four parts) in the current language.
-export function getTeacherFullName(
-  teacher: TeacherListDto,
-  isArabic: boolean
-): string {
+// One teacher in the teacher field of the assignment form.
+// Holds only what the field needs: the id (sent to the API),
+// the number and the name in both languages (shown in the field).
+// It comes from two places:
+// - a search result (GET /api/teachers?search=...) → teacherOptionFromDto()
+// - the current teacher of the edited assignment → teacherOptionFromAssignment()
+export interface TeacherOption {
+  teacherId: number;
+  teacherNumber: string;
+  nameAr: string;
+  nameEn: string;
+}
 
-  return isArabic
-    ? `${teacher.firstNameAr} ${teacher.fatherNameAr} ${teacher.grandFatherNameAr} ${teacher.familyNameAr}`
-    : `${teacher.firstNameEn} ${teacher.fatherNameEn} ${teacher.grandFatherNameEn} ${teacher.familyNameEn}`;
+
+// Joins the name parts with one space (each part trimmed, empty parts skipped).
+function joinNameParts(parts: string[]): string {
+
+  return parts
+    .map(part => (part ?? '').trim())
+    .filter(part => part !== '')
+    .join(' ');
+}
+
+
+// A search result → a teacher option.
+export function teacherOptionFromDto(teacher: TeacherListDto): TeacherOption {
+
+  return {
+    teacherId: teacher.teacherId,
+    teacherNumber: teacher.teacherNumber,
+    nameAr: joinNameParts([
+      teacher.firstNameAr,
+      teacher.fatherNameAr,
+      teacher.grandFatherNameAr,
+      teacher.familyNameAr,
+    ]),
+    nameEn: joinNameParts([
+      teacher.firstNameEn,
+      teacher.fatherNameEn,
+      teacher.grandFatherNameEn,
+      teacher.familyNameEn,
+    ]),
+  };
+}
+
+
+// The current teacher of an assignment → a teacher option.
+export function teacherOptionFromAssignment(
+  assignment: TeacherAssignment
+): TeacherOption {
+
+  return {
+    teacherId: assignment.teacherId,
+    teacherNumber: assignment.teacherNumber,
+    nameAr: assignment.teacherNameAr,
+    nameEn: assignment.teacherNameEn,
+  };
 }
 
 

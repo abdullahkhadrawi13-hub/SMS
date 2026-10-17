@@ -11,7 +11,8 @@
 // is restarted.
 //
 // Only the ids are kept here. The route adds the names
-// (term, class, section, subject, teacher number) when it
+// (term, class, section, subject, teacher number, teacher name
+// and teacher status) when it
 // sends an assignment, like TeacherAssignmentDto in the API.
 //
 // Shape of one stored assignment:

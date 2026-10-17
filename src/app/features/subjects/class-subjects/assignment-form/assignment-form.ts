@@ -32,8 +32,11 @@ import { TeacherAssignmentsService } from '../../../../core/services/teacher-ass
 import { TeachersService } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
 
-import { DEFAULT_PASSING_MARK, getTeacherFullName } from '../../subject';
-import { TeacherListDto } from '../../../../core/models/teacher';
+import {
+  DEFAULT_PASSING_MARK,
+  teacherOptionFromDto,
+  TeacherOption,
+} from '../../subject';
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 
@@ -57,9 +60,9 @@ export interface AssignmentFormData {
   // Edit mode only.
   assignment?: TeacherAssignment;
 
-  // Edit mode: the current teacher, passed only when still active
-  // (preselected in the teacher field).
-  currentTeacher?: TeacherListDto;
+  // Edit mode: the current teacher, built from the assignment and passed
+  // only when still active (preselected in the teacher field).
+  currentTeacher?: TeacherOption;
 
   subjectName?: string;
   currentTeacherName?: string;
@@ -94,7 +97,7 @@ const TEACHER_SEARCH_PAGE_SIZE = 20;
 
 
 // The teacher field holds the typed text (string) until a teacher is chosen
-// from the list (TeacherListDto). Only a chosen teacher is valid.
+// from the list (TeacherOption). Only a chosen teacher is valid.
 function teacherSelectedValidator(
   control: AbstractControl
 ): ValidationErrors | null {
@@ -153,7 +156,8 @@ export class AssignmentForm implements OnInit {
   readonly minSearchLength = TEACHER_SEARCH_MIN_LENGTH;
 
   // Teacher search (GET /api/teachers?search=...&isActive=true).
-  readonly teacherResults = signal<TeacherListDto[]>([]);
+  // Each result is turned into a TeacherOption, the type the field holds.
+  readonly teacherResults = signal<TeacherOption[]>([]);
   readonly teachersLoading = signal(false);
   readonly teachersError = signal(false);
 
@@ -172,7 +176,7 @@ export class AssignmentForm implements OnInit {
     // Edit mode: the current teacher is preselected only when still active.
     // An inactive teacher is not passed, so the admin must pick another one.
     teacher: [
-      (this.data.currentTeacher ?? null) as TeacherListDto | string | null,
+      (this.data.currentTeacher ?? null) as TeacherOption | string | null,
       [Validators.required, teacherSelectedValidator],
     ],
 
@@ -239,14 +243,16 @@ export class AssignmentForm implements OnInit {
           return;
         }
 
-        this.teacherResults.set(result.response.data.items);
+        this.teacherResults.set(
+          result.response.data.items.map(teacherOptionFromDto)
+        );
         this.searchedText.set(result.text);
       });
   }
 
 
   // The text shown in the teacher field after a teacher is chosen.
-  readonly displayTeacher = (value: TeacherListDto | string | null): string => {
+  readonly displayTeacher = (value: TeacherOption | string | null): string => {
 
     if (!value) {
       return '';
@@ -285,8 +291,8 @@ export class AssignmentForm implements OnInit {
     return this.isArabic() ? subject.subjectAr : subject.subjectEn;
   }
 
-  getTeacherName(teacher: TeacherListDto): string {
-    return getTeacherFullName(teacher, this.isArabic());
+  getTeacherName(teacher: TeacherOption): string {
+    return this.isArabic() ? teacher.nameAr : teacher.nameEn;
   }
 
 
@@ -319,7 +325,7 @@ export class AssignmentForm implements OnInit {
 
     const value = this.assignmentForm.getRawValue();
 
-    const teacherId = (value.teacher as TeacherListDto).teacherId;
+    const teacherId = (value.teacher as TeacherOption).teacherId;
     const passingMark = Number(value.passingMark);
 
     const assignment = this.data.assignment;

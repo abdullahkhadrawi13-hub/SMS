@@ -22,15 +22,14 @@ import { SchoolClassesService } from '../../../../core/services/school-classes';
 import { SectionsService } from '../../../../core/services/sections';
 import { SubjectsService } from '../../../../core/services/subjects';
 import { TeacherAssignmentsService } from '../../../../core/services/teacher-assignments';
-import { TeachersService } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
 import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
 
 import {
   ClassSubjectRow,
   ClassSubjectsCounts,
-  getTeacherFullName,
   getTermLabel,
+  teacherOptionFromAssignment,
   TermOption,
 } from '../../subject';
 import { ClassSubjectsSelector } from '../class-subjects-selector/class-subjects-selector';
@@ -40,12 +39,7 @@ import {
   AssignmentFormData,
 } from '../assignment-form/assignment-form';
 import { ActiveSectionDto } from '../../../../core/models/section';
-import { TeacherListDto } from '../../../../core/models/teacher';
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
-
-
-// The largest page the teachers API returns (API Reference, section 5).
-const TEACHERS_PAGE_SIZE = 100;
 
 
 // The "Class subjects" tab: the subjects of one section in one term
@@ -54,6 +48,9 @@ const TEACHERS_PAGE_SIZE = 100;
 // GET /api/teacherassignments has no class or section filter:
 // the assignments of the whole term are loaded once,
 // and the class / section choice filters them here (no new request).
+//
+// Each assignment carries its teacher's name and account status,
+// so no teachers list is loaded here.
 @Component({
   selector: 'app-class-subjects-tab',
   imports: [
@@ -71,7 +68,6 @@ export class ClassSubjectsTab implements OnInit {
   private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);
   private readonly assignmentsService = inject(TeacherAssignmentsService);
-  private readonly teachersService = inject(TeachersService);
   private readonly subjectsService = inject(SubjectsService);
 
   private readonly apiMessageService = inject(ApiMessageService);
@@ -113,11 +109,6 @@ export class ClassSubjectsTab implements OnInit {
   // Every assignment of the selected term (all classes and sections).
   readonly assignments = signal<TeacherAssignment[]>([]);
 
-  // Every teacher (active and inactive): used only for the names in the
-  // table, since the assignments response has the teacher id, not the name.
-  // The add/edit form searches teachers in the backend by itself.
-  readonly teachers = signal<TeacherListDto[]>([]);
-
   readonly assignmentsLoading = signal(false);
   readonly errorMessage = signal('');
 
@@ -145,26 +136,17 @@ export class ClassSubjectsTab implements OnInit {
 
     const isArabic = this.isArabic();
 
-    const teachersById = new Map(
-      this.teachers().map(t => [t.teacherId, t])
-    );
-
     return this.assignments()
       .filter(a =>
         a.classId === this.classId()
         && a.sectionId === this.sectionId()
       )
-      .map(assignment => {
-
-        const teacher = teachersById.get(assignment.teacherId);
-
-        return {
-          assignment,
-          subjectName: isArabic ? assignment.subjectAr : assignment.subjectEn,
-          teacherName: teacher ? getTeacherFullName(teacher, isArabic) : '',
-          teacherInactive: teacher ? !teacher.isActive : false,
-        };
-      })
+      .map(assignment => ({
+        assignment,
+        subjectName: isArabic ? assignment.subjectAr : assignment.subjectEn,
+        teacherName: isArabic ? assignment.teacherNameAr : assignment.teacherNameEn,
+        teacherInactive: !assignment.isTeacherActive,
+      }))
       .sort((a, b) => a.subjectName.localeCompare(b.subjectName));
   });
 
@@ -229,7 +211,6 @@ export class ClassSubjectsTab implements OnInit {
   ngOnInit(): void {
     this.loadTerms();
     this.loadClasses();
-    this.loadTeachers();
   }
 
 
@@ -329,28 +310,6 @@ export class ClassSubjectsTab implements OnInit {
           console.error('Failed to load sections:', error);
           this.sections.set([]);
           this.sectionsLoading.set(false);
-        },
-      });
-  }
-
-
-  // GET /api/teachers?pageSize=100 (active and inactive).
-  // The assignments only carry teacherId and teacherNumber,
-  // so the names come from this list.
-  // If it fails, the table still works and shows the teacher number only.
-  private loadTeachers(): void {
-
-    this.teachersService
-      .getTeachers(1, TEACHERS_PAGE_SIZE)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.teachers.set(response.success ? response.data.items : []);
-        },
-
-        error: (error: HttpErrorResponse) => {
-          console.error('Failed to load teachers:', error);
-          this.teachers.set([]);
         },
       });
   }
@@ -523,7 +482,11 @@ export class ClassSubjectsTab implements OnInit {
       sectionName: isArabic ? assignment.sectionAr : assignment.sectionEn,
       subjects: [],
       assignment,
-      currentTeacher: this.findActiveTeacher(assignment.teacherId),
+      // The current teacher is preselected only when still active:
+      // an inactive teacher stays out, so the admin must pick another one.
+      currentTeacher: assignment.isTeacherActive
+        ? teacherOptionFromAssignment(assignment)
+        : undefined,
       subjectName: row.subjectName,
       currentTeacherName: row.teacherName || assignment.teacherNumber,
       currentTeacherInactive: row.teacherInactive,
@@ -575,16 +538,6 @@ export class ClassSubjectsTab implements OnInit {
   // =========================
   // Helpers
   // =========================
-
-  // The teacher, only when found and still active
-  // (preselected in the edit form).
-  private findActiveTeacher(teacherId: number): TeacherListDto | undefined {
-
-    return this.teachers().find(
-      t => t.teacherId === teacherId && t.isActive
-    );
-  }
-
 
   // The form saves the assignment itself and closes with { success: true }.
   private openForm(data: AssignmentFormData): void {

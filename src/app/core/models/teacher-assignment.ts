@@ -2,13 +2,20 @@
 // An assignment = a subject taught in one section of a class, in one term, by one teacher.
 // In the Subjects page each assignment is shown as "a subject of the section".
 //
-// Note: there is no teacher name here, only teacherId and teacherNumber.
-// The name comes from the teachers list (GET /api/teachers).
+// The teacher's name and account status come with the assignment
+// (added 2026-10-16), so there is no need to call GET /api/teachers for them.
 export interface TeacherAssignment {
   teacherAssignmentId: number;
 
   teacherId: number;
   teacherNumber: string;
+
+  // The teacher's four-part name (each part trimmed by the backend).
+  teacherNameAr: string;
+  teacherNameEn: string;
+
+  // The teacher's account status (false = the admin should pick another teacher).
+  isTeacherActive: boolean;
 
   academicTermId: number;
   academicTermNameAr: string;
