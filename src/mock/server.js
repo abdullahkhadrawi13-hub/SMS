@@ -15,6 +15,7 @@ const schoolSettingsRoutes = require('./routes/school-settings.routes');
 const subjectsRoutes = require('./routes/subjects.routes');
 const teacherAssignmentsRoutes = require('./routes/teacher-assignments.routes');
 const subjectPlansRoutes = require('./routes/subject-plans.routes');
+const assessmentsRoutes = require('./routes/assessments.routes');
 
 const PORT =3000;
 
@@ -167,6 +168,15 @@ if (academicTermsRoutes(req, res)) {
   // =========================
 
   if (subjectPlansRoutes(req, res)) {
+    return;
+  }
+
+
+  // =========================
+  // Assessments API
+  // =========================
+
+  if (assessmentsRoutes(req, res)) {
     return;
   }
 

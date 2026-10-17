@@ -1,0 +1,132 @@
+<article class="component-card" [style.--component-color]="group().color">
+
+  <!-- Header: name, type and weight -->
+  <div class="card-header">
+
+    <div class="component-icon">
+      <mat-icon>{{ isOpen() ? 'playlist_add' : 'push_pin' }}</mat-icon>
+    </div>
+
+    <div class="component-info">
+
+      <h3>{{ group().componentName }}</h3>
+
+      <span class="component-type">
+        @if (isOpen()) {
+          {{ 'MY_CLASSES.ASSESSMENTS.CARD.OPEN' | translate }}
+        } @else {
+          {{ 'MY_CLASSES.ASSESSMENTS.CARD.FIXED' | translate: { max: fixedMaxMark() } }}
+        }
+      </span>
+
+    </div>
+
+    <span
+      class="weight-badge"
+      [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.WEIGHT_TOOLTIP' | translate: { weight: weight() }"
+    >
+      <bdi>{{ weight() }}%</bdi>
+    </span>
+
+  </div>
+
+
+  <!-- The section's assessments under this component -->
+  <div class="assessments-list">
+
+    @for (assessment of group().assessments; track assessment.assessmentId) {
+
+      <div class="assessment-row">
+
+        <div class="assessment-info">
+
+          <span class="assessment-name">{{ assessmentName(assessment) }}</span>
+
+          <span class="assessment-meta">
+            {{ 'MY_CLASSES.ASSESSMENTS.CARD.OUT_OF' | translate: { max: maxMark(assessment) } }}
+
+            <!-- TODO(grades): show how many students have a mark here
+                 (e.g. "18/25 marks", from the grade sheet), and disable
+                 delete when the assessment has marks. -->
+          </span>
+
+        </div>
+
+        <!-- Fixed assessments are created by the system: no actions -->
+        @if (!assessment.isFixed) {
+
+          <button
+            mat-icon-button
+            type="button"
+            [disabled]="busyAssessmentId() === assessment.assessmentId"
+            [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.EDIT' | translate"
+            [attr.aria-label]="'MY_CLASSES.ASSESSMENTS.CARD.EDIT' | translate"
+            (click)="editAssessment.emit(assessment)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            type="button"
+            class="delete-button"
+            [disabled]="busyAssessmentId() === assessment.assessmentId"
+            [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.DELETE' | translate"
+            [attr.aria-label]="'MY_CLASSES.ASSESSMENTS.CARD.DELETE' | translate"
+            (click)="deleteAssessment.emit(assessment)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+
+        } @else {
+
+          <mat-icon
+            class="fixed-lock"
+            [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.FIXED_TOOLTIP' | translate"
+          >lock</mat-icon>
+
+        }
+
+      </div>
+
+    } @empty {
+
+      <p class="empty-component">
+        @if (isOpen()) {
+          {{ 'MY_CLASSES.ASSESSMENTS.CARD.EMPTY_OPEN' | translate }}
+        } @else {
+          {{ 'MY_CLASSES.ASSESSMENTS.CARD.EMPTY_FIXED' | translate }}
+        }
+      </p>
+
+    }
+
+  </div>
+
+
+  <!-- Footer: add (open) or a note (fixed) -->
+  <div class="card-footer">
+
+    @if (isOpen()) {
+
+      <button
+        type="button"
+        class="add-button"
+        (click)="addAssessment.emit()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ 'MY_CLASSES.ASSESSMENTS.CARD.ADD' | translate }}
+      </button>
+
+    } @else {
+
+      <span class="fixed-note">
+        <mat-icon>admin_panel_settings</mat-icon>
+        {{ 'MY_CLASSES.ASSESSMENTS.CARD.FIXED_NOTE' | translate }}
+      </span>
+
+    }
+
+  </div>
+
+</article>

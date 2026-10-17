@@ -1,0 +1,160 @@
+<div class="assessments-page">
+
+  <!-- Breadcrumb: My classes › subject · class / section -->
+  <nav class="crumbs" [attr.aria-label]="'MY_CLASSES.ASSESSMENTS.PAGE.BREADCRUMB' | translate">
+
+    <a routerLink="/my-classes">
+      {{ 'MY_CLASSES.HEADER.TITLE' | translate }}
+    </a>
+
+    @if (assignment()) {
+      <mat-icon class="crumb-arrow">chevron_right</mat-icon>
+      <span>{{ subjectName() }} · {{ className() }} / {{ sectionName() }}</span>
+    }
+
+  </nav>
+
+
+  <!-- Not one of the teacher's assignments -->
+  @if (notFound()) {
+
+    <div class="state-card">
+
+      <mat-icon>search_off</mat-icon>
+
+      <h3>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.NOT_FOUND_TITLE' | translate }}</h3>
+
+      <p>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.NOT_FOUND_MESSAGE' | translate }}</p>
+
+      <a mat-flat-button color="primary" routerLink="/my-classes">
+        {{ 'MY_CLASSES.ASSESSMENTS.PAGE.BACK' | translate }}
+      </a>
+
+    </div>
+
+  }
+
+  <!-- Error -->
+  @else if (errorMessage()) {
+
+    <div class="state-card error-state">
+
+      <mat-icon>error_outline</mat-icon>
+
+      <p>{{ errorMessage() | translate }}</p>
+
+      <button mat-flat-button color="primary" type="button" (click)="loadPage()">
+        <mat-icon>refresh</mat-icon>
+        {{ 'MY_CLASSES.PAGE.RETRY' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+  <!-- Loading -->
+  @else if (isLoading() || !assignment()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.LOADING' | translate }}</p>
+
+    </div>
+
+  }
+
+  @else {
+
+    <!-- Header -->
+    <app-assessments-header
+      [subjectName]="subjectName()"
+      [className]="className()"
+      [sectionName]="sectionName()"
+      [termName]="termName()"
+      [passingMark]="passingMark()"
+      [planBadge]="planBadge()"
+    ></app-assessments-header>
+
+
+    <!-- No subject plan yet -->
+    @if (noPlan()) {
+
+      <div class="state-card">
+
+        <mat-icon>rule</mat-icon>
+
+        <h3>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.NO_PLAN_TITLE' | translate }}</h3>
+
+        <p>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.NO_PLAN_MESSAGE' | translate }}</p>
+
+      </div>
+
+    }
+
+    @else if (plan(); as currentPlan) {
+
+      <!-- The plan's weights -->
+      <section class="plan-strip">
+
+        <div class="plan-strip-top">
+
+          <h2>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.WEIGHTS_TITLE' | translate }}</h2>
+
+          <span class="plan-owner">
+            <mat-icon>admin_panel_settings</mat-icon>
+            {{ 'MY_CLASSES.ASSESSMENTS.PAGE.WEIGHTS_HINT' | translate }}
+          </span>
+
+        </div>
+
+        <app-plan-weight-bar [weights]="weights()"></app-plan-weight-bar>
+
+        <!-- Weights under 100: marks cannot be entered yet -->
+        @if (!currentPlan.isComplete) {
+          <p class="incomplete-note">
+            <mat-icon>warning_amber</mat-icon>
+            <span>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.INCOMPLETE_NOTE' | translate }}</span>
+          </p>
+        }
+
+      </section>
+
+
+      <!-- One card per plan component -->
+      @if (groups().length > 0) {
+
+        <div class="cards-grid">
+
+          @for (group of groups(); track group.component.subjectPlanComponentId) {
+            <app-plan-component-card
+              [group]="group"
+              [busyAssessmentId]="busyAssessmentId()"
+              (addAssessment)="openAddAssessment(group)"
+              (editAssessment)="openEditAssessment(group, $event)"
+              (deleteAssessment)="confirmDeleteAssessment($event)"
+            ></app-plan-component-card>
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="state-card">
+
+          <mat-icon>playlist_remove</mat-icon>
+
+          <h3>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.NO_COMPONENTS_TITLE' | translate }}</h3>
+
+          <p>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.NO_COMPONENTS_MESSAGE' | translate }}</p>
+
+        </div>
+
+      }
+
+    }
+
+  }
+
+</div>

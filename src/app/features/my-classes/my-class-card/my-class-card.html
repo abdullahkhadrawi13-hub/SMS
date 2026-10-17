@@ -40,7 +40,11 @@
 
     @for (line of visibleSubjects(); track line.assignment.teacherAssignmentId) {
 
-      <div class="subject-line">
+      <!-- The whole line opens the assessments of this subject -->
+      <a
+        class="subject-line"
+        [routerLink]="['/my-classes', line.assignment.teacherAssignmentId, 'assessments']"
+      >
 
         <span class="subject-dot"></span>
 
@@ -79,7 +83,7 @@
 
         <mat-icon class="line-arrow">chevron_right</mat-icon>
 
-      </div>
+      </a>
 
     }
 

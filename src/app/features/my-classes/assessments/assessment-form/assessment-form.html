@@ -1,0 +1,124 @@
+<!-- Add / edit an assessment under an open component -->
+
+<h2 mat-dialog-title>
+  {{
+    isEditMode
+      ? ('MY_CLASSES.ASSESSMENTS.FORM.EDIT_TITLE' | translate)
+      : ('MY_CLASSES.ASSESSMENTS.FORM.ADD_TITLE' | translate)
+  }}
+</h2>
+
+
+<mat-dialog-content>
+
+  <form
+    [formGroup]="assessmentForm"
+    class="assessment-form"
+    (ngSubmit)="onSubmit()"
+  >
+
+    <!-- The component the assessment goes under -->
+    <p class="component-context">
+      <span class="component-dot" [style.background]="data.color"></span>
+
+      {{
+        'MY_CLASSES.ASSESSMENTS.FORM.COMPONENT'
+          | translate: { name: data.componentName, weight: componentWeight }
+      }}
+    </p>
+
+
+    <div class="two-fields">
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'MY_CLASSES.ASSESSMENTS.FORM.NAME_AR' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="nameAr"
+          dir="rtl"
+          [maxlength]="nameMaxLength"
+          placeholder="كويز 1"
+        />
+        @if (isInvalid(assessmentForm.controls.nameAr)) {
+          <mat-error>{{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'MY_CLASSES.ASSESSMENTS.FORM.NAME_EN' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="nameEn"
+          dir="ltr"
+          [maxlength]="nameMaxLength"
+          placeholder="Quiz 1"
+        />
+        @if (isInvalid(assessmentForm.controls.nameEn)) {
+          <mat-error>{{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+    </div>
+
+
+    <!-- Max mark (any number above 0: the component averages the percentages) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK' | translate }}</mat-label>
+      <input matInput type="number" min="0" step="any" formControlName="maxMark" />
+
+      <mat-hint>{{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_HINT' | translate }}</mat-hint>
+
+      @if (isInvalid(assessmentForm.controls.maxMark)) {
+        <mat-error>
+          @if (assessmentForm.controls.maxMark.hasError('required')) {
+            {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
+          } @else {
+            {{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_ERROR' | translate: { max: maxMarkLimit } }}
+          }
+        </mat-error>
+      }
+    </mat-form-field>
+
+
+    @if (isEditMode) {
+      <p class="form-note">
+        <mat-icon>info</mat-icon>
+        <span>{{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_NOTE' | translate }}</span>
+      </p>
+    }
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    [disabled]="isSubmitting()"
+    (click)="cancel()"
+  >
+    {{ 'MY_CLASSES.ASSESSMENTS.FORM.CANCEL' | translate }}
+  </button>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    [disabled]="isSubmitting()"
+    (click)="onSubmit()"
+  >
+    <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+
+    @if (isSubmitting()) {
+      {{ 'MY_CLASSES.ASSESSMENTS.FORM.SAVING' | translate }}
+    } @else if (isEditMode) {
+      {{ 'MY_CLASSES.ASSESSMENTS.FORM.SAVE' | translate }}
+    } @else {
+      {{ 'MY_CLASSES.ASSESSMENTS.FORM.ADD' | translate }}
+    }
+  </button>
+
+</mat-dialog-actions>

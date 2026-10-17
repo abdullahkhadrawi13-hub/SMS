@@ -1,0 +1,53 @@
+<div class="page-header">
+
+  <div class="subject-icon">
+    <mat-icon>menu_book</mat-icon>
+  </div>
+
+  <div class="title-section">
+
+    <h1>
+      {{ 'MY_CLASSES.ASSESSMENTS.HEADER.TITLE' | translate: { subject: subjectName() } }}
+    </h1>
+
+    <p>
+      {{ className() }}
+      <span class="dot">·</span>
+      {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: sectionName() } }}
+
+      @if (termName()) {
+        <span class="dot">·</span>
+        <span class="term-name">{{ termName() }}</span>
+      }
+    </p>
+
+  </div>
+
+
+  <!-- The plan: passing mark and state -->
+  @if (passingMark() !== null || planBadge()) {
+
+    <div class="chips">
+
+      @if (passingMark() !== null) {
+        <span class="chip">
+          <mat-icon>flag</mat-icon>
+          {{ 'MY_CLASSES.ASSESSMENTS.HEADER.PASSING_MARK' | translate: { mark: passingMark() } }}
+        </span>
+      }
+
+      @if (planBadge(); as badge) {
+        <span
+          class="chip {{ badge.cssClass }}"
+          [matTooltip]="'MY_CLASSES.ASSESSMENTS.HEADER.PLAN_TOOLTIP' | translate"
+        >
+          <mat-icon>{{ badge.icon }}</mat-icon>
+          {{ badge.labelKey | translate }}
+        </span>
+      }
+
+    </div>
+
+  }
+
+</div>

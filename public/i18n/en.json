@@ -869,11 +869,66 @@
       "NO_PLAN": "No plan yet"
     },
     "PAGE": {
-      "HINT": "Subjects are assigned to you by the administrator, who also sets each subject's plan (components and passing mark).",
+      "HINT": "Subjects are assigned to you by the administrator, who also sets each subject's plan (components and passing mark). Click a subject to manage its assessments.",
       "LOADING": "Loading your classes...",
       "RETRY": "Retry",
       "EMPTY_TITLE": "No classes assigned to you",
       "EMPTY_MESSAGE": "You have no subjects in the current term."
+    },
+    "ASSESSMENTS": {
+      "PAGE": {
+        "BREADCRUMB": "Breadcrumb",
+        "LOADING": "Loading assessments...",
+        "BACK": "Back to My Classes",
+        "NOT_FOUND_TITLE": "Subject not found",
+        "NOT_FOUND_MESSAGE": "This subject is not one of your subjects in the current term.",
+        "NO_PLAN_TITLE": "This subject has no plan yet",
+        "NO_PLAN_MESSAGE": "The administration sets the subject plan (components, weights and passing mark). After that you can add your assessments here.",
+        "WEIGHTS_TITLE": "Marks distribution",
+        "WEIGHTS_HINT": "The plan comes from the administration. You add assessments under open components only.",
+        "INCOMPLETE_NOTE": "The component weights add up to less than 100, so marks can't be entered until the administration completes the plan. You can add your assessments now.",
+        "NO_COMPONENTS_TITLE": "The plan has no components",
+        "NO_COMPONENTS_MESSAGE": "The administration hasn't added any component to this subject's plan yet."
+      },
+      "HEADER": {
+        "TITLE": "{{subject}} Assessments",
+        "PASSING_MARK": "Passing mark {{mark}}",
+        "PLAN_TOOLTIP": "The same plan for every section of the class. It locks when the first mark is entered, and only the administration can unlock it."
+      },
+      "CARD": {
+        "OPEN": "Open · you add your own assessments",
+        "FIXED": "Fixed · out of {{max}}",
+        "WEIGHT_TOOLTIP": "Weight of the final mark: {{weight}}%",
+        "OUT_OF": "Out of {{max}}",
+        "ADD": "Add assessment",
+        "EDIT": "Edit",
+        "DELETE": "Delete",
+        "EMPTY_OPEN": "No assessments yet. Students' totals stay incomplete until you add at least one.",
+        "EMPTY_FIXED": "This component has no assessment.",
+        "FIXED_TOOLTIP": "Fixed assessment from the subject plan",
+        "FIXED_NOTE": "Fixed assessment from the administration. You only enter its marks."
+      },
+      "FORM": {
+        "ADD_TITLE": "Add assessment",
+        "EDIT_TITLE": "Edit assessment",
+        "COMPONENT": "Component: {{name}} · weight {{weight}}%",
+        "NAME_AR": "Arabic name",
+        "NAME_EN": "English name",
+        "MAX_MARK": "Max mark",
+        "MAX_MARK_HINT": "The component averages the percentages of its assessments, so they don't need the same max mark.",
+        "MAX_MARK_ERROR": "Must be above 0 and up to {{max}}",
+        "MAX_MARK_NOTE": "If the assessment has marks, its max mark can't be changed.",
+        "REQUIRED": "This field is required",
+        "CANCEL": "Cancel",
+        "ADD": "Add",
+        "SAVE": "Save",
+        "SAVING": "Saving..."
+      },
+      "DELETE": {
+        "TITLE": "Delete the assessment?",
+        "MESSAGE": "\"{{name}}\" will be deleted permanently. An assessment with marks can't be deleted.",
+        "CONFIRM": "Delete"
+      }
     }
   },
 

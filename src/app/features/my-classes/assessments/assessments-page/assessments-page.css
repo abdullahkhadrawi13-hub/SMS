@@ -1,0 +1,231 @@
+/* ================================
+   Assessments Page
+   ================================ */
+
+.assessments-page {
+  width: 100%;
+
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Breadcrumb
+   ================================ */
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 4px;
+
+  margin-bottom: -8px;
+
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+.crumbs a {
+  color: #2554a4;
+
+  text-decoration: none;
+}
+
+.crumbs a:hover {
+  text-decoration: underline;
+}
+
+.crumb-arrow {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+/* The arrow points forward in both languages. */
+:host-context([dir="rtl"]) .crumb-arrow {
+  transform: scaleX(-1);
+}
+
+
+/* ================================
+   Plan Weights
+   ================================ */
+
+.plan-strip {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+
+  padding: 16px 18px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.plan-strip-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+}
+
+.plan-strip-top h2 {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.plan-owner {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  font-size: 12.5px;
+
+  color: #6b7280;
+}
+
+.plan-owner mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+.incomplete-note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin: 0;
+  padding: 10px 12px;
+
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+
+  background: #fef3c7;
+  color: #92400e;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.incomplete-note mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  flex-shrink: 0;
+}
+
+
+/* ================================
+   Cards Grid
+   ================================ */
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-items: start;
+
+  gap: 18px;
+}
+
+
+/* ================================
+   State Card (not found / error / loading / empty)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.state-card > mat-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+
+  margin-bottom: 4px;
+
+  color: #9ca3af;
+}
+
+.state-card h3 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.state-card p {
+  margin: 0;
+
+  max-width: 520px;
+
+  font-size: 14px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+.state-card a,
+.state-card button {
+  margin-top: 12px;
+}
+
+.error-state > mat-icon {
+  color: #dc2626;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .assessments-page {
+    padding: 16px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+}

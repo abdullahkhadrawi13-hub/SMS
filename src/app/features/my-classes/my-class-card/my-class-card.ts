@@ -1,6 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -39,13 +40,13 @@ const MAX_VISIBLE_SUBJECTS = 3;
 // with one line per subject the teacher teaches there.
 // Display only: the page builds the group and passes it in.
 //
-// The arrow at the end of each line has no action yet.
-// Later each line opens the assignment (assessments and grade sheet),
-// using line.assignment.teacherAssignmentId.
+// Each subject line is a link to the assessments of that subject
+// (/my-classes/:teacherAssignmentId/assessments).
 @Component({
   selector: 'app-my-class-card',
   imports: [
     MatIconModule,
+    RouterLink,
     TranslatePipe,
   ],
   templateUrl: './my-class-card.html',
