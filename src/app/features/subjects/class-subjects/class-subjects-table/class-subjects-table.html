@@ -238,7 +238,7 @@
         </ng-container>
 
 
-        <!-- Subject plan (state + passing mark), opens the plan -->
+        <!-- Subject plan (state), opens the plan -->
         <ng-container matColumnDef="plan">
 
           <th mat-header-cell *matHeaderCellDef>
@@ -260,19 +260,15 @@
                   {{ planBadge(plan).labelKey | translate }}
                 </span>
 
-                <span class="plan-meta">
-                  @if (plan.isComplete) {
-                    {{
-                      'SUBJECTS.CLASS_TABLE.PLAN_META'
-                        | translate: { mark: formatNumber(plan.passingMark), count: plan.components.length }
-                    }}
-                  } @else {
+                <!-- An incomplete plan also shows its total weight -->
+                @if (!plan.isComplete) {
+                  <span class="plan-meta">
                     {{
                       'SUBJECTS.CLASS_TABLE.PLAN_WEIGHTS'
                         | translate: { total: formatNumber(plan.totalWeight) }
                     }}
-                  }
-                </span>
+                  </span>
+                }
               </button>
 
             } @else if (row.assignment.subjectPlanId === null) {

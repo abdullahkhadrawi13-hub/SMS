@@ -645,7 +645,6 @@
       "EMPTY_MESSAGE": "Add the subjects taught in {{className}} — Section {{sectionName}} during {{termName}} and choose each subject's teacher.",
       "EMPTY_MESSAGE_READONLY": "No subjects have been added to this section in this term.",
       "PLAN": "Plan",
-      "PLAN_META": "Pass {{mark}} · {{count}} components",
       "PLAN_WEIGHTS": "Weights {{total}} of 100",
       "VIEW_PLAN": "View Subject Plan",
       "MISSING": "These subjects have a plan for this class but no teacher in section {{sectionName}}: {{names}}. The section's students will count as missing marks in them at rollover.",
