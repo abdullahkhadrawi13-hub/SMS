@@ -40,7 +40,15 @@
           placeholder="كويز 1"
         />
         @if (isInvalid(assessmentForm.controls.nameAr)) {
-          <mat-error>{{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}</mat-error>
+          <mat-error>
+            @if (assessmentForm.controls.nameAr.hasError('required')) {
+              {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
+            } @else if (assessmentForm.controls.nameAr.hasError('invalidChars')) {
+              {{ 'MY_CLASSES.ASSESSMENTS.FORM.ARABIC_ONLY' | translate }}
+            } @else if (assessmentForm.controls.nameAr.hasError('minLetters')) {
+              {{ 'MY_CLASSES.ASSESSMENTS.FORM.MIN_LETTERS_AR' | translate }}
+            }
+          </mat-error>
         }
       </mat-form-field>
 
@@ -54,7 +62,15 @@
           placeholder="Quiz 1"
         />
         @if (isInvalid(assessmentForm.controls.nameEn)) {
-          <mat-error>{{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}</mat-error>
+          <mat-error>
+            @if (assessmentForm.controls.nameEn.hasError('required')) {
+              {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
+            } @else if (assessmentForm.controls.nameEn.hasError('invalidChars')) {
+              {{ 'MY_CLASSES.ASSESSMENTS.FORM.ENGLISH_ONLY' | translate }}
+            } @else if (assessmentForm.controls.nameEn.hasError('minLetters')) {
+              {{ 'MY_CLASSES.ASSESSMENTS.FORM.MIN_LETTERS_EN' | translate }}
+            }
+          </mat-error>
         }
       </mat-form-field>
 

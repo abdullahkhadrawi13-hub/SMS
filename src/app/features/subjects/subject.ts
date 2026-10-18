@@ -95,12 +95,12 @@ export const DEFAULT_PASSING_MARK = 50;
 // The colors of the plan components, in their order (dots and weight bar).
 // After the last one the colors start again.
 const COMPONENT_COLORS = [
-  '#3b82f6', // blue
-  '#8b5cf6', // purple
-  '#0ea5e9', // sky
-  '#14b8a6', // teal
-  '#f59e0b', // amber
-  '#ec4899', // pink
+  '#5b8def', // soft blue
+  '#e8845c', // soft coral
+  '#4fb3a9', // soft teal
+  '#d16d9e', // soft rose
+  '#8c7ae6', // soft lavender
+  '#e3b448', // soft mustard
 ];
 
 export function componentColor(index: number): string {

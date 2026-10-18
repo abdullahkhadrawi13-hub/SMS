@@ -59,7 +59,15 @@
         <mat-label>{{ 'SUBJECTS.COMPONENT_FORM.NAME_AR' | translate }}</mat-label>
         <input matInput formControlName="nameAr" dir="rtl" [maxlength]="nameMaxLength" />
         @if (isInvalid(componentForm.controls.nameAr)) {
-          <mat-error>{{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}</mat-error>
+          <mat-error>
+            @if (componentForm.controls.nameAr.hasError('required')) {
+              {{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}
+            } @else if (componentForm.controls.nameAr.hasError('invalidChars')) {
+              {{ 'SUBJECTS.COMPONENT_FORM.ARABIC_ONLY' | translate }}
+            } @else if (componentForm.controls.nameAr.hasError('minLetters')) {
+              {{ 'SUBJECTS.COMPONENT_FORM.MIN_LETTERS_AR' | translate }}
+            }
+          </mat-error>
         }
       </mat-form-field>
 
@@ -67,7 +75,15 @@
         <mat-label>{{ 'SUBJECTS.COMPONENT_FORM.NAME_EN' | translate }}</mat-label>
         <input matInput formControlName="nameEn" dir="ltr" [maxlength]="nameMaxLength" />
         @if (isInvalid(componentForm.controls.nameEn)) {
-          <mat-error>{{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}</mat-error>
+          <mat-error>
+            @if (componentForm.controls.nameEn.hasError('required')) {
+              {{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}
+            } @else if (componentForm.controls.nameEn.hasError('invalidChars')) {
+              {{ 'SUBJECTS.COMPONENT_FORM.ENGLISH_ONLY' | translate }}
+            } @else if (componentForm.controls.nameEn.hasError('minLetters')) {
+              {{ 'SUBJECTS.COMPONENT_FORM.MIN_LETTERS_EN' | translate }}
+            }
+          </mat-error>
         }
       </mat-form-field>
 
@@ -79,7 +95,7 @@
       <!-- Weight (up to what is left to reach 100) -->
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>{{ 'SUBJECTS.COMPONENT_FORM.WEIGHT' | translate }}</mat-label>
-        <input matInput type="number" min="0" step="any" formControlName="weight" />
+        <input matInput type="number" min="0" [max]="remaining" step="any" formControlName="weight" />
         <span matTextSuffix>%</span>
 
         <mat-hint>
@@ -127,6 +143,20 @@
       </mat-form-field>
 
     </div>
+
+
+    <!-- Total of the weights, with this component's weight as it is typed -->
+    <app-plan-weight-bar [weights]="barWeights()"></app-plan-weight-bar>
+
+    @if (weightCapped()) {
+
+      <!-- The weight was cut down so the total stays at 100 -->
+      <div class="message-card warning" role="status">
+        <mat-icon>warning_amber</mat-icon>
+        <span>{{ 'SUBJECTS.COMPONENT_FORM.WEIGHT_LIMIT' | translate }}</span>
+      </div>
+
+    }
 
 
     @if (showMaxMarkNote) {

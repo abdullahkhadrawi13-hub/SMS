@@ -27,7 +27,9 @@ import { Assessment } from '../../../../core/models/assessment';
 
 import { formatNumber } from '../../../subjects/subject';
 import {
+  arabicNameValidator,
   COMPONENT_NAME_MAX_LENGTH,
+  englishNameValidator,
   MAX_MARK_LIMIT,
   maxMarkValidator,
 } from '../../../subjects/subject-plans/plan-validators';
@@ -82,12 +84,12 @@ export class AssessmentForm {
 
     nameAr: [
       this.data.assessment?.nameAr ?? '',
-      [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH)],
+      [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH), arabicNameValidator],
     ],
 
     nameEn: [
       this.data.assessment?.nameEn ?? '',
-      [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH)],
+      [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH), englishNameValidator],
     ],
 
     // TODO(grades): disable this field when the assessment has marks

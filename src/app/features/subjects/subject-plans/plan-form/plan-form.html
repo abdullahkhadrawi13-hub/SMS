@@ -138,7 +138,15 @@
                   <mat-label>{{ 'SUBJECTS.PLAN_FORM.NAME_AR' | translate }}</mat-label>
                   <input matInput formControlName="nameAr" dir="rtl" [maxlength]="nameMaxLength" />
                   @if (isInvalid(row.controls.nameAr)) {
-                    <mat-error>{{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}</mat-error>
+                    <mat-error>
+                      @if (row.controls.nameAr.hasError('required')) {
+                        {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
+                      } @else if (row.controls.nameAr.hasError('invalidChars')) {
+                        {{ 'SUBJECTS.PLAN_FORM.ARABIC_ONLY' | translate }}
+                      } @else if (row.controls.nameAr.hasError('minLetters')) {
+                        {{ 'SUBJECTS.PLAN_FORM.MIN_LETTERS_AR' | translate }}
+                      }
+                    </mat-error>
                   }
                 </mat-form-field>
 
@@ -146,7 +154,15 @@
                   <mat-label>{{ 'SUBJECTS.PLAN_FORM.NAME_EN' | translate }}</mat-label>
                   <input matInput formControlName="nameEn" dir="ltr" [maxlength]="nameMaxLength" />
                   @if (isInvalid(row.controls.nameEn)) {
-                    <mat-error>{{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}</mat-error>
+                    <mat-error>
+                      @if (row.controls.nameEn.hasError('required')) {
+                        {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
+                      } @else if (row.controls.nameEn.hasError('invalidChars')) {
+                        {{ 'SUBJECTS.PLAN_FORM.ENGLISH_ONLY' | translate }}
+                      } @else if (row.controls.nameEn.hasError('minLetters')) {
+                        {{ 'SUBJECTS.PLAN_FORM.MIN_LETTERS_EN' | translate }}
+                      }
+                    </mat-error>
                   }
                 </mat-form-field>
 
@@ -167,7 +183,7 @@
                 <!-- Weight -->
                 <mat-form-field appearance="outline" subscriptSizing="dynamic" class="number-field">
                   <mat-label>{{ 'SUBJECTS.PLAN_FORM.WEIGHT' | translate }}</mat-label>
-                  <input matInput type="number" min="0" max="100" step="any" formControlName="weight" />
+                  <input matInput type="number" min="0" [max]="maxWeight(i)" step="any" formControlName="weight" />
                   <span matTextSuffix>%</span>
                   @if (isInvalid(row.controls.weight)) {
                     <mat-error>
@@ -191,10 +207,14 @@
                     formControlName="maxMark"
                     [placeholder]="row.controls.isOpen.value ? ('SUBJECTS.PLAN_FORM.MAX_MARK_TEACHER' | translate) : ''"
                   />
-                  @if (isMaxMarkMissing(row)) {
-                    <mat-error>{{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}</mat-error>
-                  } @else if (isInvalid(row.controls.maxMark)) {
-                    <mat-error>{{ 'SUBJECTS.PLAN_FORM.MAX_MARK_ERROR' | translate }}</mat-error>
+                  @if (isInvalid(row.controls.maxMark)) {
+                    <mat-error>
+                      @if (row.controls.maxMark.hasError('required')) {
+                        {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
+                      } @else {
+                        {{ 'SUBJECTS.PLAN_FORM.MAX_MARK_ERROR' | translate }}
+                      }
+                    </mat-error>
                   }
                 </mat-form-field>
 
@@ -226,7 +246,15 @@
         <!-- Total of the weights -->
         <app-plan-weight-bar [weights]="weights()"></app-plan-weight-bar>
 
-        @if (components.hasError('overWeight')) {
+        @if (weightCapped()) {
+
+          <!-- A weight was cut down so the total stays at 100 -->
+          <div class="message-card warning" role="status">
+            <mat-icon>warning_amber</mat-icon>
+            <span>{{ 'SUBJECTS.PLAN_FORM.WEIGHT_LIMIT' | translate }}</span>
+          </div>
+
+        } @else if (components.hasError('overWeight')) {
 
           <div class="message-card error">
             <mat-icon>error_outline</mat-icon>

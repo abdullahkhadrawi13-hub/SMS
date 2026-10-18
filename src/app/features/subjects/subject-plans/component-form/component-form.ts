@@ -31,13 +31,16 @@ import {
   SubjectPlanComponent,
 } from '../../../../core/models/subject-plan';
 
-import { formatNumber, FULL_WEIGHT } from '../../subject';
+import { formatNumber, FULL_WEIGHT, sortComponents } from '../../subject';
 import {
+  arabicNameValidator,
   COMPONENT_NAME_MAX_LENGTH,
+  englishNameValidator,
   maxMarkValidator,
   totalWeight,
   weightValidator,
 } from '../plan-validators';
+import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
 
 
 // Data passed by the plan details page.
@@ -84,6 +87,7 @@ function withinRemaining(remaining: number): ValidatorFn {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    PlanWeightBar,
     TranslatePipe,
   ],
   templateUrl: './component-form.html',
@@ -122,6 +126,49 @@ export class ComponentForm {
 
   readonly remainingLabel = formatNumber(this.remaining);
 
+
+  // =========================
+  // Weight bar
+  // =========================
+
+  // The other components, in the plan's order (the same colors as the details page).
+  private readonly otherComponents = sortComponents(this.data.plan.components)
+    .filter(c => c.subjectPlanComponentId !== this.data.component?.subjectPlanComponentId);
+
+  // Where this component sits in the bar:
+  // its own place when editing, after the last one when adding.
+  private readonly barPosition = (() => {
+
+    if (!this.isEditMode) {
+      return this.otherComponents.length;
+    }
+
+    const index = sortComponents(this.data.plan.components)
+      .findIndex(c => c.subjectPlanComponentId === this.data.component?.subjectPlanComponentId);
+
+    return index >= 0 ? index : this.otherComponents.length;
+  })();
+
+  // The weight typed in the form (0 while empty).
+  private readonly currentWeight = signal(Number(this.data.component?.weight) || 0);
+
+  // The plan's weights with this component's weight as it is typed.
+  readonly barWeights = computed(() => {
+
+    const weights = this.otherComponents.map(c => c.weight);
+
+    weights.splice(this.barPosition, 0, this.currentWeight());
+
+    return weights;
+  });
+
+  // true right after the weight was cut down to what is left
+  // (shows the "total cannot exceed 100%" message under the bar).
+  readonly weightCapped = signal(false);
+
+  // The last weight of the field, after any cut (see limitWeight).
+  private lastWeight: number | null = this.data.component?.weight ?? null;
+
   // Editing a fixed component of a plan that has marks: its max mark
   // may be refused by the backend when this component has marks.
   readonly showMaxMarkNote =
@@ -139,12 +186,12 @@ export class ComponentForm {
 
     nameAr: [
       this.data.component?.nameAr ?? '',
-      [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH)],
+      [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH), arabicNameValidator],
     ],
 
     nameEn: [
       this.data.component?.nameEn ?? '',
-      [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH)],
+      [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH), englishNameValidator],
     ],
 
     // true = open (the teacher adds quizzes). Fixed in edit mode.
@@ -186,6 +233,45 @@ export class ComponentForm {
         this.isOpen.set(!!isOpen);
         this.updateMaxMarkRules(!!isOpen);
       });
+
+    // The weight can never take the total above 100: it is cut down to what is left.
+    this.componentForm.controls.weight.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(weight => this.limitWeight(weight));
+  }
+
+
+  // Called on every valueChanges of the weight field.
+  // A value above what is left is replaced by what is left
+  // (or emptied when nothing is left), and the message is shown.
+  private limitWeight(weight: number | null): void {
+
+    const current = (weight as unknown) === '' ? null : weight;
+
+    // A number input sends its value on "input" while typing, then again on
+    // "change" when the user leaves the field. The repeated value is not
+    // a new edit, so it must not hide the message.
+    if (current === this.lastWeight) {
+      return;
+    }
+
+    if (current === null || Number(current) <= this.remaining) {
+      this.lastWeight = current;
+      this.currentWeight.set(Number(current) || 0);
+      this.weightCapped.set(false);
+      return;
+    }
+
+    const value = this.remaining > 0 ? this.remaining : null;
+
+    // emitEvent: false = this change does not call limitWeight again.
+    const weightControl = this.componentForm.controls.weight;
+    weightControl.setValue(value, { emitEvent: false });
+    weightControl.markAsTouched();
+
+    this.lastWeight = value;
+    this.currentWeight.set(value ?? 0);
+    this.weightCapped.set(true);
   }
 
 

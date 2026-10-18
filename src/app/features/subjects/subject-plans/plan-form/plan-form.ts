@@ -37,7 +37,9 @@ import {
   FULL_WEIGHT,
 } from '../../subject';
 import {
+  arabicNameValidator,
   COMPONENT_NAME_MAX_LENGTH,
+  englishNameValidator,
   maxMarkValidator,
   passingMarkValidator,
   totalWeight,
@@ -65,20 +67,6 @@ export interface PlanFormData {
 
 // One component row of the form.
 type ComponentRow = ReturnType<PlanForm['createComponentRow']>;
-
-
-// A fixed component needs a max mark; an open one has none.
-function fixedNeedsMaxMark(group: AbstractControl): ValidationErrors | null {
-
-  const isOpen = group.get('isOpen')?.value;
-  const maxMark = group.get('maxMark')?.value;
-
-  if (isOpen || (maxMark !== null && maxMark !== '')) {
-    return null;
-  }
-
-  return { maxMarkRequired: true };
-}
 
 
 // The plan as a whole: weights at most 100, no repeated component name.
@@ -189,6 +177,13 @@ export class PlanForm {
     () => formatNumber(Math.max(FULL_WEIGHT - this.total(), 0))
   );
 
+  // true right after a weight was cut down so the total stays at 100
+  // (shows the "total cannot exceed 100%" message under the bar).
+  readonly weightCapped = signal(false);
+
+  // The last weight of each row, after any cut (see limitWeight).
+  private readonly lastWeights = new WeakMap<ComponentRow, number | null>();
+
 
   constructor() {
 
@@ -204,20 +199,35 @@ export class PlanForm {
 
   createComponentRow() {
 
-    const row = this.fb.group(
-      {
-        nameAr: ['', [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH)]],
-        nameEn: ['', [Validators.required, Validators.maxLength(COMPONENT_NAME_MAX_LENGTH)]],
+    const row = this.fb.group({
 
-        // true = open component (the teacher adds quizzes),
-        // false = fixed component (one exam per section).
-        isOpen: [false],
+      nameAr: ['', [
+        Validators.required,
+        Validators.maxLength(COMPONENT_NAME_MAX_LENGTH),
+        arabicNameValidator,
+      ]],
 
-        weight: [null as number | null, [Validators.required, weightValidator]],
-        maxMark: [null as number | null, [maxMarkValidator]],
-      },
-      { validators: fixedNeedsMaxMark }
-    );
+      nameEn: ['', [
+        Validators.required,
+        Validators.maxLength(COMPONENT_NAME_MAX_LENGTH),
+        englishNameValidator,
+      ]],
+
+      // true = open component (the teacher adds quizzes),
+      // false = fixed component (one exam per section).
+      isOpen: [false],
+
+      weight: [null as number | null, [Validators.required, weightValidator]],
+
+      // Required on the field itself, so mat-error shows "This field is required".
+      // An open component disables the field, and a disabled field is not validated.
+      maxMark: [null as number | null, [Validators.required, maxMarkValidator]],
+    });
+
+    // A weight can never take the total above 100: it is cut down to what is left.
+    row.controls.weight.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(weight => this.limitWeight(row, weight));
 
     // An open component has no max mark: the field is cleared and disabled.
     row.controls.isOpen.valueChanges
@@ -242,6 +252,79 @@ export class PlanForm {
 
   removeComponent(index: number): void {
     this.components.removeAt(index);
+
+    // Removing a row frees weight, so the message is no longer true.
+    this.weightCapped.set(false);
+  }
+
+
+  // =========================
+  // Weights (total at most 100)
+  // =========================
+
+  // The most a row can take: 100 minus the weights of the other rows.
+  private allowedWeight(row: ComponentRow): number {
+
+    const others = this.components.controls
+      .filter(r => r !== row)
+      .map(r => r.controls.weight.value);
+
+    const allowed = FULL_WEIGHT - totalWeight(others);
+
+    return Math.max(Math.round(allowed * 100) / 100, 0);
+  }
+
+
+  // Called on every valueChanges of a weight field.
+  // A value above what is left is replaced by what is left
+  // (or emptied when nothing is left), and the message is shown.
+  private limitWeight(row: ComponentRow, weight: number | null): void {
+
+    const current = (weight as unknown) === '' ? null : weight;
+
+    // Only a real change of this row's weight counts. The same value comes back
+    // without the user changing anything:
+    //  - on "change" when the user leaves the field (a number input sends its
+    //    value on "input" while typing, then again on "change");
+    //  - when the [max] of an input changes: Angular checks the field again.
+    // Those must not hide the message.
+    if (this.lastWeights.has(row) && this.lastWeights.get(row) === current) {
+      return;
+    }
+
+    if (current === null) {
+      this.lastWeights.set(row, null);
+      this.weightCapped.set(false);
+      return;
+    }
+
+    const allowed = this.allowedWeight(row);
+
+    if (Number(current) <= allowed) {
+      this.lastWeights.set(row, current);
+      this.weightCapped.set(false);
+      return;
+    }
+
+    const value = allowed > 0 ? allowed : null;
+
+    // emitEvent: false = this change does not call limitWeight again.
+    // The bar is still updated, because the form array emits after it.
+    row.controls.weight.setValue(value, { emitEvent: false });
+    row.controls.weight.markAsTouched();
+
+    this.lastWeights.set(row, value);
+    this.weightCapped.set(true);
+  }
+
+
+  // The "max" of a weight input, so its arrows stop at what is left.
+  maxWeight(index: number): number {
+
+    const weights = this.weights();
+    const others = this.total() - (weights[index] ?? 0);
+
+    return Math.max(Math.round((FULL_WEIGHT - others) * 100) / 100, 0);
   }
 
 
@@ -266,12 +349,6 @@ export class PlanForm {
 
   isInvalid(control: AbstractControl): boolean {
     return control.invalid && control.touched;
-  }
-
-  // A fixed component without a max mark (shown under the field once touched).
-  isMaxMarkMissing(row: ComponentRow): boolean {
-    return row.hasError('maxMarkRequired')
-      && (row.controls.maxMark.touched || row.controls.weight.touched);
   }
 
 

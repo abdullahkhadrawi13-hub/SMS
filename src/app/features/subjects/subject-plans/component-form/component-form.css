@@ -109,6 +109,36 @@ mat-form-field {
 }
 
 
+/* Message under the weight bar (same look as the new plan form) */
+.message-card {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.message-card mat-icon {
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+
+  flex-shrink: 0;
+}
+
+.message-card.warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
 /* ================================
    Dialog Actions
    ================================ */
