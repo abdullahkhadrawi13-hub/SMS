@@ -1079,6 +1079,124 @@
       }
     }
   },
+  "ACADEMIC_YEARS": {
+    "HEADER": {
+      "BACK": "Settings",
+      "TITLE": "Academic Years and Terms",
+      "SUBTITLE": "Manage the academic years, the terms of each year and the school's current term",
+      "SUBTITLE_READ_ONLY": "The academic years, the terms of each year and the school's current term",
+      "ADD_YEAR": "Add Academic Year"
+    },
+    "STATE": {
+      "LOADING": "Loading academic years...",
+      "RETRY": "Retry",
+      "EMPTY": "No academic years yet"
+    },
+    "ERROR": {
+      "LOAD_FAILED": "Could not load the academic years. Please try again."
+    },
+    "BANNER": {
+      "LABEL": "The school's current term",
+      "ELAPSED": "Passed: {{count}} days",
+      "REMAINING": "Left: {{count}} days",
+      "NOT_STARTED": "The term starts in {{count}} days",
+      "ENDED": "This term has ended",
+      "NONE_TITLE": "The school has no current term yet",
+      "NONE_HINT": "Open an academic year and click \"Set as current\" on one of its terms."
+    },
+    "YEAR_CARD": {
+      "CURRENT": "Current year",
+      "UPCOMING": "Upcoming",
+      "PAST": "Ended",
+      "TERMS_COUNT": "Terms: {{count}}",
+      "ADD_TERM": "Add Term",
+      "ACTIONS": "Year actions",
+      "EDIT_YEAR": "Edit year",
+      "NO_TERMS": "This year has no terms yet",
+      "ADD_FIRST_TERM": "Add the first term"
+    },
+    "TERMS_TABLE": {
+      "NUMBER": "No.",
+      "NAME": "Term",
+      "PERIOD": "Period",
+      "DAYS": "{{count}} days",
+      "STATUS": "Status",
+      "CURRENT": "Current term",
+      "CURRENT_BADGE": "Current term",
+      "SET_CURRENT": "Set as current",
+      "ACTIONS": "Actions",
+      "EDIT": "Edit term",
+      "ACTIVATE": "Activate term",
+      "DEACTIVATE": "Deactivate term",
+      "CURRENT_LOCKED": "The current term cannot be deactivated"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "YEAR_FORM": {
+      "ADD_TITLE": "Add Academic Year",
+      "EDIT_TITLE": "Edit Academic Year",
+      "START_DATE": "Start date",
+      "END_DATE": "End date",
+      "YEAR_NAME": "Year name",
+      "YEAR_NAME_HINT": "Format year/year, e.g. 2028/2029",
+      "CURRENT_NOTE": "Adding a year does not make it current. A year becomes current when one of its terms is set as the current term.",
+      "CANCEL": "Cancel",
+      "ADD": "Add",
+      "SAVE": "Save",
+      "SAVING": "Saving...",
+      "VALIDATION": {
+        "START_REQUIRED": "Please choose the start date",
+        "END_REQUIRED": "Please choose the end date",
+        "END_BEFORE_START": "The end date must be after the start date",
+        "NAME_REQUIRED": "Please enter the year name",
+        "NAME_FORMAT": "The year name must look like 2028/2029"
+      }
+    },
+    "TERM_FORM": {
+      "ADD_TITLE": "Add Term",
+      "EDIT_TITLE": "Edit Term",
+      "YEAR": "Academic year",
+      "OTHER_TERMS": "Other terms of the year:",
+      "NO_OTHER_TERMS": "This year has no other terms.",
+      "NUMBER": "Term number",
+      "NAME_AR": "Term name in Arabic",
+      "NAME_EN": "Term name in English",
+      "START_DATE": "Start date",
+      "END_DATE": "End date",
+      "DATES_HINT": "The term dates must not overlap the other terms of the year.",
+      "ACTIVE": "Active term",
+      "ACTIVE_HINT": "An inactive term cannot be set as the current term.",
+      "ACTIVE_LOCKED_HINT": "This is the current term, so it cannot be deactivated.",
+      "YEAR_LOCKED": "A term cannot be moved to another academic year after it is created.",
+      "CANCEL": "Cancel",
+      "ADD": "Add",
+      "SAVE": "Save",
+      "SAVING": "Saving...",
+      "VALIDATION": {
+        "NUMBER_REQUIRED": "Please enter the term number",
+        "NUMBER_INVALID": "The term number must be a whole number above 0",
+        "NAME_AR_REQUIRED": "Please enter the term name in Arabic",
+        "NAME_EN_REQUIRED": "Please enter the term name in English",
+        "ARABIC_ONLY": "Arabic letters, numbers and spaces only",
+        "ENGLISH_ONLY": "English letters, numbers and spaces only",
+        "NAME_MAX_LENGTH": "The term name must not exceed 100 characters",
+        "START_REQUIRED": "Please choose the start date",
+        "END_REQUIRED": "Please choose the end date",
+        "END_BEFORE_START": "The end date must be after the start date"
+      }
+    },
+    "SET_CURRENT": {
+      "TITLE": "Set the current term",
+      "MESSAGE_REPLACE": "\"{{term}}\" will become the school's current term instead of \"{{old}}\".",
+      "MESSAGE_FIRST": "\"{{term}}\" will become the school's current term.",
+      "YEAR_CHANGES": "The year {{year}} will also become the current year.",
+      "WARNING": "Attendance, subject plans and teacher assignments depend on the current term.",
+      "CANCEL": "Cancel",
+      "CONFIRM": "Set as current"
+    }
+  },
   "ATTENDANCE_OFFICER": {
     "HEADER": {
       "BACK": "Settings",

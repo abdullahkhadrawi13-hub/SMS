@@ -1,0 +1,256 @@
+/* =========================
+   Year Box (the year from the card)
+   ========================= */
+
+.year-box {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+
+  border: 1px solid #d7e3ff;
+  border-radius: 12px;
+
+  background: #f0f5ff;
+}
+
+.year-box-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 8px 12px;
+}
+
+.year-box-icon {
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #2554a4;
+}
+
+.year-box-icon mat-icon {
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+}
+
+.year-box-text {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  flex: 1;
+}
+
+.year-box-label {
+  font-size: 12px;
+
+  color: #44474e;
+}
+
+.year-box-name {
+  font-size: 15px;
+  font-weight: 600;
+
+  color: #111827;
+
+  /* dir="ltr" would push the year to the left in Arabic:
+     keep it on the start side of the column in both directions. */
+  align-self: flex-start;
+}
+
+.year-box-range {
+  font-size: 12px;
+
+  color: #44474e;
+}
+
+.year-box-terms {
+  font-size: 12px;
+  line-height: 1.7;
+
+  color: #44474e;
+}
+
+.year-box-terms ul {
+  margin: 2px 0 0;
+  padding-inline-start: 18px;
+}
+
+.year-box-empty {
+  margin: 0;
+
+  font-size: 12px;
+
+  color: #44474e;
+}
+
+
+/* =========================
+   Form
+   ========================= */
+
+.term-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.number-name-row {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+
+  gap: 14px;
+}
+
+.dates-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+.dates-row input {
+  cursor: pointer;
+}
+
+input[dir='rtl'] {
+  text-align: right;
+}
+
+input[dir='ltr'] {
+  text-align: left;
+}
+
+.dates-hint {
+  margin: -4px 0 4px;
+
+  font-size: 12px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+
+/* =========================
+   Active (same as the classes form graduation box)
+   ========================= */
+
+.active-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  background: #f8fafc;
+}
+
+/* Space between the switch and its label (RTL and LTR). */
+.active-field ::ng-deep .mdc-form-field {
+  gap: 10px;
+}
+
+.active-field ::ng-deep .mdc-form-field > label {
+  padding: 0;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  color: #111827;
+}
+
+.active-hint {
+  margin: 0;
+
+  font-size: 12px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+
+/* =========================
+   Year Lock Note (edit mode)
+   ========================= */
+
+.year-lock-note {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 4px 0 0;
+
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+.year-lock-note mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+
+/* =========================
+   Dialog Actions
+   ========================= */
+
+mat-dialog-actions {
+  padding: 16px 24px 20px;
+
+  gap: 8px;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 500px) {
+
+  .number-name-row,
+  .dates-row {
+    grid-template-columns: minmax(0, 1fr);
+
+    gap: 8px;
+  }
+
+  mat-dialog-content {
+    padding: 16px;
+  }
+
+  mat-dialog-actions {
+    padding: 12px 16px 16px;
+  }
+
+}

@@ -116,11 +116,12 @@ export const SIDEBAR_MENU: MenuItem[] = [
     roles: [Admin, AssistantPrincipal]
   },
 
+  // AssistantPrincipal: only the academic years option (read only).
   {
     label: 'SIDEBAR.SETTINGS',
     icon: 'settings',
     route: '/settings',
-    roles: [Admin]
+    roles: [Admin, AssistantPrincipal]
   }
 
 ];

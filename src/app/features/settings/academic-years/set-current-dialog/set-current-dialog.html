@@ -1,0 +1,69 @@
+<div class="confirm">
+
+  <div class="confirm-icon">
+    <mat-icon>event_available</mat-icon>
+  </div>
+
+  <h2 mat-dialog-title>
+    {{ 'ACADEMIC_YEARS.SET_CURRENT.TITLE' | translate }}
+  </h2>
+
+  <mat-dialog-content>
+
+    <p>
+      @if (oldTermLabel()) {
+        {{
+          'ACADEMIC_YEARS.SET_CURRENT.MESSAGE_REPLACE'
+            | translate: { term: newTermLabel(), old: oldTermLabel() }
+        }}
+      } @else {
+        {{
+          'ACADEMIC_YEARS.SET_CURRENT.MESSAGE_FIRST'
+            | translate: { term: newTermLabel() }
+        }}
+      }
+    </p>
+
+    @if (yearChanges()) {
+      <p>
+        {{
+          'ACADEMIC_YEARS.SET_CURRENT.YEAR_CHANGES'
+            | translate: { year: data.year.yearName }
+        }}
+      </p>
+    }
+
+    <div class="warning-box">
+
+      <mat-icon>error</mat-icon>
+
+      <span>
+        {{ 'ACADEMIC_YEARS.SET_CURRENT.WARNING' | translate }}
+      </span>
+
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+
+    <button
+      mat-button
+      type="button"
+      (click)="cancel()"
+    >
+      {{ 'ACADEMIC_YEARS.SET_CURRENT.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="button"
+      class="confirm-button"
+      (click)="confirm()"
+    >
+      {{ 'ACADEMIC_YEARS.SET_CURRENT.CONFIRM' | translate }}
+    </button>
+
+  </mat-dialog-actions>
+
+</div>

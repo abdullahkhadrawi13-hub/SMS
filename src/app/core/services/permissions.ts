@@ -93,4 +93,27 @@ export class Permissions {
     () => this.isAdmin()
   );
 
+
+  // ===== Academic years and terms (API Reference, section 7) =====
+
+  // Read the years and terms (Settings → Academic years):
+  // Admin and AssistantPrincipal. A teacher gets 403.
+  readonly canViewAcademicYears = computed(
+    () => this.isAdmin() || this.isAssistantPrincipal()
+  );
+
+  // Add / edit years and terms, activate / deactivate a term
+  // and set the current term: Admin only.
+  readonly canManageAcademicYears = computed(
+    () => this.isAdmin()
+  );
+
+
+  // ===== Settings =====
+
+  // Choose the attendance officer (Settings → Attendance officer): Admin only.
+  readonly canManageAttendanceOfficer = computed(
+    () => this.isAdmin()
+  );
+
 }

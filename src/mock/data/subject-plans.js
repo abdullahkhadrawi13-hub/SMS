@@ -35,10 +35,11 @@
 // }
 
 
-// Term 3 is the current term (data/academic-terms.js), term 2 is the one before it.
-// Term 4 (the next term) has no plans: try "Copy from an earlier term" into it.
-const CURRENT_TERM = 3;
-const PREVIOUS_TERM = 2;
+// Term 5 is the current term (First Term 2026/2027, data/academic-terms.js),
+// term 4 is the one before it (Second Term 2025/2026).
+// Term 6 (the next term) has no plans: try "Copy from an earlier term" into it.
+const CURRENT_TERM = 5;
+const PREVIOUS_TERM = 4;
 
 
 // Components: [ nameAr, nameEn, weight, teacherAddsAssessments, maxMark ]

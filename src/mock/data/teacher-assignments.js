@@ -43,9 +43,10 @@ function loginTeacherId(loginId) {
 const TEACHER = loginTeacherId('teacher');     // 19
 const TEACHER2 = loginTeacherId('teacher2');   // 21
 
-// Term 3 is the current term (data/academic-terms.js), term 2 is the one before it.
-const CURRENT_TERM = 3;
-const PREVIOUS_TERM = 2;
+// Term 5 is the current term (First Term 2026/2027, data/academic-terms.js),
+// term 4 is the one before it (Second Term 2025/2026).
+const CURRENT_TERM = 5;
+const PREVIOUS_TERM = 4;
 
 
 // One row per assignment:

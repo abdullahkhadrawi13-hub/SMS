@@ -150,7 +150,9 @@ export const routes: Routes = [
             .then(m => m.SETTINGS_ROUTES),
         canActivate: [roleGuard],
         data: {
-          roles: [UserRole.Admin]
+          // AssistantPrincipal: read-only academic years only
+          // (attendance-officer stays Admin only, see settings.routes.ts).
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal]
         }
       },
 

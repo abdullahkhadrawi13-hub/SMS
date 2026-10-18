@@ -1,0 +1,270 @@
+/* ================================
+   Academic Years Page
+   ================================ */
+
+.academic-years-page {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Back Link (same as the attendance-officer page)
+   ================================ */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 14px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.back-link mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  transition: transform 0.2s ease;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  color: #2554a4;
+}
+
+.back-link:focus-visible {
+  outline: 2px solid #2554a4;
+  outline-offset: 4px;
+}
+
+/* On hover the arrow moves a little towards "back". */
+.back-link:hover mat-icon {
+  transform: translateX(-3px);
+}
+
+/* Arabic (RTL): the arrow points to the right
+   and moves to the right on hover. */
+:host-context([dir='rtl']) .back-link mat-icon {
+  transform: scaleX(-1);
+}
+
+:host-context([dir='rtl']) .back-link:hover mat-icon {
+  transform: scaleX(-1) translateX(-3px);
+}
+
+
+/* ================================
+   Page Header
+   ================================ */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.title-section {
+  min-width: 0;
+}
+
+.title-section h1 {
+  margin: 0 0 8px;
+
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+
+  color: #111827;
+}
+
+.title-section p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.page-header button {
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+.header-divider {
+  margin: 20px 0;
+
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+
+/* ================================
+   Page Content
+   ================================ */
+
+.page-content {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 22px;
+
+  /* Same width as the settings list. */
+  max-width: 1600px;
+}
+
+.years-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+
+/* ================================
+   Refreshing (reload while data is shown)
+   ================================ */
+
+/* Thin bar on the top edge; absolute, so the content never moves. */
+.refresh-bar {
+  position: absolute;
+
+  top: -12px;
+  left: 0;
+  right: 0;
+
+  z-index: 2;
+}
+
+.years-list {
+  transition: opacity 0.15s ease;
+}
+
+/* Old data fades a little and cannot be clicked until the new data arrives. */
+.page-content.is-refreshing .years-list {
+  opacity: 0.55;
+
+  pointer-events: none;
+}
+
+
+/* ================================
+   State Card (loading / error / empty)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+.state-card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.error-state > mat-icon {
+  width: 42px;
+  height: 42px;
+
+  font-size: 42px;
+
+  color: #dc2626;
+}
+
+.empty-icon {
+  width: 40px;
+  height: 40px;
+
+  font-size: 40px;
+
+  color: #9ca3af;
+}
+
+
+/* ================================
+   Reduced Motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .back-link,
+  .back-link mat-icon,
+  .years-list {
+    transition: none;
+  }
+
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .academic-years-page {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 14px;
+  }
+
+  .title-section h1 {
+    font-size: 24px;
+  }
+
+  .page-header button {
+    width: 100%;
+
+    justify-content: center;
+  }
+
+}

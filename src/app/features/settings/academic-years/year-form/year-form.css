@@ -1,0 +1,104 @@
+/* Same layout as the classes form: one field per row
+   (the two dates share one row). */
+.year-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  padding-top: 8px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.dates-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+/* The read-only date input still shows the hand cursor (it opens the picker). */
+.dates-row input {
+  cursor: pointer;
+}
+
+input[dir='ltr'] {
+  text-align: left;
+}
+
+
+/* =========================
+   Info Box
+   ========================= */
+
+.info-box {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  margin-top: 4px;
+  padding: 12px 14px;
+
+  border: 1px solid #d7e3ff;
+  border-radius: 12px;
+
+  background: #f0f5ff;
+}
+
+.info-box mat-icon {
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  font-size: 20px;
+
+  color: #2554a4;
+}
+
+.info-box p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.7;
+
+  color: #1f2937;
+}
+
+
+/* =========================
+   Dialog Actions
+   ========================= */
+
+mat-dialog-actions {
+  padding: 16px 24px 20px;
+
+  gap: 8px;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 500px) {
+
+  .dates-row {
+    grid-template-columns: minmax(0, 1fr);
+
+    gap: 8px;
+  }
+
+  mat-dialog-content {
+    padding: 16px;
+  }
+
+  mat-dialog-actions {
+    padding: 12px 16px 16px;
+  }
+
+}

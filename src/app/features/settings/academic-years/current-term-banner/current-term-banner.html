@@ -1,0 +1,120 @@
+@if (term(); as currentTerm) {
+
+  <!-- The current term -->
+  <section
+    class="banner"
+    [attr.aria-label]="'ACADEMIC_YEARS.BANNER.LABEL' | translate"
+  >
+
+    <div class="banner-main">
+
+      <div class="banner-icon">
+        <mat-icon>event_available</mat-icon>
+      </div>
+
+      <div class="banner-text">
+
+        <span class="banner-label">
+          {{ 'ACADEMIC_YEARS.BANNER.LABEL' | translate }}
+        </span>
+
+        <span class="banner-title">
+          {{ termName() }}
+
+          @if (year(); as currentYear) {
+            · <span dir="ltr">{{ currentYear.yearName }}</span>
+          }
+        </span>
+
+        <span class="banner-dates">
+          {{ dateRange() }}
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- Days and progress bar -->
+    @if (progress(); as p) {
+
+      <div class="banner-progress">
+
+        <div class="progress-labels">
+
+          @switch (p.phase) {
+
+            @case ('running') {
+              <span>
+                {{ 'ACADEMIC_YEARS.BANNER.ELAPSED' | translate: { count: p.elapsed } }}
+              </span>
+
+              <span>
+                {{ 'ACADEMIC_YEARS.BANNER.REMAINING' | translate: { count: p.remaining } }}
+              </span>
+            }
+
+            @case ('not-started') {
+              <span>
+                {{ 'ACADEMIC_YEARS.BANNER.NOT_STARTED' | translate: { count: p.untilStart } }}
+              </span>
+            }
+
+            @case ('ended') {
+              <span>
+                {{ 'ACADEMIC_YEARS.BANNER.ENDED' | translate }}
+              </span>
+            }
+
+          }
+
+        </div>
+
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-valuenow]="p.percent"
+        >
+          <div
+            class="progress-fill"
+            [style.width.%]="p.percent"
+          ></div>
+        </div>
+
+      </div>
+
+    }
+
+  </section>
+
+} @else {
+
+  <!-- No current term yet -->
+  <section class="banner banner-empty">
+
+    <div class="banner-main">
+
+      <div class="banner-icon">
+        <mat-icon>event_busy</mat-icon>
+      </div>
+
+      <div class="banner-text">
+
+        <span class="banner-title">
+          {{ 'ACADEMIC_YEARS.BANNER.NONE_TITLE' | translate }}
+        </span>
+
+        @if (canManage()) {
+          <span class="banner-dates">
+            {{ 'ACADEMIC_YEARS.BANNER.NONE_HINT' | translate }}
+          </span>
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+}

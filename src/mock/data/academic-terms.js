@@ -41,7 +41,7 @@ module.exports = [
     startDate: '2025-09-01T00:00:00',
     endDate: '2026-01-15T00:00:00',
     isActive: true,
-    isCurrent: true
+    isCurrent: false
   },
 
   {
@@ -67,10 +67,10 @@ module.exports = [
     termNumber: 1,
     nameAr: 'الفصل الدراسي الأول',
     nameEn: 'First Term',
-    startDate: '2026-09-01T00:00:00',
-    endDate: '2027-01-15T00:00:00',
+    startDate: '2026-10-11T00:00:00',
+    endDate: '2027-01-14T00:00:00',
     isActive: true,
-    isCurrent: false
+    isCurrent: true
   },
 
   {

@@ -1,0 +1,373 @@
+<section
+  class="year-card"
+  [class.is-current]="view().status === 'current'"
+>
+
+  <!-- ===== Year header ===== -->
+  <div
+    class="year-head"
+    [class.is-open]="expanded()"
+  >
+
+    <!-- Open / close the card -->
+    <button
+      type="button"
+      class="year-toggle"
+      [attr.aria-expanded]="expanded()"
+      [attr.aria-controls]="tableId()"
+      (click)="toggle.emit()"
+    >
+
+      <mat-icon class="chevron">expand_more</mat-icon>
+
+      <span class="year-icon">
+        <mat-icon>calendar_month</mat-icon>
+      </span>
+
+      <span class="year-text">
+
+        <span class="year-title-row">
+
+          <span class="year-name" dir="ltr">
+            {{ view().year.yearName }}
+          </span>
+
+          @switch (view().status) {
+
+            @case ('current') {
+              <span class="year-badge badge-current">
+                <mat-icon>star</mat-icon>
+                {{ 'ACADEMIC_YEARS.YEAR_CARD.CURRENT' | translate }}
+              </span>
+            }
+
+            @case ('upcoming') {
+              <span class="year-badge badge-upcoming">
+                {{ 'ACADEMIC_YEARS.YEAR_CARD.UPCOMING' | translate }}
+              </span>
+            }
+
+            @case ('past') {
+              <span class="year-badge badge-past">
+                {{ 'ACADEMIC_YEARS.YEAR_CARD.PAST' | translate }}
+              </span>
+            }
+
+          }
+
+        </span>
+
+        <span class="year-meta">
+          {{ yearRange() }}
+          ·
+          {{ 'ACADEMIC_YEARS.YEAR_CARD.TERMS_COUNT' | translate: { count: view().terms.length } }}
+        </span>
+
+      </span>
+
+    </button>
+
+    <!-- Year actions (Admin only) -->
+    @if (canManage()) {
+
+      <div class="year-actions">
+
+        <button
+          mat-stroked-button
+          type="button"
+          class="add-term-button"
+          (click)="addTerm.emit()"
+        >
+          <mat-icon>add</mat-icon>
+
+          {{ 'ACADEMIC_YEARS.YEAR_CARD.ADD_TERM' | translate }}
+        </button>
+
+        <button
+          mat-icon-button
+          type="button"
+          [matMenuTriggerFor]="yearMenu"
+          [attr.aria-label]="'ACADEMIC_YEARS.YEAR_CARD.ACTIONS' | translate"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #yearMenu="matMenu">
+
+          <button
+            mat-menu-item
+            type="button"
+            (click)="editYear.emit()"
+          >
+            <mat-icon>edit</mat-icon>
+
+            <span>
+              {{ 'ACADEMIC_YEARS.YEAR_CARD.EDIT_YEAR' | translate }}
+            </span>
+          </button>
+
+        </mat-menu>
+
+      </div>
+
+    }
+
+  </div>
+
+
+  <!-- ===== Terms (only when the card is open) ===== -->
+  @if (expanded()) {
+
+    <div class="year-body" [id]="tableId()">
+
+      @if (view().terms.length > 0) {
+
+        <!-- Horizontal scrolling on small screens -->
+        <div class="table-wrapper">
+
+          <table mat-table [dataSource]="view().terms">
+
+            <!-- Term number -->
+            <ng-container matColumnDef="number">
+
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'ACADEMIC_YEARS.TERMS_TABLE.NUMBER' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let term">
+                <span class="term-number">
+                  {{ term.termNumber }}
+                </span>
+              </td>
+
+            </ng-container>
+
+
+            <!-- Name (current language, the other one under it) -->
+            <ng-container matColumnDef="name">
+
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'ACADEMIC_YEARS.TERMS_TABLE.NAME' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let term">
+                <div class="two-lines">
+                  <span class="term-name">{{ getTermName(term) }}</span>
+                  <span class="term-second-name">{{ getTermSecondName(term) }}</span>
+                </div>
+              </td>
+
+            </ng-container>
+
+
+            <!-- Period + number of days -->
+            <ng-container matColumnDef="period">
+
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'ACADEMIC_YEARS.TERMS_TABLE.PERIOD' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let term">
+                <div class="two-lines">
+                  <span>{{ getTermRange(term) }}</span>
+                  <span class="term-days">
+                    {{ 'ACADEMIC_YEARS.TERMS_TABLE.DAYS' | translate: { count: getTermDays(term) } }}
+                  </span>
+                </div>
+              </td>
+
+            </ng-container>
+
+
+            <!-- Status -->
+            <ng-container matColumnDef="status">
+
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'ACADEMIC_YEARS.TERMS_TABLE.STATUS' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let term">
+                <span
+                  class="status-badge"
+                  [class.active]="term.isActive"
+                  [class.inactive]="!term.isActive"
+                >
+                  <span class="status-dot"></span>
+
+                  {{
+                    term.isActive
+                      ? ('ACADEMIC_YEARS.STATUS.ACTIVE' | translate)
+                      : ('ACADEMIC_YEARS.STATUS.INACTIVE' | translate)
+                  }}
+                </span>
+              </td>
+
+            </ng-container>
+
+
+            <!-- Current term / "set as current" -->
+            <ng-container matColumnDef="current">
+
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'ACADEMIC_YEARS.TERMS_TABLE.CURRENT' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let term">
+
+                @if (busyTermId() === term.academicTermId) {
+
+                  <mat-spinner diameter="22"></mat-spinner>
+
+                } @else if (term.isCurrent) {
+
+                  <span class="current-badge">
+                    <mat-icon>check_circle</mat-icon>
+                    {{ 'ACADEMIC_YEARS.TERMS_TABLE.CURRENT_BADGE' | translate }}
+                  </span>
+
+                } @else if (canSetCurrent(term)) {
+
+                  <button
+                    type="button"
+                    class="set-current-button"
+                    [disabled]="isBusy()"
+                    (click)="setCurrentTerm.emit(term)"
+                  >
+                    <mat-icon>radio_button_unchecked</mat-icon>
+                    {{ 'ACADEMIC_YEARS.TERMS_TABLE.SET_CURRENT' | translate }}
+                  </button>
+
+                } @else {
+
+                  <span class="no-value">—</span>
+
+                }
+
+              </td>
+
+            </ng-container>
+
+
+            <!-- Actions (Admin only: the column is in displayedColumns only when canManage is true) -->
+            <ng-container matColumnDef="actions">
+
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'ACADEMIC_YEARS.TERMS_TABLE.ACTIONS' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let term">
+
+                <button
+                  mat-icon-button
+                  type="button"
+                  [matMenuTriggerFor]="termMenu"
+                  [attr.aria-label]="'ACADEMIC_YEARS.TERMS_TABLE.ACTIONS' | translate"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <mat-menu #termMenu="matMenu">
+
+                  <button
+                    mat-menu-item
+                    type="button"
+                    (click)="editTerm.emit(term)"
+                  >
+                    <mat-icon>edit</mat-icon>
+
+                    <span>
+                      {{ 'ACADEMIC_YEARS.TERMS_TABLE.EDIT' | translate }}
+                    </span>
+                  </button>
+
+                  @if (term.isCurrent) {
+
+                    <!-- The current term can never be deactivated -->
+                    <button
+                      mat-menu-item
+                      type="button"
+                      class="menu-item-locked"
+                      disabled
+                    >
+                      <mat-icon>block</mat-icon>
+
+                      <span class="locked-text">
+                        <span>{{ 'ACADEMIC_YEARS.TERMS_TABLE.DEACTIVATE' | translate }}</span>
+                        <small>{{ 'ACADEMIC_YEARS.TERMS_TABLE.CURRENT_LOCKED' | translate }}</small>
+                      </span>
+                    </button>
+
+                  } @else {
+
+                    <button
+                      mat-menu-item
+                      type="button"
+                      [disabled]="isBusy()"
+                      (click)="toggleTermStatus.emit(term)"
+                    >
+                      <mat-icon>
+                        {{ term.isActive ? 'block' : 'check_circle' }}
+                      </mat-icon>
+
+                      <span>
+                        {{
+                          term.isActive
+                            ? ('ACADEMIC_YEARS.TERMS_TABLE.DEACTIVATE' | translate)
+                            : ('ACADEMIC_YEARS.TERMS_TABLE.ACTIVATE' | translate)
+                        }}
+                      </span>
+                    </button>
+
+                  }
+
+                </mat-menu>
+
+              </td>
+
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumns()"
+              [class.current-row]="row.isCurrent"
+            ></tr>
+
+          </table>
+
+        </div>
+
+      } @else {
+
+        <!-- A year with no terms yet -->
+        <div class="empty-terms">
+
+          <mat-icon>event_busy</mat-icon>
+
+          <p>
+            {{ 'ACADEMIC_YEARS.YEAR_CARD.NO_TERMS' | translate }}
+          </p>
+
+          @if (canManage()) {
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="addTerm.emit()"
+            >
+              <mat-icon>add</mat-icon>
+
+              {{ 'ACADEMIC_YEARS.YEAR_CARD.ADD_FIRST_TERM' | translate }}
+            </button>
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</section>

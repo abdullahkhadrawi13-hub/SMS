@@ -1,0 +1,163 @@
+<div class="academic-years-page">
+
+  <!-- Back to Settings -->
+  <a
+    class="back-link"
+    routerLink="/settings"
+  >
+    <mat-icon>arrow_back</mat-icon>
+
+    {{ 'ACADEMIC_YEARS.HEADER.BACK' | translate }}
+  </a>
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div class="title-section">
+      <h1>
+        {{ 'ACADEMIC_YEARS.HEADER.TITLE' | translate }}
+      </h1>
+
+      <p>
+        {{
+          canManage()
+            ? ('ACADEMIC_YEARS.HEADER.SUBTITLE' | translate)
+            : ('ACADEMIC_YEARS.HEADER.SUBTITLE_READ_ONLY' | translate)
+        }}
+      </p>
+    </div>
+
+    <!-- Add year (Admin only) -->
+    @if (canManage()) {
+      <button
+        mat-flat-button
+        type="button"
+        (click)="openAddYear()"
+      >
+        <mat-icon>add</mat-icon>
+
+        {{ 'ACADEMIC_YEARS.HEADER.ADD_YEAR' | translate }}
+      </button>
+    }
+
+  </div>
+
+  <hr class="header-divider" />
+
+
+  <!-- Error -->
+  @if (errorMessage()) {
+
+    <div class="state-card error-state">
+
+      <mat-icon>error_outline</mat-icon>
+
+      <p>
+        {{ errorMessage() | translate }}
+      </p>
+
+      <button
+        mat-flat-button
+        type="button"
+        (click)="retry()"
+      >
+        <mat-icon>refresh</mat-icon>
+
+        {{ 'ACADEMIC_YEARS.STATE.RETRY' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+  <!-- First load only -->
+  @else if (isInitialLoading()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>
+        {{ 'ACADEMIC_YEARS.STATE.LOADING' | translate }}
+      </p>
+
+    </div>
+
+  }
+
+  <!-- Content -->
+  @else {
+
+    <div class="page-content" [class.is-refreshing]="isRefreshing()">
+
+      <!-- Reload indicator: takes no height, so nothing jumps -->
+      @if (isRefreshing()) {
+        <mat-progress-bar
+          class="refresh-bar"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      }
+
+      <!-- The current term of the school -->
+      <app-current-term-banner
+        [term]="currentTerm()"
+        [year]="currentYear()"
+        [canManage]="canManage()"
+      />
+
+      @if (years().length > 0) {
+
+        <!-- One card per year, newest first -->
+        <div class="years-list">
+
+          @for (view of years(); track view.year.academicYearId) {
+
+            <app-year-card
+              [view]="view"
+              [expanded]="isExpanded(view.year.academicYearId)"
+              [canManage]="canManage()"
+              [busyTermId]="busyTermId()"
+              (toggle)="toggleYear(view.year.academicYearId)"
+              (editYear)="openEditYear(view.year)"
+              (addTerm)="openAddTerm(view)"
+              (editTerm)="openEditTerm(view, $event)"
+              (toggleTermStatus)="toggleTermStatus($event)"
+              (setCurrentTerm)="confirmSetCurrent(view, $event)"
+            />
+
+          }
+
+        </div>
+
+      } @else {
+
+        <!-- No years yet -->
+        <div class="state-card">
+
+          <mat-icon class="empty-icon">calendar_month</mat-icon>
+
+          <p>
+            {{ 'ACADEMIC_YEARS.STATE.EMPTY' | translate }}
+          </p>
+
+          @if (canManage()) {
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="openAddYear()"
+            >
+              <mat-icon>add</mat-icon>
+
+              {{ 'ACADEMIC_YEARS.HEADER.ADD_YEAR' | translate }}
+            </button>
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

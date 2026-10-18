@@ -3,10 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
-import { AcademicTerm } from '../models/academic-term';
+import {
+  AcademicTerm,
+  CreateAcademicTermRequest,
+  UpdateAcademicTermRequest
+} from '../models/academic-term';
 import { environment } from '../../../environments/environment';
 
 
+// AcademicTerms API (API Reference, section 7).
+// Reads: Admin and AssistantPrincipal. Writes: Admin only.
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +25,7 @@ export class AcademicTermsService {
 
 
   // GET /api/academicterms
-  // Returns all academic terms for lookup lists.
+  // Returns all academic terms (no filter).
   getAcademicTerms(): Observable<
     ApiResponse<AcademicTerm[]>
   > {
@@ -27,6 +33,20 @@ export class AcademicTermsService {
     return this.http.get<
       ApiResponse<AcademicTerm[]>
     >(this.apiUrl);
+  }
+
+
+  // GET /api/academicterms/{id}
+  // Returns one academic term.
+  getAcademicTermById(
+    academicTermId: number
+  ): Observable<
+    ApiResponse<AcademicTerm>
+  > {
+
+    return this.http.get<
+      ApiResponse<AcademicTerm>
+    >(`${this.apiUrl}/${academicTermId}`);
   }
 
 
@@ -43,6 +63,51 @@ export class AcademicTermsService {
     return this.http.get<
       ApiResponse<AcademicTerm[]>
     >(`${this.apiUrl}/by-year/${academicYearId}`);
+  }
+
+
+  // POST /api/academicterms (Admin)
+  // Returns the created term.
+  createAcademicTerm(
+    request: CreateAcademicTermRequest
+  ): Observable<
+    ApiResponse<AcademicTerm>
+  > {
+
+    return this.http.post<
+      ApiResponse<AcademicTerm>
+    >(this.apiUrl, request);
+  }
+
+
+  // PUT /api/academicterms/{id} (Admin)
+  // Also used to activate / deactivate a term (only isActive changes).
+  // Returns data: null.
+  updateAcademicTerm(
+    academicTermId: number,
+    request: UpdateAcademicTermRequest
+  ): Observable<
+    ApiResponse<null>
+  > {
+
+    return this.http.put<
+      ApiResponse<null>
+    >(`${this.apiUrl}/${academicTermId}`, request);
+  }
+
+
+  // PATCH /api/academicterms/{id}/current (Admin, no body)
+  // Makes this term the current term. The backend also makes its year
+  // the current year and clears the old term and year, in one transaction.
+  setCurrentAcademicTerm(
+    academicTermId: number
+  ): Observable<
+    ApiResponse<unknown>
+  > {
+
+    return this.http.patch<
+      ApiResponse<unknown>
+    >(`${this.apiUrl}/${academicTermId}/current`, null);
   }
 
 }

@@ -11,13 +11,13 @@ module.exports = [
     yearName: '2025/2026',
     startDate: '2025-09-01T00:00:00',
     endDate: '2026-06-30T00:00:00',
-    isCurrent: true
+    isCurrent: false
   },
   {
     academicYearId: 3,
     yearName: '2026/2027',
     startDate: '2026-09-01T00:00:00',
     endDate: '2027-06-30T00:00:00',
-    isCurrent: false
+    isCurrent: true
   }
 ];

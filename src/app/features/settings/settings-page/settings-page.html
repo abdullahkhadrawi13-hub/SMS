@@ -20,7 +20,7 @@
   <!-- Settings Options -->
   <nav class="settings-list">
 
-    @for (option of options; track option.route) {
+    @for (option of options(); track option.route) {
 
       <!-- The whole option is one link to its sub-route.
            color-... gives the option its own color. -->
