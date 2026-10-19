@@ -308,22 +308,22 @@
   "CLASSES": {
     "HEADER": {
       "TITLE": "Class Management",
-      "SUBTITLE": "Manage school classes and their settings",
-      "ADD": "Add Class"
+      "SUBTITLE": "Manage school classes and their settings"
     },
-    "TABLE": {
-      "NAME": "Class Name",
+    "GRID": {
+      "LOADING": "Loading classes...",
+      "EMPTY": "No classes yet",
+      "RETRY": "Retry",
+      "ADD_TITLE": "Add Academic Class",
+      "ADD_HINT": "Add a new class with a level that sets its order"
+    },
+    "CARD": {
       "LEVEL": "Level",
-      "GRADUATION": "Graduation",
       "GRADUATION_BADGE": "Graduation class",
-      "STATUS": "Status",
       "ACTIONS": "Actions",
       "EDIT": "Edit",
       "ACTIVATE": "Activate",
-      "DEACTIVATE": "Deactivate",
-      "EMPTY": "No classes yet",
-      "LOADING": "Loading classes...",
-      "RETRY": "Retry"
+      "DEACTIVATE": "Deactivate"
     },
     "FORM": {
       "ADD_TITLE": "Add Class",

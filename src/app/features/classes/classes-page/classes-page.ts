@@ -12,7 +12,7 @@ import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
 
 import { ClassesHeader } from '../classes-header/classes-header';
-import { ClassesTable } from '../classes-table/classes-table';
+import { ClassesGrid } from '../classes-grid/classes-grid';
 import {
   ClassesForm,
   ClassFormData,
@@ -23,7 +23,7 @@ import {
   selector: 'app-classes-page',
   imports: [
     ClassesHeader,
-    ClassesTable,
+    ClassesGrid,
     MatDialogModule,
   ],
   templateUrl: './classes-page.html',
@@ -62,7 +62,7 @@ export class ClassesPage {
   // Indicates whether the list is currently loading.
   readonly isLoading = signal(false);
 
-  // Error message (API message or translation key) shown instead of the table.
+  // Error message (API message or translation key) shown instead of the cards.
   readonly errorMessage = signal('');
 
   // id of the class whose status is being changed right now

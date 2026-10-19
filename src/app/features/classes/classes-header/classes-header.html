@@ -12,18 +12,4 @@
 
   </div>
 
-  <!-- Add class (Admin only) -->
-  @if (canManage()) {
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      (click)="onAddClass()"
-    >
-      <mat-icon>add</mat-icon>
-
-      {{ 'CLASSES.HEADER.ADD' | translate }}
-    </button>
-  }
-
 </div>

@@ -1,28 +1,15 @@
-import { Component, input, output } from '@angular/core';
-
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { Component } from '@angular/core';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+// Page title and description.
+// Adding a class is done from the "Add academic class" card in the grid.
 @Component({
   selector: 'app-classes-header',
   imports: [
-    MatButtonModule,
-    MatIconModule,
     TranslatePipe,
   ],
   templateUrl: './classes-header.html',
   styleUrl: './classes-header.css',
 })
-export class ClassesHeader {
-
-  // Shows the "Add class" button only for users allowed to add classes.
-  readonly canManage = input(false);
-
-  readonly addClass = output<void>();
-
-  onAddClass(): void {
-    this.addClass.emit();
-  }
-}
+export class ClassesHeader {}
