@@ -109,6 +109,16 @@ export class Permissions {
   );
 
 
+  // ===== Grades (API Reference, section 10) =====
+
+  // Enter and edit marks in the grade sheet: Admin, and the teacher
+  // who owns the assignment (the backend checks the owner).
+  // AssistantPrincipal reads the sheet only (any write gets 403).
+  readonly canEnterGrades = computed(
+    () => this.isAdmin() || this.isTeacher()
+  );
+
+
   // ===== Settings =====
 
   // Choose the attendance officer (Settings → Attendance officer): Admin only.

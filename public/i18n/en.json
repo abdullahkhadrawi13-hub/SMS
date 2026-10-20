@@ -1232,5 +1232,96 @@
     "ERROR": {
       "LOAD_FAILED": "Failed to load the attendance officer. Please try again."
     }
+  },
+  "GRADES": {
+    "HEADER": {
+      "TITLE": "Grades",
+      "SUBTITLE_TEACHER": "Enter your students' marks in the subjects you teach, and save the sheet in one go.",
+      "SUBTITLE_ADMIN": "Choose the term, class, section and subject to view and edit the grade sheet.",
+      "SUBTITLE_ASSISTANT": "Choose the term, class, section and subject to view the grade sheet."
+    },
+    "SELECTOR": {
+      "CLASS_AND_SUBJECT": "Class and subject",
+      "MY_SUBJECTS_HINT": "From your classes in the current term",
+      "TERM": "Academic term",
+      "CURRENT": "Current",
+      "CURRENT_SUFFIX": "(current)",
+      "CLASS": "Class",
+      "SECTION": "Section",
+      "SUBJECT": "Subject",
+      "NO_SUBJECTS": "No subjects are assigned to this section in this term.",
+      "TEACHER": "Teacher: {{name}}",
+      "LOCKED_HINT": "Save or undo your changed marks first to change the selection."
+    },
+    "SHEET": {
+      "LOADING": "Loading the grade sheet...",
+      "RETRY": "Try again",
+      "PASSING_MARK": "Passing mark {{mark}}",
+      "EMPTY": {
+        "SELECT_TITLE": "Choose a grade sheet",
+        "SELECT_MESSAGE_TEACHER": "Choose the class and subject above to see the students' marks.",
+        "SELECT_MESSAGE_STAFF": "Choose the term, class, section and subject above to see the students' marks.",
+        "NO_ASSIGNMENTS_TITLE": "You have no subjects in the current term",
+        "NO_ASSIGNMENTS_MESSAGE": "When the administration assigns you a subject in a section, its grade sheet appears here.",
+        "NO_STUDENTS_TITLE": "No students in this section",
+        "NO_STUDENTS_MESSAGE": "No students are enrolled in this subject right now."
+      },
+      "COUNTERS": {
+        "STUDENTS": "Students",
+        "PASSED": "Passed",
+        "FAILED": "Failed",
+        "INCOMPLETE": "Incomplete"
+      },
+      "NOTES": {
+        "NO_PLAN": "This subject has no plan yet, so marks can't be entered. The administration sets the plan (components, weights and passing mark).",
+        "NO_PLAN_ADMIN": "This subject has no plan yet, so marks can't be entered. Create the plan from Subjects → Subject plans.",
+        "INCOMPLETE_PLAN": "The subject plan's weights add up to {{weight}} of 100, so marks can't be entered until the administration completes the plan.",
+        "INCOMPLETE_PLAN_ADMIN": "The subject plan's weights add up to {{weight}} of 100, so marks can't be entered. Complete the weights from Subjects → Subject plans.",
+        "READ_ONLY": "View only: you can see the marks but not change them.",
+        "OPEN_EMPTY_TEACHER": "You haven't added an assessment under \"{{names}}\" yet. No student gets a total until you add at least one from the assessments page in My classes.",
+        "OPEN_EMPTY_STAFF": "The teacher hasn't added an assessment under \"{{names}}\" yet, so no student gets a total."
+      },
+      "TABLE": {
+        "STUDENT": "Student",
+        "FIXED_COMPONENT": "Fixed component of the subject plan",
+        "TOTAL": "Total",
+        "OUT_OF": "out of {{max}}",
+        "RESULT": "Result",
+        "NO_ASSESSMENT": "No assessment yet",
+        "TOTAL_AFTER_SAVE": "The total updates after you save the sheet"
+      },
+      "CELL": {
+        "RANGE_ERROR": "Enter a number from 0 to {{max}} (2 decimals at most)",
+        "CLEAR_ERROR": "A saved mark can't be removed, only changed"
+      },
+      "RESULT": {
+        "PASSED": "Passed",
+        "FAILED": "Failed",
+        "INCOMPLETE": "Incomplete"
+      },
+      "LEGEND": {
+        "CHANGED": "Changed, not saved",
+        "INVALID": "Not valid",
+        "FIXED": "Fixed component of the subject plan",
+        "MISSING": "No mark yet (not counted as zero)"
+      }
+    },
+    "SAVE_BAR": {
+      "CHANGES": "Unsaved marks: {{count}}",
+      "INVALID": "Marks that are not valid: {{count}} (fix them before saving)",
+      "HINT": "The totals and results update after saving.",
+      "RESET": "Undo",
+      "SAVE": "Save sheet",
+      "SAVING": "Saving..."
+    },
+    "SAVE": {
+      "SUCCESS": "The grade sheet was saved.",
+      "TOO_MANY": "You can't save more than {{max}} marks at once. Save some of them first."
+    },
+    "LEAVE": {
+      "TITLE": "Leave without saving?",
+      "MESSAGE": "You have {{count}} changed marks that are not saved. If you leave this page, these changes are lost.",
+      "CONFIRM": "Leave without saving"
+    }
   }
 }

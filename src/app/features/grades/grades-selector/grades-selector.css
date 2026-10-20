@@ -1,0 +1,179 @@
+/* The selector component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Selector Card
+   ================================ */
+
+.selector-card {
+  padding: 20px;
+  margin-bottom: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+.selector-fields {
+  display: grid;
+
+  /* Each field keeps its own height (a hint line under one field
+     does not stretch the others). */
+  align-items: start;
+
+  gap: 16px;
+}
+
+/* Admin / Assistant Principal: term, class, section, subject. */
+.selector-fields.staff {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Teacher: class and subject (wide) + the current term. */
+.selector-fields.teacher {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.selector-fields mat-form-field {
+  width: 100%;
+}
+
+/* Small spinner inside a field while its list is loading. */
+.selector-fields mat-spinner {
+  margin-inline-end: 12px;
+}
+
+
+/* ================================
+   Current Term (teacher, read-only)
+   Same height and border as an outline field.
+   ================================ */
+
+.term-box {
+  position: relative;
+
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 14px;
+
+  background: #f9fafb;
+
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+
+  box-sizing: border-box;
+}
+
+.term-box-label {
+  position: absolute;
+  top: -9px;
+  inset-inline-start: 10px;
+
+  padding: 0 4px;
+
+  font-size: 12px;
+
+  color: #6b7280;
+
+  background: #ffffff;
+}
+
+.term-box-value {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  min-width: 0;
+
+  color: #374151;
+}
+
+.term-box-value mat-icon {
+  flex-shrink: 0;
+
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+
+  color: #6b7280;
+}
+
+.term-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.current-tag {
+  flex-shrink: 0;
+
+  padding: 2px 8px;
+
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #2554a4;
+  background: #e8eefa;
+}
+
+
+/* ================================
+   Locked Hint
+   ================================ */
+
+.locked-hint {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin: 14px 0 0;
+
+  font-size: 13px;
+
+  color: #92400e;
+}
+
+.locked-hint mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 1100px) {
+
+  .selector-fields.staff {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+@media (max-width: 650px) {
+
+  .selector-fields.staff,
+  .selector-fields.teacher {
+    grid-template-columns: 1fr;
+  }
+
+}

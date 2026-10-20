@@ -1,0 +1,662 @@
+/* The sheet component behaves like a block inside the parent page. */
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Table Card
+   ================================ */
+
+.table-card {
+  width: 100%;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Sheet Toolbar: title + counters
+   ================================ */
+
+.sheet-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 16px 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sheet-title {
+  min-width: 0;
+}
+
+.sheet-title h2 {
+  margin: 0 0 6px;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.sheet-title p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+
+  margin: 0;
+
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+.dot {
+  color: #9ca3af;
+}
+
+/* Plan state (same colors as the Subjects page badges) */
+.plan-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 2px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.plan-badge mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+.plan-badge.ok {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.plan-badge.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.plan-badge.neutral {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.sheet-counters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.counter {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.counter mat-icon {
+  width: 17px;
+  height: 17px;
+
+  font-size: 17px;
+}
+
+.counter.total {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.counter.passed {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.counter.failed {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.counter.incomplete {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+/* ================================
+   Notes
+   ================================ */
+
+.notes {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  padding: 14px 20px 0;
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin: 0;
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.note mat-icon {
+  flex-shrink: 0;
+
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+}
+
+.note.info {
+  background: #e6f1fb;
+  color: #0c447c;
+}
+
+.note.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+/* ================================
+   Table
+   A plain table (not mat-table): the header has two rows
+   and the component cells span their assessments.
+   ================================ */
+
+.table-wrapper {
+  width: 100%;
+
+  margin-top: 14px;
+
+  overflow-x: auto;
+}
+
+.grades-table {
+  width: 100%;
+  min-width: 640px;
+
+  border-collapse: separate;
+  border-spacing: 0;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.grades-table th,
+.grades-table td {
+  padding: 8px 10px;
+
+  text-align: center;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.grades-table th {
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #374151;
+
+  background: #f8fafc;
+}
+
+.grades-table td {
+  height: 56px;
+
+  font-size: 14px;
+
+  color: #374151;
+
+  background: #ffffff;
+}
+
+.grades-table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+/* The first row of the header has no line under the component bands. */
+.component-row .component-head {
+  padding: 0;
+
+  border-bottom: 0;
+}
+
+
+/* ----- Student column (stays visible while scrolling sideways) ----- */
+
+.student-col {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+
+  min-width: 220px;
+
+  text-align: start !important;
+
+  padding-inline-start: 20px !important;
+
+  border-inline-end: 1px solid #e5e7eb;
+}
+
+th.student-col {
+  z-index: 2;
+}
+
+.student-name {
+  display: block;
+
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.student-number {
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+
+/* ----- Component band (the component's color on top) ----- */
+
+.component-band {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 9px 10px;
+
+  border-top: 3px solid var(--component-color);
+
+  background: color-mix(in srgb, var(--component-color) 10%, #ffffff);
+}
+
+.component-weight {
+  font-weight: 400;
+
+  color: #6b7280;
+}
+
+.fixed-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+
+  color: #6b7280;
+}
+
+
+/* ----- Assessment heads ----- */
+
+.assessment-head {
+  font-weight: 500 !important;
+}
+
+.assessment-name {
+  display: block;
+}
+
+.grades-table .sub {
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 11px;
+  font-weight: 400;
+
+  color: #6b7280;
+}
+
+.empty-head {
+  max-width: 140px;
+
+  font-size: 12px !important;
+  font-weight: 400 !important;
+
+  color: #6b7280 !important;
+
+  white-space: normal !important;
+}
+
+
+/* ----- Mark cells ----- */
+
+.mark-input {
+  width: 68px;
+  height: 36px;
+
+  padding: 0 6px;
+
+  text-align: center;
+
+  font: inherit;
+  font-size: 14px;
+
+  color: #111827;
+
+  background: #ffffff;
+
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+
+  box-sizing: border-box;
+
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mark-input:hover {
+  border-color: #9ca3af;
+}
+
+.mark-input:focus {
+  outline: 2px solid #2554a4;
+  outline-offset: 0;
+
+  border-color: #2554a4;
+}
+
+.mark-input:disabled {
+  color: #6b7280;
+
+  background: #f9fafb;
+}
+
+/* Typed and not saved yet. */
+.mark-input.changed {
+  background: #fff7d6;
+
+  border-color: #e3b448;
+}
+
+/* Cannot be saved (out of range, not a number, or a cleared saved mark). */
+.mark-input.invalid {
+  color: #991b1b;
+
+  background: #fef2f2;
+
+  border-color: #dc2626;
+}
+
+.missing {
+  color: #9ca3af;
+}
+
+
+/* ----- Total and result ----- */
+
+.total-col {
+  min-width: 80px;
+}
+
+td.total-col {
+  font-size: 15px;
+  font-weight: 700;
+
+  color: #111827;
+}
+
+/* The student has unsaved marks: this total is from the saved marks. */
+td.total-col.stale {
+  color: #9ca3af;
+}
+
+.result-col {
+  min-width: 100px;
+
+  padding-inline-end: 20px !important;
+}
+
+.result-badge {
+  display: inline-block;
+
+  padding: 4px 12px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.result-badge.passed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.result-badge.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.result-badge.incomplete {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+/* ================================
+   Legend
+   ================================ */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 8px 18px;
+
+  padding: 12px 20px 16px;
+
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+.legend > span {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.legend mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+.swatch {
+  display: inline-block;
+
+  width: 14px;
+  height: 14px;
+
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+.swatch.changed {
+  background: #fff7d6;
+  border-color: #e3b448;
+}
+
+.swatch.invalid {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+
+
+/* ================================
+   No students (inside the card)
+   ================================ */
+
+.no-students {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 36px 20px;
+
+  text-align: center;
+}
+
+.no-students mat-icon {
+  width: 44px;
+  height: 44px;
+
+  font-size: 44px;
+
+  color: #9ca3af;
+}
+
+.no-students h3 {
+  margin: 0;
+
+  font-size: 17px;
+
+  color: #111827;
+}
+
+.no-students p {
+  margin: 0;
+
+  font-size: 14px;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   State Card (loading / error / empty)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+}
+
+.state-card > mat-icon {
+  width: 48px;
+  height: 48px;
+
+  font-size: 48px;
+
+  margin-bottom: 4px;
+
+  color: #9ca3af;
+}
+
+.state-card.error-state > mat-icon {
+  color: #dc2626;
+}
+
+.state-card h3 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.state-card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.state-card button {
+  margin-top: 8px;
+}
+
+
+/* ================================
+   Reduced Motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .mark-input {
+    transition: none;
+  }
+
+}

@@ -1,0 +1,211 @@
+/* The bar is sticky on the host itself:
+   the host is a direct child of .grades-page in the parent page,
+   so it stays visible at the bottom while scrolling the sheet. */
+:host {
+  display: block;
+
+  position: sticky;
+  bottom: 16px;
+
+  z-index: 3;
+
+  margin-top: 16px;
+}
+
+
+/* ================================
+   Save Bar
+   Same warm colors as the yellow "changed" cells,
+   so the bar and the cells read as one thing.
+   ================================ */
+
+.save-bar {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 12px 16px;
+
+  background: #fef3c7;
+
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 20px rgba(180, 83, 9, 0.16);
+
+  box-sizing: border-box;
+
+  /* The bar comes up gently after the first change. */
+  animation: save-bar-in 0.2s ease;
+
+
+  /* ----- Buttons -----
+     The Angular Material buttons read their colors
+     from these variables. */
+
+  /* Undo: brown text with an orange border. */
+  --mat-button-outlined-label-text-color: #92400e;
+  --mat-button-outlined-outline-color: #f59e0b;
+  --mat-button-outlined-state-layer-color: #92400e;
+  --mat-button-outlined-ripple-color: rgba(146, 64, 14, 0.12);
+
+  --mat-button-outlined-disabled-label-text-color: rgba(146, 64, 14, 0.45);
+  --mat-button-outlined-disabled-outline-color: rgba(146, 64, 14, 0.2);
+
+  /* Save: dark orange button with white text (the main action). */
+  --mat-button-filled-container-color: #b45309;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-state-layer-color: #ffffff;
+  --mat-button-filled-ripple-color: rgba(255, 255, 255, 0.2);
+
+  --mat-button-filled-disabled-container-color: rgba(146, 64, 14, 0.14);
+  --mat-button-filled-disabled-label-text-color: rgba(146, 64, 14, 0.5);
+
+  /* The spinner inside the Save button. */
+  --mat-progress-spinner-active-indicator-color: #92400e;
+}
+
+@keyframes save-bar-in {
+
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+}
+
+
+/* ================================
+   Icon
+   ================================ */
+
+.save-bar-icon {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  color: #b45309;
+
+  background: #ffffff;
+
+  border-radius: 10px;
+}
+
+.save-bar-icon mat-icon {
+  width: 22px;
+  height: 22px;
+
+  font-size: 22px;
+}
+
+
+/* ================================
+   Text
+   ================================ */
+
+.save-bar-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.save-bar-title {
+  font-size: 15px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.save-bar-hint {
+  font-size: 13px;
+
+  color: #92400e;
+}
+
+.save-bar-error {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #991b1b;
+}
+
+.save-bar-error mat-icon {
+  width: 17px;
+  height: 17px;
+
+  font-size: 17px;
+}
+
+
+/* ================================
+   Actions
+   ================================ */
+
+.save-bar-actions {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.save-bar-actions mat-spinner {
+  display: inline-block;
+
+  margin-inline-end: 6px;
+}
+
+
+/* ================================
+   Reduced Motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .save-bar {
+    animation: none;
+  }
+
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  :host {
+    bottom: 12px;
+  }
+
+  /* The buttons move to their own line under the text. */
+  .save-bar {
+    flex-wrap: wrap;
+  }
+
+  .save-bar-actions {
+    flex-basis: 100%;
+  }
+
+  .save-bar-actions > button {
+    flex: 1;
+  }
+
+}

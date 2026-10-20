@@ -1,0 +1,63 @@
+<!-- Save Bar: stays at the bottom of the screen while scrolling the sheet. -->
+<div class="save-bar">
+
+  <!-- Icon -->
+  <span class="save-bar-icon">
+    <mat-icon>edit_note</mat-icon>
+  </span>
+
+  <!-- Changes -->
+  <div class="save-bar-text">
+
+    <span class="save-bar-title">
+      {{ 'GRADES.SAVE_BAR.CHANGES' | translate: { count: stats().changes } }}
+    </span>
+
+    @if (stats().invalid > 0) {
+      <span class="save-bar-error">
+        <mat-icon>error_outline</mat-icon>
+        {{ 'GRADES.SAVE_BAR.INVALID' | translate: { count: stats().invalid } }}
+      </span>
+    } @else {
+      <span class="save-bar-hint">
+        {{ 'GRADES.SAVE_BAR.HINT' | translate }}
+      </span>
+    }
+
+  </div>
+
+  <!-- Undo + Save -->
+  <div class="save-bar-actions">
+
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSaving()"
+      (click)="reset.emit()"
+    >
+      <mat-icon>undo</mat-icon>
+      {{ 'GRADES.SAVE_BAR.RESET' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="button"
+      [disabled]="isSaving() || stats().invalid > 0"
+      (click)="save.emit()"
+    >
+      @if (isSaving()) {
+        <mat-spinner diameter="18"></mat-spinner>
+      } @else {
+        <mat-icon>save</mat-icon>
+      }
+
+      {{
+        (isSaving()
+          ? 'GRADES.SAVE_BAR.SAVING'
+          : 'GRADES.SAVE_BAR.SAVE') | translate
+      }}
+    </button>
+
+  </div>
+
+</div>

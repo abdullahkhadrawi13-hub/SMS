@@ -34,9 +34,14 @@ export class Navbar {
   private readonly dialog = inject(MatDialog);
 
   logout(): void {
-    // يحذف رمز الدخول وبيانات المستخدم معًا
-    this.auth.logout();
-    this.router.navigate(['/login']);
+    // الانتقال إلى صفحة الدخول أولًا، ثم حذف رمز الدخول وبيانات المستخدم معًا.
+    // بهذا الترتيب: إذا سألت الصفحة الحالية "المغادرة دون حفظ؟" (مثل كشف العلامات)
+    // واختار المستخدم البقاء، يبقى مسجَّل الدخول ولا يضيع شيء.
+    this.router.navigate(['/login']).then(navigated => {
+      if (navigated) {
+        this.auth.logout();
+      }
+    });
   }
 
   openChangePassword(): void {

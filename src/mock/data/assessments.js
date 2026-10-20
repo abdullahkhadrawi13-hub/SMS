@@ -42,8 +42,9 @@ const teachers = require('./teachers');
 // The teacher who logs in as "teacher" (data/users.js).
 const TEACHER = (teachers.find(t => t.loginId === 'teacher') || {}).teacherId;
 
-// Term 3 is the current term (data/academic-terms.js).
-const CURRENT_TERM = 3;
+// Term 5 is the current term (First Term 2026/2027, data/academic-terms.js),
+// the same term as data/teacher-assignments.js and data/subject-plans.js.
+const CURRENT_TERM = 5;
 
 
 // The open component of the plan a section follows (the first one, or the

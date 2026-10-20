@@ -16,6 +16,7 @@ const subjectsRoutes = require('./routes/subjects.routes');
 const teacherAssignmentsRoutes = require('./routes/teacher-assignments.routes');
 const subjectPlansRoutes = require('./routes/subject-plans.routes');
 const assessmentsRoutes = require('./routes/assessments.routes');
+const studentGradesRoutes = require('./routes/student-grades.routes');
 
 const PORT =3000;
 
@@ -177,6 +178,15 @@ if (academicTermsRoutes(req, res)) {
   // =========================
 
   if (assessmentsRoutes(req, res)) {
+    return;
+  }
+
+
+  // =========================
+  // Student Grades API
+  // =========================
+
+  if (studentGradesRoutes(req, res)) {
     return;
   }
 

@@ -1,0 +1,56 @@
+<div class="grades-page">
+
+  <!-- Page Header -->
+  <app-grades-header [subtitleKey]="subtitleKey()"></app-grades-header>
+
+
+  <!-- Which sheet: teacher (class and subject) or staff (term → class → section → subject) -->
+  <app-grades-selector
+    [mode]="mode()"
+    [terms]="terms()"
+    [termsLoading]="termsLoading()"
+    [termId]="termId()"
+    [classes]="classes()"
+    [classId]="classId()"
+    [sections]="sections()"
+    [sectionsLoading]="sectionsLoading()"
+    [sectionId]="sectionId()"
+    [assignments]="assignmentOptions()"
+    [assignmentsLoading]="assignmentsLoading()"
+    [assignmentId]="assignmentId()"
+    [currentTermName]="currentTermName()"
+    [locked]="hasChanges()"
+    (termChange)="onTermChange($event)"
+    (classChange)="onClassChange($event)"
+    (sectionChange)="onSectionChange($event)"
+    (assignmentChange)="onAssignmentChange($event)"
+  ></app-grades-selector>
+
+
+  <!-- The sheet (loading / error / empty / table) -->
+  <app-grades-sheet
+    [sheet]="sheet()"
+    [draft]="draft()"
+    [editable]="editable()"
+    [viewer]="viewer()"
+    [termName]="sheetTermName()"
+    [loading]="sheetLoading()"
+    [saving]="saving()"
+    [errorMessage]="errorMessage()"
+    [emptyState]="emptyState()"
+    (markChange)="onMarkChange($event)"
+    (retry)="retry()"
+  ></app-grades-sheet>
+
+
+  <!-- Unsaved marks: Undo / Save sheet -->
+  @if (editable() && hasChanges()) {
+    <app-grades-save-bar
+      [stats]="draftStats()"
+      [isSaving]="saving()"
+      (reset)="resetChanges()"
+      (save)="saveSheet()"
+    ></app-grades-save-bar>
+  }
+
+</div>

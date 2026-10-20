@@ -649,3 +649,7 @@ async function handleAssessments(req, res, pathname) {
 
 
 module.exports = assessmentsRoutes;
+
+// Used by the grades mock (routes/student-grades.routes.js), so the grade
+// sheet shows the same fixed assessments as the assessments page.
+module.exports.syncWithPlan = syncWithPlan;

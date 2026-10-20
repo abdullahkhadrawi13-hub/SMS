@@ -1,0 +1,22 @@
+/* ================================
+   Grades Page
+   ================================ */
+
+.grades-page {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .grades-page {
+    padding: 16px;
+  }
+
+}

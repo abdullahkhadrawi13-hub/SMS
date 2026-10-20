@@ -1,0 +1,193 @@
+<div class="selector-card">
+
+  <!-- ===== Teacher: class and subject + current term ===== -->
+  @if (mode() === 'teacher') {
+
+    <div class="selector-fields teacher">
+
+      <!-- The teacher's own subjects in the current term -->
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <mat-label>
+          {{ 'GRADES.SELECTOR.CLASS_AND_SUBJECT' | translate }}
+        </mat-label>
+
+        <mat-select
+          [value]="assignmentId()"
+          [disabled]="locked() || assignmentsLoading()"
+          (selectionChange)="assignmentChange.emit($event.value)"
+        >
+          @for (option of assignments(); track option.teacherAssignmentId) {
+            <mat-option [value]="option.teacherAssignmentId">
+              {{ option.label }}
+            </mat-option>
+          }
+        </mat-select>
+
+        @if (assignmentsLoading()) {
+          <mat-spinner matSuffix diameter="18"></mat-spinner>
+        }
+
+        <mat-hint>
+          {{ 'GRADES.SELECTOR.MY_SUBJECTS_HINT' | translate }}
+        </mat-hint>
+
+      </mat-form-field>
+
+
+      <!-- Current term (read-only: the teacher works in the current term) -->
+      <div class="term-box">
+
+        <span class="term-box-label">
+          {{ 'GRADES.SELECTOR.TERM' | translate }}
+        </span>
+
+        <span class="term-box-value">
+          <mat-icon>event</mat-icon>
+
+          <span class="term-name">{{ currentTermName() || '—' }}</span>
+
+          <span class="current-tag">
+            {{ 'GRADES.SELECTOR.CURRENT' | translate }}
+          </span>
+        </span>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- ===== Admin / Assistant Principal: term → class → section → subject ===== -->
+  @else {
+
+    <div class="selector-fields staff">
+
+      <!-- Academic term (the current term is selected by default) -->
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <mat-label>
+          {{ 'GRADES.SELECTOR.TERM' | translate }}
+        </mat-label>
+
+        <mat-select
+          [value]="termId()"
+          [disabled]="locked() || termsLoading()"
+          (selectionChange)="termChange.emit($event.value)"
+        >
+          @for (term of terms(); track term.academicTermId) {
+            <mat-option [value]="term.academicTermId">
+              {{ getTermLabel(term) }}
+
+              @if (term.isCurrent) {
+                {{ 'GRADES.SELECTOR.CURRENT_SUFFIX' | translate }}
+              }
+            </mat-option>
+          }
+        </mat-select>
+
+        @if (termsLoading()) {
+          <mat-spinner matSuffix diameter="18"></mat-spinner>
+        }
+
+      </mat-form-field>
+
+
+      <!-- Class (active only) -->
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <mat-label>
+          {{ 'GRADES.SELECTOR.CLASS' | translate }}
+        </mat-label>
+
+        <mat-select
+          [value]="classId()"
+          [disabled]="locked() || termId() === null"
+          (selectionChange)="classChange.emit($event.value)"
+        >
+          @for (c of classes(); track c.schoolClassId) {
+            <mat-option [value]="c.schoolClassId">
+              {{ getClassName(c) }}
+            </mat-option>
+          }
+        </mat-select>
+
+      </mat-form-field>
+
+
+      <!-- Section (disabled until a class is chosen) -->
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <mat-label>
+          {{ 'GRADES.SELECTOR.SECTION' | translate }}
+        </mat-label>
+
+        <mat-select
+          [value]="sectionId()"
+          [disabled]="locked() || classId() === null || sectionsLoading()"
+          (selectionChange)="sectionChange.emit($event.value)"
+        >
+          @for (s of sections(); track s.sectionId) {
+            <mat-option [value]="s.sectionId">
+              {{ getSectionName(s) }}
+            </mat-option>
+          }
+        </mat-select>
+
+        @if (sectionsLoading()) {
+          <mat-spinner matSuffix diameter="18"></mat-spinner>
+        }
+
+      </mat-form-field>
+
+
+      <!-- Subject (the subjects taught in the section; disabled until a section is chosen) -->
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <mat-label>
+          {{ 'GRADES.SELECTOR.SUBJECT' | translate }}
+        </mat-label>
+
+        <mat-select
+          [value]="assignmentId()"
+          [disabled]="locked() || sectionId() === null || assignmentsLoading() || assignments().length === 0"
+          (selectionChange)="assignmentChange.emit($event.value)"
+        >
+          @for (option of assignments(); track option.teacherAssignmentId) {
+            <mat-option [value]="option.teacherAssignmentId">
+              {{ option.label }}
+            </mat-option>
+          }
+        </mat-select>
+
+        @if (assignmentsLoading()) {
+          <mat-spinner matSuffix diameter="18"></mat-spinner>
+        }
+
+        @if (noSubjects()) {
+          <mat-hint>
+            {{ 'GRADES.SELECTOR.NO_SUBJECTS' | translate }}
+          </mat-hint>
+        } @else if (selectedTeacherName()) {
+          <mat-hint>
+            {{ 'GRADES.SELECTOR.TEACHER' | translate: { name: selectedTeacherName() } }}
+          </mat-hint>
+        }
+
+      </mat-form-field>
+
+    </div>
+
+  }
+
+
+  <!-- Marks not saved yet: the fields cannot change -->
+  @if (locked()) {
+    <p class="locked-hint">
+      <mat-icon>lock</mat-icon>
+      <span>{{ 'GRADES.SELECTOR.LOCKED_HINT' | translate }}</span>
+    </p>
+  }
+
+</div>
