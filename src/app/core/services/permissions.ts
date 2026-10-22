@@ -126,4 +126,10 @@ export class Permissions {
     () => this.isAdmin()
   );
 
+  // Roll students over into the current term (Settings → Student rollover):
+  // Admin only (API Reference, section 13). Anyone else gets 403.
+  readonly canManageRollover = computed(
+    () => this.isAdmin()
+  );
+
 }

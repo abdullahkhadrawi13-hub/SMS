@@ -1,0 +1,138 @@
+:host {
+  display: block;
+}
+
+
+/* ================================
+   From → To
+   ================================ */
+
+.route {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+
+  gap: 14px;
+}
+
+.route-box {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  padding: 18px 18px 6px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  box-sizing: border-box;
+}
+
+.route-box mat-form-field {
+  width: 100%;
+}
+
+
+/* ================================
+   To: the current term (teal, like the current term banner)
+   ================================ */
+
+.route-box.to {
+  justify-content: center;
+
+  padding-bottom: 18px;
+
+  background: #0f5f5a;
+  color: #ffffff;
+
+  border-color: #0f5f5a;
+}
+
+.route-label {
+  font-size: 13px;
+
+  color: #ccfbf1;
+}
+
+.route-term {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.kind-chip {
+  align-self: flex-start;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 3px 10px;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.kind-chip mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+
+  color: #99f6e4;
+}
+
+
+/* ================================
+   Arrow
+   ================================ */
+
+.route-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #9ca3af;
+}
+
+.route-arrow mat-icon {
+  width: 28px;
+  height: 28px;
+
+  font-size: 28px;
+}
+
+/* Arabic (RTL): the arrow points to the left. */
+:host-context([dir='rtl']) .route-arrow mat-icon {
+  transform: scaleX(-1);
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .route {
+    grid-template-columns: 1fr;
+
+    gap: 8px;
+  }
+
+  /* One column: the arrow points down. */
+  .route-arrow mat-icon,
+  :host-context([dir='rtl']) .route-arrow mat-icon {
+    transform: rotate(90deg);
+  }
+
+}

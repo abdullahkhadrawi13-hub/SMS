@@ -1,0 +1,80 @@
+<div class="open-terms">
+
+  <!-- Why the terms must be closed -->
+  <div class="info-box">
+    <mat-icon>info</mat-icon>
+
+    <span>
+      {{ 'ROLLOVER.TERMS.INFO' | translate: { year: fromYearName() } }}
+    </span>
+  </div>
+
+
+  <!-- The terms of the old year -->
+  <div class="term-list">
+
+    @for (row of rows(); track row.academicTermId) {
+
+      <div class="term-row">
+
+        <span class="term-name">
+          {{ row.name }} · <bdi dir="ltr">{{ fromYearName() }}</bdi>
+        </span>
+
+        @if (row.isOpen) {
+          <span class="grades-chip open">
+            <mat-icon>lock_open</mat-icon>
+            {{ 'ROLLOVER.TERMS.OPEN' | translate }}
+          </span>
+        } @else {
+          <span class="grades-chip closed">
+            <mat-icon>event_busy</mat-icon>
+            {{ 'ROLLOVER.TERMS.CLOSED' | translate }}
+          </span>
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+
+  @if (openTerms().length > 0) {
+
+    <!-- Close them on the academic years page, then check again -->
+    <div class="actions">
+
+      <a
+        mat-stroked-button
+        routerLink="/settings/academic-years"
+      >
+        <mat-icon>calendar_month</mat-icon>
+        {{ 'ROLLOVER.TERMS.GO_TO_TERMS' | translate }}
+      </a>
+
+      <button
+        mat-button
+        type="button"
+        [disabled]="isChecking()"
+        (click)="recheck.emit()"
+      >
+        <mat-icon>refresh</mat-icon>
+        {{ 'ROLLOVER.TERMS.RECHECK' | translate }}
+      </button>
+
+    </div>
+
+  } @else {
+
+    <div class="all-closed">
+      <mat-icon>task_alt</mat-icon>
+
+      <strong>{{ 'ROLLOVER.TERMS.ALL_CLOSED_TITLE' | translate }}</strong>
+
+      <span>{{ 'ROLLOVER.TERMS.ALL_CLOSED_TEXT' | translate }}</span>
+    </div>
+
+  }
+
+</div>

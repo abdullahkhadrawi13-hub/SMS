@@ -35,6 +35,18 @@ export const SETTINGS_ROUTES: Routes = [
     loadComponent: () =>
       import('./attendance-officer/attendance-officer-page/attendance-officer-page')
         .then(m => m.AttendanceOfficerPage)
+  },
+
+  // /settings/rollover : move students into the current term (Admin only)
+  {
+    path: 'rollover',
+    canActivate: [roleGuard],
+    data: {
+      roles: [UserRole.Admin]
+    },
+    loadComponent: () =>
+      import('./rollover/rollover-page/rollover-page')
+        .then(m => m.RolloverPage)
   }
 
 ];

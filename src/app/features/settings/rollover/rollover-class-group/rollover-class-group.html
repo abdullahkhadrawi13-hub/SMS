@@ -1,0 +1,223 @@
+@if (rows().length > 0) {
+
+  <section class="panel" [class.open]="isOpen()">
+
+    <!-- Header: class → destination, and the counts of the class -->
+    <button
+      type="button"
+      class="panel-head"
+      [attr.aria-expanded]="isOpen()"
+      (click)="toggle()"
+    >
+
+      <span class="panel-title">
+        <span>{{ className() }}</span>
+
+        <mat-icon class="title-arrow">arrow_forward</mat-icon>
+
+        @if (group().isGraduation) {
+          <span>{{ 'ROLLOVER.PREVIEW.GRADUATION' | translate }}</span>
+        } @else if (!isNewYear()) {
+          <span>{{ 'ROLLOVER.PREVIEW.SAME_CLASS' | translate }}</span>
+        } @else {
+          <span>{{ targetName() || '—' }}</span>
+        }
+      </span>
+
+      @if (group().isGraduation) {
+        <span class="grad-badge">
+          <mat-icon>workspace_premium</mat-icon>
+          {{ 'ROLLOVER.PREVIEW.GRADUATION_CLASS' | translate }}
+        </span>
+      }
+
+      <span class="panel-counts">
+        @for (item of headerCounts(); track item.suggestion) {
+          <span
+            class="mini"
+            [class]="'tone-' + suggestionStyle[item.suggestion].tone"
+          >
+            {{ suggestionStyle[item.suggestion].labelKey | translate }}
+            <span class="num">{{ item.count }}</span>
+          </span>
+        }
+      </span>
+
+      <mat-icon class="chevron">expand_more</mat-icon>
+
+    </button>
+
+
+    <!-- Students -->
+    @if (isOpen()) {
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.STUDENT' | translate }}</th>
+              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.FROM' | translate }}</th>
+              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.SUGGESTION' | translate }}</th>
+              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.SUBJECTS' | translate }}</th>
+              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.DECISION' | translate }}</th>
+              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.TO' | translate }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (student of rows(); track student.studentId) {
+
+              @let decision = decisionOf(student);
+              @let style = suggestionStyle[student.suggestion];
+              @let to = destination(student);
+
+              <tr [class.needs]="canDecide(student) && decision === null">
+
+                <!-- Student -->
+                <td>
+                  <div class="student-name">{{ studentName(student) }}</div>
+                  <bdi class="student-number" dir="ltr">{{ student.studentNumber }}</bdi>
+                </td>
+
+                <!-- From -->
+                <td>
+                  <div class="place">
+                    <span class="place-class">{{ fromClass(student) }}</span>
+                    <span class="place-section">
+                      {{ 'ROLLOVER.PREVIEW.SECTION' | translate: { name: fromSection(student) } }}
+                    </span>
+                  </div>
+                </td>
+
+                <!-- Suggestion -->
+                <td>
+                  <span class="badge" [class]="'tone-' + style.tone">
+                    <mat-icon>{{ style.icon }}</mat-icon>
+                    {{ style.labelKey | translate }}
+                  </span>
+                </td>
+
+                <!-- Failed / missing subjects -->
+                <td>
+                  @if (student.failedSubjects.length || student.missingGradeSubjects.length) {
+
+                    <div class="subjects">
+
+                      @for (subject of student.failedSubjects; track subject.subjectId) {
+                        <span class="subject">
+                          {{ subjectName(subject) }}
+                          <span class="mark">{{ subject.average }}</span>
+                          <span class="pass">
+                            {{ 'ROLLOVER.PREVIEW.PASSING' | translate: { mark: subject.passingMark } }}
+                          </span>
+                        </span>
+                      }
+
+                      @for (subject of student.missingGradeSubjects; track subject.subjectId) {
+                        <span class="subject missing">
+                          <mat-icon>hourglass_empty</mat-icon>
+                          {{ 'ROLLOVER.PREVIEW.MISSING_MARK' | translate: { subject: subjectName(subject) } }}
+                        </span>
+                      }
+
+                    </div>
+
+                  } @else if (student.suggestion === Suggestion.NeedsDecision && note(student)) {
+                    <span class="note">{{ note(student) }}</span>
+                  } @else {
+                    <span class="dash">—</span>
+                  }
+                </td>
+
+                <!-- Decision (new year only) -->
+                <td>
+                  @if (canDecide(student)) {
+
+                    <mat-button-toggle-group
+                      class="decision"
+                      [class.unset]="decision === null"
+                      [value]="decision"
+                      [attr.aria-label]="'ROLLOVER.DECISION.LABEL' | translate: { name: studentName(student) }"
+                      (change)="onDecision(student, $event.value)"
+                    >
+                      <mat-button-toggle
+                        value="promote"
+                        [class.is-promote]="decision === 'promote' && !graduates(student)"
+                        [class.is-graduate]="decision === 'promote' && graduates(student)"
+                      >
+                        {{ promoteLabel(student) | translate }}
+                      </mat-button-toggle>
+
+                      <mat-button-toggle
+                        value="repeat"
+                        [class.is-repeat]="decision === 'repeat'"
+                      >
+                        {{ 'ROLLOVER.DECISION.REPEAT' | translate }}
+                      </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    @if (decision === null) {
+                      <span class="must">
+                        {{ 'ROLLOVER.DECISION.REQUIRED' | translate }}
+                      </span>
+                    }
+
+                  } @else if (student.suggestion === Suggestion.AlreadyPlaced) {
+                    <span class="note">{{ 'ROLLOVER.PREVIEW.NO_CHANGE' | translate }}</span>
+                  } @else {
+                    <span class="dash">—</span>
+                  }
+                </td>
+
+                <!-- To -->
+                <td>
+                  @switch (to.kind) {
+
+                    @case ('place') {
+                      <div class="place" [class.moved]="to.moved">
+                        <span class="place-class">{{ to.className }}</span>
+                        <span class="place-section">
+                          {{ 'ROLLOVER.PREVIEW.SECTION' | translate: { name: to.sectionName } }}
+                          @if (to.repeats) {
+                            · {{ 'ROLLOVER.PREVIEW.REPEATS_YEAR' | translate }}
+                          }
+                        </span>
+                      </div>
+                    }
+
+                    @case ('graduate') {
+                      <span class="badge tone-gold">
+                        <mat-icon>school</mat-icon>
+                        {{ 'ROLLOVER.PREVIEW.GRADUATE' | translate }}
+                      </span>
+                    }
+
+                    @case ('pending') {
+                      <span class="dash">{{ 'ROLLOVER.PREVIEW.WAITING' | translate }}</span>
+                    }
+
+                    @case ('none') {
+                      <span class="note">{{ to.note || ('ROLLOVER.SUGGESTION.NO_TARGET' | translate) }}</span>
+                    }
+
+                  }
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </section>
+
+}

@@ -1,0 +1,184 @@
+:host {
+  display: block;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+
+/* ================================
+   The rule behind "Repeat"
+   ================================ */
+
+.threshold {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin: 0;
+
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+.threshold mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  color: #9ca3af;
+}
+
+
+/* ================================
+   Filter chips (same look as a Material filter chip)
+   ================================ */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  height: 32px;
+
+  padding: 0 12px;
+
+  font: inherit;
+  font-weight: 500;
+
+  color: #44474e;
+  background: #ffffff;
+
+  border: 1px solid #c4c6d0;
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease;
+}
+
+.chip:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.chip:focus-visible {
+  outline: 2px solid #2554a4;
+  outline-offset: 2px;
+}
+
+.chip.selected {
+  color: #001b3e;
+  background: #d7e3ff;
+
+  border-color: #d7e3ff;
+}
+
+.chip:disabled {
+  opacity: 0.45;
+
+  cursor: default;
+}
+
+.chip mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+.count {
+  color: #111827;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+}
+
+/* The swatch color of each suggestion (the badge tones of the table). */
+.swatch.tone-blue     { background: #2554a4; }
+.swatch.tone-green    { background: #047857; }
+.swatch.tone-orange   { background: #b45309; }
+.swatch.tone-gold     { background: #c9a227; }
+.swatch.tone-red      { background: #b91c1c; }
+.swatch.tone-grey     { background: #9ca3af; }
+.swatch.tone-dark-red { background: #7f1d1d; }
+
+
+/* ================================
+   Groups
+   ================================ */
+
+.groups {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+/* ================================
+   Empty
+   ================================ */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 30px;
+
+  text-align: center;
+
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+}
+
+.empty mat-icon {
+  width: 40px;
+  height: 40px;
+
+  font-size: 40px;
+
+  color: #9ca3af;
+}
+
+.empty p {
+  margin: 0;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Reduced Motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .chip {
+    transition: none;
+  }
+
+}

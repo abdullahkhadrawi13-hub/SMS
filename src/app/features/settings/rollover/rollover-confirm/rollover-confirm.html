@@ -1,0 +1,169 @@
+<form class="confirm" (submit)="$event.preventDefault(); submit()">
+
+  <div class="confirm-grid">
+
+    <!-- What will happen (from the preview and the Admin's decisions) -->
+    <section class="card">
+
+      <h3>{{ 'ROLLOVER.CONFIRM.SUMMARY_TITLE' | translate }}</h3>
+
+      <div class="tiles">
+        @for (tile of tiles(); track tile.labelKey) {
+          <div class="tile" [class]="'tone-' + tile.tone">
+            <strong>{{ tile.count }}</strong>
+            <span>{{ tile.labelKey | translate }}</span>
+          </div>
+        }
+      </div>
+
+      @if (tally().noTarget > 0) {
+        <p class="hint">
+          {{ 'ROLLOVER.CONFIRM.NO_TARGET_HINT' | translate }}
+        </p>
+      }
+
+    </section>
+
+
+    <!-- The guards -->
+    <section class="card">
+
+      @if (isNewYear()) {
+
+        <!-- A new-year rollover cannot be undone -->
+        <div class="danger-box">
+          <mat-icon>warning</mat-icon>
+
+          <span>
+            <strong>{{ 'ROLLOVER.CONFIRM.WARNING_TITLE' | translate }}</strong>
+            {{ 'ROLLOVER.CONFIRM.WARNING_TEXT' | translate: { year: fromYearName() } }}
+          </span>
+        </div>
+
+        <!-- Type the year name -->
+        <mat-form-field
+          appearance="outline"
+          [class.matched]="yearName() && yearMatches()"
+        >
+          <mat-label>{{ 'ROLLOVER.CONFIRM.YEAR_LABEL' | translate }}</mat-label>
+
+          <input
+            matInput
+            id="rollover-year-name"
+            dir="ltr"
+            autocomplete="off"
+            [placeholder]="fromYearName() ?? ''"
+            [value]="yearName()"
+            (input)="onYearInput($event)"
+          />
+
+          @if (yearName() && !yearMatches()) {
+            <mat-hint class="field-error">
+              {{ 'ROLLOVER.CONFIRM.YEAR_MISMATCH' | translate }}
+            </mat-hint>
+          } @else if (yearName() && yearMatches()) {
+            <mat-hint class="field-ok">
+              {{ 'ROLLOVER.CONFIRM.YEAR_MATCH' | translate }}
+            </mat-hint>
+          } @else {
+            <mat-hint>
+              {{ 'ROLLOVER.CONFIRM.YEAR_HINT' | translate: { year: fromYearName() } }}
+            </mat-hint>
+          }
+        </mat-form-field>
+
+      }
+
+      <!-- The Admin's own password -->
+      <mat-form-field
+        appearance="outline"
+        [class.has-error]="visiblePasswordError()"
+      >
+        <mat-label>{{ 'ROLLOVER.CONFIRM.PASSWORD_LABEL' | translate }}</mat-label>
+
+        <input
+          #passwordInput
+          matInput
+          id="rollover-admin-password"
+          autocomplete="current-password"
+          [type]="showPassword() ? 'text' : 'password'"
+          [value]="password()"
+          (input)="onPasswordInput($event)"
+        />
+
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          [attr.aria-label]="(showPassword() ? 'ROLLOVER.CONFIRM.HIDE_PASSWORD' : 'ROLLOVER.CONFIRM.SHOW_PASSWORD') | translate"
+          (click)="togglePassword()"
+        >
+          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+
+        @if (visiblePasswordError()) {
+          <mat-hint class="field-error">{{ visiblePasswordError() }}</mat-hint>
+        } @else {
+          <mat-hint>{{ 'ROLLOVER.CONFIRM.PASSWORD_HINT' | translate }}</mat-hint>
+        }
+      </mat-form-field>
+
+    </section>
+
+  </div>
+
+
+  <!-- Any other error from the backend -->
+  @if (formError()) {
+    <div class="form-error" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ formError() }}</span>
+    </div>
+  }
+
+
+  <!-- Actions -->
+  <div class="step-actions">
+
+    <span class="note">
+      <mat-icon>lock</mat-icon>
+      {{ 'ROLLOVER.CONFIRM.PASSWORD_NOTE' | translate }}
+    </span>
+
+    <button
+      mat-button
+      type="button"
+      [disabled]="isRunning()"
+      (click)="back.emit()"
+    >
+      {{ 'ROLLOVER.STEPS.BACK' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="submit"
+      class="run-button"
+      [class.danger]="isNewYear()"
+      [disabled]="!canRun()"
+    >
+      @if (isRunning()) {
+        <ng-container>
+          <mat-spinner diameter="18"></mat-spinner>
+          {{ 'ROLLOVER.CONFIRM.RUNNING' | translate }}
+        </ng-container>
+      } @else {
+        <ng-container>
+          <mat-icon>move_up</mat-icon>
+
+          {{
+            isNewYear()
+              ? ('ROLLOVER.CONFIRM.RUN_NEW_YEAR' | translate: { year: fromYearName() })
+              : ('ROLLOVER.CONFIRM.RUN_SAME_YEAR' | translate: { term: toTermName() })
+          }}
+        </ng-container>
+      }
+    </button>
+
+  </div>
+
+</form>

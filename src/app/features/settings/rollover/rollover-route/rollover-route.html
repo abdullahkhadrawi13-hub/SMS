@@ -1,0 +1,65 @@
+<section
+  class="route"
+  [attr.aria-label]="'ROLLOVER.ROUTE.LABEL' | translate"
+>
+
+  <!-- From: the source term -->
+  <div class="route-box">
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'ROLLOVER.ROUTE.FROM' | translate }}
+      </mat-label>
+
+      <mat-select
+        [value]="sourceTermId()"
+        [disabled]="disabled()"
+        (selectionChange)="sourceChange.emit($event.value)"
+      >
+        @for (option of options(); track option.term.academicTermId) {
+          <mat-option [value]="option.term.academicTermId">
+            {{ termName(option.term) }} · <bdi dir="ltr">{{ option.yearName }}</bdi>
+          </mat-option>
+        }
+      </mat-select>
+
+      <mat-hint>
+        {{ 'ROLLOVER.ROUTE.FROM_HINT' | translate }}
+      </mat-hint>
+
+    </mat-form-field>
+
+  </div>
+
+  <!-- Arrow (flipped in Arabic) -->
+  <div class="route-arrow" aria-hidden="true">
+    <mat-icon>arrow_forward</mat-icon>
+  </div>
+
+  <!-- To: the current term (same teal as the current term banner) -->
+  <div class="route-box to">
+
+    <span class="route-label">
+      {{ 'ROLLOVER.ROUTE.TO' | translate }}
+    </span>
+
+    <span class="route-term">
+      {{ currentTermName() }} · <bdi dir="ltr">{{ currentYearName() }}</bdi>
+    </span>
+
+    @if (isNewYear() !== null) {
+      <span class="kind-chip">
+        <mat-icon>{{ isNewYear() ? 'autorenew' : 'sync_alt' }}</mat-icon>
+
+        {{
+          (isNewYear()
+            ? 'ROLLOVER.ROUTE.NEW_YEAR'
+            : 'ROLLOVER.ROUTE.SAME_YEAR') | translate
+        }}
+      </span>
+    }
+
+  </div>
+
+</section>

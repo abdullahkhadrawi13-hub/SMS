@@ -1,0 +1,97 @@
+<div class="preview">
+
+  <!-- The rule behind "Repeat" (school settings) -->
+  @if (preview().isNewYear) {
+    <p class="threshold">
+      <mat-icon>tune</mat-icon>
+
+      {{
+        (preview().failedSubjectsToRepeat === 1
+          ? 'ROLLOVER.PREVIEW.THRESHOLD_ONE'
+          : 'ROLLOVER.PREVIEW.THRESHOLD_MANY')
+          | translate: { count: preview().failedSubjectsToRepeat }
+      }}
+    </p>
+  }
+
+
+  <!-- Filter chips -->
+  <div
+    class="chips"
+    role="group"
+    [attr.aria-label]="'ROLLOVER.PREVIEW.FILTER_LABEL' | translate"
+  >
+
+    <button
+      type="button"
+      class="chip"
+      [class.selected]="filter() === null"
+      [attr.aria-pressed]="filter() === null"
+      (click)="select(null)"
+    >
+      @if (filter() === null) {
+        <mat-icon>check</mat-icon>
+      }
+
+      {{ 'ROLLOVER.PREVIEW.ALL' | translate }}
+      <span class="count">{{ total() }}</span>
+    </button>
+
+    @for (chip of chips(); track chip.suggestion) {
+
+      <button
+        type="button"
+        class="chip"
+        [class.selected]="filter() === chip.suggestion"
+        [attr.aria-pressed]="filter() === chip.suggestion"
+        [disabled]="chip.count === 0"
+        (click)="select(chip.suggestion)"
+      >
+        @if (filter() === chip.suggestion) {
+          <mat-icon>check</mat-icon>
+        } @else {
+          <span class="swatch" [class]="'tone-' + suggestionStyle[chip.suggestion].tone"></span>
+        }
+
+        {{ suggestionStyle[chip.suggestion].labelKey | translate }}
+        <span class="count">{{ chip.count }}</span>
+      </button>
+
+    }
+
+  </div>
+
+
+  <!-- One panel per class -->
+  @if (groups().length > 0) {
+
+    <div class="groups">
+
+      @for (group of groups(); track group.classId) {
+
+        <app-rollover-class-group
+          [group]="group"
+          [decisions]="decisions()"
+          [isNewYear]="preview().isNewYear"
+          [filter]="filter()"
+          (decisionChange)="decisionChange.emit($event)"
+        ></app-rollover-class-group>
+
+      }
+
+    </div>
+
+  } @else {
+
+    <!-- No active students in the source term -->
+    <div class="empty">
+      <mat-icon>groups</mat-icon>
+
+      <p>
+        {{ 'ROLLOVER.PREVIEW.EMPTY' | translate }}
+      </p>
+    </div>
+
+  }
+
+</div>

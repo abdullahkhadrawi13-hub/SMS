@@ -1,0 +1,363 @@
+:host {
+  display: block;
+}
+
+
+/* ================================
+   Panel
+   ================================ */
+
+.panel {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  overflow: hidden;
+}
+
+.panel-head {
+  width: 100%;
+  min-height: 60px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 8px 14px;
+
+  padding: 10px 18px;
+
+  color: #111827;
+  text-align: start;
+
+  background: #ffffff;
+
+  border: 0;
+
+  cursor: pointer;
+
+  font: inherit;
+}
+
+.panel-head:hover {
+  background: #fafbfc;
+}
+
+.panel-head:focus-visible {
+  outline: 2px solid #2554a4;
+  outline-offset: -2px;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.title-arrow {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  color: #9ca3af;
+}
+
+:host-context([dir='rtl']) .title-arrow {
+  transform: scaleX(-1);
+}
+
+/* The same gold badge as the graduation class card. */
+.grad-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 2px 9px;
+
+  font-size: 11.5px;
+  font-weight: 600;
+
+  color: #ffffff;
+  background: #c9a227;
+
+  border-radius: 999px;
+}
+
+.grad-badge mat-icon {
+  width: 14px;
+  height: 14px;
+
+  font-size: 14px;
+}
+
+.panel-counts {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-inline-start: auto;
+}
+
+.mini {
+  padding: 2px 8px;
+
+  font-size: 12px;
+
+  border-radius: 999px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.chevron {
+  color: #6b7280;
+
+  transition: transform 0.2s ease;
+}
+
+.panel.open .chevron {
+  transform: rotate(180deg);
+}
+
+
+/* ================================
+   Table
+   ================================ */
+
+.table-wrap {
+  overflow-x: auto;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+table {
+  width: 100%;
+  min-width: 820px;
+
+  border-collapse: collapse;
+}
+
+th {
+  padding: 10px 16px;
+
+  font-size: 12px;
+  font-weight: 500;
+  text-align: start;
+
+  color: #6b7280;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+td {
+  padding: 12px 16px;
+
+  vertical-align: middle;
+
+  border-bottom: 1px solid #f1f3f6;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+/* A NeedsDecision student the Admin has not decided yet. */
+tr.needs td {
+  background: #fff7f7;
+}
+
+.student-name {
+  font-weight: 500;
+}
+
+.student-number {
+  font-size: 12px;
+
+  color: #6b7280;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.place {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.place-class {
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+.place-section {
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+/* Promoted: the new class in blue. */
+.place.moved .place-class {
+  color: #2554a4;
+}
+
+.subjects {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  font-size: 12.5px;
+}
+
+.subject {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+
+  gap: 6px;
+}
+
+.subject .mark {
+  font-weight: 600;
+
+  color: #b91c1c;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.subject .pass {
+  color: #9ca3af;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.subject.missing {
+  align-items: center;
+
+  color: #b45309;
+}
+
+.subject.missing mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+.note {
+  display: block;
+
+  max-width: 280px;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  color: #6b7280;
+}
+
+.dash {
+  color: #9ca3af;
+}
+
+
+/* ================================
+   Suggestion badge (tones)
+   ================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 3px 10px;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  white-space: nowrap;
+
+  border-radius: 999px;
+}
+
+.badge mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+.tone-blue     { background: #dbeafe; color: #2554a4; }
+.tone-green    { background: #d1fae5; color: #047857; }
+.tone-orange   { background: #fef3c7; color: #b45309; }
+.tone-gold     { background: #fdf3d4; color: #8a6d1d; }
+.tone-red      { background: #fee2e2; color: #b91c1c; }
+.tone-grey     { background: #f3f4f6; color: #6b7280; }
+.tone-dark-red { background: #fee2e2; color: #7f1d1d; }
+
+
+/* ================================
+   Decision (mat-button-toggle-group)
+   The chosen button takes the color of what it means.
+   ================================ */
+
+.decision {
+  --mat-button-toggle-height: 36px;
+  --mat-button-toggle-shape: 18px;
+}
+
+/* Not decided yet: a red border (the group's border uses this variable). */
+.decision.unset {
+  --mat-button-toggle-divider-color: #ba1a1a;
+}
+
+.decision .is-promote {
+  --mat-button-toggle-selected-state-background-color: #d1fae5;
+  --mat-button-toggle-selected-state-text-color: #047857;
+}
+
+.decision .is-graduate {
+  --mat-button-toggle-selected-state-background-color: #fdf3d4;
+  --mat-button-toggle-selected-state-text-color: #8a6d1d;
+}
+
+.decision .is-repeat {
+  --mat-button-toggle-selected-state-background-color: #fef3c7;
+  --mat-button-toggle-selected-state-text-color: #b45309;
+}
+
+.must {
+  display: block;
+
+  margin-top: 4px;
+
+  font-size: 11.5px;
+
+  color: #ba1a1a;
+}
+
+
+/* ================================
+   Reduced Motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .chevron {
+    transition: none;
+  }
+
+}

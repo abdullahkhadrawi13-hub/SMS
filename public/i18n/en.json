@@ -1076,6 +1076,10 @@
       "ATTENDANCE_OFFICER": {
         "TITLE": "Attendance Officer",
         "DESCRIPTION": "Choose the teacher responsible for following up attendance"
+      },
+      "ROLLOVER": {
+        "TITLE": "Student Rollover",
+        "DESCRIPTION": "Move the students of an earlier term into the current term: promote, repeat or graduate"
       }
     }
   },
@@ -1373,6 +1377,135 @@
       "TITLE": "Leave without saving?",
       "MESSAGE": "You have {{count}} changed marks that are not saved. If you leave this page, these changes are lost.",
       "CONFIRM": "Leave without saving"
+    }
+  },
+  "ROLLOVER": {
+    "HEADER": {
+      "BACK": "Settings",
+      "TITLE": "Student Rollover",
+      "SUBTITLE": "Move the students of an earlier term into the current term, and check what happens to each student before running it."
+    },
+    "STATE": {
+      "LOADING": "Loading terms...",
+      "PREVIEW_LOADING": "Loading the preview...",
+      "RETRY": "Retry",
+      "NO_CURRENT_TERM": "There is no current term yet. Set the current term first, then roll the students into it.",
+      "GO_TO_TERMS": "Academic Years & Terms",
+      "NO_SOURCE": "There is no term before the current term to roll students from."
+    },
+    "ROUTE": {
+      "LABEL": "From and to",
+      "FROM": "From term",
+      "FROM_HINT": "The term just before the current term is chosen by default",
+      "TO": "To the school's current term",
+      "NEW_YEAR": "New year: promote, repeat and graduate",
+      "SAME_YEAR": "Same year: same class and section"
+    },
+    "STEPS": {
+      "PREVIEW": "Preview and decisions",
+      "PREVIEW_SAME_YEAR": "Preview",
+      "TERMS": "Close the year's grades",
+      "CONFIRM": "Confirm and run",
+      "NEXT": "Next",
+      "BACK": "Back"
+    },
+    "SUGGESTION": {
+      "COPY": "Copy",
+      "PROMOTE": "Promote",
+      "REPEAT": "Repeat",
+      "GRADUATE": "Graduate",
+      "NEEDS_DECISION": "Needs a decision",
+      "ALREADY_PLACED": "Already placed",
+       "NO_TARGET": "No section to move to"
+    },
+    "PREVIEW": {
+      "THRESHOLD_ONE": "\"Repeat\" is suggested for students who failed one subject or more.",
+      "THRESHOLD_MANY": "\"Repeat\" is suggested for students who failed {{count}} subjects or more.",
+      "FILTER_LABEL": "Filter by suggestion",
+      "ALL": "All",
+      "EMPTY": "There are no active students in this term.",
+      "GRADUATION": "Graduation",
+      "GRADUATION_CLASS": "Graduation class",
+      "SAME_CLASS": "Same class",
+      "COLUMNS": {
+        "STUDENT": "Student",
+        "FROM": "From",
+        "SUGGESTION": "Suggestion",
+        "SUBJECTS": "Failed / missing subjects",
+        "DECISION": "Decision",
+        "TO": "To"
+      },
+      "SECTION": "Section {{name}}",
+      "PASSING": "/ passing {{mark}}",
+      "MISSING_MARK": "{{subject}}: missing mark",
+      "NO_CHANGE": "Will not change",
+      "REPEATS_YEAR": "repeats the year",
+      "GRADUATE": "Graduate",
+      "WAITING": "Waiting for a decision",
+      "PENDING_ONE": "1 student needs a decision before you continue",
+      "PENDING_MANY": "{{count}} students need a decision before you continue",
+      "ALL_DECIDED": "Every decision is made",
+      "SAME_YEAR_NOTE": "Every student moves to the new term in the same class and section."
+    },
+    "DECISION": {
+      "LABEL": "Decision for {{name}}",
+      "PROMOTE": "Promote",
+      "GRADUATE": "Graduate",
+      "REPEAT": "Repeat",
+      "REQUIRED": "Choose a decision"
+    },
+    "TERMS": {
+      "INFO": "A new-year rollover is based on the grades of every term of {{year}}. Close the grades of each of its terms first, so no mark changes after the promote and repeat decisions were made from it.",
+      "OPEN": "Open",
+      "CLOSED": "Closed",
+      "GO_TO_TERMS": "Go to Academic Years & Terms",
+      "RECHECK": "Check again",
+      "ALL_CLOSED_TITLE": "Every term of the year is closed",
+      "ALL_CLOSED_TEXT": "You can continue to the confirmation.",
+      "OPEN_ONE": "1 term is still open",
+      "OPEN_MANY": "{{count}} terms are still open",
+      "READY": "Ready"
+    },
+    "CONFIRM": {
+      "SUMMARY_TITLE": "What will happen",
+      "PROMOTE": "Promote",
+      "REPEAT": "Repeat",
+      "GRADUATE": "Graduate",
+      "COPY": "Copy to the new term",
+      "ALREADY_PLACED": "Already placed",
+      "NO_TARGET": "No section to move to",
+      "NO_TARGET_HINT": "Students with no section to move to are not moved. Their names and the reason are shown after the rollover.",
+      "WARNING_TITLE": "This cannot be undone",
+      "WARNING_TEXT": "The grades of every term of {{year}} will be closed for good and cannot be opened again.",
+      "YEAR_LABEL": "Type the year name to confirm",
+      "YEAR_HINT": "Type {{year}} exactly",
+      "YEAR_MISMATCH": "This does not match the year name.",
+      "YEAR_MATCH": "Matches",
+      "PASSWORD_LABEL": "Your password",
+      "PASSWORD_HINT": "To check that you are the one running the rollover.",
+      "SHOW_PASSWORD": "Show password",
+      "HIDE_PASSWORD": "Hide password",
+      "PASSWORD_NOTE": "The password is not saved and is cleared after every attempt",
+      "RUN_NEW_YEAR": "Roll over and close {{year}}",
+      "RUN_SAME_YEAR": "Roll over to {{term}}",
+      "RUNNING": "Rolling over..."
+    },
+    "RESULT": {
+      "TITLE": "Students rolled over to {{term}}",
+      "GRADES_CLOSED": "The grades of {{year}} are now closed for good.",
+      "NO_GRADES_CLOSED": "No grades were closed in a same-year rollover.",
+      "COPIED": "Copied",
+      "PROMOTED": "Promoted",
+      "REPEATED": "Repeated",
+      "GRADUATED": "Graduated",
+      "ALREADY_PLACED": "Already placed",
+      "NOT_PLACED_TITLE": "Not moved ({{count}})",
+      "NOT_PLACED_HINT": "Activate the missing class or section, then roll them over again from this page, or place them from the Students page.",
+      "NEW_PREVIEW": "New preview",
+      "GO_TO_STUDENTS": "Go to Students"
+    },
+    "ERROR": {
+      "LOAD_FAILED": "Failed to load the terms. Please try again."
     }
   }
 }

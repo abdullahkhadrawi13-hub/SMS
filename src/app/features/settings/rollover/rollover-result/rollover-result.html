@@ -1,0 +1,86 @@
+<div class="result">
+
+  <!-- Done -->
+  <div class="result-head" role="status">
+    <mat-icon>task_alt</mat-icon>
+
+    <div>
+      <h3>{{ 'ROLLOVER.RESULT.TITLE' | translate: { term: toTermName() } }}</h3>
+
+      <p>
+        {{
+          isNewYear()
+            ? ('ROLLOVER.RESULT.GRADES_CLOSED' | translate: { year: fromYearName() })
+            : ('ROLLOVER.RESULT.NO_GRADES_CLOSED' | translate)
+        }}
+      </p>
+    </div>
+  </div>
+
+
+  <!-- Counts -->
+  @if (tiles().length > 0) {
+    <div class="tiles">
+      @for (tile of tiles(); track tile.labelKey) {
+        <div class="tile" [class]="'tone-' + tile.tone">
+          <strong>{{ tile.count }}</strong>
+          <span>{{ tile.labelKey | translate }}</span>
+        </div>
+      }
+    </div>
+  }
+
+
+  <!-- Students that could not be placed -->
+  @if (result().notPlaced.length > 0) {
+
+    <section class="not-placed">
+
+      <h3>
+        <mat-icon>block</mat-icon>
+        {{ 'ROLLOVER.RESULT.NOT_PLACED_TITLE' | translate: { count: result().notPlaced.length } }}
+      </h3>
+
+      <div class="not-placed-list">
+        @for (student of result().notPlaced; track student.studentId) {
+          <div class="not-placed-row">
+            <span class="student-name">{{ studentName(student) }}</span>
+            <bdi class="student-number" dir="ltr">{{ student.studentNumber }}</bdi>
+            <span class="place">{{ fromPlace(student) }}</span>
+            <span class="note">{{ note(student) }}</span>
+          </div>
+        }
+      </div>
+
+      <p class="hint">
+        {{ 'ROLLOVER.RESULT.NOT_PLACED_HINT' | translate }}
+      </p>
+
+    </section>
+
+  }
+
+
+  <!-- Actions -->
+  <div class="step-actions">
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="newPreview.emit()"
+    >
+      <mat-icon>restart_alt</mat-icon>
+      {{ 'ROLLOVER.RESULT.NEW_PREVIEW' | translate }}
+    </button>
+
+    <a
+      mat-flat-button
+      routerLink="/students"
+    >
+      <mat-icon>school</mat-icon>
+      {{ 'ROLLOVER.RESULT.GO_TO_STUDENTS' | translate }}
+    </a>
+
+  </div>
+
+</div>

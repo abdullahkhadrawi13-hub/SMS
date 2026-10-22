@@ -1,0 +1,144 @@
+:host {
+  display: block;
+}
+
+.open-terms {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+
+/* ================================
+   Info box (same as the grades status dialog)
+   ================================ */
+
+.info-box {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding: 12px 14px;
+
+  line-height: 1.7;
+
+  color: #0c447c;
+  background: #e6f1fb;
+
+  border-radius: 10px;
+}
+
+.info-box mat-icon {
+  flex-shrink: 0;
+
+  color: #185fa5;
+}
+
+
+/* ================================
+   Terms
+   ================================ */
+
+.term-list {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.term-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 10px 16px;
+
+  padding: 14px 16px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.term-row:last-child {
+  border-bottom: 0;
+}
+
+.term-name {
+  flex: 1;
+  min-width: 160px;
+
+  font-weight: 600;
+}
+
+/* The same chips as the "Grades" column of the terms table. */
+.grades-chip {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 3px 10px;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  border-radius: 999px;
+}
+
+.grades-chip mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+.grades-chip.open {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.grades-chip.closed {
+  color: #334155;
+  background: #eef2f7;
+}
+
+
+/* ================================
+   Actions / All closed
+   ================================ */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.all-closed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 24px;
+
+  text-align: center;
+
+  color: #047857;
+  background: #f0fdf7;
+
+  border: 1px dashed #a7f3d0;
+  border-radius: 12px;
+}
+
+.all-closed mat-icon {
+  width: 36px;
+  height: 36px;
+
+  font-size: 36px;
+}

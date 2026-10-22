@@ -60,6 +60,15 @@ export class SettingsPage {
       color: 'orange',
       route: 'attendance-officer',
       visible: this.permissions.canManageAttendanceOfficer
+    },
+
+    {
+      title: 'SETTINGS.OPTIONS.ROLLOVER.TITLE',
+      description: 'SETTINGS.OPTIONS.ROLLOVER.DESCRIPTION',
+      icon: 'move_up',
+      color: 'purple',
+      route: 'rollover',
+      visible: this.permissions.canManageRollover
     }
 
   ];

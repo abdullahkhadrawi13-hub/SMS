@@ -18,6 +18,8 @@ const subjectPlansRoutes = require('./routes/subject-plans.routes');
 const assessmentsRoutes = require('./routes/assessments.routes');
 const studentGradesRoutes = require('./routes/student-grades.routes');
 
+const rolloverRoutes = require('./routes/rollover.routes');
+
 const PORT =3000;
 
 const server = http.createServer((req, res) => {
@@ -187,6 +189,15 @@ if (academicTermsRoutes(req, res)) {
   // =========================
 
   if (studentGradesRoutes(req, res)) {
+    return;
+  }
+
+
+  // =========================
+  // Rollover API
+  // =========================
+
+  if (rolloverRoutes(req, res)) {
     return;
   }
 
