@@ -205,6 +205,56 @@
             </ng-container>
 
 
+            <!-- Grades: open / closed / closed by the rollover, and the day they were closed -->
+            <ng-container matColumnDef="grades">
+
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'ACADEMIC_YEARS.TERMS_TABLE.GRADES' | translate }}
+              </th>
+
+              <td mat-cell *matCellDef="let term">
+
+                @switch (getGradesStatus(term)) {
+
+                  @case ('open') {
+                    <span class="grades-chip open">
+                      <mat-icon>lock_open</mat-icon>
+                      {{ 'ACADEMIC_YEARS.GRADES_STATUS.OPEN' | translate }}
+                    </span>
+                  }
+
+                  @case ('closed') {
+                    <div class="two-lines">
+                      <span class="grades-chip closed">
+                        <mat-icon>event_busy</mat-icon>
+                        {{ 'ACADEMIC_YEARS.GRADES_STATUS.CLOSED' | translate }}
+                      </span>
+
+                      <span class="term-days">{{ getGradesClosedDate(term) }}</span>
+                    </div>
+                  }
+
+                  @case ('rollover') {
+                    <div class="two-lines">
+                      <span
+                        class="grades-chip closed rollover"
+                        [matTooltip]="'ACADEMIC_YEARS.GRADES_STATUS.ROLLOVER_HINT' | translate"
+                      >
+                        <mat-icon>event_busy</mat-icon>
+                        {{ 'ACADEMIC_YEARS.GRADES_STATUS.CLOSED_BY_ROLLOVER' | translate }}
+                      </span>
+
+                      <span class="term-days">{{ getGradesClosedDate(term) }}</span>
+                    </div>
+                  }
+
+                }
+
+              </td>
+
+            </ng-container>
+
+
             <!-- Current term / "set as current" -->
             <ng-container matColumnDef="current">
 
@@ -317,6 +367,60 @@
                         }}
                       </span>
                     </button>
+
+                  }
+
+                  <!-- Grades: close / open (both ask for confirmation first) -->
+                  <mat-divider></mat-divider>
+
+                  @switch (getGradesStatus(term)) {
+
+                    @case ('open') {
+                      <button
+                        mat-menu-item
+                        type="button"
+                        [disabled]="isBusy()"
+                        (click)="closeGrades.emit(term)"
+                      >
+                        <mat-icon>event_busy</mat-icon>
+
+                        <span>
+                          {{ 'ACADEMIC_YEARS.TERMS_TABLE.CLOSE_GRADES' | translate }}
+                        </span>
+                      </button>
+                    }
+
+                    @case ('closed') {
+                      <button
+                        mat-menu-item
+                        type="button"
+                        [disabled]="isBusy()"
+                        (click)="openGrades.emit(term)"
+                      >
+                        <mat-icon>lock_open</mat-icon>
+
+                        <span>
+                          {{ 'ACADEMIC_YEARS.TERMS_TABLE.OPEN_GRADES' | translate }}
+                        </span>
+                      </button>
+                    }
+
+                    @case ('rollover') {
+                      <!-- Closed by the year-end rollover: can never be opened -->
+                      <button
+                        mat-menu-item
+                        type="button"
+                        class="menu-item-locked"
+                        disabled
+                      >
+                        <mat-icon>lock_open</mat-icon>
+
+                        <span class="locked-text">
+                          <span>{{ 'ACADEMIC_YEARS.TERMS_TABLE.OPEN_GRADES' | translate }}</span>
+                          <small>{{ 'ACADEMIC_YEARS.TERMS_TABLE.ROLLOVER_LOCKED' | translate }}</small>
+                        </span>
+                      </button>
+                    }
 
                   }
 

@@ -1,0 +1,5 @@
+/* The padding and corners of the bottom sheet itself are in styles.css
+   (.grade-history-sheet): the sheet lives outside this component. */
+:host {
+  display: block;
+}

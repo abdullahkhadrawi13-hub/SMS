@@ -121,13 +121,18 @@
     </div>
 
 
-    <!-- Notes (no plan, plan not complete, read-only, open component with no assessment) -->
+    <!-- Notes (grades closed, no plan, plan not complete, read-only, open component with no assessment) -->
     @if (notes().length > 0) {
       <div class="notes">
         @for (note of notes(); track note.key) {
           <p class="note" [class]="note.tone">
             <mat-icon>{{ note.icon }}</mat-icon>
-            <span>{{ note.key | translate: note.params }}</span>
+            <span>
+              @if (note.titleKey) {
+                <strong class="note-title">{{ note.titleKey | translate }}</strong>
+              }
+              {{ note.key | translate: note.params }}
+            </span>
           </p>
         }
       </div>
@@ -236,33 +241,61 @@
 
                     <td class="mark-col">
 
-                      @if (editable()) {
+                      <!-- The mark + its history button in the corner -->
+                      <span class="mark-cell">
 
-                        <input
-                          class="mark-input"
-                          type="text"
-                          inputmode="decimal"
-                          autocomplete="off"
-                          [class.changed]="cellState(row, column) === 'changed'"
-                          [class.invalid]="cellState(row, column) === 'invalid'"
-                          [value]="cellText(row, column)"
-                          [disabled]="saving()"
-                          [attr.data-assessment]="column.assessment.assessmentId"
-                          [attr.aria-label]="row.name + ' - ' + column.name"
-                          [matTooltip]="cellErrorKey(row, column) | translate: { max: formatMax(column.assessment.maxMark) }"
-                          (input)="onInput(row, column, $event)"
-                          (keydown)="onKeydown($event, column)"
-                        />
+                        @if (editable()) {
 
-                      } @else {
+                          <input
+                            class="mark-input"
+                            type="text"
+                            inputmode="decimal"
+                            autocomplete="off"
+                            [class.changed]="cellState(row, column) === 'changed'"
+                            [class.invalid]="cellState(row, column) === 'invalid'"
+                            [value]="cellText(row, column)"
+                            [disabled]="saving()"
+                            [attr.data-assessment]="column.assessment.assessmentId"
+                            [attr.aria-label]="row.name + ' - ' + column.name"
+                            [matTooltip]="cellErrorKey(row, column) | translate: { max: formatMax(column.assessment.maxMark) }"
+                            (input)="onInput(row, column, $event)"
+                            (keydown)="onKeydown($event, column)"
+                          />
 
-                        @if (savedMark(row, column)) {
-                          <span class="mark-text">{{ savedMark(row, column) }}</span>
                         } @else {
-                          <span class="missing">—</span>
+
+                          @if (savedMark(row, column)) {
+                            <span class="mark-text">{{ savedMark(row, column) }}</span>
+                          } @else {
+                            <span class="missing">—</span>
+                          }
+
                         }
 
-                      }
+                        <!--
+                          Only a saved mark has a history.
+                          Wide screen: opens the menu below. Narrow screen: no menu
+                          (null), the click opens the bottom sheet instead.
+                          While typing marks the button is skipped by Tab
+                          (tabindex -1), so Tab goes from mark to mark.
+                        -->
+                        @if (historyCell(row, column); as cell) {
+                          <button
+                            type="button"
+                            class="history-button"
+                            [class.edited]="cell.isEdited"
+                            [matMenuTriggerFor]="isNarrow() ? null : historyMenu"
+                            [matMenuTriggerData]="{ row: row, column: column }"
+                            [attr.tabindex]="editable() ? -1 : null"
+                            [attr.aria-label]="('GRADES.SHEET.HISTORY.OPEN' | translate) + ': ' + row.name + ' - ' + column.name"
+                            [matTooltip]="(cell.isEdited ? 'GRADES.SHEET.HISTORY.EDITED' : 'GRADES.SHEET.HISTORY.OPEN') | translate"
+                            (click)="openHistory(row, column)"
+                          >
+                            <mat-icon>history</mat-icon>
+                          </button>
+                        }
+
+                      </span>
 
                     </td>
 
@@ -334,6 +367,13 @@
           {{ 'GRADES.SHEET.LEGEND.MISSING' | translate }}
         </span>
 
+        <span>
+          <i class="legend-history" aria-hidden="true">
+            <mat-icon>history</mat-icon>
+          </i>
+          {{ 'GRADES.SHEET.LEGEND.EDITED' | translate }}
+        </span>
+
       </div>
 
     }
@@ -341,3 +381,24 @@
   </div>
 
 }
+
+
+<!--
+  A mark's history (wide screens). One menu for the whole sheet: each history
+  button passes its row and column, and the content is created only when the
+  menu opens, so the history is loaded only then.
+-->
+<mat-menu #historyMenu="matMenu" class="grade-history-menu">
+
+  <ng-template matMenuContent let-row="row" let-column="column">
+
+    @if (historyTarget(row, column); as target) {
+      <app-grade-history
+        [target]="target"
+        (closed)="historyMenu.closed.emit('click')"
+      />
+    }
+
+  </ng-template>
+
+</mat-menu>

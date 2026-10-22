@@ -24,6 +24,9 @@ const students = [
     classId: 1,
     sectionId: 1,
 
+    // 0 Active, 1 Inactive, 2 Graduated, 3 Transferred (separate from isActive).
+    studentStatus: 0,
+
     role: 3
   }
 ];
@@ -68,8 +71,29 @@ for (let i = 2; i <= 73; i++) {
     classId,
     sectionId,
 
+    studentStatus: 0,
+
     role: 3
   });
 }
+
+
+// Graduated students (API Reference, section 4, studentStatus = 2).
+// Both were in the Sixth Grade (the graduation class). Their class and
+// section are the ones they graduated from and cannot be changed.
+// Things to try (Students page):
+// - Student 7: graduated, account still active.
+// - Student 13: graduated, account deactivated.
+// The edit form shows the class and section read-only, and a PUT that
+// changes them answers 400 (only the personal details can change).
+const GRADUATED_STUDENTS = [7, 13];
+
+for (const student of students) {
+  if (GRADUATED_STUDENTS.includes(student.studentId)) {
+    student.studentStatus = 2;
+  }
+}
+
+students.find(s => s.studentId === 13).isActive = false;
 
 module.exports = students;

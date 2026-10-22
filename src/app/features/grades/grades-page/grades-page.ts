@@ -64,6 +64,7 @@ import {
   GradesViewer,
 } from '../grades-sheet/grades-sheet';
 import { GradesSaveBar } from '../grades-save-bar/grades-save-bar';
+import { GradeHistoryCache } from '../grade-history-cache';
 
 
 // The grades page (parent): one grade sheet = one subject in one section.
@@ -90,6 +91,13 @@ import { GradesSaveBar } from '../grades-save-bar/grades-save-bar';
 // The choice is kept in the address, so a refresh opens the same sheet:
 //   teacher: /grades?assignmentId=12
 //   staff:   /grades?termId=3&classId=1&sectionId=2&assignmentId=12
+//
+// A closed term (areGradesClosed, set by the Admin on the academic years page):
+// the backend answers canEnterGrades = false, so the sheet is read-only and
+// shows why. The term list marks the closed terms before one is chosen.
+//
+// GradeHistoryCache: the history of each mark, kept while one sheet is open
+// (cleared when another sheet is loaded and after a save).
 @Component({
   selector: 'app-grades-page',
   imports: [
@@ -97,6 +105,9 @@ import { GradesSaveBar } from '../grades-save-bar/grades-save-bar';
     GradesSelector,
     GradesSheet,
     GradesSaveBar,
+  ],
+  providers: [
+    GradeHistoryCache,
   ],
   templateUrl: './grades-page.html',
   styleUrl: './grades-page.css',
@@ -120,6 +131,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
   private readonly sectionsService = inject(SectionsService);
   private readonly assignmentsService = inject(TeacherAssignmentsService);
   private readonly gradesService = inject(StudentGradesService);
+  private readonly historyCache = inject(GradeHistoryCache);
 
 
   private readonly isArabic = computed(
@@ -267,7 +279,8 @@ export class GradesPage implements OnInit, LeaveConfirmation {
   readonly saving = signal(false);
 
   // true = the marks can be typed: Admin or the owning teacher,
-  // and the plan's weights add up to 100 (canEnterGrades from the sheet).
+  // the plan's weights add up to 100 and the term's grades are open
+  // (canEnterGrades from the sheet).
   readonly editable = computed(
     () => this.permissions.canEnterGrades()
       && (this.sheet()?.canEnterGrades ?? false)
@@ -501,6 +514,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
               yearName: yearNames.get(t.academicYearId) ?? '',
               startDate: t.startDate,
               isCurrent: t.isCurrent,
+              areGradesClosed: t.areGradesClosed,
             }))
             .sort((a, b) => b.startDate.localeCompare(a.startDate));
 
@@ -715,6 +729,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
 
     this.sheet.set(null);
     this.draft.set({});
+    this.historyCache.clear();
     this.sheetLoading.set(true);
 
     this.sheetRequest = this.gradesService
@@ -833,6 +848,9 @@ export class GradesPage implements OnInit, LeaveConfirmation {
           // The new sheet: saved marks, totals, results and the plan's lock.
           this.sheet.set(response.data.sheet);
           this.draft.set({});
+
+          // A changed mark has a new history row: load it again when opened.
+          this.historyCache.clear();
 
           this.actionResult.show(
             'success',

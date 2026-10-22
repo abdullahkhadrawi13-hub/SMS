@@ -347,8 +347,15 @@
           </div>
 
           <div>
-            <h2>
+            <h2 class="academic-title">
               {{ 'STUDENTS_FORM.ACADEMIC_INFORMATION' | translate }}
+
+              @if (isGraduated()) {
+                <span class="graduated-badge">
+                  <mat-icon>workspace_premium</mat-icon>
+                  {{ 'STUDENTS_FORM.GRADUATED.BADGE' | translate }}
+                </span>
+              }
             </h2>
 
             <p>
@@ -356,6 +363,41 @@
             </p>
           </div>
         </div>
+
+        @if (isGraduated()) {
+
+        <!-- Graduated: the class and section it graduated from, read-only -->
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>
+              {{ 'STUDENTS_FORM.CLASS_LABEL' | translate }}
+            </mat-label>
+
+            <input matInput readonly [value]="graduatedClassName()" />
+
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>
+              {{ 'STUDENTS_FORM.SECTION_LABEL' | translate }}
+            </mat-label>
+
+            <input matInput readonly [value]="graduatedSectionName()" />
+
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="graduated-note">
+          <mat-icon>info</mat-icon>
+
+          <span>
+            {{ 'STUDENTS_FORM.GRADUATED.NOTE' | translate }}
+          </span>
+        </div>
+
+        } @else {
 
         <div class="form-grid">
           <!-- Class -->
@@ -408,6 +450,8 @@
             }
           </mat-form-field>
         </div>
+
+        }
       </section>
 
       <!-- Actions -->

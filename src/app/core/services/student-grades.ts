@@ -6,6 +6,7 @@ import { ApiResponse } from '../models/api-response';
 import {
   BulkGradesRequest,
   BulkGradesResult,
+  GradeHistory,
   GradeSheet,
 } from '../models/student-grade';
 import { environment } from '../../../environments/environment';
@@ -54,6 +55,18 @@ export class StudentGradesService {
     return this.http.post<ApiResponse<BulkGradesResult>>(
       `${this.apiUrl}/bulk`,
       request
+    );
+  }
+
+
+  // GET /api/studentgrades/{studentGradeId}/history
+  // Who entered the mark, the last edit, and every change (newest first).
+  getHistory(
+    studentGradeId: number
+  ): Observable<ApiResponse<GradeHistory>> {
+
+    return this.http.get<ApiResponse<GradeHistory>>(
+      `${this.apiUrl}/${studentGradeId}/history`
     );
   }
 }

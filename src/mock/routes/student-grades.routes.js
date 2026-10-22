@@ -8,6 +8,7 @@ const subjects = require('../data/subjects');
 const sections = require('../data/sections');
 const schoolClasses = require('../data/school-classes');
 const users = require('../data/users');
+const academicTerms = require('../data/academic-terms');
 
 const { syncWithPlan } = require('./assessments.routes');
 
@@ -43,24 +44,29 @@ const BULK_LIMIT = 2000;
 // =====================================================
 //
 // 1. The mock has no StudentSubjectEnrollment and no term placements:
-//    the students of a sheet are the ACTIVE students whose classId and
-//    sectionId are the assignment's (data/students.js), in every term.
-//    An inactive assignment has no students.
-// 2. Only the sheet and the bulk save are built (the grades page uses
-//    only these two). GET/POST/PUT of a single grade answer 404 here.
+//    the students of a sheet are the ACTIVE, not graduated students whose
+//    classId and sectionId are the assignment's (data/students.js), in
+//    every term. An inactive assignment has no students.
+// 2. Only the sheet, the bulk save and a mark's history are built (the
+//    grades page uses only these three). GET/POST/PUT of a single grade
+//    answer 404 here.
 // 3. Saving marks also updates the flags the other mocks use for "marks
 //    exist": plan.isLocked, plan.hasGrades, component.hasMarks and
 //    assessment.hasMarks (so the plans and assessments pages agree).
 // 4. The text of the messages is not the real text.
+// 5. A closed term (data/academic-terms.js, areGradesClosed) blocks only
+//    the bulk save here. The other mocks (plans, assessments, assignments,
+//    placements) do not check it.
 
 
 // =====================================================
 // SEED: marks added the first time a sheet is read
 // =====================================================
 //
-// Current term only. The marks follow the students of the section
-// sorted by studentId (null = no mark). Assessments are found by their
-// English name (Quiz 1, First exam, Final exam...).
+// The marks follow the students of the section sorted by studentId
+// (null = no mark). Assessments are found by their English name
+// (Quiz 1, First exam, Final exam...). termId: the current term
+// unless the item says otherwise.
 //
 // Things to try (log in as "teacher", then Grades):
 // - Arabic · Class 1 / A: quizzes 1-2 and the first exam have marks,
@@ -70,7 +76,15 @@ const BULK_LIMIT = 2000;
 // - Arabic · Class 2 / A: no quizzes yet → "No assessment yet" column.
 // As "admin": Science · Class 1 / A (plan 80 of 100) → read-only sheet.
 // As "assistant": any sheet is view only.
+//
+// Closed term and history (log in as "admin", then Grades):
+// - Term 4 (Second Term 2025/2026, closed by the rollover) · Class 1 / A ·
+//   Arabic: read-only sheet with the "grades are closed" note.
+// - The blue history icon (see SEED_EDITS): open it to see the changes.
+// - Close term 5 on the academic years page: every current-term sheet
+//   becomes read-only, and "Save sheet" answers 400.
 const CURRENT_TERM = 5;
+const PREVIOUS_TERM = 4;
 
 const SEED = [
   {
@@ -88,6 +102,45 @@ const SEED = [
       'First exam': [18, 14, 8, 19],
       'Final exam': [52, 40, 20, 57]
     }
+  },
+  {
+    termId: PREVIOUS_TERM,
+    classId: 1, sectionId: 1, subjectId: 1, // Arabic · Class 1 / A, term 4 (closed)
+    marks: {
+      'First exam': [15, 12, 19, 10],
+      'Final exam': [45, 38, 55, 30]
+    }
+  }
+];
+
+// Seeded marks that were changed after they were entered (the history).
+// student: position in the section (sorted by studentId), like SEED.
+// changes: newest first (same order as the real API). The mark in SEED is
+// the newest mark. changes: [] with editedAt = a change made before the
+// backend kept the history (only the last edit is known).
+const SEED_EDITS = [
+  {
+    classId: 1, sectionId: 2, subjectId: 1, assessment: 'Quiz 1', student: 0,
+    recordedAt: '2026-10-15T08:30:00',
+    changes: [
+      { oldMark: 10, newMark: 9, changedByUserId: 1, changedAt: '2026-10-18T09:40:00' },
+      { oldMark: 7, newMark: 10, changedByUserId: 3, changedAt: '2026-10-16T07:05:00' }
+    ]
+  },
+  {
+    classId: 1, sectionId: 1, subjectId: 1, assessment: 'First exam', student: 1,
+    recordedAt: '2026-10-15T08:30:00',
+    changes: [],
+    editedByUserId: 3,
+    editedAt: '2026-10-17T11:20:00'
+  },
+  {
+    termId: PREVIOUS_TERM,
+    classId: 1, sectionId: 1, subjectId: 1, assessment: 'Final exam', student: 0,
+    recordedAt: '2026-06-20T07:00:00',
+    changes: [
+      { oldMark: 40, newMark: 45, changedByUserId: 1, changedAt: '2026-06-25T08:00:00' }
+    ]
   }
 ];
 
@@ -107,11 +160,16 @@ function sendJson(res, statusCode, body) {
 }
 
 
-// 401 / 403: the real backend now sends a body too, but the app
-// only looks at the status code for them.
+// 401 / 403 with a body, like the real backend (since 2026-10-16).
+// 401 logs the user out (auth-interceptor); 403 shows the message.
 function sendEmpty(res, statusCode) {
-  res.writeHead(statusCode);
-  res.end();
+
+  if (statusCode === 401) {
+    sendError(res, 401, 'يجب تسجيل الدخول.', 'You must log in.');
+    return;
+  }
+
+  sendError(res, statusCode, 'ليس لديك صلاحية لتنفيذ هذا الإجراء.', 'You do not have permission to do this.');
 }
 
 
@@ -179,7 +237,7 @@ function getCurrentUser(req) {
 
 // UTC without a trailing "Z", like the real backend.
 function getUtcNow() {
-  return new Date().toISOString().replace('Z', '');
+  return new Date().toISOString().slice(0, 19);
 }
 
 
@@ -213,6 +271,42 @@ function totalWeight(plan) {
 // Marks can be entered only when the plan exists and its weights are 100.
 function canEnterGrades(plan) {
   return !!plan && totalWeight(plan) === FULL_WEIGHT;
+}
+
+
+// The term's grades are closed (data/academic-terms.js): nothing changes.
+function areGradesClosed(assignment) {
+
+  const term = academicTerms.find(
+    t => t.academicTermId === assignment.academicTermId
+  );
+
+  return !!term && term.areGradesClosed === true;
+}
+
+
+const GRADES_CLOSED_ERROR = [
+  'علامات هذا الفصل مغلقة. لا يمكن تغيير العلامات أو التقييمات أو خطط المواد حتى يفتحها مدير النظام.',
+  "This term's grades are closed. Grades, assessments and subject plans cannot change until an administrator reopens them."
+];
+
+
+// "First name + family name" of a user (Arabic or English), like the
+// names in the real history. Users first, then teachers (same userId).
+function userName(userId, lang) {
+
+  const person =
+    users.find(u => u.userId === userId) ||
+    teachers.find(t => t.userId === userId);
+
+  if (!person) {
+    return '';
+  }
+
+  return [person[`firstName${lang}`], person[`familyName${lang}`]]
+    .map(part => String(part || '').trim())
+    .filter(part => part !== '')
+    .join(' ');
 }
 
 
@@ -251,8 +345,10 @@ function enrolledStudents(assignment) {
     return [];
   }
 
+  // A graduated student (studentStatus 2) has no placement any more.
   return students.filter(s =>
     s.isActive &&
+    s.studentStatus !== 2 &&
     s.classId === assignment.classId &&
     s.sectionId === assignment.sectionId
   );
@@ -304,7 +400,37 @@ function markHasMarks(assessment, plan) {
 }
 
 
-// Adds the SEED marks once.
+// The section of a SEED / SEED_EDITS item: its assignment, plan,
+// students (by studentId) and assessments. null when it does not exist.
+function seedSection(item) {
+
+  const termId = item.termId || CURRENT_TERM;
+
+  const assignment = teacherAssignments.find(a =>
+    a.academicTermId === termId &&
+    a.classId === item.classId &&
+    a.sectionId === item.sectionId &&
+    a.subjectId === item.subjectId
+  );
+
+  const plan = assignment ? findPlan(assignment) : undefined;
+
+  if (!assignment || !plan) {
+    return null;
+  }
+
+  return {
+    plan,
+    students: enrolledStudents(assignment).sort((a, b) => a.studentId - b.studentId),
+    list: sectionAssessments(assignment, plan)
+  };
+}
+
+
+// Adds the SEED marks once, then the SEED_EDITS history.
+//
+// Every stored mark also keeps its history (only the mock stores it there):
+//   changes: [{ oldMark, newMark, changedByUserId, changedAt }], newest first.
 function seedOnce() {
 
   if (seeded) {
@@ -315,33 +441,21 @@ function seedOnce() {
 
   for (const item of SEED) {
 
-    const assignment = teacherAssignments.find(a =>
-      a.academicTermId === CURRENT_TERM &&
-      a.classId === item.classId &&
-      a.sectionId === item.sectionId &&
-      a.subjectId === item.subjectId
-    );
+    const section = seedSection(item);
 
-    const plan = assignment ? findPlan(assignment) : undefined;
-
-    if (!assignment || !plan) {
+    if (!section) {
       continue;
     }
 
-    const sectionStudents = enrolledStudents(assignment)
-      .sort((a, b) => a.studentId - b.studentId);
-
-    const list = sectionAssessments(assignment, plan);
-
     for (const [nameEn, marks] of Object.entries(item.marks)) {
 
-      const assessment = list.find(a => a.nameEn === nameEn);
+      const assessment = section.list.find(a => a.nameEn === nameEn);
 
       if (!assessment) {
         continue;
       }
 
-      sectionStudents.forEach((student, index) => {
+      section.students.forEach((student, index) => {
 
         const mark = marks[index];
 
@@ -357,13 +471,64 @@ function seedOnce() {
           recordedByUserId: SEED_USER_ID,
           recordedAt: '2026-10-15T08:30:00',
           editedByUserId: null,
-          editedAt: null
+          editedAt: null,
+          changes: []
         });
 
-        markHasMarks(assessment, plan);
+        markHasMarks(assessment, section.plan);
       });
     }
   }
+
+  for (const edit of SEED_EDITS) {
+
+    const section = seedSection(edit);
+    const assessment = section && section.list.find(a => a.nameEn === edit.assessment);
+    const student = section && section.students[edit.student];
+    const grade = assessment && student && findGrade(student.studentId, assessment.assessmentId);
+
+    if (!grade) {
+      continue;
+    }
+
+    const last = edit.changes[0];
+
+    grade.recordedAt = edit.recordedAt;
+    grade.changes = edit.changes.map(change => ({ ...change }));
+    grade.editedByUserId = last ? last.changedByUserId : edit.editedByUserId;
+    grade.editedAt = last ? last.changedAt : edit.editedAt;
+  }
+}
+
+
+// The history of one stored mark (same shape as the real API).
+function buildHistory(grade) {
+
+  const name = (userId, lang) => userId === null ? null : userName(userId, lang);
+
+  return {
+    studentGradeId: grade.studentGradeId,
+    mark: grade.mark,
+
+    recordedByUserId: grade.recordedByUserId,
+    recordedByNameAr: name(grade.recordedByUserId, 'Ar'),
+    recordedByNameEn: name(grade.recordedByUserId, 'En'),
+    recordedAt: grade.recordedAt,
+
+    editedByUserId: grade.editedByUserId,
+    editedByNameAr: name(grade.editedByUserId, 'Ar'),
+    editedByNameEn: name(grade.editedByUserId, 'En'),
+    editedAt: grade.editedAt,
+
+    changes: (grade.changes || []).map(change => ({
+      oldMark: change.oldMark,
+      newMark: change.newMark,
+      changedByUserId: change.changedByUserId,
+      changedByNameAr: userName(change.changedByUserId, 'Ar'),
+      changedByNameEn: userName(change.changedByUserId, 'En'),
+      changedAt: change.changedAt
+    }))
+  };
 }
 
 
@@ -384,6 +549,7 @@ function buildSheet(assignment) {
   const components = sortedComponents(plan);
   const list = plan ? sectionAssessments(assignment, plan) : [];
   const ready = canEnterGrades(plan);
+  const closed = areGradesClosed(assignment);
 
   const sheetStudents = enrolledStudents(assignment)
     .map(student => {
@@ -393,7 +559,10 @@ function buildSheet(assignment) {
         return {
           assessmentId: a.assessmentId,
           studentGradeId: grade ? grade.studentGradeId : null,
-          mark: grade ? grade.mark : null
+          mark: grade ? grade.mark : null,
+
+          // Changed after it was first entered.
+          isEdited: !!(grade && grade.editedAt)
         };
       });
 
@@ -463,7 +632,10 @@ function buildSheet(assignment) {
     passingMark: plan ? plan.passingMark : null,
     isPlanLocked: plan ? plan.isLocked : false,
     totalWeight: totalWeight(plan),
-    canEnterGrades: ready,
+
+    // A closed term: the sheet is read-only for everyone.
+    areGradesClosed: closed,
+    canEnterGrades: ready && !closed,
 
     components: components.map(c => ({
       subjectPlanComponentId: c.subjectPlanComponentId,
@@ -608,6 +780,44 @@ async function handleStudentGrades(req, res, url, pathname) {
 
 
   // =====================================================
+  // GET /api/studentgrades/{studentGradeId}/history
+  // Who entered the mark, the last edit and every change (newest first).
+  // Can always be read, also when the term's grades are closed.
+  // =====================================================
+
+  const historyMatch = pathname.match(/^\/api\/studentgrades\/(\d+)\/history$/);
+
+  if (req.method === 'GET' && historyMatch) {
+
+    const grade = studentGrades.find(
+      g => g.studentGradeId === Number(historyMatch[1])
+    );
+
+    if (!grade) {
+      sendError(res, 404, 'العلامة غير موجودة.', 'Grade not found.');
+      return;
+    }
+
+    const assessment = assessments.find(a => a.assessmentId === grade.assessmentId);
+    const assignment = assessment ? findAssignment(assessment.teacherAssignmentId) : null;
+
+    if (assignment && !ownsAssignment(assignment)) {
+      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      return;
+    }
+
+    sendOk(
+      res,
+      200,
+      'تم جلب سجل العلامة بنجاح',
+      'Grade history retrieved successfully',
+      buildHistory(grade)
+    );
+    return;
+  }
+
+
+  // =====================================================
   // POST /api/studentgrades/bulk
   // All or nothing: every row is checked before anything is saved.
   // =====================================================
@@ -632,6 +842,12 @@ async function handleStudentGrades(req, res, url, pathname) {
 
     if (!ownsAssignment(assignment)) {
       sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      return;
+    }
+
+    // A closed term: nobody saves marks, the Admin included.
+    if (areGradesClosed(assignment)) {
+      sendError(res, 400, GRADES_CLOSED_ERROR[0], GRADES_CLOSED_ERROR[1]);
       return;
     }
 
@@ -736,16 +952,28 @@ async function handleStudentGrades(req, res, url, pathname) {
           recordedByUserId: currentUser.userId,
           recordedAt: now,
           editedByUserId: null,
-          editedAt: null
+          editedAt: null,
+          changes: []
         });
 
         created++;
 
       } else if (Number(grade.mark) === mark) {
 
+        // The same mark again: not edited, no history row.
         unchanged++;
 
       } else {
+
+        // Every change is kept in the history (newest first).
+        grade.changes = grade.changes || [];
+
+        grade.changes.unshift({
+          oldMark: Number(grade.mark),
+          newMark: mark,
+          changedByUserId: currentUser.userId,
+          changedAt: now
+        });
 
         grade.mark = mark;
         grade.editedByUserId = currentUser.userId;

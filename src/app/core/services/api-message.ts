@@ -19,8 +19,9 @@ export class ApiMessageService {
 
   getErrorMessage(error: HttpErrorResponse): string {
 
-    // Backend errors now use the same camelCase shape as success responses.
-    // 401/403 have no body, so fall back to a generic message.
+    // Backend errors use the same camelCase shape as success responses,
+    // 401 and 403 included (since 2026-10-16 they have a message too).
+    // No body (network down, server not running): a generic message.
 
     const response =
       error.error as Partial<ApiResponse<unknown>> | null;

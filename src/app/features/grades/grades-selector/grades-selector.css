@@ -129,6 +129,26 @@
   background: #e8eefa;
 }
 
+/* A term whose grades are closed (in the term list and in the field).
+   Grey like the "Closed" chip of the academic years page. */
+.closed-tag {
+  display: inline-block;
+
+  margin-inline-start: 6px;
+  padding: 1px 8px;
+
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+
+  color: #334155;
+  background: #eef2f7;
+
+  vertical-align: middle;
+}
+
 
 /* ================================
    Locked Hint

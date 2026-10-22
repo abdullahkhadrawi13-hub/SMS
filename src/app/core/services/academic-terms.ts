@@ -110,4 +110,37 @@ export class AcademicTermsService {
     >(`${this.apiUrl}/${academicTermId}/current`, null);
   }
 
+
+  // PATCH /api/academicterms/{id}/grades/close (Admin, no body)
+  // Closes (approves) the term's grades: nobody can change marks,
+  // assessments, subject plans, assignments or placements of this term
+  // until it is opened again. Already closed → 200, nothing changes.
+  // Returns the updated term.
+  closeGrades(
+    academicTermId: number
+  ): Observable<
+    ApiResponse<AcademicTerm>
+  > {
+
+    return this.http.patch<
+      ApiResponse<AcademicTerm>
+    >(`${this.apiUrl}/${academicTermId}/grades/close`, null);
+  }
+
+
+  // PATCH /api/academicterms/{id}/grades/open (Admin, no body)
+  // Opens the term's grades again. Already open → 200, nothing changes.
+  // A term closed by the year-end rollover can never be opened (400).
+  // Returns the updated term.
+  openGrades(
+    academicTermId: number
+  ): Observable<
+    ApiResponse<AcademicTerm>
+  > {
+
+    return this.http.patch<
+      ApiResponse<AcademicTerm>
+    >(`${this.apiUrl}/${academicTermId}/grades/open`, null);
+  }
+
 }

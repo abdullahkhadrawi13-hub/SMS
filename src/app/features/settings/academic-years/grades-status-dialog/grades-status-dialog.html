@@ -1,0 +1,91 @@
+<div class="confirm" [class.opening]="!isClosing">
+
+  <div class="confirm-icon">
+    <mat-icon>{{ isClosing ? 'event_busy' : 'lock_open' }}</mat-icon>
+  </div>
+
+  <h2 mat-dialog-title>
+    {{
+      (isClosing
+        ? 'ACADEMIC_YEARS.GRADES_DIALOG.CLOSE_TITLE'
+        : 'ACADEMIC_YEARS.GRADES_DIALOG.OPEN_TITLE') | translate
+    }}
+  </h2>
+
+  <mat-dialog-content>
+
+    @if (isClosing) {
+
+      <!-- Closing: what nobody can change any more -->
+      <p>
+        {{ 'ACADEMIC_YEARS.GRADES_DIALOG.CLOSE_MESSAGE' | translate: { term: termLabel() } }}
+      </p>
+
+      <ul class="blocked-list">
+        @for (key of blockedKeys; track key) {
+          <li>
+            <mat-icon>block</mat-icon>
+            <span>{{ key | translate }}</span>
+          </li>
+        }
+      </ul>
+
+      <div class="info-box">
+
+        <mat-icon>visibility</mat-icon>
+
+        <span>
+          {{ 'ACADEMIC_YEARS.GRADES_DIALOG.CLOSE_INFO' | translate }}
+        </span>
+
+      </div>
+
+    } @else {
+
+      <!-- Opening: approved grades can change again -->
+      <p>
+        {{ 'ACADEMIC_YEARS.GRADES_DIALOG.OPEN_MESSAGE' | translate: { term: termLabel() } }}
+      </p>
+
+      <div class="warning-box">
+
+        <mat-icon>error</mat-icon>
+
+        <span>
+          {{ 'ACADEMIC_YEARS.GRADES_DIALOG.OPEN_WARNING' | translate }}
+        </span>
+
+      </div>
+
+    }
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+
+    <button
+      mat-button
+      type="button"
+      (click)="cancel()"
+    >
+      {{ 'ACADEMIC_YEARS.GRADES_DIALOG.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="button"
+      class="confirm-button"
+      (click)="confirm()"
+    >
+      <mat-icon>{{ isClosing ? 'event_busy' : 'lock_open' }}</mat-icon>
+
+      {{
+        (isClosing
+          ? 'ACADEMIC_YEARS.GRADES_DIALOG.CLOSE_CONFIRM'
+          : 'ACADEMIC_YEARS.GRADES_DIALOG.OPEN_CONFIRM') | translate
+      }}
+    </button>
+
+  </mat-dialog-actions>
+
+</div>

@@ -26,6 +26,29 @@ export interface AcademicYearView {
 
 
 // =====================================================
+// Term grades (open / closed)
+// =====================================================
+
+// The chip of the "Grades" column:
+// open     : marks can change.
+// closed   : closed (approved) by the Admin; can be opened again.
+// rollover : closed by the year-end rollover; can never be opened again.
+export type GradesStatus = 'open' | 'closed' | 'rollover';
+
+export function getGradesStatus(term: AcademicTerm): GradesStatus {
+
+  if (!term.areGradesClosed) {
+    return 'open';
+  }
+
+  return term.gradesClosedByRollover ? 'rollover' : 'closed';
+}
+
+// What the confirmation dialog asks about.
+export type GradesAction = 'close' | 'open';
+
+
+// =====================================================
 // Year status
 // =====================================================
 

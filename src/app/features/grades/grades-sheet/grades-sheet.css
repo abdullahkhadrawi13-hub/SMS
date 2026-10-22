@@ -206,6 +206,23 @@
   color: #92400e;
 }
 
+/* The term's grades are closed: grey with its own icon (event_busy),
+   so it is not mixed up with the plan's padlock. */
+.note.closed {
+  background: #eef2f7;
+  color: #334155;
+
+  border: 1px solid #d5dde8;
+}
+
+.note-title {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #1e293b;
+}
+
 
 /* ================================
    Table
@@ -440,6 +457,100 @@ th.student-col {
 }
 
 
+/* ----- History button (corner of a saved mark) ----- */
+
+/* Holds the mark and the button, so the button sits on the mark's corner. */
+.mark-cell {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mark-text {
+  display: inline-block;
+
+  min-width: 40px;
+  padding: 4px 6px;
+}
+
+.history-button {
+  position: absolute;
+  top: -9px;
+  inset-inline-end: -11px;
+
+  width: 22px;
+  height: 22px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #9ca3af;
+
+  cursor: pointer;
+
+  /* Hidden until the row is hovered (or the button / its input is focused). */
+  opacity: 0;
+
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.history-button mat-icon {
+  width: 14px;
+  height: 14px;
+
+  font-size: 14px;
+}
+
+.grades-table tbody tr:hover .history-button,
+.mark-cell:focus-within .history-button,
+.history-button[aria-expanded='true'] {
+  opacity: 1;
+}
+
+.history-button:hover {
+  color: #2554a4;
+}
+
+.history-button:focus-visible {
+  opacity: 1;
+
+  outline: 2px solid #2554a4;
+  outline-offset: 1px;
+}
+
+/* Edited after it was first entered: always visible, in blue. */
+.history-button.edited {
+  opacity: 1;
+
+  color: #2554a4;
+  background: #eef3fc;
+
+  border-color: #bfd0ee;
+}
+
+/* Touch screens have no hover: every saved mark shows a faint button. */
+@media (hover: none) {
+
+  .history-button {
+    opacity: 0.75;
+  }
+
+  .history-button.edited {
+    opacity: 1;
+  }
+
+}
+
+
 /* ----- Total and result ----- */
 
 .total-col {
@@ -488,6 +599,28 @@ td.total-col.stale {
 .result-badge.incomplete {
   background: #fef3c7;
   color: #92400e;
+}
+
+
+/* ================================
+   History menu / bottom sheet
+   ::ng-deep is needed because both open in an overlay,
+   outside this component (same as the teacher list in assignment-form).
+   ================================ */
+
+/* Wide screens: the menu is wider than a normal menu (280px). */
+::ng-deep .grade-history-menu.mat-mdc-menu-panel {
+  width: 340px;
+  max-width: calc(100vw - 32px);
+}
+
+::ng-deep .grade-history-menu .mat-mdc-menu-content {
+  padding: 0;
+}
+
+/* Narrow screens: the history fills the bottom sheet edge to edge. */
+::ng-deep .grade-history-sheet.mat-bottom-sheet-container {
+  padding: 0;
 }
 
 
@@ -541,6 +674,29 @@ td.total-col.stale {
 .swatch.invalid {
   background: #fef2f2;
   border-color: #dc2626;
+}
+
+/* The same look as an edited mark's history button. */
+.legend-history {
+  width: 20px;
+  height: 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #bfd0ee;
+  border-radius: 50%;
+
+  background: #eef3fc;
+  color: #2554a4;
+}
+
+.legend .legend-history mat-icon {
+  width: 13px;
+  height: 13px;
+
+  font-size: 13px;
 }
 
 
@@ -655,7 +811,8 @@ td.total-col.stale {
 
 @media (prefers-reduced-motion: reduce) {
 
-  .mark-input {
+  .mark-input,
+  .history-button {
     transition: none;
   }
 

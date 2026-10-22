@@ -20,7 +20,11 @@
 //   recordedByUserId: 3,
 //   recordedAt: '2026-10-15T08:30:00',
 //   editedByUserId: null,
-//   editedAt: null
+//   editedAt: null,
+//
+//   // The mark's history (GET /api/studentgrades/{id}/history), newest first.
+//   // [] = never changed. Each save that changes the mark adds one row.
+//   changes: [{ oldMark: 7, newMark: 9, changedByUserId: 1, changedAt: '2026-10-18T09:40:00' }]
 // }
 
 const studentGrades = [];

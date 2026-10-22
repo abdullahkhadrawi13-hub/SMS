@@ -1,4 +1,5 @@
 import { AttendanceStatus } from '../../core/models/attendance';
+import { fromApiDateTime } from '../../shared/utils/date-time';
 
 // The models sent to / received from the API are in core/models/attendance.ts.
 // This file keeps only what the attendance screens use.
@@ -88,17 +89,9 @@ export function formatAttendanceDate(
 // Date + time helpers (recordedAt / editedAt)
 // =====================================================
 
-// Time fields arrive in UTC but WITHOUT a trailing "Z"
-// (for example "2026-10-08T19:18:38.8039322", which is 22:18 in Amman).
-// Parsed as-is, the browser treats them as local time and shows them
-// 3 hours early. So the "Z" is added here before converting.
-export function fromApiDateTime(value: string): Date {
-
-  // The first 19 characters are "2026-10-08T19:18:38".
-  // The fraction of a second is dropped: it is not shown anywhere,
-  // and the backend sends it with a different number of digits each time.
-  return new Date(`${value.slice(0, 19)}Z`);
-}
+// Time fields arrive in UTC but WITHOUT a trailing "Z", so they are read
+// with fromApiDateTime() from shared/utils/date-time.ts (also used by the
+// grades and academic years pages).
 
 // UTC time from the API -> local time of the browser:
 // "08/10/2026 10:18 م" or "08/10/2026, 22:18".

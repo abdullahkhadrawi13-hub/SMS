@@ -123,6 +123,8 @@
               (editTerm)="openEditTerm(view, $event)"
               (toggleTermStatus)="toggleTermStatus($event)"
               (setCurrentTerm)="confirmSetCurrent(view, $event)"
+              (closeGrades)="confirmGradesStatus(view, $event, 'close')"
+              (openGrades)="confirmGradesStatus(view, $event, 'open')"
             />
 
           }

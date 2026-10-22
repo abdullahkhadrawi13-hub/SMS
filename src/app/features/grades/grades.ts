@@ -1,6 +1,7 @@
 import {
   GradeSheetAssessment,
   GradeSheetComponent,
+  GradeSheetMark,
   GradeSheetStudent,
 } from '../../core/models/student-grade';
 
@@ -61,10 +62,29 @@ export interface SheetColumn {
 
 
 // One student row, with the saved marks by assessmentId.
+// savedCells: the whole saved cell (studentGradeId, mark, isEdited),
+// used by the history button.
 export interface SheetRow {
   student: GradeSheetStudent;
   name: string;
   savedMarks: Map<number, number | null>;
+  savedCells: Map<number, GradeSheetMark>;
+}
+
+
+// =====================================================
+// A mark's history
+// =====================================================
+
+// What the history panel needs to know about the cell that opened it.
+// The history itself is loaded when the panel opens.
+export interface GradeHistoryTarget {
+  studentGradeId: number;
+
+  // Shown at the top of the panel: "Sara Al-Khatib · Quiz 1 (out of 10)".
+  studentName: string;
+  assessmentName: string;
+  maxMark: string;
 }
 
 

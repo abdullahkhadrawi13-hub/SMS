@@ -17,7 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { AcademicTermsService } from '../../../core/services/academic-terms';
 import { ApiMessageService } from '../../../core/services/api-message';
@@ -80,7 +80,6 @@ export class AttendanceHistory implements OnInit {
   private readonly termsService = inject(AcademicTermsService);
 
   private readonly apiMessageService = inject(ApiMessageService);
-  private readonly translate = inject(TranslateService);
   private readonly language = inject(Language);
 
   private readonly destroyRef = inject(DestroyRef);
@@ -249,7 +248,7 @@ export class AttendanceHistory implements OnInit {
 
           this.loading.set(false);
           this.records.set([]);
-          this.errorMessage.set(this.getErrorMessage(error));
+          this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
         }
       });
   }
@@ -297,16 +296,6 @@ export class AttendanceHistory implements OnInit {
     const [year, month] = value.slice(0, 7).split('-');
 
     return `${month}/${year}`;
-  }
-
-  private getErrorMessage(error: HttpErrorResponse): string {
-
-    // 403 has no body, so the backend sends no message for it.
-    if (error.status === 403) {
-      return this.translate.instant('ATTENDANCE.ERRORS.FORBIDDEN');
-    }
-
-    return this.apiMessageService.getErrorMessage(error);
   }
 
 }

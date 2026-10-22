@@ -612,6 +612,10 @@ function studentsRoutes(req, res) {
           sectionId:
             numericSectionId,
 
+          // A new student is always Active (0).
+          studentStatus:
+            0,
+
           role:
             3
         };
@@ -783,6 +787,32 @@ function studentsRoutes(req, res) {
             messageAr: 'الشعبة لا تتبع الصف المحدد',
             messageEn:
               'The selected section does not belong to the selected class',
+            data: null
+          });
+
+          return;
+        }
+
+
+        // -------------------------------------------------
+        // Graduated student (studentStatus = 2):
+        // the class and section cannot change (API Reference, section 4).
+        // Same class and section = only the personal details are saved.
+        // -------------------------------------------------
+
+        const placementChanged =
+          numericClassId !== student.classId ||
+          numericSectionId !== student.sectionId;
+
+        if (
+          student.studentStatus === 2 &&
+          placementChanged
+        ) {
+
+          sendJson(res, 400, {
+            success: false,
+            messageAr: 'هذا الطالب متخرج؛ لا يمكن تغيير صفه وشعبته. يمكن تعديل بياناته الشخصية فقط.',
+            messageEn: 'This student has graduated; their class and section cannot be changed. Only their personal details can be edited.',
             data: null
           });
 

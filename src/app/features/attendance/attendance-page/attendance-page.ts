@@ -283,7 +283,7 @@ export class AttendancePage implements OnInit {
           console.error('Failed to load classes:', error);
 
           this.classes.set([]);
-          this.sheetError.set(this.getErrorMessage(error));
+          this.sheetError.set(this.apiMessageService.getErrorMessage(error));
         }
       });
   }
@@ -324,7 +324,7 @@ export class AttendancePage implements OnInit {
 
           this.sections.set([]);
           this.sectionsLoading.set(false);
-          this.sheetError.set(this.getErrorMessage(error));
+          this.sheetError.set(this.apiMessageService.getErrorMessage(error));
         }
       });
   }
@@ -428,7 +428,7 @@ export class AttendancePage implements OnInit {
           this.sheetLoading.set(false);
           this.sheet.set(null);
           this.draft.set({});
-          this.sheetError.set(this.getErrorMessage(error));
+          this.sheetError.set(this.apiMessageService.getErrorMessage(error));
         }
       });
   }
@@ -587,7 +587,7 @@ export class AttendancePage implements OnInit {
 
         return of({
           success: false,
-          message: this.getErrorMessage(error)
+          message: this.apiMessageService.getErrorMessage(error)
         });
       })
     );
@@ -632,7 +632,7 @@ export class AttendancePage implements OnInit {
 
           this.summaryLoading.set(false);
           this.summary.set(null);
-          this.summaryError.set(this.getErrorMessage(error));
+          this.summaryError.set(this.apiMessageService.getErrorMessage(error));
         }
       });
   }
@@ -673,21 +673,6 @@ export class AttendancePage implements OnInit {
     this.loadSheet();
 
     this.loadSections(section.classId, section.sectionId);
-  }
-
-
-  // =========================
-  // Helpers
-  // =========================
-
-  private getErrorMessage(error: HttpErrorResponse): string {
-
-    // 403 has no body, so the backend sends no message for it.
-    if (error.status === 403) {
-      return this.translate.instant('ATTENDANCE.ERRORS.FORBIDDEN');
-    }
-
-    return this.apiMessageService.getErrorMessage(error);
   }
 
 }

@@ -1,21 +1,26 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { AcademicTerm } from '../../../../core/models/academic-term';
 import { Language } from '../../../../core/services/language';
+import { formatApiDateTimeAsDate } from '../../../../shared/utils/date-time';
 
 import {
   AcademicYearView,
   countDays,
   formatLongDate,
-  fromApiDate
+  fromApiDate,
+  getGradesStatus,
+  GradesStatus
 } from '../academic-years';
 
 // One academic year: a header that opens / closes the card,
@@ -26,10 +31,12 @@ import {
   selector: 'app-year-card',
   imports: [
     MatButtonModule,
+    MatDividerModule,
     MatIconModule,
     MatMenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
+    MatTooltipModule,
     TranslatePipe
   ],
   templateUrl: './year-card.html',
@@ -62,6 +69,10 @@ export class YearCard {
   readonly toggleTermStatus = output<AcademicTerm>();
   readonly setCurrentTerm = output<AcademicTerm>();
 
+  // Close / open the term's grades (the parent asks for confirmation first).
+  readonly closeGrades = output<AcademicTerm>();
+  readonly openGrades = output<AcademicTerm>();
+
   // ===== View =====
 
   private readonly isArabic = computed(
@@ -70,10 +81,11 @@ export class YearCard {
 
   // The actions column has only Admin actions,
   // so the whole column is hidden for read-only users.
+  // The grades column (open / closed) is shown to everyone.
   readonly displayedColumns = computed(() =>
     this.canManage()
-      ? ['number', 'name', 'period', 'status', 'current', 'actions']
-      : ['number', 'name', 'period', 'status', 'current']
+      ? ['number', 'name', 'period', 'status', 'grades', 'current', 'actions']
+      : ['number', 'name', 'period', 'status', 'grades', 'current']
   );
 
   // id used by aria-controls on the open / close button.
@@ -113,6 +125,18 @@ export class YearCard {
   // "Set as current" only for an active term that is not already current.
   canSetCurrent(term: AcademicTerm): boolean {
     return this.canManage() && term.isActive && !term.isCurrent;
+  }
+
+  // open / closed / closed-by-rollover (the chip of the grades column).
+  getGradesStatus(term: AcademicTerm): GradesStatus {
+    return getGradesStatus(term);
+  }
+
+  // The day the grades were closed, under the chip ("" while open).
+  getGradesClosedDate(term: AcademicTerm): string {
+    return term.gradesClosedAt
+      ? formatApiDateTimeAsDate(term.gradesClosedAt, this.isArabic())
+      : '';
   }
 
 }

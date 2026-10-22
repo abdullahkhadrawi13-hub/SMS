@@ -25,6 +25,10 @@ export interface TermOption {
   yearName: string;
   startDate: string;
   isCurrent: boolean;
+
+  // The term's grades are closed (only the grades page fills it,
+  // to show "Closed" next to the term in its dropdown).
+  areGradesClosed?: boolean;
 }
 
 

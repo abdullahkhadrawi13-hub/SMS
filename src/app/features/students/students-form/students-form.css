@@ -214,6 +214,74 @@
 
 
 /* ================================
+   Graduated Student
+   ================================ */
+
+.academic-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 8px;
+}
+
+/* Gold, the same as the "Graduation class" badge of the classes page. */
+.graduated-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 3px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  background: linear-gradient(135deg, #fdebb0, #f2c14e);
+  color: #5c3d02;
+}
+
+.graduated-badge mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+/* Why the class and section are locked. */
+.graduated-note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding: 10px 14px;
+
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+
+  background: #fffbeb;
+  color: #78350f;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.graduated-note mat-icon {
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  font-size: 20px;
+
+  color: #b45309;
+}
+
+
+/* ================================
    Material Form Fields
    ================================ */
 

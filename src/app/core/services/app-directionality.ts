@@ -28,7 +28,10 @@ export class AppDirectionality implements Directionality {
       this.change.emit(dir);
     });
   }
+
+  // Called when the app is torn down (for example in tests):
+  // completes the EventEmitter so its subscribers are released.
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this.change.complete();
   }
 }

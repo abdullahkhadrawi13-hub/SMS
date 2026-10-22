@@ -82,6 +82,11 @@ export class GradesSelector {
     )?.teacherName ?? ''
   );
 
+  // Staff mode: the chosen term (shown by the term field's mat-select-trigger).
+  readonly selectedTerm = computed(
+    () => this.terms().find(t => t.academicTermId === this.termId()) ?? null
+  );
+
   // Staff mode: a section is chosen but it has no subjects.
   readonly noSubjects = computed(
     () => this.sectionId() !== null

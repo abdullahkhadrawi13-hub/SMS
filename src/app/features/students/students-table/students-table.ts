@@ -10,7 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Student } from '../../../core/models/student';
+import { Student, StudentStatus } from '../../../core/models/student';
 
 @Component({
   selector: 'app-students-table',
@@ -80,6 +80,12 @@ export class StudentsTable {
     'status',
     'actions'
   ];
+
+
+  // studentStatus = Graduated: a gold "Graduated" badge next to the status.
+  isGraduated(student: Student): boolean {
+    return student.studentStatus === StudentStatus.Graduated;
+  }
 
 
   // The class name comes with the student (classNameAr / classNameEn).

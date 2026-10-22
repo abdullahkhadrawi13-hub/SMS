@@ -43,7 +43,12 @@ import { Language } from '../../../core/services/language';
 
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 import { ActiveSectionDto } from '../../../core/models/section';
-import { CreateStudentRequest, StudentRequest } from '../../../core/models/student';
+import {
+  CreateStudentRequest,
+  Student,
+  StudentRequest,
+  StudentStatus
+} from '../../../core/models/student';
 
 
 export interface StudentFormDialogData {
@@ -96,8 +101,14 @@ export class StudentsForm {
   readonly isSubmitting = signal(false);
 
   readonly errorMessage = signal('');
- 
 
+  // Edit mode, studentStatus = Graduated (API Reference, section 4):
+  // the class and section are the ones the student graduated from and
+  // cannot be changed. They are shown read-only (by name, from the student),
+  // and sent back unchanged with the personal details.
+  readonly isGraduated = signal(false);
+  readonly graduatedClassName = signal('');
+  readonly graduatedSectionName = signal('');
 
 
   readonly studentId = signal<number | null>(
@@ -282,6 +293,12 @@ export class StudentsForm {
 
           this.isLoading.set(false);
 
+          // طالب متخرج: الصف والشعبة مقفلان (يُرسلان كما وصلا)
+          if (student.studentStatus === StudentStatus.Graduated) {
+            this.lockGraduatedPlacement(student);
+            return;
+          }
+
           // تحميل شعب الصف ثم تحديد شعبة الطالب الحالية
           this.fetchSections(student.classId)
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -304,6 +321,34 @@ export class StudentsForm {
           this.isLoading.set(false);
         }
       });
+  }
+
+
+  // A graduated student: the class and section cannot change (else 400).
+  // Both controls keep the ids from the GET and are disabled, so the user
+  // cannot change them; getRawValue() still sends them back unchanged.
+  // Their names come with the student, so the sections are not loaded
+  // (the graduation class or section may not even be active any more).
+  private lockGraduatedPlacement(student: Student): void {
+
+    const isArabic = document.documentElement.lang === 'ar';
+
+    this.isGraduated.set(true);
+
+    this.graduatedClassName.set(
+      (isArabic ? student.classNameAr : student.classNameEn) || '—'
+    );
+
+    this.graduatedSectionName.set(
+      (isArabic ? student.sectionAr : student.sectionEn) || '—'
+    );
+
+    this.studentForm.controls.sectionId.setValue(student.sectionId, {
+      emitEvent: false
+    });
+
+    this.studentForm.controls.classId.disable({ emitEvent: false });
+    this.studentForm.controls.sectionId.disable({ emitEvent: false });
   }
 
 

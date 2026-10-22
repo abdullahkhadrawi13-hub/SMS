@@ -22,7 +22,11 @@ import { Language } from '../../../../core/services/language';
 import { Permissions } from '../../../../core/services/permissions';
 import { ActionResult } from '../../../../shared/services/action-result';
 
-import { AcademicYearView, getYearStatus } from '../academic-years';
+import {
+  AcademicYearView,
+  getYearStatus,
+  GradesAction
+} from '../academic-years';
 import { CurrentTermBanner } from '../current-term-banner/current-term-banner';
 import { YearCard } from '../year-card/year-card';
 import {
@@ -39,11 +43,16 @@ import {
   SetCurrentDialog,
   SetCurrentDialogData
 } from '../set-current-dialog/set-current-dialog';
+import {
+  GradesStatusDialog,
+  GradesStatusDialogData
+} from '../grades-status-dialog/grades-status-dialog';
 
 // /settings/academic-years
 // The academic years of the school, each with its terms, and the current term.
 // Admin: add / edit years and terms, activate / deactivate a term,
-// set the current term. AssistantPrincipal: read only.
+// set the current term, close / open a term's grades.
+// AssistantPrincipal: read only (sees whether each term's grades are closed).
 @Component({
   selector: 'app-academic-years-page',
   imports: [
@@ -423,6 +432,88 @@ export class AcademicYearsPage {
 
         error: (error: HttpErrorResponse) => {
           console.error('Failed to set the current term:', error);
+
+          this.busyTermId.set(null);
+
+          this.actionResult.show(
+            'error',
+            this.apiMessageService.getErrorMessage(error)
+          );
+        }
+      });
+  }
+
+
+  // =========================
+  // Term grades (close / open)
+  // =========================
+
+  // Close: PATCH /api/academicterms/{id}/grades/close
+  // Open:  PATCH /api/academicterms/{id}/grades/open
+  // Both after the confirmation dialog. A term closed by the year-end
+  // rollover can never be opened (the card shows that item disabled,
+  // and the backend answers 400 anyway).
+  confirmGradesStatus(
+    view: AcademicYearView,
+    term: AcademicTerm,
+    action: GradesAction
+  ): void {
+
+    if (this.busyTermId() !== null) {
+      return;
+    }
+
+    if (action === 'open' && term.gradesClosedByRollover) {
+      return;
+    }
+
+    this.dialog
+      .open<GradesStatusDialog, GradesStatusDialogData, boolean>(GradesStatusDialog, {
+        width: '480px',
+        maxWidth: '95vw',
+        direction: this.language.currentDirection(),
+        data: { term, year: view.year, action }
+      })
+      .afterClosed()
+      .subscribe(confirmed => {
+        if (confirmed) {
+          this.changeGradesStatus(term, action);
+        }
+      });
+  }
+
+  private changeGradesStatus(term: AcademicTerm, action: GradesAction): void {
+
+    this.busyTermId.set(term.academicTermId);
+
+    const request = action === 'close'
+      ? this.termsService.closeGrades(term.academicTermId)
+      : this.termsService.openGrades(term.academicTermId);
+
+    request
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: response => {
+          this.busyTermId.set(null);
+
+          if (!response.success) {
+            this.actionResult.show(
+              'error',
+              this.apiMessageService.getMessage(response)
+            );
+            return;
+          }
+
+          this.loadData();
+
+          this.actionResult.show(
+            'success',
+            this.apiMessageService.getMessage(response)
+          );
+        },
+
+        error: (error: HttpErrorResponse) => {
+          console.error(`Failed to ${action} the term grades:`, error);
 
           this.busyTermId.set(null);
 

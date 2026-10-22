@@ -126,6 +126,7 @@
   },
 
   "STUDENTS": {
+    "GRADUATED": "Graduated",
     "TITLE": "Student Management",
 
     "SUBTITLE": "Manage student information and accounts",
@@ -223,6 +224,10 @@
   },
 
   "STUDENTS_FORM": {
+    "GRADUATED": {
+      "BADGE": "Graduated",
+      "NOTE": "This student graduated from this class and section, so they cannot be changed. You can edit the personal details only."
+    },
     "ADD_TITLE": "Add Student",
     "EDIT_TITLE": "Edit Student",
 
@@ -1055,10 +1060,6 @@
         "TITLE": "No attendance records",
         "MESSAGE": "No attendance has been recorded for this student yet."
       }
-    },
-
-    "ERRORS": {
-      "FORBIDDEN": "You do not have permission to view attendance data."
     }
   },
 
@@ -1127,7 +1128,17 @@
       "EDIT": "Edit term",
       "ACTIVATE": "Activate term",
       "DEACTIVATE": "Deactivate term",
-      "CURRENT_LOCKED": "The current term cannot be deactivated"
+      "CURRENT_LOCKED": "The current term cannot be deactivated",
+      "GRADES": "Grades",
+      "CLOSE_GRADES": "Close grades",
+      "OPEN_GRADES": "Open grades",
+      "ROLLOVER_LOCKED": "Closed by the year-end rollover, cannot be opened"
+    },
+    "GRADES_STATUS": {
+      "OPEN": "Open",
+      "CLOSED": "Closed",
+      "CLOSED_BY_ROLLOVER": "Closed by the year-end rollover",
+      "ROLLOVER_HINT": "Cannot be opened: the pass and repeat decisions were made from these grades."
     },
     "STATUS": {
       "ACTIVE": "Active",
@@ -1194,6 +1205,24 @@
       "WARNING": "Attendance, subject plans and teacher assignments depend on the current term.",
       "CANCEL": "Cancel",
       "CONFIRM": "Set as current"
+    },
+    "GRADES_DIALOG": {
+      "CLOSE_TITLE": "Close the term's grades?",
+      "OPEN_TITLE": "Open the term's grades?",
+      "CLOSE_MESSAGE": "After closing, nobody can change anything that affects the grades of \"{{term}}\", not even the Admin:",
+      "BLOCKED": {
+        "MARKS": "Entering and editing marks",
+        "ASSESSMENTS": "Assessments",
+        "PLANS": "Subject plans",
+        "ASSIGNMENTS": "Creating and activating assignments",
+        "PLACEMENTS": "Moving students between sections"
+      },
+      "CLOSE_INFO": "Grade sheets and mark histories can still be viewed, and you can open the grades later from the same menu.",
+      "OPEN_MESSAGE": "After opening, teachers and the administration can change the grades of \"{{term}}\" again, as well as assessments, subject plans, assignments and moving students between sections.",
+      "OPEN_WARNING": "If the grades were approved, any change after opening changes approved results. Close them again when you are done.",
+      "CANCEL": "Cancel",
+      "CLOSE_CONFIRM": "Close grades",
+      "OPEN_CONFIRM": "Open grades"
     }
   },
   "ATTENDANCE_OFFICER": {
@@ -1246,6 +1275,7 @@
       "TERM": "Academic term",
       "CURRENT": "Current",
       "CURRENT_SUFFIX": "(current)",
+      "CLOSED": "Closed",
       "CLASS": "Class",
       "SECTION": "Section",
       "SUBJECT": "Subject",
@@ -1279,7 +1309,10 @@
         "INCOMPLETE_PLAN_ADMIN": "The subject plan's weights add up to {{weight}} of 100, so marks can't be entered. Complete the weights from Subjects → Subject plans.",
         "READ_ONLY": "View only: you can see the marks but not change them.",
         "OPEN_EMPTY_TEACHER": "You haven't added an assessment under \"{{names}}\" yet. No student gets a total until you add at least one from the assessments page in My classes.",
-        "OPEN_EMPTY_STAFF": "The teacher hasn't added an assessment under \"{{names}}\" yet, so no student gets a total."
+        "OPEN_EMPTY_STAFF": "The teacher hasn't added an assessment under \"{{names}}\" yet, so no student gets a total.",
+        "GRADES_CLOSED_TITLE": "This term's grades are closed.",
+        "GRADES_CLOSED": "Marks and their history can be viewed, but not changed until the administration opens them.",
+        "GRADES_CLOSED_ADMIN": "Marks and their history can be viewed, but not changed. You can open them from Settings → Academic Years and Terms."
       },
       "TABLE": {
         "STUDENT": "Student",
@@ -1303,8 +1336,26 @@
         "CHANGED": "Changed, not saved",
         "INVALID": "Not valid",
         "FIXED": "Fixed component of the subject plan",
-        "MISSING": "No mark yet (not counted as zero)"
+        "MISSING": "No mark yet (not counted as zero)",
+        "EDITED": "Changed after it was entered (click a mark's icon to see its history)"
+      },
+      "HISTORY": {
+        "OPEN": "Mark history",
+        "EDITED": "Changed after it was entered: click to see the history"
       }
+    },
+    "HISTORY": {
+      "TITLE": "Mark history",
+      "CLOSE": "Close",
+      "LOADING": "Loading the history...",
+      "CHANGED": "Changed from",
+      "TO": "to",
+      "EDITED_OLD": "Changed (before change details were kept)",
+      "ENTERED": "Entered",
+      "MARK_NOW": "Mark now:",
+      "CHANGES_COUNT": "Changes: {{count}}",
+      "NEVER_CHANGED": "Not changed since it was entered",
+      "EDITED_BEFORE_HISTORY": "Changed before details were kept"
     },
     "SAVE_BAR": {
       "CHANGES": "Unsaved marks: {{count}}",

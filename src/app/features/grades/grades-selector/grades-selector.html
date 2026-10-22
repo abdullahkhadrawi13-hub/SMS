@@ -76,12 +76,32 @@
           [disabled]="locked() || termsLoading()"
           (selectionChange)="termChange.emit($event.value)"
         >
+          <!-- The chosen term, with the same "Closed" tag as in the list -->
+          <mat-select-trigger>
+            @if (selectedTerm(); as term) {
+              {{ getTermLabel(term) }}
+
+              @if (term.isCurrent) {
+                {{ 'GRADES.SELECTOR.CURRENT_SUFFIX' | translate }}
+              }
+
+              @if (term.areGradesClosed) {
+                <span class="closed-tag">{{ 'GRADES.SELECTOR.CLOSED' | translate }}</span>
+              }
+            }
+          </mat-select-trigger>
+
           @for (term of terms(); track term.academicTermId) {
             <mat-option [value]="term.academicTermId">
               {{ getTermLabel(term) }}
 
               @if (term.isCurrent) {
                 {{ 'GRADES.SELECTOR.CURRENT_SUFFIX' | translate }}
+              }
+
+              <!-- The term's grades are closed: seen before it is chosen -->
+              @if (term.areGradesClosed) {
+                <span class="closed-tag">{{ 'GRADES.SELECTOR.CLOSED' | translate }}</span>
               }
             </mat-option>
           }

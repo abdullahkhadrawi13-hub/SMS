@@ -111,18 +111,31 @@
             </th>
 
             <td mat-cell *matCellDef="let student">
-              <span
-                class="status-badge"
-                [class.active]="student.isActive"
-                [class.inactive]="!student.isActive"
-              >
-                <span class="status-dot"></span>
+              <span class="status-cell">
 
-                {{
-                  student.isActive
-                    ? ('STUDENTS.ACTIVE' | translate)
-                    : ('STUDENTS.INACTIVE' | translate)
-                }}
+                <!-- The login account (isActive) -->
+                <span
+                  class="status-badge"
+                  [class.active]="student.isActive"
+                  [class.inactive]="!student.isActive"
+                >
+                  <span class="status-dot"></span>
+
+                  {{
+                    student.isActive
+                      ? ('STUDENTS.ACTIVE' | translate)
+                      : ('STUDENTS.INACTIVE' | translate)
+                  }}
+                </span>
+
+                <!-- Graduated (studentStatus): next to the account status, not instead of it -->
+                @if (isGraduated(student)) {
+                  <span class="graduated-badge">
+                    <mat-icon>workspace_premium</mat-icon>
+                    {{ 'STUDENTS.GRADUATED' | translate }}
+                  </span>
+                }
+
               </span>
             </td>
           </ng-container>

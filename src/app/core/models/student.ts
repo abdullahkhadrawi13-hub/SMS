@@ -1,5 +1,18 @@
 import { UserRole } from './user-role';
 
+
+// The student's academic status (the students table, not the account).
+// Sent as a number by the API, like every enum.
+// It is separate from isActive (the login account): a graduated student
+// can have an active or a deactivated account.
+export enum StudentStatus {
+  Active = 0,
+  Inactive = 1,
+  Graduated = 2,
+  Transferred = 3,
+}
+
+
 export interface Student {
   studentId: number;
   studentNumber: string;
@@ -31,6 +44,10 @@ export interface Student {
   classNameEn: string;
   sectionAr: string;
   sectionEn: string;
+
+  // Graduated: classId / sectionId are the class and section the student
+  // graduated from, and they cannot be changed (only personal details can).
+  studentStatus: StudentStatus;
 
   role: UserRole;
 }

@@ -5,19 +5,27 @@ import {
   inject,
   input,
   output,
+  ViewContainerRef,
 } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { toSignal } from '@angular/core/rxjs-interop';
 
+import { map } from 'rxjs';
+
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../core/services/language';
-import { GradeSheet } from '../../../core/models/student-grade';
+import { GradeSheet, GradeSheetMark } from '../../../core/models/student-grade';
 import {
   componentColor,
+  FULL_WEIGHT,
   formatNumber,
   PLAN_STATUS_BADGE,
   PlanStatus,
@@ -26,6 +34,7 @@ import {
 
 import {
   getMarkError,
+  GradeHistoryTarget,
   GradesDraft,
   GradesSheetCounts,
   markKey,
@@ -35,6 +44,8 @@ import {
   SheetColumnGroup,
   SheetRow,
 } from '../grades';
+import { GradeHistory } from '../grade-history/grade-history';
+import { GradeHistorySheet } from '../grade-history-sheet/grade-history-sheet';
 
 
 // Who is looking at the sheet (changes the notes above the table).
@@ -46,12 +57,18 @@ export type GradesViewer = 'admin' | 'assistant' | 'teacher';
 export type GradesEmptyState = 'select' | 'no-assignments';
 
 // One note above the table.
+// closed = the term's grades are closed (grey, with a bold title line).
 interface SheetNote {
-  tone: 'info' | 'warn';
+  tone: 'info' | 'warn' | 'closed';
   icon: string;
   key: string;
+  titleKey?: string;
   params?: Record<string, string>;
 }
+
+// Up to this width the history opens as a bottom sheet instead of a menu
+// (the same width the other pages switch to their phone layout).
+const NARROW_SCREEN = '(max-width: 650px)';
 
 
 // The grade sheet: title, counters, notes and the marks table.
@@ -66,14 +83,21 @@ interface SheetNote {
 // editable = true: each mark is an input. The typed text goes to the parent
 // (markChange), which keeps it in the draft until it is saved.
 // The sheet only shows the draft: yellow = changed, red = not allowed.
+//
+// Every saved mark has a small history button in its corner
+// (always visible on an edited mark, on row hover for the others).
+// It opens the mark's history: a menu on wide screens, a bottom sheet on
+// narrow ones. The history can be read even when the term's grades are closed.
 @Component({
   selector: 'app-grades-sheet',
   imports: [
     MatButtonModule,
     MatIconModule,
+    MatMenuModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
     TranslatePipe,
+    GradeHistory,
   ],
   templateUrl: './grades-sheet.html',
   styleUrl: './grades-sheet.css',
@@ -82,6 +106,18 @@ export class GradesSheet {
 
   private readonly language = inject(Language);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly bottomSheet = inject(MatBottomSheet);
+
+  // Passed to the bottom sheet, so it can use the page's GradeHistoryCache.
+  private readonly viewContainerRef = inject(ViewContainerRef);
+
+  // true on a narrow screen: the history opens as a bottom sheet.
+  readonly isNarrow = toSignal(
+    inject(BreakpointObserver)
+      .observe(NARROW_SCREEN)
+      .pipe(map(state => state.matches)),
+    { initialValue: false }
+  );
 
 
   // ===== Inputs (the data is owned by the parent page) =====
@@ -92,7 +128,7 @@ export class GradesSheet {
   readonly draft = input<GradesDraft>({});
 
   // true = the marks can be typed (Admin or the owning teacher,
-  // and the plan's weights add up to 100).
+  // the plan's weights add up to 100, and the term's grades are open).
   readonly editable = input(false);
 
   readonly viewer = input.required<GradesViewer>();
@@ -147,6 +183,8 @@ export class GradesSheet {
   });
 
   // The plan's state badge (same badges as the Subjects page).
+  // "ready" is about the weights only: canEnterGrades is also false when
+  // the term's grades are closed, so it cannot tell a complete plan here.
   readonly planBadge = computed(() => {
 
     const sheet = this.sheet();
@@ -157,7 +195,7 @@ export class GradesSheet {
 
     const status: PlanStatus = sheet.isPlanLocked
       ? 'locked'
-      : sheet.canEnterGrades ? 'ready' : 'incomplete';
+      : sheet.totalWeight === FULL_WEIGHT ? 'ready' : 'incomplete';
 
     return PLAN_STATUS_BADGE[status];
   });
@@ -208,6 +246,9 @@ export class GradesSheet {
       savedMarks: new Map(
         student.marks.map(m => [m.assessmentId, m.mark])
       ),
+      savedCells: new Map(
+        student.marks.map(m => [m.assessmentId, m])
+      ),
     }));
   });
 
@@ -254,6 +295,22 @@ export class GradesSheet {
 
     const viewer = this.viewer();
     const notes: SheetNote[] = [];
+
+    // The term's grades are closed: this comes first and replaces the plan
+    // and read-only notes (nobody can change anything in this term).
+    if (sheet.areGradesClosed) {
+
+      notes.push({
+        tone: 'closed',
+        icon: 'event_busy',
+        titleKey: 'GRADES.SHEET.NOTES.GRADES_CLOSED_TITLE',
+        key: viewer === 'admin'
+          ? 'GRADES.SHEET.NOTES.GRADES_CLOSED_ADMIN'
+          : 'GRADES.SHEET.NOTES.GRADES_CLOSED',
+      });
+
+      return notes;
+    }
 
     // No plan, or the weights are not 100: no marks can be entered.
     if (sheet.subjectPlanId === null) {
@@ -371,6 +428,58 @@ export class GradesSheet {
 
   formatMax(value: number): string {
     return formatNumber(value);
+  }
+
+
+  // =========================
+  // A mark's history
+  // =========================
+
+  // The saved cell when it has a mark (only a saved mark has a history).
+  historyCell(row: SheetRow, column: SheetColumn): GradeSheetMark | null {
+
+    const cell = row.savedCells.get(column.assessment.assessmentId);
+
+    return cell && cell.studentGradeId !== null ? cell : null;
+  }
+
+  // What the history panel shows at its top.
+  historyTarget(row: SheetRow, column: SheetColumn): GradeHistoryTarget | null {
+
+    const cell = this.historyCell(row, column);
+
+    if (!cell) {
+      return null;
+    }
+
+    return {
+      studentGradeId: cell.studentGradeId as number,
+      studentName: row.name,
+      assessmentName: column.name,
+      maxMark: formatNumber(column.assessment.maxMark),
+    };
+  }
+
+  // Narrow screen: the history slides up from the bottom.
+  // (On a wide screen the button is a menu trigger and opens the menu itself.)
+  openHistory(row: SheetRow, column: SheetColumn): void {
+
+    if (!this.isNarrow()) {
+      return;
+    }
+
+    const target = this.historyTarget(row, column);
+
+    if (!target) {
+      return;
+    }
+
+    this.bottomSheet.open<GradeHistorySheet, GradeHistoryTarget>(GradeHistorySheet, {
+      data: target,
+      panelClass: 'grade-history-sheet',
+      direction: this.language.currentDirection(),
+      viewContainerRef: this.viewContainerRef,
+    });
   }
 
 

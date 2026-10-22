@@ -1,8 +1,9 @@
 // Student grades (SMS API Reference, section 10).
 //
-// The grades page uses two endpoints only:
+// The grades page uses three endpoints:
 //   - GET  /api/studentgrades/sheet?teacherAssignmentId=  → GradeSheet
 //   - POST /api/studentgrades/bulk                        → BulkGradesResult
+//   - GET  /api/studentgrades/{studentGradeId}/history    → GradeHistory
 //
 // The sheet = the assessments of one section (columns) × the students
 // actively enrolled in it (rows), with each student's total and result.
@@ -58,6 +59,10 @@ export interface GradeSheetMark {
   assessmentId: number;
   studentGradeId: number | null;
   mark: number | null;
+
+  // true = the mark was changed after it was first entered
+  // (its history has at least one change). false when there is no mark.
+  isEdited: boolean;
 }
 
 
@@ -113,7 +118,12 @@ export interface GradeSheet {
 
   totalWeight: number;
 
-  // false = no plan yet, or its weights are not 100: the sheet is read-only.
+  // The term's grades are closed by the Admin (API Reference, section 7):
+  // the sheet is read-only for everyone. Not the same as isPlanLocked.
+  areGradesClosed: boolean;
+
+  // false = no plan yet, its weights are not 100, or the term's grades
+  // are closed: the sheet is read-only.
   canEnterGrades: boolean;
 
   components: GradeSheetComponent[];
@@ -152,3 +162,54 @@ export interface BulkGradesResult {
 
 // The most marks one bulk request can save (API Reference, section 10).
 export const BULK_GRADES_LIMIT = 2000;
+
+
+// =====================================================
+// A mark's history
+// GET /api/studentgrades/{studentGradeId}/history
+// =====================================================
+//
+// Readers: Admin, AssistantPrincipal and the teacher who owns the assignment
+// (another teacher gets 400, an unknown mark 404).
+// It can always be read, also when the term's grades are closed.
+// Every time field is UTC without a trailing "Z" (read it with fromApiDateTime).
+// A name is first name + family name.
+
+
+// One change of the mark (old → new).
+export interface GradeChange {
+  oldMark: number;
+  newMark: number;
+
+  changedByUserId: number;
+  changedByNameAr: string;
+  changedByNameEn: string;
+
+  changedAt: string;
+}
+
+
+export interface GradeHistory {
+  studentGradeId: number;
+
+  // The mark now.
+  mark: number;
+
+  // Who entered the mark first, and when.
+  recordedByUserId: number;
+  recordedByNameAr: string;
+  recordedByNameEn: string;
+  recordedAt: string;
+
+  // The last edit: null when the mark was never changed.
+  editedByUserId: number | null;
+  editedByNameAr: string | null;
+  editedByNameEn: string | null;
+  editedAt: string | null;
+
+  // Every change, newest first. [] when the mark was never changed.
+  // The oldest row's oldMark is the mark as first entered.
+  // Marks changed before 2026-10-21 have no rows here,
+  // but their last edit still shows in editedBy / editedAt.
+  changes: GradeChange[];
+}

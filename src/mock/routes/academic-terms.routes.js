@@ -1,5 +1,9 @@
 const academicTerms = require('../data/academic-terms');
 const academicYears = require('../data/academic-years');
+const users = require('../data/users');
+
+// Only the Admin (role 0) can close or open a term's grades.
+const ADMIN_ROLE = 0;
 
 
 // =========================
@@ -48,6 +52,23 @@ function notFound(res) {
     messageEn: 'Academic term not found.',
     data: null
   });
+}
+
+// The user is found by the token sent in the Authorization header.
+function getCurrentUser(req) {
+
+  const header = req.headers.authorization || '';
+
+  const token = header.startsWith('Bearer ')
+    ? header.slice('Bearer '.length)
+    : '';
+
+  return users.find(user => user.token === token) || null;
+}
+
+// UTC without a trailing "Z", like the real backend.
+function getUtcNow() {
+  return new Date().toISOString().slice(0, 19);
 }
 
 function invalidBody(res) {
@@ -144,6 +165,9 @@ module.exports = (req, res) => {
 
   // /api/academicterms/by-year/{academicYearId}
   const byYearMatch = pathname.match(/^\/api\/academicterms\/by-year\/(\d+)$/);
+
+  // /api/academicterms/{id}/grades/close and /grades/open
+  const gradesMatch = pathname.match(/^\/api\/academicterms\/(\d+)\/grades\/(close|open)$/);
 
 
   // =========================
@@ -275,7 +299,12 @@ module.exports = (req, res) => {
           startDate: toApiDateTime(body.startDate),
           endDate: toApiDateTime(body.endDate),
           isActive: Boolean(body.isActive),
-          isCurrent: false
+          isCurrent: false,
+
+          // A new term's grades are open.
+          areGradesClosed: false,
+          gradesClosedAt: null,
+          gradesClosedByRollover: false
         };
 
         academicTerms.push(newTerm);
@@ -397,6 +426,91 @@ module.exports = (req, res) => {
       messageAr: 'تم تعيين الفصل الحالي بنجاح',
       messageEn: 'Current term set successfully',
       data: null
+    });
+
+    return true;
+  }
+
+
+  // =====================================================
+  // PATCH /api/academicterms/{id}/grades/close   (Admin, no body)
+  // PATCH /api/academicterms/{id}/grades/open    (Admin, no body)
+  // Both return the whole term. Already closed / open → 200, no change.
+  // A term closed by the rollover can never be opened → 400.
+  // =====================================================
+
+  if (req.method === 'PATCH' && gradesMatch) {
+
+    const currentUser = getCurrentUser(req);
+
+    if (!currentUser) {
+      sendJson(res, 401, {
+        success: false,
+        messageAr: 'يجب تسجيل الدخول.',
+        messageEn: 'You must log in.',
+        data: null
+      });
+      return true;
+    }
+
+    if (currentUser.role !== ADMIN_ROLE) {
+      sendJson(res, 403, {
+        success: false,
+        messageAr: 'ليس لديك صلاحية لتنفيذ هذا الإجراء.',
+        messageEn: 'You do not have permission to do this.',
+        data: null
+      });
+      return true;
+    }
+
+    const term = academicTerms.find(
+      item => item.academicTermId === Number(gradesMatch[1])
+    );
+
+    if (!term) {
+      notFound(res);
+      return true;
+    }
+
+    const closing = gradesMatch[2] === 'close';
+
+    if (closing) {
+
+      if (!term.areGradesClosed) {
+        term.areGradesClosed = true;
+        term.gradesClosedAt = getUtcNow();
+        term.gradesClosedByRollover = false;
+      }
+
+      sendJson(res, 200, {
+        success: true,
+        messageAr: 'تم إغلاق علامات الفصل.',
+        messageEn: "The term's grades are closed.",
+        data: term
+      });
+
+      return true;
+    }
+
+    if (term.gradesClosedByRollover) {
+      sendJson(res, 400, {
+        success: false,
+        messageAr: 'أُغلقت علامات هذا الفصل مع ترحيل نهاية السنة ولا يمكن فتحها: قرارات النجاح والإعادة بُنيت عليها.',
+        messageEn: "This term's grades were closed by the year-end rollover and cannot be reopened: the pass and repeat decisions were made from them.",
+        data: null
+      });
+
+      return true;
+    }
+
+    term.areGradesClosed = false;
+    term.gradesClosedAt = null;
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم فتح علامات الفصل.',
+      messageEn: "The term's grades are open.",
+      data: term
     });
 
     return true;
