@@ -605,7 +605,7 @@ td.total-col.stale {
 /* ================================
    History menu / bottom sheet
    ::ng-deep is needed because both open in an overlay,
-   outside this component (same as the teacher list in assignment-form).
+   outside this component (same as the teacher list in subject-assignments-form).
    ================================ */
 
 /* Wide screens: the menu is wider than a normal menu (280px). */

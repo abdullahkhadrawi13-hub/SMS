@@ -40,8 +40,8 @@ import {
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 
-// Data passed by the parent (class-subjects) when the dialog is opened.
-export interface AssignmentFormData {
+// Data passed by the parent (subject-assignments-tab) when the dialog is opened.
+export interface SubjectAssignmentsFormData {
   mode: 'add' | 'edit';
 
   // The selected term / class / section (fixed in both modes).
@@ -78,7 +78,7 @@ export interface AssignmentFormData {
 // - { success: true }: the assignment was saved (the parent reloads the table)
 // - { createPlanFor }: "Create the plan first" was clicked; the parent opens the
 //   plans tab and its "New plan" form (for this subject, or none when null)
-export interface AssignmentFormResult {
+export interface SubjectAssignmentsFormResult {
   success?: boolean;
   createPlanFor?: number | null;
 }
@@ -117,7 +117,7 @@ function teacherSelectedValidator(
 // cannot be added (the backend answers 400), so it is shown disabled,
 // with a link to create the plan first.
 @Component({
-  selector: 'app-assignment-form',
+  selector: 'app-subject-assignments-form',
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
@@ -130,15 +130,15 @@ function teacherSelectedValidator(
     MatSelectModule,
     TranslatePipe,
   ],
-  templateUrl: './assignment-form.html',
-  styleUrl: './assignment-form.css',
+  templateUrl: './subject-assignments-form.html',
+  styleUrl: './subject-assignments-form.css',
 })
-export class AssignmentForm implements OnInit {
+export class SubjectAssignmentsForm implements OnInit {
 
   private readonly fb = inject(FormBuilder);
 
   private readonly dialogRef =
-    inject(MatDialogRef<AssignmentForm>);
+    inject(MatDialogRef<SubjectAssignmentsForm>);
 
   private readonly assignmentsService = inject(TeacherAssignmentsService);
   private readonly teachersService = inject(TeachersService);
@@ -146,7 +146,7 @@ export class AssignmentForm implements OnInit {
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly data = inject<AssignmentFormData>(MAT_DIALOG_DATA);
+  readonly data = inject<SubjectAssignmentsFormData>(MAT_DIALOG_DATA);
 
   readonly isEditMode = this.data.mode === 'edit';
 
@@ -371,7 +371,7 @@ export class AssignmentForm implements OnInit {
       createPlanFor: withoutPlan.length === 1
         ? withoutPlan[0].subject.subjectId
         : null,
-    } satisfies AssignmentFormResult);
+    } satisfies SubjectAssignmentsFormResult);
   }
 
 
@@ -432,7 +432,7 @@ export class AssignmentForm implements OnInit {
             return;
           }
 
-          this.dialogRef.close({ success: true } satisfies AssignmentFormResult);
+          this.dialogRef.close({ success: true } satisfies SubjectAssignmentsFormResult);
 
           this.actionResult.show(
             'success',

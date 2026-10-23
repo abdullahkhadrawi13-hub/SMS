@@ -75,11 +75,11 @@
 
     <!-- Subjects of a section and their teachers (class / section / term) -->
     <div [hidden]="activeTab() !== 'assignments'">
-      <app-class-subjects-tab
+      <app-subject-assignments-tab
         [canManage]="canManage()"
         [active]="activeTab() === 'assignments'"
         (createPlan)="createPlanFromAssignments($event)"
-      ></app-class-subjects-tab>
+      ></app-subject-assignments-tab>
     </div>
 
     <!-- General subjects list -->

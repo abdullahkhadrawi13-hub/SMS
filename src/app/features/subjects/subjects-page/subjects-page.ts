@@ -19,7 +19,7 @@ import { SUBJECTS_TABS, SubjectsTab } from '../subject';
 import { SubjectsSelection } from '../subjects-selection';
 import { SubjectsHeader } from '../subjects-header/subjects-header';
 import { PlansTab } from '../subject-plans/plans-tab/plans-tab';
-import { ClassSubjectsTab } from '../class-subjects/class-subjects-tab/class-subjects-tab';
+import { SubjectAssignmentsTab } from '../subject-assignments/subject-assignments-tab/subject-assignments-tab';
 import { SubjectsListTab } from '../subjects-list/subjects-list-tab/subjects-list-tab';
 
 
@@ -45,7 +45,7 @@ const TAB_SUBTITLES: Record<SubjectsTab, string> = {
   imports: [
     SubjectsHeader,
     PlansTab,
-    ClassSubjectsTab,
+    SubjectAssignmentsTab,
     SubjectsListTab,
     MatIconModule,
     MatTabsModule,

@@ -1,5 +1,5 @@
 <!-- Term / Class (shared with the plans tab) / Section -->
-<app-class-subjects-selector
+<app-term-class-selector
   [terms]="selection.terms()"
   [termsLoading]="selection.isLoading()"
   [termId]="selection.termId()"
@@ -11,10 +11,10 @@
   (termChange)="onTermChange($event)"
   (classChange)="onClassChange($event)"
   (sectionChange)="onSectionChange($event)"
-></app-class-subjects-selector>
+></app-term-class-selector>
 
 <!-- Subjects of the section (error / loading / select / empty / table) -->
-<app-class-subjects-table
+<app-subject-assignments-table
   [rows]="rows()"
   [counts]="counts()"
   [missingSubjects]="missingSubjects()"
@@ -31,4 +31,4 @@
   (editSubject)="openEditAssignment($event)"
   (viewPlan)="viewPlan($event)"
   (toggleStatus)="toggleAssignmentStatus($event)"
-></app-class-subjects-table>
+></app-subject-assignments-table>

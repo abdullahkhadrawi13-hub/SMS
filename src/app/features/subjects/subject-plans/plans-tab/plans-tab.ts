@@ -34,7 +34,7 @@ import {
 } from '../../../../core/models/subject-plan';
 
 import { SubjectsSelection } from '../../subjects-selection';
-import { ClassSubjectsSelector } from '../../class-subjects/class-subjects-selector/class-subjects-selector';
+import { TermClassSelector } from '../../term-class-selector/term-class-selector';
 import { PlanCard } from '../plan-card/plan-card';
 import { PlanForm, PlanFormData } from '../plan-form/plan-form';
 import { PlansCopyData, PlansCopyDialog } from '../plans-copy-dialog/plans-copy-dialog';
@@ -54,7 +54,7 @@ import { PlansCopyData, PlansCopyDialog } from '../plans-copy-dialog/plans-copy-
 @Component({
   selector: 'app-plans-tab',
   imports: [
-    ClassSubjectsSelector,
+    TermClassSelector,
     MatButtonModule,
     MatDialogModule,
     MatIconModule,

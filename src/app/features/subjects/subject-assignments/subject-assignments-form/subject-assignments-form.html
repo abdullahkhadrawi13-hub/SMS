@@ -3,8 +3,8 @@
 <h2 mat-dialog-title>
   {{
     isEditMode
-      ? ('SUBJECTS.ASSIGNMENT_FORM.EDIT_TITLE' | translate)
-      : ('SUBJECTS.ASSIGNMENT_FORM.ADD_TITLE' | translate)
+      ? ('SUBJECTS.ASSIGNMENTS_FORM.EDIT_TITLE' | translate)
+      : ('SUBJECTS.ASSIGNMENTS_FORM.ADD_TITLE' | translate)
   }}
 </h2>
 
@@ -21,7 +21,7 @@
         @if (isEditMode) {
           <div class="context-item">
             <span class="context-label">
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.SUBJECT' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT' | translate }}
             </span>
 
             <span class="context-value">{{ data.subjectName }}</span>
@@ -30,7 +30,7 @@
 
         <div class="context-item">
           <span class="context-label">
-            {{ 'SUBJECTS.ASSIGNMENT_FORM.TERM' | translate }}
+            {{ 'SUBJECTS.ASSIGNMENTS_FORM.TERM' | translate }}
           </span>
 
           <span class="context-value">{{ data.termLabel }}</span>
@@ -38,7 +38,7 @@
 
         <div class="context-item">
           <span class="context-label">
-            {{ 'SUBJECTS.ASSIGNMENT_FORM.CLASS' | translate }}
+            {{ 'SUBJECTS.ASSIGNMENTS_FORM.CLASS' | translate }}
           </span>
 
           <span class="context-value">{{ data.className }}</span>
@@ -46,7 +46,7 @@
 
         <div class="context-item">
           <span class="context-label">
-            {{ 'SUBJECTS.ASSIGNMENT_FORM.SECTION' | translate }}
+            {{ 'SUBJECTS.ASSIGNMENTS_FORM.SECTION' | translate }}
           </span>
 
           <span class="context-value">{{ data.sectionName }}</span>
@@ -59,7 +59,7 @@
           <mat-icon>lock</mat-icon>
 
           <span>
-            {{ 'SUBJECTS.ASSIGNMENT_FORM.LOCKED_NOTE' | translate }}
+            {{ 'SUBJECTS.ASSIGNMENTS_FORM.LOCKED_NOTE' | translate }}
           </span>
         </p>
       }
@@ -74,7 +74,7 @@
 
         <span>
           {{
-            'SUBJECTS.ASSIGNMENT_FORM.TEACHER_INACTIVE'
+            'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_INACTIVE'
               | translate: { name: data.currentTeacherName }
           }}
         </span>
@@ -97,7 +97,7 @@
             <mat-icon>warning_amber</mat-icon>
 
             <span>
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.NO_SUBJECTS' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.NO_SUBJECTS' | translate }}
             </span>
           </div>
 
@@ -106,7 +106,7 @@
           <mat-form-field appearance="outline">
 
             <mat-label>
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.SUBJECT' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT' | translate }}
             </mat-label>
 
             <!-- Each subject shows the state of its plan.
@@ -137,13 +137,13 @@
                     } @else if (!option.plan.isComplete) {
                       <span class="plan-tag warn">
                         {{
-                          'SUBJECTS.ASSIGNMENT_FORM.PLAN_WEIGHTS'
+                          'SUBJECTS.ASSIGNMENTS_FORM.PLAN_WEIGHTS'
                             | translate: { total: formatNumber(option.plan.totalWeight) }
                         }}
                       </span>
                     } @else {
                       <span class="plan-tag ok">
-                        {{ 'SUBJECTS.ASSIGNMENT_FORM.PLAN_READY' | translate }}
+                        {{ 'SUBJECTS.ASSIGNMENTS_FORM.PLAN_READY' | translate }}
                       </span>
                     }
 
@@ -154,12 +154,12 @@
             </mat-select>
 
             <mat-hint>
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.SUBJECT_HINT' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT_HINT' | translate }}
             </mat-hint>
 
             @if (isFieldInvalid('subjectId')) {
               <mat-error>
-                {{ 'SUBJECTS.ASSIGNMENT_FORM.REQUIRED' | translate }}
+                {{ 'SUBJECTS.ASSIGNMENTS_FORM.REQUIRED' | translate }}
               </mat-error>
             }
 
@@ -175,7 +175,7 @@
 
                 <span>
                   {{
-                    'SUBJECTS.ASSIGNMENT_FORM.PLAN_INFO'
+                    'SUBJECTS.ASSIGNMENTS_FORM.PLAN_INFO'
                       | translate: { mark: formatNumber(plan.passingMark), count: plan.components.length }
                   }}
                 </span>
@@ -186,7 +186,7 @@
 
                 <span>
                   {{
-                    'SUBJECTS.ASSIGNMENT_FORM.PLAN_INCOMPLETE'
+                    'SUBJECTS.ASSIGNMENTS_FORM.PLAN_INCOMPLETE'
                       | translate: { total: formatNumber(plan.totalWeight) }
                   }}
                 </span>
@@ -205,11 +205,11 @@
               <div class="message-body">
                 <span>
                   @if (noSubjectWithPlan) {
-                    {{ 'SUBJECTS.ASSIGNMENT_FORM.NO_PLANS' | translate }}
+                    {{ 'SUBJECTS.ASSIGNMENTS_FORM.NO_PLANS' | translate }}
                   }
 
                   {{
-                    'SUBJECTS.ASSIGNMENT_FORM.NO_PLAN'
+                    'SUBJECTS.ASSIGNMENTS_FORM.NO_PLAN'
                       | translate: { names: subjectsWithoutPlanNames(), className: data.className }
                   }}
                 </span>
@@ -223,7 +223,7 @@
                 >
                   <mat-icon>rule</mat-icon>
 
-                  {{ 'SUBJECTS.ASSIGNMENT_FORM.CREATE_PLAN' | translate }}
+                  {{ 'SUBJECTS.ASSIGNMENTS_FORM.CREATE_PLAN' | translate }}
                 </button>
               </div>
             </div>
@@ -239,7 +239,7 @@
       <mat-form-field appearance="outline">
 
         <mat-label>
-          {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER' | translate }}
+          {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER' | translate }}
         </mat-label>
 
         <!-- The search icon turns into a spinner while searching -->
@@ -255,7 +255,7 @@
           autocomplete="off"
           formControlName="teacher"
           [matAutocomplete]="teacherAuto"
-          [placeholder]="'SUBJECTS.ASSIGNMENT_FORM.TEACHER_PLACEHOLDER' | translate"
+          [placeholder]="'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_PLACEHOLDER' | translate"
         />
 
         @if (hasTeacherValue && !isSubmitting()) {
@@ -264,7 +264,7 @@
             matSuffix
             type="button"
             (click)="clearTeacher()"
-            [attr.aria-label]="'SUBJECTS.ASSIGNMENT_FORM.TEACHER_CLEAR' | translate"
+            [attr.aria-label]="'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_CLEAR' | translate"
           >
             <mat-icon>close</mat-icon>
           </button>
@@ -296,15 +296,15 @@
           <!-- Status rows (not selectable) -->
           @if (teachersLoading()) {
             <mat-option disabled class="teacher-status">
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER_SEARCHING' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_SEARCHING' | translate }}
             </mat-option>
           } @else if (teachersError()) {
             <mat-option disabled class="teacher-status error">
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER_SEARCH_ERROR' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_SEARCH_ERROR' | translate }}
             </mat-option>
           } @else if (searchedText() && teacherResults().length === 0) {
             <mat-option disabled class="teacher-status">
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER_NO_RESULTS' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_NO_RESULTS' | translate }}
             </mat-option>
           }
 
@@ -313,7 +313,7 @@
         @if (teacherText && teacherText.length < minSearchLength) {
           <mat-hint>
             {{
-              'SUBJECTS.ASSIGNMENT_FORM.TEACHER_MIN_CHARS'
+              'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_MIN_CHARS'
                 | translate: { count: minSearchLength }
             }}
           </mat-hint>
@@ -322,9 +322,9 @@
         @if (isFieldInvalid('teacher')) {
           <mat-error>
             @if (assignmentForm.controls.teacher.hasError('teacherNotSelected')) {
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.TEACHER_NOT_SELECTED' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_NOT_SELECTED' | translate }}
             } @else {
-              {{ 'SUBJECTS.ASSIGNMENT_FORM.REQUIRED' | translate }}
+              {{ 'SUBJECTS.ASSIGNMENTS_FORM.REQUIRED' | translate }}
             }
           </mat-error>
         }
@@ -340,7 +340,7 @@
         <mat-icon>info</mat-icon>
 
         <span>
-          {{ 'SUBJECTS.ASSIGNMENT_FORM.ADD_NOTE' | translate }}
+          {{ 'SUBJECTS.ASSIGNMENTS_FORM.ADD_NOTE' | translate }}
         </span>
       </p>
     }
@@ -359,7 +359,7 @@
     [disabled]="isSubmitting()"
     (click)="cancel()"
   >
-    {{ 'SUBJECTS.ASSIGNMENT_FORM.CANCEL' | translate }}
+    {{ 'SUBJECTS.ASSIGNMENTS_FORM.CANCEL' | translate }}
   </button>
 
   <button
@@ -373,8 +373,8 @@
 
     {{
       isSubmitting()
-        ? ('SUBJECTS.ASSIGNMENT_FORM.SAVING' | translate)
-        : ('SUBJECTS.ASSIGNMENT_FORM.SAVE' | translate)
+        ? ('SUBJECTS.ASSIGNMENTS_FORM.SAVING' | translate)
+        : ('SUBJECTS.ASSIGNMENTS_FORM.SAVE' | translate)
     }}
   </button>
 

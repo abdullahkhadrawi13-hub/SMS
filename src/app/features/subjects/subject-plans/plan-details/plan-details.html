@@ -51,7 +51,7 @@
 
       <button mat-flat-button color="primary" type="button" (click)="loadPlan()">
         <mat-icon>refresh</mat-icon>
-        {{ 'SUBJECTS.CLASS_TABLE.RETRY' | translate }}
+        {{ 'SUBJECTS.PLAN_DETAILS.RETRY' | translate }}
       </button>
 
     </div>
@@ -424,7 +424,7 @@
                     type="button"
                     [disabled]="!canEdit() || isBusy()"
                     [matMenuTriggerFor]="rowMenu"
-                    [attr.aria-label]="'SUBJECTS.CLASS_TABLE.ACTIONS' | translate"
+                    [attr.aria-label]="'SUBJECTS.PLAN_DETAILS.ACTIONS' | translate"
                   >
                     <mat-icon>more_vert</mat-icon>
                   </button>
