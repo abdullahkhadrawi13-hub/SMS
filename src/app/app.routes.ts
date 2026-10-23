@@ -105,6 +105,20 @@ export const routes: Routes = [
       },
 
 
+      // أولياء الأمور: Admin يدير، AssistantPrincipal قراءة فقط
+      // (API Reference, section 14)
+      {
+        path: 'parents',
+        loadChildren: () =>
+          import('./features/parents/parents.routes')
+            .then(m => m.PARENTS_ROUTES),
+        canActivate: [roleGuard],
+        data: {
+          roles: [UserRole.Admin, UserRole.AssistantPrincipal]
+        }
+      },
+
+
       {
         path: 'subjects',
         loadChildren: () =>

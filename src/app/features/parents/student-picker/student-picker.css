@@ -1,0 +1,180 @@
+/* Same look as the teacher combobox in the subject assignments form. */
+:host {
+  display: block;
+}
+
+.picker-field {
+  width: 100%;
+}
+
+
+/* ================================
+   Field
+   ================================ */
+
+/* The search icon and the spinner share the same place (prefix),
+   so the spinner never overlaps the clear button (suffix). */
+.picker-prefix {
+  margin-inline: 12px 6px;
+}
+
+.picker-search-icon {
+  color: #9ca3af;
+}
+
+
+/* ================================
+   Results list
+   ::ng-deep is needed because the list opens in an overlay,
+   outside this component. The panel class keeps it scoped.
+   ================================ */
+
+::ng-deep .student-autocomplete-panel.mat-mdc-autocomplete-panel {
+  --mat-autocomplete-background-color: #ffffff;
+  --mat-autocomplete-container-shape: 12px;
+  --mat-autocomplete-container-elevation-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.1),
+    0 2px 6px rgba(15, 23, 42, 0.06);
+
+  /* Hover / keyboard focus: the light blue used across the site. */
+  --mat-option-hover-state-layer-color: #f3f8ff;
+  --mat-option-focus-state-layer-color: #eaf2ff;
+  --mat-option-selected-state-layer-color: #eaf2ff;
+
+  margin-top: 6px;
+  padding: 6px;
+
+  border: 1px solid #e5e7eb;
+}
+
+/* Each result: a rounded row with a small gap between rows. */
+::ng-deep .student-autocomplete-panel .student-option.mat-mdc-option {
+  min-height: 58px;
+
+  margin-bottom: 4px;
+  padding: 8px 12px;
+
+  border-radius: 8px;
+
+  transition: background-color 0.15s ease;
+}
+
+::ng-deep .student-autocomplete-panel .student-option.mat-mdc-option:last-of-type {
+  margin-bottom: 0;
+}
+
+::ng-deep .student-autocomplete-panel .student-option .mdc-list-item__primary-text {
+  width: 100%;
+  min-width: 0;
+}
+
+::ng-deep .student-autocomplete-panel .student-option-content {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  min-width: 0;
+}
+
+/* Small soft-blue circle with a school icon. */
+::ng-deep .student-autocomplete-panel .student-avatar {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  background: #eaf2ff;
+  color: #2554a4;
+
+  transition: background-color 0.15s ease;
+}
+
+::ng-deep .student-autocomplete-panel .student-avatar mat-icon {
+  width: 18px;
+  height: 18px;
+
+  margin: 0;
+
+  font-size: 18px;
+}
+
+::ng-deep .student-autocomplete-panel .student-option:hover .student-avatar,
+::ng-deep .student-autocomplete-panel .student-option.mat-mdc-option-active .student-avatar {
+  background: #dbeafe;
+}
+
+/* Two lines: the full name, then the number and the class (small, gray). */
+::ng-deep .student-autocomplete-panel .student-text {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  min-width: 0;
+}
+
+::ng-deep .student-autocomplete-panel .student-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+
+  color: #111827;
+}
+
+::ng-deep .student-autocomplete-panel .student-meta {
+  font-size: 12px;
+  line-height: 1.4;
+
+  color: #9ca3af;
+}
+
+/* "Added" / "Linked to this account" next to a student that cannot be chosen. */
+::ng-deep .student-autocomplete-panel .student-tag {
+  flex-shrink: 0;
+
+  padding: 3px 8px;
+
+  border-radius: 10px;
+
+  background: #f1f5f9;
+  color: #6b7280;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+/* Status rows (searching / no results / error): not selectable. */
+::ng-deep .student-autocomplete-panel .student-status.mat-mdc-option {
+  min-height: 44px;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+::ng-deep .student-autocomplete-panel .student-status .mdc-list-item__primary-text {
+  opacity: 1;
+
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+::ng-deep .student-autocomplete-panel .student-status.error .mdc-list-item__primary-text {
+  color: #b91c1c;
+}

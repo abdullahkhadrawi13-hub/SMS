@@ -1,0 +1,96 @@
+<mat-form-field appearance="outline" subscriptSizing="dynamic" class="picker-field">
+
+  <mat-label>
+    {{ 'PARENTS.PICKER.LABEL' | translate }}
+  </mat-label>
+
+  <!-- The search icon turns into a spinner while searching -->
+  @if (isSearching()) {
+    <mat-spinner matPrefix diameter="18" class="picker-prefix"></mat-spinner>
+  } @else {
+    <mat-icon matPrefix class="picker-prefix picker-search-icon">search</mat-icon>
+  }
+
+  <input
+    matInput
+    type="text"
+    autocomplete="off"
+    [formControl]="searchControl"
+    [matAutocomplete]="studentAuto"
+    [readonly]="disabled()"
+    [placeholder]="'PARENTS.PICKER.PLACEHOLDER' | translate"
+  />
+
+  @if (typedText && !disabled()) {
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="clear()"
+      [attr.aria-label]="'PARENTS.PICKER.CLEAR' | translate"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+
+  <mat-autocomplete
+    #studentAuto="matAutocomplete"
+    [displayWith]="displayValue"
+    class="student-autocomplete-panel"
+    (optionSelected)="onSelected($event.option.value)"
+  >
+
+    @for (student of results(); track student.studentId) {
+      <mat-option
+        [value]="student"
+        [disabled]="isExcluded(student)"
+        class="student-option"
+      >
+        <span class="student-option-content">
+
+          <span class="student-avatar" aria-hidden="true">
+            <mat-icon>school</mat-icon>
+          </span>
+
+          <span class="student-text">
+            <span class="student-name">{{ getFullName(student) }}</span>
+            <span class="student-meta">
+              <bdi>{{ student.studentNumber }}</bdi>
+              · {{ getClassSection(student) }}
+            </span>
+          </span>
+
+          @if (isExcluded(student)) {
+            <span class="student-tag">
+              {{ excludedLabel() | translate }}
+            </span>
+          }
+
+        </span>
+      </mat-option>
+    }
+
+    <!-- Status rows (not selectable) -->
+    @if (isSearching()) {
+      <mat-option disabled class="student-status">
+        {{ 'PARENTS.PICKER.SEARCHING' | translate }}
+      </mat-option>
+    } @else if (hasError()) {
+      <mat-option disabled class="student-status error">
+        {{ 'PARENTS.PICKER.SEARCH_ERROR' | translate }}
+      </mat-option>
+    } @else if (searchedText() && results().length === 0) {
+      <mat-option disabled class="student-status">
+        {{ 'PARENTS.PICKER.NO_RESULTS' | translate }}
+      </mat-option>
+    }
+
+  </mat-autocomplete>
+
+  @if (typedText.length < minSearchLength) {
+    <mat-hint>
+      {{ 'PARENTS.PICKER.MIN_CHARS' | translate: { count: minSearchLength } }}
+    </mat-hint>
+  }
+
+</mat-form-field>

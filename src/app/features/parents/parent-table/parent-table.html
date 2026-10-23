@@ -1,0 +1,358 @@
+<!-- Error -->
+@if (errorMessage()) {
+
+  <div class="state-card error-state">
+
+    <mat-icon>error_outline</mat-icon>
+
+    <p>
+      {{ errorMessage() | translate }}
+    </p>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="retry.emit()"
+    >
+      <mat-icon>refresh</mat-icon>
+
+      {{ 'PARENTS.TABLE.RETRY' | translate }}
+    </button>
+
+  </div>
+
+}
+
+<!-- First load only (nothing to show yet) -->
+@else if (isInitialLoading()) {
+
+  <div class="state-card">
+
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <p>
+      {{ 'PARENTS.TABLE.LOADING' | translate }}
+    </p>
+
+  </div>
+
+}
+
+<!-- Parents table card -->
+@else {
+
+  <div class="table-card" [class.is-refreshing]="isRefreshing()">
+
+    <!-- Reload indicator: sits on top of the card without taking any height -->
+    @if (isRefreshing()) {
+      <mat-progress-bar
+        class="refresh-bar"
+        mode="indeterminate"
+      ></mat-progress-bar>
+    }
+
+    @if (parents().length > 0) {
+
+      <!-- Table wrapper allows horizontal scrolling on smaller screens. -->
+      <div class="table-wrapper">
+
+        <table
+          mat-table
+          [dataSource]="parents()"
+        >
+
+          <!-- Parent Name -->
+          <ng-container matColumnDef="name">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'PARENTS.TABLE.NAME' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let parent"
+            >
+
+              <div class="parent-name-cell">
+
+                <div class="parent-avatar">
+                  <mat-icon>person</mat-icon>
+                </div>
+
+                <span>
+                  {{ getFullName(parent) }}
+                </span>
+
+              </div>
+
+            </td>
+
+          </ng-container>
+
+
+          <!-- Login ID -->
+          <ng-container matColumnDef="loginId">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'PARENTS.TABLE.LOGIN_ID' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let parent"
+            >
+              <bdi>{{ parent.loginId }}</bdi>
+            </td>
+
+          </ng-container>
+
+
+          <!-- Phone Number -->
+          <ng-container matColumnDef="phoneNumber">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'PARENTS.TABLE.PHONE' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let parent"
+            >
+              <bdi>{{ parent.phoneNumber }}</bdi>
+            </td>
+
+          </ng-container>
+
+
+          <!-- Children: first name + relationship, "+N" for the rest -->
+          <ng-container matColumnDef="children">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'PARENTS.TABLE.CHILDREN' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let parent"
+            >
+
+              @if (parent.children.length > 0) {
+
+                <div class="children-chips">
+
+                  @for (child of visibleChildren(parent); track child.studentId) {
+                    <span class="child-chip relationship-{{ child.relationship }}">
+                      {{ getFirstName(child) }}
+                      <span class="chip-relationship">
+                        · {{ getRelationshipTranslationKey(child.relationship) | translate }}
+                      </span>
+                    </span>
+                  }
+
+                  @if (hiddenCount(parent) > 0) {
+                    <span
+                      class="child-chip more"
+                      [matTooltip]="hiddenNames(parent)"
+                    >
+                      +{{ hiddenCount(parent) }}
+                    </span>
+                  }
+
+                </div>
+
+              } @else {
+
+                <span class="no-children">
+                  {{ 'PARENTS.TABLE.NO_CHILDREN' | translate }}
+                </span>
+
+              }
+
+            </td>
+
+          </ng-container>
+
+
+          <!-- Status -->
+          <ng-container matColumnDef="status">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'PARENTS.TABLE.STATUS' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let parent"
+            >
+
+              <span
+                class="status-badge"
+                [class.active]="parent.isActive"
+                [class.inactive]="!parent.isActive"
+              >
+
+                <span class="status-dot"></span>
+
+                {{
+                  parent.isActive
+                    ? ('PARENTS.ACTIVE' | translate)
+                    : ('PARENTS.INACTIVE' | translate)
+                }}
+
+              </span>
+
+            </td>
+
+          </ng-container>
+
+
+          <!-- Actions -->
+          <ng-container matColumnDef="actions">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+            >
+              {{ 'PARENTS.TABLE.ACTIONS' | translate }}
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let parent"
+            >
+
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="parentMenu"
+                type="button"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+
+              <mat-menu #parentMenu="matMenu">
+
+                <!-- View parent -->
+                <button
+                  mat-menu-item
+                  type="button"
+                  (click)="viewParent.emit(parent.parentId)"
+                >
+                  <mat-icon>visibility</mat-icon>
+
+                  {{ 'PARENTS.TABLE.VIEW' | translate }}
+                </button>
+
+                <!-- Edit, link and status actions (Admin only) -->
+                @if (canManage()) {
+
+                  <button
+                    mat-menu-item
+                    type="button"
+                    (click)="editParent.emit(parent.parentId)"
+                  >
+                    <mat-icon>edit</mat-icon>
+
+                    {{ 'PARENTS.TABLE.EDIT' | translate }}
+                  </button>
+
+                  <button
+                    mat-menu-item
+                    type="button"
+                    (click)="linkChild.emit(parent)"
+                  >
+                    <mat-icon>link</mat-icon>
+
+                    {{ 'PARENTS.TABLE.LINK_CHILD' | translate }}
+                  </button>
+
+                  <button
+                    mat-menu-item
+                    type="button"
+                    (click)="toggleStatus.emit(parent)"
+                  >
+                    <mat-icon>
+                      {{ parent.isActive ? 'person_off' : 'person' }}
+                    </mat-icon>
+
+                    {{
+                      parent.isActive
+                        ? ('PARENTS.TABLE.DEACTIVATE' | translate)
+                        : ('PARENTS.TABLE.ACTIVATE' | translate)
+                    }}
+
+                  </button>
+
+                }
+
+              </mat-menu>
+
+            </td>
+
+          </ng-container>
+
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns"
+          ></tr>
+
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+          ></tr>
+
+        </table>
+
+      </div>
+
+    } @else {
+
+      <!-- Empty state -->
+      <div class="empty-state">
+
+        <mat-icon>person_off</mat-icon>
+
+        <p>
+          {{ 'PARENTS.TABLE.EMPTY' | translate }}
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- Pagination: shown whenever there are results overall -->
+    @if (totalCount() > 0) {
+
+      <mat-paginator
+        [length]="totalCount()"
+        [pageIndex]="pageNumber() - 1"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="[10, 20, 50]"
+        [disabled]="isLoading()"
+        (page)="pageChange.emit($event)"
+        [attr.aria-label]="'PARENTS.TABLE.PAGINATION' | translate"
+      >
+      </mat-paginator>
+
+    }
+
+  </div>
+
+}

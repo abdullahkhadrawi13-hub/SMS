@@ -1,0 +1,418 @@
+<div class="parent-dialog">
+
+  <!-- Dialog Header -->
+  <div class="dialog-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+        <mat-icon>family_restroom</mat-icon>
+      </div>
+
+      <div>
+
+        <h2>
+          {{ 'PARENTS.DETAILS.TITLE' | translate }}
+        </h2>
+
+        <p>
+          {{ 'PARENTS.DETAILS.SUBTITLE' | translate }}
+        </p>
+
+      </div>
+
+    </div>
+
+    <button
+      mat-icon-button
+      type="button"
+      (click)="close()"
+      [attr.aria-label]="'PARENTS.DETAILS.CLOSE' | translate"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (isLoading()) {
+
+    <div class="state-card">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>
+        {{ 'PARENTS.DETAILS.LOADING' | translate }}
+      </p>
+
+    </div>
+
+  }
+
+  <!-- Error -->
+  @else if (errorMessage()) {
+
+    <div class="state-card error-state">
+
+      <mat-icon>error_outline</mat-icon>
+
+      <h3>
+        {{ 'PARENTS.DETAILS.ERROR_TITLE' | translate }}
+      </h3>
+
+      <p>
+        {{ errorMessage() | translate }}
+      </p>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="retry()"
+      >
+        <mat-icon>refresh</mat-icon>
+
+        {{ 'PARENTS.DETAILS.RETRY' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+  <!-- Parent Information -->
+  @else if (parent(); as currentParent) {
+
+    <div class="dialog-content">
+
+      <!-- Parent Profile: name (page language), login ID and status -->
+      <div class="parent-profile">
+
+        <div class="parent-avatar">
+          {{ getInitials(currentParent) }}
+        </div>
+
+        <div class="parent-name">
+
+          <h2>
+            {{ getFullName(currentParent) }}
+          </h2>
+
+          <span class="parent-login">
+            <mat-icon>alternate_email</mat-icon>
+            <bdi>{{ currentParent.loginId }}</bdi>
+          </span>
+
+        </div>
+
+        <span
+          class="status-badge"
+          [class.active]="currentParent.isActive"
+          [class.inactive]="!currentParent.isActive"
+        >
+
+          <span class="status-dot"></span>
+
+          {{
+            currentParent.isActive
+              ? ('PARENTS.ACTIVE' | translate)
+              : ('PARENTS.INACTIVE' | translate)
+          }}
+
+        </span>
+
+      </div>
+
+
+      <!-- ================================
+           Children
+           ================================ -->
+
+      <section class="details-section">
+
+        <div class="section-header">
+
+          <div class="section-icon family">
+            <mat-icon>family_restroom</mat-icon>
+          </div>
+
+          <div class="section-title">
+
+            <h3>
+              {{ 'PARENTS.DETAILS.CHILDREN' | translate }}
+              <span class="count">{{ currentParent.children.length }}</span>
+            </h3>
+
+            <p>
+              {{ 'PARENTS.DETAILS.CHILDREN_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+          <!-- Link a child (Admin only) -->
+          @if (canManage()) {
+            <button
+              mat-stroked-button
+              type="button"
+              class="link-button"
+              (click)="openLinkChild()"
+            >
+              <mat-icon>link</mat-icon>
+              {{ 'PARENTS.DETAILS.LINK_CHILD' | translate }}
+            </button>
+          }
+
+        </div>
+
+        @if (currentParent.children.length > 0) {
+
+          <div class="children-grid">
+
+            @for (child of currentParent.children; track child.studentId) {
+
+              <div class="child-card">
+
+                <div class="child-avatar">
+                  {{ getInitials(child) }}
+                </div>
+
+                <div class="child-body">
+
+                  <span class="child-name">
+                    {{ getFullName(child) }}
+                  </span>
+
+                  <span class="child-meta">
+                    <bdi>{{ child.studentNumber }}</bdi>
+                    · {{ getClassSection(child) }}
+                  </span>
+
+                  <div class="child-tags">
+
+                    <span class="relationship-chip relationship-{{ child.relationship }}">
+                      {{ getRelationshipTranslationKey(child.relationship) | translate }}
+                    </span>
+
+                    <span
+                      class="status-badge small"
+                      [class.active]="child.isActive"
+                      [class.inactive]="!child.isActive"
+                    >
+                      <span class="status-dot"></span>
+                      {{ (child.isActive ? 'PARENTS.ACTIVE' : 'PARENTS.INACTIVE') | translate }}
+                    </span>
+
+                    @if (child.studentStatus === StudentStatus.Graduated) {
+                      <span class="graduated-badge">
+                        <mat-icon>workspace_premium</mat-icon>
+                        {{ 'PARENTS.DETAILS.GRADUATED' | translate }}
+                      </span>
+                    } @else if (child.studentStatus === StudentStatus.Transferred) {
+                      <span class="transferred-badge">
+                        {{ 'PARENTS.DETAILS.TRANSFERRED' | translate }}
+                      </span>
+                    }
+
+                  </div>
+
+                </div>
+
+                <!-- Unlink (Admin only) -->
+                @if (canManage()) {
+                  @if (unlinkingId() === child.studentId) {
+                    <mat-spinner diameter="22" class="unlink-spinner"></mat-spinner>
+                  } @else {
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="unlink-button"
+                      [disabled]="unlinkingId() !== null"
+                      [matTooltip]="'PARENTS.DETAILS.UNLINK' | translate"
+                      [attr.aria-label]="'PARENTS.DETAILS.UNLINK' | translate"
+                      (click)="confirmUnlink(child)"
+                    >
+                      <mat-icon>link_off</mat-icon>
+                    </button>
+                  }
+                }
+
+              </div>
+
+            }
+
+          </div>
+
+        } @else {
+
+          <div class="empty-children">
+            <mat-icon>family_restroom</mat-icon>
+            <span>{{ 'PARENTS.DETAILS.NO_CHILDREN' | translate }}</span>
+          </div>
+
+        }
+
+      </section>
+
+
+      <!-- ================================
+           Personal Information
+           ================================ -->
+
+      <section class="details-section">
+
+        <div class="section-header">
+
+          <div class="section-icon personal">
+            <mat-icon>badge</mat-icon>
+          </div>
+
+          <div>
+
+            <h3>
+              {{ 'PARENTS.DETAILS.PERSONAL_INFO' | translate }}
+            </h3>
+
+            <p>
+              {{ 'PARENTS.DETAILS.PERSONAL_INFO_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="details-grid">
+
+          <div class="detail-item">
+            <span class="detail-label">
+              {{ 'PARENTS.DETAILS.NAME_AR' | translate }}
+            </span>
+            <span class="detail-value">
+              <bdi>{{ getArabicName(currentParent) || '-' }}</bdi>
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">
+              {{ 'PARENTS.DETAILS.NAME_EN' | translate }}
+            </span>
+            <span class="detail-value">
+              <bdi>{{ getEnglishName(currentParent) || '-' }}</bdi>
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">
+              {{ 'PARENTS.TABLE.PHONE' | translate }}
+            </span>
+            <span class="detail-value">
+              <bdi>{{ currentParent.phoneNumber || '-' }}</bdi>
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">
+              {{ 'PARENTS.DETAILS.CHILDREN_COUNT' | translate }}
+            </span>
+            <span class="detail-value">
+              {{ currentParent.children.length }}
+            </span>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================
+           Account Information
+           (the account status is shown in the profile header)
+           ================================ -->
+
+      <section class="details-section">
+
+        <div class="section-header">
+
+          <div class="section-icon account">
+            <mat-icon>manage_accounts</mat-icon>
+          </div>
+
+          <div>
+
+            <h3>
+              {{ 'PARENTS.DETAILS.ACCOUNT_INFO' | translate }}
+            </h3>
+
+            <p>
+              {{ 'PARENTS.DETAILS.ACCOUNT_INFO_DESCRIPTION' | translate }}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="details-grid">
+
+          <div class="detail-item">
+            <span class="detail-label">
+              {{ 'PARENTS.TABLE.LOGIN_ID' | translate }}
+            </span>
+            <span class="detail-value">
+              <bdi>{{ currentParent.loginId }}</bdi>
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">
+              {{ 'PARENTS.DETAILS.ROLE' | translate }}
+            </span>
+            <span class="detail-value">
+              {{ getRoleTranslationKey(currentParent.role) | translate }}
+            </span>
+          </div>
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              {{ 'PARENTS.DETAILS.PASSWORD_STATUS' | translate }}
+            </span>
+
+            <span
+              class="password-badge"
+              [class.must-change]="currentParent.mustChangePassword"
+            >
+              <mat-icon>
+                {{ currentParent.mustChangePassword ? 'error_outline' : 'check_circle' }}
+              </mat-icon>
+
+              {{
+                currentParent.mustChangePassword
+                  ? ('PARENTS.DETAILS.MUST_CHANGE_PASSWORD' | translate)
+                  : ('PARENTS.DETAILS.PASSWORD_NORMAL' | translate)
+              }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- Dialog Footer -->
+    <div class="dialog-actions">
+
+      <button
+        mat-button
+        type="button"
+        (click)="close()"
+      >
+        {{ 'PARENTS.DETAILS.CLOSE' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+</div>

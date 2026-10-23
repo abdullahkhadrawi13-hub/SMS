@@ -1,0 +1,663 @@
+<div class="parent-form">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="title-section">
+      <h1>
+        {{ (isEditMode ? 'PARENTS.FORM.EDIT_TITLE' : 'PARENTS.FORM.TITLE') | translate }}
+      </h1>
+      <p>
+        {{ (isEditMode ? 'PARENTS.FORM.EDIT_SUBTITLE' : 'PARENTS.FORM.SUBTITLE') | translate }}
+      </p>
+    </div>
+  </div>
+
+
+  <!-- Loading (edit mode: while the parent is being loaded) -->
+  @if (isLoading()) {
+
+    <div class="state-card">
+      <mat-spinner diameter="42"></mat-spinner>
+      <p>
+        {{ 'PARENTS.FORM.LOADING' | translate }}
+      </p>
+    </div>
+
+  } @else {
+
+  <form
+    [formGroup]="parentForm"
+    (ngSubmit)="onSubmit()"
+    novalidate
+  >
+
+    <!-- Error (edit mode: the parent could not be loaded) -->
+    @if (errorMessage()) {
+      <div class="message-card error-message">
+        <mat-icon>error_outline</mat-icon>
+        <span>
+          {{ errorMessage() | translate }}
+        </span>
+      </div>
+    }
+
+
+    <!-- ================================
+         Phone Number (add mode only, the first field:
+         a parent with the same number may already exist)
+         ================================ -->
+    @if (!isEditMode) {
+
+      <section class="form-card">
+        <div class="card-header">
+          <div class="card-icon">
+            <mat-icon>call</mat-icon>
+          </div>
+          <div>
+            <h2>
+              {{ 'PARENTS.FORM.PHONE_INFO' | translate }}
+            </h2>
+            <p>
+              {{ 'PARENTS.FORM.PHONE_INFO_DESCRIPTION' | translate }}
+            </p>
+          </div>
+        </div>
+        <div class="phone-field">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>
+              {{ 'PARENTS.FORM.PHONE' | translate }}
+            </mat-label>
+            <input
+              matInput
+              formControlName="phoneNumber"
+              type="tel"
+              maxlength="10"
+              dir="ltr"
+              autocomplete="tel"
+              (blur)="checkPhone()"
+            />
+
+            <!-- Phone check result (add mode) -->
+            @if (phoneCheck() === 'checking') {
+              <mat-spinner matSuffix diameter="20" class="phone-suffix"></mat-spinner>
+            } @else if (phoneCheck() === 'none') {
+              <mat-icon matSuffix class="phone-suffix ok">check_circle</mat-icon>
+            } @else if (phoneCheck() === 'match' || phoneCheck() === 'ignored') {
+              <mat-icon matSuffix class="phone-suffix warn">error</mat-icon>
+            }
+
+            @if (phoneCheck() === 'idle' && !isFieldInvalid('phoneNumber')) {
+              <mat-hint>
+                {{ 'PARENTS.FORM.PHONE_HINT' | translate }}
+              </mat-hint>
+            }
+
+            @if (isFieldInvalid('phoneNumber')) {
+              <mat-error>
+                @if (parentForm.controls.phoneNumber.hasError('required')) {
+                  {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+                } @else if (parentForm.controls.phoneNumber.hasError('pattern')) {
+                  {{ 'PARENTS.FORM.ERROR.PHONE' | translate }}
+                }
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Result of the phone check -->
+        @if (phoneCheck() === 'checking') {
+          <div class="check-box info">
+            <mat-icon>manage_search</mat-icon>
+            <span>{{ 'PARENTS.FORM.PHONE_CHECKING' | translate }}</span>
+          </div>
+        } @else if (phoneCheck() === 'none') {
+          <div class="check-box ok">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ 'PARENTS.FORM.PHONE_NEW' | translate }}</span>
+          </div>
+        } @else if (phoneCheck() === 'error') {
+          <div class="check-box info">
+            <mat-icon>info</mat-icon>
+            <span>{{ 'PARENTS.FORM.PHONE_CHECK_FAILED' | translate }}</span>
+          </div>
+        } @else if (phoneCheck() === 'match') {
+          @if (matchedParent(); as parent) {
+            <div class="check-box warn">
+              <mat-icon>error</mat-icon>
+              <div class="check-content">
+                <span>
+                  <strong>{{ 'PARENTS.FORM.PHONE_MATCH_TITLE' | translate }}</strong>
+                  {{ 'PARENTS.FORM.PHONE_MATCH_HELP' | translate }}
+                </span>
+
+                <!-- The parent who has this number -->
+                <div class="match-card">
+                  <div class="match-avatar">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                  <div class="match-text">
+                    <span class="match-name">{{ getFullName(parent) }}</span>
+                    <span class="match-meta">
+                      <bdi>{{ parent.loginId }}</bdi>
+                      @if (parent.children.length > 0) {
+                        · {{ matchedChildrenText(parent) }}
+                      }
+                    </span>
+                  </div>
+                  <span
+                    class="status-badge"
+                    [class.active]="parent.isActive"
+                    [class.inactive]="!parent.isActive"
+                  >
+                    <span class="status-dot"></span>
+                    {{ (parent.isActive ? 'PARENTS.ACTIVE' : 'PARENTS.INACTIVE') | translate }}
+                  </span>
+                </div>
+
+                <div class="match-actions">
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    type="button"
+                    (click)="linkToMatchedParent()"
+                  >
+                    <mat-icon>link</mat-icon>
+                    {{ 'PARENTS.FORM.PHONE_LINK_EXISTING' | translate }}
+                  </button>
+                  <button
+                    mat-button
+                    type="button"
+                    (click)="ignoreMatch()"
+                  >
+                    {{ 'PARENTS.FORM.PHONE_CREATE_ANYWAY' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        } @else if (phoneCheck() === 'ignored') {
+          <div class="check-box info">
+            <mat-icon>info</mat-icon>
+            <span>{{ 'PARENTS.FORM.PHONE_IGNORED' | translate }}</span>
+          </div>
+        }
+
+      </section>
+
+    }
+
+
+    <!-- ================================
+         Arabic Information
+         ================================ -->
+
+    <section class="form-card">
+      <div class="card-header">
+        <div class="card-icon">
+          <mat-icon>translate</mat-icon>
+        </div>
+        <div>
+          <h2>
+            {{ 'PARENTS.FORM.ARABIC_INFO' | translate }}
+          </h2>
+          <p>
+            {{ 'PARENTS.FORM.ARABIC_INFO_DESCRIPTION' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.FIRST_NAME_AR' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="firstNameAr"
+            dir="rtl"
+            autocomplete="off"
+          />
+          @if (isFieldInvalid('firstNameAr')) {
+            <mat-error>
+              @if (parentForm.controls.firstNameAr.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.firstNameAr.hasError('pattern')) {
+                {{ 'PARENTS.FORM.ERROR.ARABIC_NAME' | translate }}
+              } @else if (parentForm.controls.firstNameAr.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.MIN_LENGTH' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.FATHER_NAME_AR' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="fatherNameAr"
+            dir="rtl"
+            autocomplete="off"
+          />
+          @if (isFieldInvalid('fatherNameAr')) {
+            <mat-error>
+              @if (parentForm.controls.fatherNameAr.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.fatherNameAr.hasError('pattern')) {
+                {{ 'PARENTS.FORM.ERROR.ARABIC_NAME' | translate }}
+              } @else if (parentForm.controls.fatherNameAr.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.MIN_LENGTH' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.GRANDFATHER_NAME_AR' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="grandFatherNameAr"
+            dir="rtl"
+            autocomplete="off"
+          />
+          @if (isFieldInvalid('grandFatherNameAr')) {
+            <mat-error>
+              @if (parentForm.controls.grandFatherNameAr.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.grandFatherNameAr.hasError('pattern')) {
+                {{ 'PARENTS.FORM.ERROR.ARABIC_NAME' | translate }}
+              } @else if (parentForm.controls.grandFatherNameAr.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.MIN_LENGTH' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.FAMILY_NAME_AR' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="familyNameAr"
+            dir="rtl"
+            autocomplete="off"
+          />
+          @if (isFieldInvalid('familyNameAr')) {
+            <mat-error>
+              @if (parentForm.controls.familyNameAr.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.familyNameAr.hasError('pattern')) {
+                {{ 'PARENTS.FORM.ERROR.ARABIC_NAME' | translate }}
+              } @else if (parentForm.controls.familyNameAr.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.MIN_LENGTH' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+      </div>
+    </section>
+
+
+    <!-- ================================
+         English Information
+         ================================ -->
+
+    <section class="form-card">
+      <div class="card-header">
+        <div class="card-icon">
+          <mat-icon>language</mat-icon>
+        </div>
+        <div>
+          <h2>
+            {{ 'PARENTS.FORM.ENGLISH_INFO' | translate }}
+          </h2>
+          <p>
+            {{ 'PARENTS.FORM.ENGLISH_INFO_DESCRIPTION' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.FIRST_NAME_EN' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="firstNameEn"
+            dir="ltr"
+            autocomplete="off"
+          />
+          @if (isFieldInvalid('firstNameEn')) {
+            <mat-error>
+              @if (parentForm.controls.firstNameEn.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.firstNameEn.hasError('pattern')) {
+                {{ 'PARENTS.FORM.ERROR.ENGLISH_NAME' | translate }}
+              } @else if (parentForm.controls.firstNameEn.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.MIN_LENGTH' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.FATHER_NAME_EN' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="fatherNameEn"
+            dir="ltr"
+            autocomplete="off"
+          />
+          @if (isFieldInvalid('fatherNameEn')) {
+            <mat-error>
+              @if (parentForm.controls.fatherNameEn.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.fatherNameEn.hasError('pattern')) {
+                {{ 'PARENTS.FORM.ERROR.ENGLISH_NAME' | translate }}
+              } @else if (parentForm.controls.fatherNameEn.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.MIN_LENGTH' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.GRANDFATHER_NAME_EN' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="grandFatherNameEn"
+            dir="ltr"
+            autocomplete="off"
+          />
+          @if (isFieldInvalid('grandFatherNameEn')) {
+            <mat-error>
+              @if (parentForm.controls.grandFatherNameEn.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.grandFatherNameEn.hasError('pattern')) {
+                {{ 'PARENTS.FORM.ERROR.ENGLISH_NAME' | translate }}
+              } @else if (parentForm.controls.grandFatherNameEn.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.MIN_LENGTH' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.FAMILY_NAME_EN' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="familyNameEn"
+            dir="ltr"
+            autocomplete="off"
+          />
+          @if (isFieldInvalid('familyNameEn')) {
+            <mat-error>
+              @if (parentForm.controls.familyNameEn.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.familyNameEn.hasError('pattern')) {
+                {{ 'PARENTS.FORM.ERROR.ENGLISH_NAME' | translate }}
+              } @else if (parentForm.controls.familyNameEn.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.MIN_LENGTH' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+      </div>
+    </section>
+
+
+    <!-- ================================
+         Account Information
+         ================================ -->
+
+    <section class="form-card">
+      <div class="card-header">
+        <div class="card-icon">
+          <mat-icon>manage_accounts</mat-icon>
+        </div>
+        <div>
+          <h2>
+            {{ 'PARENTS.FORM.ACCOUNT_INFO' | translate }}
+          </h2>
+          <p>
+            {{ 'PARENTS.FORM.ACCOUNT_INFO_DESCRIPTION' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <!-- Login ID -->
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>
+            {{ 'PARENTS.FORM.LOGIN_ID' | translate }}
+          </mat-label>
+          <input
+            matInput
+            formControlName="loginId"
+            dir="ltr"
+            autocomplete="username"
+          />
+          @if (isFieldInvalid('loginId')) {
+            <mat-error>
+              @if (parentForm.controls.loginId.hasError('required')) {
+                {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+              } @else if (parentForm.controls.loginId.hasError('minlength')) {
+                {{ 'PARENTS.FORM.ERROR.LOGIN_ID' | translate }}
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Add: temporary password / Edit: phone number (same place as the teacher form) -->
+        @if (!isEditMode) {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>
+              {{ 'PARENTS.FORM.TEMPORARY_PASSWORD' | translate }}
+            </mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="temporaryPassword"
+              dir="ltr"
+              autocomplete="new-password"
+            />
+            @if (isFieldInvalid('temporaryPassword')) {
+              <mat-error>
+                @if (parentForm.controls.temporaryPassword.hasError('required')) {
+                  {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+                } @else if (parentForm.controls.temporaryPassword.hasError('minlength')) {
+                  {{ 'PARENTS.FORM.ERROR.PASSWORD' | translate }}
+                }
+              </mat-error>
+            } @else {
+              <mat-hint>
+                {{ 'PARENTS.FORM.TEMPORARY_PASSWORD_HINT' | translate }}
+              </mat-hint>
+            }
+          </mat-form-field>
+        } @else {
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>
+              {{ 'PARENTS.FORM.PHONE' | translate }}
+            </mat-label>
+            <input
+              matInput
+              formControlName="phoneNumber"
+              type="tel"
+              maxlength="10"
+              dir="ltr"
+              autocomplete="tel"
+            />
+
+            @if (isFieldInvalid('phoneNumber')) {
+              <mat-error>
+                @if (parentForm.controls.phoneNumber.hasError('required')) {
+                  {{ 'PARENTS.FORM.ERROR.REQUIRED' | translate }}
+                } @else if (parentForm.controls.phoneNumber.hasError('pattern')) {
+                  {{ 'PARENTS.FORM.ERROR.PHONE' | translate }}
+                }
+              </mat-error>
+            }
+          </mat-form-field>
+
+        }
+
+      </div>
+    </section>
+
+
+    @if (isEditMode) {
+
+      <!-- Children are linked and unlinked from the parent details -->
+      <div class="check-box info edit-note">
+        <mat-icon>info</mat-icon>
+        <span>{{ 'PARENTS.FORM.EDIT_CHILDREN_NOTE' | translate }}</span>
+      </div>
+
+    } @else {
+
+      <!-- ================================
+           Children (optional)
+           ================================ -->
+      <section class="form-card">
+        <div class="card-header">
+          <div class="card-icon">
+            <mat-icon>family_restroom</mat-icon>
+          </div>
+          <div>
+            <h2>
+              {{ 'PARENTS.FORM.CHILDREN_INFO' | translate }}
+              <span class="optional">{{ 'PARENTS.FORM.OPTIONAL' | translate }}</span>
+            </h2>
+            <p>
+              {{ 'PARENTS.FORM.CHILDREN_INFO_DESCRIPTION' | translate }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Search for a student (backend search) -->
+        <app-student-picker
+          [excludedIds]="addedStudentIds()"
+          excludedLabel="PARENTS.PICKER.ADDED"
+          [disabled]="isSubmitting()"
+          (selected)="addChild($event)"
+        ></app-student-picker>
+
+        @if (children().length === 0) {
+
+          <div class="empty-children">
+            <mat-icon>family_restroom</mat-icon>
+            <span>{{ 'PARENTS.FORM.NO_CHILDREN_YET' | translate }}</span>
+          </div>
+
+        } @else {
+
+          <div class="children-list">
+            @for (row of children(); track row.student.studentId) {
+
+              <div
+                class="child-row"
+                [class.invalid]="childrenTouched() && row.relationship === null"
+              >
+
+                <div class="child-avatar">
+                  <mat-icon>school</mat-icon>
+                </div>
+
+                <div class="child-text">
+                  <span class="child-name">{{ getFullName(row.student) }}</span>
+                  <span class="child-meta">
+                    <bdi>{{ row.student.studentNumber }}</bdi>
+                    · {{ getClassSection(row.student) }}
+                  </span>
+                </div>
+
+                <div class="child-relationship">
+                  @if (row.isChecking) {
+                    <mat-spinner diameter="20"></mat-spinner>
+                  } @else {
+                    <app-relationship-toggle
+                      [value]="row.relationship"
+                      [taken]="row.taken"
+                      [disabled]="isSubmitting()"
+                      [showRequiredError]="childrenTouched()"
+                      (valueChange)="setRelationship(row.student.studentId, $event)"
+                    ></app-relationship-toggle>
+                  }
+                </div>
+
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="remove-child"
+                  [disabled]="isSubmitting()"
+                  (click)="removeChild(row.student.studentId)"
+                  [attr.aria-label]="'PARENTS.FORM.REMOVE_CHILD' | translate"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+
+              </div>
+
+            }
+          </div>
+
+        }
+
+      </section>
+
+    }
+
+
+    <!-- ================================
+         Actions
+         ================================ -->
+    <div class="form-actions">
+
+      <button
+        mat-button
+        type="button"
+        [disabled]="isSubmitting()"
+        (click)="cancel()"
+      >
+        {{ 'PARENTS.FORM.CANCEL' | translate }}
+      </button>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="isSubmitting() || phoneCheck() === 'checking'"
+      >
+        <mat-icon>
+          {{ isEditMode ? 'save' : 'person_add' }}
+        </mat-icon>
+
+        {{
+          isSubmitting()
+            ? ('PARENTS.FORM.SAVING' | translate)
+            : ('PARENTS.FORM.SAVE' | translate)
+        }}
+      </button>
+
+    </div>
+
+  </form>
+
+  }
+
+</div>

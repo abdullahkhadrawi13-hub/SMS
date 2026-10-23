@@ -1,0 +1,51 @@
+<div class="parents-page">
+
+  <!-- Page Header -->
+  <app-parent-header
+    [canManage]="canManage()"
+    (addParent)="openAddParent()"
+  ></app-parent-header>
+
+  <!-- Search and Filter -->
+  <div class="filters-card">
+
+    <div class="search-container">
+
+      <!-- Parent Search -->
+      <app-parent-search
+        (searchChange)="search.set($event)"
+        (searchSubmit)="onSearch($event)"
+      ></app-parent-search>
+
+      <!-- Parent Filter -->
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="openFilter()"
+      >
+        <mat-icon>filter_list</mat-icon>
+        {{ 'PARENTS.FILTER_BUTTON' | translate }}
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Parent Table (error / loading / table / empty state / pagination) -->
+  <app-parent-table
+    [parents]="parents()"
+    [isLoading]="isLoading()"
+    [errorMessage]="errorMessage()"
+    [totalCount]="totalCount()"
+    [pageNumber]="pageNumber()"
+    [pageSize]="pageSize()"
+    [canManage]="canManage()"
+    (retry)="retry()"
+    (pageChange)="onPageChange($event)"
+    (viewParent)="openParentDetails($event)"
+    (editParent)="openEditParent($event)"
+    (linkChild)="openLinkChild($event)"
+    (toggleStatus)="toggleParentStatus($event)"
+  ></app-parent-table>
+
+</div>

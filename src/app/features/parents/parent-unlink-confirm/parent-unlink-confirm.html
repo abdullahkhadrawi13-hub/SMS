@@ -1,0 +1,55 @@
+<div class="confirm">
+
+  <div class="confirm-icon">
+    <mat-icon>link_off</mat-icon>
+  </div>
+
+  <h2 mat-dialog-title>
+    {{ 'PARENTS.UNLINK.TITLE' | translate: { child: data.childFirstName } }}
+  </h2>
+
+  <mat-dialog-content>
+
+    <p>
+      {{
+        'PARENTS.UNLINK.MESSAGE'
+          | translate: { parent: data.parentName, child: data.childName }
+      }}
+    </p>
+
+    <div class="info-box">
+
+      <mat-icon>info</mat-icon>
+
+      <span>
+        {{ 'PARENTS.UNLINK.INFO' | translate }}
+      </span>
+
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+
+    <button
+      mat-button
+      type="button"
+      (click)="cancel()"
+    >
+      {{ 'PARENTS.UNLINK.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="button"
+      class="confirm-button"
+      (click)="confirm()"
+    >
+      <mat-icon>link_off</mat-icon>
+
+      {{ 'PARENTS.UNLINK.CONFIRM' | translate }}
+    </button>
+
+  </mat-dialog-actions>
+
+</div>

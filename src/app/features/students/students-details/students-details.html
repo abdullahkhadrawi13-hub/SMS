@@ -32,8 +32,8 @@
     </button>
   </div>
 
-  <!-- Tabs: Details / Attendance (Admin and Assistant Principal only) -->
-  @if (canViewAttendance()) {
+  <!-- Tabs: Details / Attendance / Parents (Admin and Assistant Principal only) -->
+  @if (canViewAttendance() || canViewParents()) {
     <nav
       mat-tab-nav-bar
       mat-stretch-tabs="false"
@@ -44,7 +44,7 @@
       <a
         mat-tab-link
         [active]="activeTab() === 'details'"
-        (click)="activeTab.set('details')"
+        (click)="openTab('details')"
       >
         <span class="tab-label">
           <mat-icon>badge</mat-icon>
@@ -55,24 +55,62 @@
         </span>
       </a>
 
-      <a
-        mat-tab-link
-        [active]="activeTab() === 'attendance'"
-        (click)="activeTab.set('attendance')"
-      >
-        <span class="tab-label">
-          <mat-icon>fact_check</mat-icon>
+      @if (canViewAttendance()) {
+        <a
+          mat-tab-link
+          [active]="activeTab() === 'attendance'"
+          (click)="openTab('attendance')"
+        >
+          <span class="tab-label">
+            <mat-icon>fact_check</mat-icon>
 
-          <span>
-            {{ 'STUDENTS_DETAILS.TAB_ATTENDANCE' | translate }}
+            <span>
+              {{ 'STUDENTS_DETAILS.TAB_ATTENDANCE' | translate }}
+            </span>
           </span>
-        </span>
-      </a>
+        </a>
+      }
+
+      @if (canViewParents()) {
+        <a
+          mat-tab-link
+          [active]="activeTab() === 'parents'"
+          (click)="openTab('parents')"
+        >
+          <span class="tab-label">
+            <mat-icon>family_restroom</mat-icon>
+
+            <span>
+              {{ 'STUDENTS_DETAILS.TAB_PARENTS' | translate }}
+            </span>
+          </span>
+        </a>
+      }
 
     </nav>
   }
 
   <mat-tab-nav-panel #tabPanel>
+
+    <!-- Parents tab: the student's parents (read only).
+         It is created the first time the tab is opened, then only hidden,
+         so the parents are loaded once while the dialog is open. -->
+    @if (parentsTabOpened()) {
+      <div [hidden]="activeTab() !== 'parents'">
+        <div class="dialog-content">
+          <app-student-parents
+            [studentId]="data.studentId"
+          ></app-student-parents>
+        </div>
+
+        <!-- Dialog Footer -->
+        <div class="dialog-actions">
+          <button mat-button type="button" (click)="close()">
+            {{ 'STUDENTS_DETAILS.CLOSE' | translate }}
+          </button>
+        </div>
+      </div>
+    }
 
     <!-- Attendance tab: the student's attendance history.
          It is created (and its data is loaded) only when the tab is opened. -->
@@ -92,7 +130,7 @@
     }
 
     <!-- Details tab (the same content as before) -->
-    @else {
+    @else if (activeTab() === 'details') {
 
       <!-- Loading -->
       @if (isLoading()) {

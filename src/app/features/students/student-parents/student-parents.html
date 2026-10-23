@@ -1,0 +1,115 @@
+<section class="parents-section">
+
+  <div class="section-header">
+
+    <div class="section-icon">
+      <mat-icon>family_restroom</mat-icon>
+    </div>
+
+    <div>
+
+      <h3>
+        {{ 'STUDENT_PARENTS.TITLE' | translate }}
+
+        @if (!isLoading() && !errorMessage()) {
+          <span class="count">{{ rows().length }}</span>
+        }
+      </h3>
+
+      <p>
+        {{ 'STUDENT_PARENTS.DESCRIPTION' | translate }}
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (isLoading()) {
+
+    <div class="state">
+      <mat-spinner diameter="36"></mat-spinner>
+      <p>{{ 'STUDENT_PARENTS.LOADING' | translate }}</p>
+    </div>
+
+  }
+
+  <!-- Error -->
+  @else if (errorMessage()) {
+
+    <div class="state error">
+
+      <mat-icon>error_outline</mat-icon>
+
+      <p>{{ errorMessage() | translate }}</p>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="loadParents()"
+      >
+        <mat-icon>refresh</mat-icon>
+        {{ 'STUDENT_PARENTS.RETRY' | translate }}
+      </button>
+
+    </div>
+
+  }
+
+  <!-- No parents -->
+  @else if (rows().length === 0) {
+
+    <div class="empty">
+      <mat-icon>person_off</mat-icon>
+      <span>{{ 'STUDENT_PARENTS.EMPTY' | translate }}</span>
+    </div>
+
+  }
+
+  <!-- Parents list -->
+  @else {
+
+    <div class="parents-list">
+
+      @for (row of rows(); track row.parent.parentId) {
+
+        <div class="parent-row">
+
+          <div class="parent-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+
+          <div class="parent-text">
+            <span class="parent-name">{{ getFullName(row.parent) }}</span>
+            <span class="parent-login"><bdi>{{ row.parent.loginId }}</bdi></span>
+          </div>
+
+          <span class="relationship-chip relationship-{{ row.relationship }}">
+            {{ getRelationshipTranslationKey(row.relationship) | translate }}
+          </span>
+
+          <span class="parent-phone">
+            <mat-icon>call</mat-icon>
+            <bdi>{{ row.parent.phoneNumber }}</bdi>
+          </span>
+
+          <span
+            class="status-badge"
+            [class.active]="row.parent.isActive"
+            [class.inactive]="!row.parent.isActive"
+          >
+            <span class="status-dot"></span>
+            {{ (row.parent.isActive ? 'STUDENT_PARENTS.ACTIVE' : 'STUDENT_PARENTS.INACTIVE') | translate }}
+          </span>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</section>

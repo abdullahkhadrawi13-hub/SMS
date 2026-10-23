@@ -1,0 +1,41 @@
+<div class="relationship-toggle" [class.large]="large()">
+
+  <mat-button-toggle-group
+    [value]="value()"
+    [disabled]="disabled()"
+    (change)="valueChange.emit($event.value)"
+    [attr.aria-label]="'PARENTS.RELATIONSHIP.LABEL' | translate"
+  >
+    @for (relationship of relationships; track relationship) {
+      <mat-button-toggle
+        [value]="relationship"
+        [disabled]="isTaken(relationship)"
+      >
+        {{ getRelationshipTranslationKey(relationship) | translate }}
+      </mat-button-toggle>
+    }
+  </mat-button-toggle-group>
+
+  <!-- Who is already the father / mother of this student -->
+  @if (taken().father) {
+    <span class="toggle-note">
+      <mat-icon>info</mat-icon>
+      {{ 'PARENTS.RELATIONSHIP.FATHER_TAKEN' | translate: { name: taken().father } }}
+    </span>
+  }
+
+  @if (taken().mother) {
+    <span class="toggle-note">
+      <mat-icon>info</mat-icon>
+      {{ 'PARENTS.RELATIONSHIP.MOTHER_TAKEN' | translate: { name: taken().mother } }}
+    </span>
+  }
+
+  @if (showRequiredError() && value() === null) {
+    <span class="toggle-note error">
+      <mat-icon>error</mat-icon>
+      {{ 'PARENTS.RELATIONSHIP.REQUIRED' | translate }}
+    </span>
+  }
+
+</div>

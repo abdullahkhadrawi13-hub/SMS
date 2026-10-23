@@ -70,6 +70,23 @@ export class Permissions {
   );
 
 
+  // ===== Parents (API Reference, section 14) =====
+
+  // Add and edit parents, activate / deactivate them,
+  // link and unlink their children: Admin only.
+  // AssistantPrincipal can only read. A teacher gets 403.
+  readonly canManageParents = computed(
+    () => this.isAdmin()
+  );
+
+  // The "Parents" tab in the student details (GET /api/parents?studentId=):
+  // Admin and AssistantPrincipal. A teacher gets 403 on this list,
+  // so the tab is not shown to them.
+  readonly canViewStudentParents = computed(
+    () => this.isAdmin() || this.isAssistantPrincipal()
+  );
+
+
   // ===== Subjects (API Reference, section 6) =====
 
   // Add, edit, activate and deactivate subjects: Admin only.

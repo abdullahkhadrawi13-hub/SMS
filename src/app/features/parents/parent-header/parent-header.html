@@ -1,0 +1,27 @@
+<div class="page-header">
+
+  <div class="title-section">
+    <h1>
+      {{ 'PARENTS.HEADER.TITLE' | translate }}
+    </h1>
+
+    <p>
+      {{ 'PARENTS.HEADER.SUBTITLE' | translate }}
+    </p>
+  </div>
+
+  <!-- Add parent (Admin only) -->
+  @if (canManage()) {
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="addParent.emit()"
+    >
+      <mat-icon>person_add</mat-icon>
+
+      {{ 'PARENTS.HEADER.ADD' | translate }}
+    </button>
+  }
+
+</div>

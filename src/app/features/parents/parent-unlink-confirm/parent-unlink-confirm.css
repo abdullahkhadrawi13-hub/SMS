@@ -1,0 +1,89 @@
+/* Same layout as grades-status-dialog (Settings → Academic years).
+   Red: the link between the parent and the child is removed. */
+
+.confirm {
+  max-width: 480px;
+
+  padding-top: 20px;
+}
+
+.confirm-icon {
+  width: 48px;
+  height: 48px;
+
+  margin: 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.confirm-icon mat-icon {
+  width: 24px;
+  height: 24px;
+
+  font-size: 24px;
+}
+
+mat-dialog-content p {
+  margin: 0 0 12px;
+
+  font-size: 14px;
+  line-height: 1.8;
+
+  color: #374151;
+}
+
+
+/* =========================
+   Info Box
+   ========================= */
+
+.info-box {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  background: #e6f1fb;
+  color: #0c447c;
+}
+
+.info-box mat-icon {
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  font-size: 20px;
+}
+
+.info-box span {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+
+/* =========================
+   Actions
+   ========================= */
+
+.confirm-button {
+  --mat-button-filled-container-color: #b91c1c;
+  --mat-button-filled-label-text-color: #ffffff;
+}
+
+mat-dialog-actions {
+  gap: 8px;
+
+  padding: 16px 24px 20px;
+}

@@ -1,0 +1,815 @@
+/* ================================
+   Parent Details Dialog
+   ================================ */
+
+.parent-dialog {
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  text-align: start;
+}
+
+
+
+/* ================================
+   Dialog Header
+   ================================ */
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 20px 24px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  min-width: 0;
+}
+
+.header-icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #e1f5ee;
+
+  color: #085041;
+}
+
+.header-icon mat-icon {
+  width: 22px;
+  height: 22px;
+
+  font-size: 22px;
+}
+
+.header-content h2 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: #111827;
+}
+
+.header-content p {
+  margin: 4px 0 0;
+
+  color: #6b7280;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* ================================
+   Dialog Content
+   ================================ */
+
+.dialog-content {
+  padding: 24px;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Parent Profile (teal card)
+   ================================ */
+
+.parent-profile {
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 16px;
+  margin-bottom: 18px;
+
+  border-radius: 14px;
+
+  background: #e1f5ee;
+}
+
+/* Initials of the parent */
+.parent-avatar {
+  width: 60px;
+  height: 60px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #0f6e56;
+
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.parent-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.parent-name h2 {
+  margin: 0;
+
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: #04342c;
+
+  word-break: break-word;
+}
+
+.parent-login {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  margin-top: 4px;
+
+  color: #0f6e56;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.parent-login mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+
+/* ================================
+   Details Sections
+   ================================ */
+
+.details-section {
+  margin-bottom: 14px;
+  padding: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+}
+
+.details-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.section-icon {
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  border-radius: 9px;
+}
+
+/* Each section has its own color:
+   light background, colored icon and a thin border */
+.section-icon.personal {
+  background: #eeedfe;
+  color: #534ab7;
+  border: 1px solid #afa9ec;
+}
+
+.section-icon.academic {
+  background: #faeeda;
+  color: #854f0b;
+  border: 1px solid #fac775;
+}
+
+.section-icon.account {
+  background: #fbeaf0;
+  color: #993556;
+  border: 1px solid #ed93b1;
+}
+
+.section-icon mat-icon {
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+}
+
+.section-header h3 {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: #111827;
+}
+
+.section-header p {
+  margin: 2px 0 0;
+
+  color: #6b7280;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* ================================
+   Details Grid (two columns)
+   ================================ */
+
+.details-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  min-width: 0;
+
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  background: #f8fafc;
+}
+
+.detail-label {
+  color: #6b7280;
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.detail-value {
+  color: #111827;
+
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+
+  word-break: break-word;
+}
+
+
+/* ================================
+   Status
+   ================================ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  width: fit-content;
+  flex-shrink: 0;
+
+  padding: 5px 12px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background: #ffffff;
+  color: #047857;
+}
+
+.status-badge.inactive {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+
+/* ================================
+   Password Status
+   green = up to date, orange = must change
+   ================================ */
+
+.password-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  width: fit-content;
+
+  padding: 3px 10px;
+
+  border-radius: 999px;
+
+  background: #ecfdf5;
+  color: #047857;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.password-badge.must-change {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.password-badge mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+
+/* ================================
+   Loading / Error State
+   ================================ */
+
+.state-card {
+  min-height: 280px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+
+  padding: 24px;
+
+  text-align: center;
+}
+
+.state-card h3 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.state-card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.error-state > mat-icon {
+  width: 42px;
+  height: 42px;
+
+  font-size: 42px;
+
+  color: #dc2626;
+}
+
+
+/* ================================
+   Dialog Actions
+   ================================ */
+
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding: 14px 24px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 700px) {
+
+  .dialog-header {
+    padding: 16px;
+  }
+
+  .dialog-content {
+    padding: 18px;
+  }
+
+  .parent-profile {
+    align-items: flex-start;
+  }
+
+}
+
+
+/* ================================
+   Small Mobile
+   ================================ */
+
+@media (max-width: 480px) {
+
+  .dialog-header {
+    padding: 14px;
+  }
+
+  .header-content {
+    gap: 10px;
+  }
+
+  .header-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .header-content h2 {
+    font-size: 18px;
+  }
+
+  .header-content p {
+    font-size: 12px;
+  }
+
+  .dialog-content {
+    padding: 16px;
+  }
+
+  .parent-profile {
+    gap: 12px;
+  }
+
+  .parent-avatar {
+    width: 50px;
+    height: 50px;
+
+    font-size: 17px;
+  }
+
+  .details-section {
+    padding: 14px;
+  }
+
+  .parent-name h2 {
+    font-size: 18px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog-actions {
+    padding: 12px 16px;
+  }
+
+}
+
+/* =====================================================
+   Parents only
+   ===================================================== */
+
+/* Children section: green icon, the title takes the free space
+   so the "Link a child" button sits at the end of the header. */
+.section-icon.family {
+  background: #e6f4ea;
+  color: #1e6b3a;
+  border: 1px solid #9fd3b0;
+}
+
+.section-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.section-title h3 {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.count {
+  padding: 1px 8px;
+
+  border-radius: 10px;
+
+  background: #f1f5f9;
+  color: #6b7280;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.link-button {
+  flex-shrink: 0;
+}
+
+
+/* ================================
+   Children Cards
+   ================================ */
+
+.children-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+}
+
+.child-card {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  min-width: 0;
+
+  padding: 12px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.child-card:hover {
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+
+  transform: translateY(-1px);
+}
+
+.child-avatar {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eef4ff;
+  color: #1d4ed8;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.child-body {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.child-name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+
+  color: #111827;
+
+  word-break: break-word;
+}
+
+.child-meta {
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+.child-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-top: 6px;
+}
+
+/* Relationship: the same colors as the chips of the table */
+.relationship-chip {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 10px;
+
+  border-radius: 14px;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.relationship-chip.relationship-0 {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.relationship-chip.relationship-1 {
+  background: #fdf2f8;
+  color: #be185d;
+}
+
+.relationship-chip.relationship-2 {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+/* The child's account status, on a white card */
+.status-badge.small {
+  padding: 4px 10px;
+}
+
+.status-badge.small.active {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+/* Same gold badge as the students table */
+.graduated-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 4px 10px;
+
+  border-radius: 20px;
+
+  background: linear-gradient(135deg, #fdebb0, #f2c14e);
+  color: #5c3d02;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.graduated-badge mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+.transferred-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 10px;
+
+  border-radius: 20px;
+
+  background: #f1f5f9;
+  color: #475569;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.unlink-button {
+  flex-shrink: 0;
+
+  color: #9ca3af;
+}
+
+.unlink-button:hover:not(:disabled) {
+  color: #b91c1c;
+}
+
+.unlink-spinner {
+  flex-shrink: 0;
+
+  margin: 9px;
+}
+
+.empty-children {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 16px;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+.empty-children mat-icon {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  font-size: 28px;
+
+  color: #9ca3af;
+}
+
+
+@media (max-width: 700px) {
+
+  .children-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-wrap: wrap;
+  }
+
+  .link-button {
+    width: 100%;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .child-card {
+    transition: none;
+  }
+
+  .child-card:hover {
+    transform: none;
+  }
+
+}

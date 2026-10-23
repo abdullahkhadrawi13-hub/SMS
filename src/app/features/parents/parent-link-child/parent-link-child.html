@@ -1,0 +1,105 @@
+<h2 mat-dialog-title>
+  {{ 'PARENTS.LINK.TITLE' | translate }}
+</h2>
+
+<mat-dialog-content>
+
+  <!-- The parent the child is linked to -->
+  <p class="link-for">
+    {{ 'PARENTS.LINK.FOR' | translate }}:
+    <strong>{{ parentName }}</strong>
+  </p>
+
+  @if (student(); as current) {
+
+    <!-- The chosen student -->
+    <div class="picked-student">
+
+      <div class="picked-avatar">
+        <mat-icon>school</mat-icon>
+      </div>
+
+      <div class="picked-text">
+        <span class="picked-name">{{ getFullName(current) }}</span>
+        <span class="picked-meta">
+          <bdi>{{ current.studentNumber }}</bdi>
+          · {{ getClassSection(current) }}
+        </span>
+      </div>
+
+      <button
+        mat-button
+        type="button"
+        [disabled]="isSubmitting()"
+        (click)="changeStudent()"
+      >
+        {{ 'PARENTS.LINK.CHANGE' | translate }}
+      </button>
+
+    </div>
+
+    <!-- Relationship -->
+    <div class="relationship-section">
+
+      <span class="relationship-label">
+        {{ 'PARENTS.RELATIONSHIP.LABEL' | translate }}
+      </span>
+
+      @if (isChecking()) {
+        <div class="checking">
+          <mat-spinner diameter="20"></mat-spinner>
+          <span>{{ 'PARENTS.LINK.CHECKING' | translate }}</span>
+        </div>
+      } @else {
+        <app-relationship-toggle
+          [large]="true"
+          [value]="relationship()"
+          [taken]="taken()"
+          [disabled]="isSubmitting()"
+          (valueChange)="setRelationship($event)"
+        ></app-relationship-toggle>
+      }
+
+    </div>
+
+  } @else {
+
+    <!-- Search for a student -->
+    <app-student-picker
+      [excludedIds]="linkedStudentIds"
+      excludedLabel="PARENTS.PICKER.ALREADY_LINKED"
+      (selected)="selectStudent($event)"
+    ></app-student-picker>
+
+  }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    [disabled]="isSubmitting()"
+    (click)="cancel()"
+  >
+    {{ 'PARENTS.LINK.CANCEL' | translate }}
+  </button>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    [disabled]="!canLink()"
+    (click)="link()"
+  >
+    <mat-icon>link</mat-icon>
+
+    {{
+      isSubmitting()
+        ? ('PARENTS.LINK.LINKING' | translate)
+        : ('PARENTS.LINK.CONFIRM' | translate)
+    }}
+  </button>
+
+</mat-dialog-actions>

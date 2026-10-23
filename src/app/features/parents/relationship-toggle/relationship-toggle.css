@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.relationship-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 6px;
+}
+
+
+/* ================================
+   Buttons
+   ================================ */
+
+mat-button-toggle-group {
+  --mat-button-toggle-height: 36px;
+  --mat-button-toggle-shape: 20px;
+  --mat-button-toggle-selected-state-background-color: #d7e3ff;
+  --mat-button-toggle-selected-state-text-color: #001b3f;
+}
+
+mat-button-toggle {
+  min-width: 72px;
+
+  font-size: 13px;
+}
+
+/* The link dialog: bigger buttons that fill the width. */
+.relationship-toggle.large {
+  align-items: stretch;
+}
+
+.relationship-toggle.large mat-button-toggle-group {
+  --mat-button-toggle-height: 44px;
+
+  width: 100%;
+}
+
+.relationship-toggle.large mat-button-toggle {
+  flex: 1;
+}
+
+
+/* ================================
+   Notes under the buttons
+   ================================ */
+
+.toggle-note {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  color: #92400e;
+}
+
+.toggle-note mat-icon {
+  width: 15px;
+  height: 15px;
+
+  flex-shrink: 0;
+
+  font-size: 15px;
+}
+
+.toggle-note.error {
+  color: #ba1a1a;
+}

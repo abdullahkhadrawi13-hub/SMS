@@ -1,0 +1,670 @@
+/* ================================
+   Parent Form
+   ================================ */
+
+.parent-form {
+  width: 100%;
+  padding: 24px;
+
+  background: #ffffff;
+
+  box-sizing: border-box;
+
+  text-align: start;
+}
+
+
+/* ================================
+   Page Header
+   ================================ */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+.title-section {
+  min-width: 0;
+}
+
+.title-section h1 {
+  margin: 0 0 6px;
+
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+
+  color: #111827;
+}
+
+.title-section p {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Loading State
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #f8fafc;
+
+  text-align: center;
+}
+
+.state-card p {
+  margin: 0;
+
+  font-size: 14px;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Messages
+   ================================ */
+
+.message-card {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px 14px;
+
+  margin-bottom: 20px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.message-card mat-icon {
+  flex-shrink: 0;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+
+/* ================================
+   Form Cards
+   ================================ */
+
+.form-card {
+  margin-bottom: 20px;
+
+  padding: 20px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+}
+
+
+/* ================================
+   Card Header
+   ================================ */
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #eff6ff;
+}
+
+.card-icon mat-icon {
+  width: 22px;
+  height: 22px;
+
+  font-size: 22px;
+
+  color: #2563eb;
+}
+
+.card-header h2 {
+  margin: 0 0 4px;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  color: #111827;
+}
+
+.card-header p {
+  margin: 0;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Form Grid
+   ================================ */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+
+  /* Each field keeps its own height: when one field in a row shows a
+     two-line error, the field next to it is not stretched. */
+  align-items: start;
+}
+
+
+/* ================================
+   Material Form Fields
+   ================================ */
+
+mat-form-field {
+  width: 100%;
+}
+
+
+/* ================================
+   Validation Messages Space
+   ================================ */
+
+/*
+  The fields use subscriptSizing="dynamic" (see parent-form.html), so the
+  error message is part of the field's height instead of floating over the
+  field below it.
+
+  This rule keeps one empty line reserved under every field:
+  - a normal one-line message appears without moving anything;
+  - a long message that wraps to two lines makes its own row taller,
+    so it never overlaps the next field.
+
+  ::ng-deep is needed because this element lives inside mat-form-field.
+*/
+.parent-form ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  min-height: 20px;
+}
+
+
+/* ================================
+   Field Direction
+   ================================ */
+
+input[dir='rtl'] {
+  text-align: right;
+}
+
+input[dir='ltr'] {
+  text-align: left;
+}
+
+
+/* ================================
+   Actions
+   ================================ */
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.form-actions button {
+  min-width: 110px;
+}
+
+.form-actions mat-icon {
+  margin-inline-end: 6px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 700px) {
+
+  .parent-form {
+    padding: 18px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 14px;
+  }
+
+  .title-section h1 {
+    font-size: 21px;
+  }
+
+  .form-card {
+    padding: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    justify-content: stretch;
+  }
+
+  .form-actions button {
+    flex: 1;
+  }
+
+}
+
+
+@media (max-width: 450px) {
+
+  .parent-form {
+    padding: 14px;
+  }
+
+  .form-card {
+    padding: 14px;
+  }
+
+  .card-header {
+    gap: 10px;
+  }
+
+  .card-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .card-header h2 {
+    font-size: 16px;
+  }
+
+  .card-header p {
+    font-size: 12px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+}
+
+/* =====================================================
+   Parents only
+   ===================================================== */
+
+/* "(optional)" next to the children title */
+.optional {
+  margin-inline-start: 6px;
+
+  font-size: 13px;
+  font-weight: 400;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Phone Number (add mode)
+   ================================ */
+
+.phone-field {
+  max-width: 420px;
+}
+
+.phone-suffix {
+  margin-inline: 8px 12px;
+}
+
+.phone-suffix.ok {
+  color: #16a34a;
+}
+
+.phone-suffix.warn {
+  color: #b45309;
+}
+
+
+/* ================================
+   Check Boxes (phone check, edit note)
+   Same colors as the info / warning boxes of the grades dialog.
+   ================================ */
+
+.check-box {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  margin-top: 12px;
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.check-box > mat-icon {
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  margin-top: 2px;
+
+  font-size: 20px;
+}
+
+.check-box.info {
+  background: #e6f1fb;
+  color: #0c447c;
+}
+
+.check-box.ok {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.check-box.warn {
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+  color: #78350f;
+}
+
+.check-box.warn > mat-icon {
+  color: #b45309;
+}
+
+.check-box strong {
+  font-weight: 600;
+}
+
+.check-content {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+/* Edit mode: the note above the buttons */
+.edit-note {
+  margin: 0 0 20px;
+}
+
+
+/* The parent who already has the typed number */
+.match-card {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+
+  background: #ffffff;
+}
+
+.match-avatar,
+.child-avatar {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.match-avatar mat-icon,
+.child-avatar mat-icon {
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+}
+
+.match-text,
+.child-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.match-name,
+.child-name {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #111827;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match-meta,
+.child-meta {
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+.match-actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+/* Status badge (same as the teachers table) */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  flex-shrink: 0;
+
+  padding: 5px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.status-badge.active {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.status-badge.inactive {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+
+/* ================================
+   Children (add mode)
+   ================================ */
+
+.children-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 14px;
+}
+
+.child-row {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+}
+
+/* No relationship chosen after a save attempt */
+.child-row.invalid {
+  border-color: #f4b4b4;
+  background: #fffafa;
+}
+
+.child-avatar {
+  background: #eaf2ff;
+  color: #2554a4;
+}
+
+.child-relationship {
+  flex-shrink: 0;
+}
+
+.remove-child {
+  flex-shrink: 0;
+
+  color: #9ca3af;
+}
+
+.empty-children {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 14px;
+  padding: 16px;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+.empty-children mat-icon {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  font-size: 28px;
+
+  color: #9ca3af;
+}
+
+
+@media (max-width: 700px) {
+
+  .phone-field {
+    max-width: none;
+  }
+
+  .child-row {
+    flex-wrap: wrap;
+  }
+
+  .child-relationship {
+    order: 3;
+
+    width: 100%;
+  }
+
+}

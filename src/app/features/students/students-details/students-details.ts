@@ -24,6 +24,7 @@ import { Permissions } from '../../../core/services/permissions';
 import { getRoleTranslationKey } from '../../../core/models/user-role';
 
 import { AttendanceHistory } from '../../attendance/attendance-history/attendance-history';
+import { StudentParents } from '../student-parents/student-parents';
 
 import { Student } from '../../../core/models/student';
 
@@ -32,7 +33,7 @@ export interface StudentDetailsDialogData {
 }
 
 // The tabs of the dialog.
-export type StudentDetailsTab = 'details' | 'attendance';
+export type StudentDetailsTab = 'details' | 'attendance' | 'parents';
 
 @Component({
   selector: 'app-student-details',
@@ -44,7 +45,8 @@ export type StudentDetailsTab = 'details' | 'attendance';
     MatProgressSpinnerModule,
     MatTabsModule,
     TranslatePipe,
-    AttendanceHistory
+    AttendanceHistory,
+    StudentParents
   ],
   templateUrl: './students-details.html',
   styleUrl: './students-details.css'
@@ -70,6 +72,14 @@ export class StudentsDetails {
   readonly canViewAttendance = this.attendanceAccess.fullAccess;
 
   readonly activeTab = signal<StudentDetailsTab>('details');
+
+  // The "Parents" tab (GET /api/parents?studentId={studentId}):
+  // Admin and AssistantPrincipal only (a teacher gets 403).
+  readonly canViewParents = this.permissions.canViewStudentParents;
+
+  // The parents tab is created the first time it is opened,
+  // then kept (hidden) while the dialog is open, so it loads only once.
+  readonly parentsTabOpened = signal(false);
 
   // The phone number and the "Account Information" section
   // are for Admin and AssistantPrincipal only (hidden from a teacher).
@@ -209,6 +219,15 @@ export class StudentsDetails {
   // The shared function from user-role.ts, kept here under the same
   // name so the template can call it.
   readonly getRoleTranslationKey = getRoleTranslationKey;
+
+  openTab(tab: StudentDetailsTab): void {
+
+    if (tab === 'parents') {
+      this.parentsTabOpened.set(true);
+    }
+
+    this.activeTab.set(tab);
+  }
 
   close(): void {
     this.dialogRef.close();

@@ -1,0 +1,138 @@
+/* ================================
+   Link a Child Dialog
+   ================================ */
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  min-width: 0;
+}
+
+.link-for {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+.link-for strong {
+  font-weight: 500;
+
+  color: #111827;
+}
+
+
+/* ================================
+   Chosen Student
+   ================================ */
+
+.picked-student {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #f8fafc;
+}
+
+.picked-avatar {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eaf2ff;
+  color: #2554a4;
+}
+
+.picked-avatar mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+.picked-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.picked-name {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #111827;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picked-meta {
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Relationship
+   ================================ */
+
+.relationship-section {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.relationship-label {
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+.checking {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-height: 44px;
+
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Actions
+   ================================ */
+
+mat-dialog-actions {
+  gap: 8px;
+
+  padding: 16px 24px 20px;
+}
