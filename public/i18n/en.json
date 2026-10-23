@@ -622,13 +622,13 @@
       "SAVE": "Save",
       "SAVING": "Saving..."
     },
-    "CLASS_SELECTOR": {
+    "TERM_CLASS_SELECTOR": {
       "TERM": "Academic Term",
       "CLASS": "Class",
       "SECTION": "Section",
       "CURRENT": "(Current)"
     },
-    "CLASS_TABLE": {
+    "ASSIGNMENTS_TABLE": {
       "TITLE": "{{className}} — Section {{sectionName}} Subjects",
       "TOTAL": "Subjects",
       "ADD": "Add Subject to Section",
@@ -655,7 +655,7 @@
       "MISSING": "These subjects have a plan for this class but no teacher in section {{sectionName}}: {{names}}. The section's students will count as missing marks in them at rollover.",
       "ASSIGN_TEACHER": "Assign a Teacher"
     },
-    "ASSIGNMENT_FORM": {
+    "ASSIGNMENTS_FORM": {
       "ADD_TITLE": "Add Subject to Section",
       "EDIT_TITLE": "Edit Section Subject",
       "TERM": "Academic Term",
@@ -695,6 +695,7 @@
       "NONE": "No plan"
     },
     "PLANS": {
+      "RETRY": "Retry",
       "TITLE": "{{className}} Plans",
       "COUNT_SUBJECTS": "Subjects",
       "COUNT_READY": "Ready",
@@ -760,6 +761,8 @@
       "SAVING": "Saving..."
     },
     "PLAN_DETAILS": {
+      "RETRY": "Retry",
+      "ACTIONS": "Actions",
       "BREADCRUMB": "Breadcrumb",
       "TITLE": "{{subject}} Plan",
       "LOADING": "Loading the plan...",

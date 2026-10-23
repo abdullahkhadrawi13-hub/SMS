@@ -28,22 +28,22 @@ import { SubjectDto } from '../../../../core/models/subject';
 import { SubjectPlan } from '../../../../core/models/subject-plan';
 
 import {
-  ClassSubjectRow,
-  ClassSubjectsCounts,
+  SubjectAssignmentRow,
+  SubjectAssignmentsCounts,
   SubjectOption,
   teacherOptionFromAssignment,
 } from '../../subject';
 import { SubjectsSelection } from '../../subjects-selection';
-import { ClassSubjectsSelector } from '../class-subjects-selector/class-subjects-selector';
+import { TermClassSelector } from '../../term-class-selector/term-class-selector';
 import {
-  ClassSubjectsTable,
+  SubjectAssignmentsTable,
   MissingPlanSubject,
-} from '../class-subjects-table/class-subjects-table';
+} from '../subject-assignments-table/subject-assignments-table';
 import {
-  AssignmentForm,
-  AssignmentFormData,
-  AssignmentFormResult,
-} from '../assignment-form/assignment-form';
+  SubjectAssignmentsForm,
+  SubjectAssignmentsFormData,
+  SubjectAssignmentsFormResult,
+} from '../subject-assignments-form/subject-assignments-form';
 import { ActiveSectionDto } from '../../../../core/models/section';
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
@@ -65,16 +65,16 @@ import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 //   - the plan state of each subject in the add form
 //     (a subject without a plan cannot be added: the backend answers 400)
 @Component({
-  selector: 'app-class-subjects-tab',
+  selector: 'app-subject-assignments-tab',
   imports: [
-    ClassSubjectsSelector,
-    ClassSubjectsTable,
+    TermClassSelector,
+    SubjectAssignmentsTable,
     MatDialogModule,
   ],
-  templateUrl: './class-subjects-tab.html',
-  styleUrl: './class-subjects-tab.css',
+  templateUrl: './subject-assignments-tab.html',
+  styleUrl: './subject-assignments-tab.css',
 })
-export class ClassSubjectsTab {
+export class SubjectAssignmentsTab {
 
   private readonly sectionsService = inject(SectionsService);
   private readonly assignmentsService = inject(TeacherAssignmentsService);
@@ -167,7 +167,7 @@ export class ClassSubjectsTab {
   });
 
   // The subjects of the selected section, sorted by name.
-  readonly rows = computed<ClassSubjectRow[]>(() => {
+  readonly rows = computed<SubjectAssignmentRow[]>(() => {
 
     const isArabic = this.isArabic();
     const plansById = this.plansById();
@@ -216,7 +216,7 @@ export class ClassSubjectsTab {
       .sort((a, b) => a.subjectName.localeCompare(b.subjectName));
   });
 
-  readonly counts = computed<ClassSubjectsCounts>(() => {
+  readonly counts = computed<SubjectAssignmentsCounts>(() => {
 
     const rows = this.rows();
     const active = rows.filter(r => r.assignment.isActive).length;
@@ -576,7 +576,7 @@ export class ClassSubjectsTab {
 
 
   // Edit the teacher (PUT /api/teacherassignments/{id}).
-  openEditAssignment(row: ClassSubjectRow): void {
+  openEditAssignment(row: SubjectAssignmentRow): void {
 
     const assignment = row.assignment;
     const isArabic = this.isArabic();
@@ -605,7 +605,7 @@ export class ClassSubjectsTab {
 
 
   // Opens the plan details page of the row's subject.
-  viewPlan(row: ClassSubjectRow): void {
+  viewPlan(row: SubjectAssignmentRow): void {
 
     if (row.assignment.subjectPlanId !== null) {
       this.router.navigate(['/subjects/plans', row.assignment.subjectPlanId]);
@@ -615,7 +615,7 @@ export class ClassSubjectsTab {
 
   // Activate / deactivate directly, like the rest of the site
   // (PATCH /api/teacherassignments/{id}/status).
-  toggleAssignmentStatus(row: ClassSubjectRow): void {
+  toggleAssignmentStatus(row: SubjectAssignmentRow): void {
 
     const assignment = row.assignment;
 
@@ -661,17 +661,17 @@ export class ClassSubjectsTab {
   // The form saves the assignment itself and closes with { success: true },
   // or with { createPlanFor: subjectId } when the admin chose
   // "Create the plan first" for a subject without a plan.
-  private openForm(data: AssignmentFormData): void {
+  private openForm(data: SubjectAssignmentsFormData): void {
 
     this.dialog
-      .open(AssignmentForm, {
+      .open(SubjectAssignmentsForm, {
         width: '560px',
         maxWidth: '95vw',
         maxHeight: '90vh',
         data,
       })
       .afterClosed()
-      .subscribe((result?: AssignmentFormResult) => {
+      .subscribe((result?: SubjectAssignmentsFormResult) => {
 
         if (result?.success) {
           this.loadAssignments();

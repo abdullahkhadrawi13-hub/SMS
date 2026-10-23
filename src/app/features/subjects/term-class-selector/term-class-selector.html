@@ -7,7 +7,7 @@
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
 
       <mat-label>
-        {{ 'SUBJECTS.CLASS_SELECTOR.TERM' | translate }}
+        {{ 'SUBJECTS.TERM_CLASS_SELECTOR.TERM' | translate }}
       </mat-label>
 
       <mat-select
@@ -21,7 +21,7 @@
             {{ getTermLabel(term) }}
 
             @if (term.isCurrent) {
-              {{ 'SUBJECTS.CLASS_SELECTOR.CURRENT' | translate }}
+              {{ 'SUBJECTS.TERM_CLASS_SELECTOR.CURRENT' | translate }}
             }
           </mat-option>
         }
@@ -39,7 +39,7 @@
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
 
       <mat-label>
-        {{ 'SUBJECTS.CLASS_SELECTOR.CLASS' | translate }}
+        {{ 'SUBJECTS.TERM_CLASS_SELECTOR.CLASS' | translate }}
       </mat-label>
 
       <mat-select
@@ -64,7 +64,7 @@
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
 
         <mat-label>
-          {{ 'SUBJECTS.CLASS_SELECTOR.SECTION' | translate }}
+          {{ 'SUBJECTS.TERM_CLASS_SELECTOR.SECTION' | translate }}
         </mat-label>
 
         <mat-select

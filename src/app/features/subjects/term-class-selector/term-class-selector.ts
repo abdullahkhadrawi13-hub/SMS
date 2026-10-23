@@ -6,9 +6,9 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ActiveSectionDto } from '../../../../core/models/section';
-import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
-import { getTermLabel as formatTermLabel, TermOption } from '../../subject';
+import { ActiveSectionDto } from '../../../core/models/section';
+import { SchoolClassSimpleDto } from '../../../core/models/school-class';
+import { getTermLabel as formatTermLabel, TermOption } from '../subject';
 
 
 // Term / Class / Section dropdowns of the Subjects page.
@@ -16,17 +16,17 @@ import { getTermLabel as formatTermLabel, TermOption } from '../../subject';
 // and the "Subject plans" tab (term and class only: showSection = false).
 // All data is owned by the parent tab.
 @Component({
-  selector: 'app-class-subjects-selector',
+  selector: 'app-term-class-selector',
   imports: [
     MatFormFieldModule,
     MatProgressSpinnerModule,
     MatSelectModule,
     TranslatePipe,
   ],
-  templateUrl: './class-subjects-selector.html',
-  styleUrl: './class-subjects-selector.css',
+  templateUrl: './term-class-selector.html',
+  styleUrl: './term-class-selector.css',
 })
-export class ClassSubjectsSelector {
+export class TermClassSelector {
 
   // Every term (the current one is selected by default by the parent).
   readonly terms = input<TermOption[]>([]);

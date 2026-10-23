@@ -33,7 +33,7 @@ export interface TermOption {
 
 
 // One row of the section subjects table.
-export interface ClassSubjectRow {
+export interface SubjectAssignmentRow {
   assignment: TeacherAssignment;
 
   // Subject name in the current language.
@@ -51,7 +51,7 @@ export interface ClassSubjectRow {
 
 
 // Counters shown above the section subjects table.
-export interface ClassSubjectsCounts {
+export interface SubjectAssignmentsCounts {
   total: number;
   active: number;
   inactive: number;

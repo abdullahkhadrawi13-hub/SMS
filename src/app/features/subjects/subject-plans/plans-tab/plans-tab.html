@@ -1,5 +1,5 @@
 <!-- Term / Class (shared with the assignments tab) -->
-<app-class-subjects-selector
+<app-term-class-selector
   [terms]="selection.terms()"
   [termsLoading]="selection.isLoading()"
   [termId]="selection.termId()"
@@ -8,7 +8,7 @@
   [showSection]="false"
   (termChange)="onTermChange($event)"
   (classChange)="onClassChange($event)"
-></app-class-subjects-selector>
+></app-term-class-selector>
 
 
 <!-- Error -->
@@ -27,7 +27,7 @@
       (click)="retry()"
     >
       <mat-icon>refresh</mat-icon>
-      {{ 'SUBJECTS.CLASS_TABLE.RETRY' | translate }}
+      {{ 'SUBJECTS.PLANS.RETRY' | translate }}
     </button>
 
   </div>

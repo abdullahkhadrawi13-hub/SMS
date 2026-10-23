@@ -612,13 +612,13 @@
       "SAVE": "حفظ",
       "SAVING": "جاري الحفظ..."
     },
-    "CLASS_SELECTOR": {
+    "TERM_CLASS_SELECTOR": {
       "TERM": "الفصل الدراسي",
       "CLASS": "الصف",
       "SECTION": "الشعبة",
       "CURRENT": "(الحالي)"
     },
-    "CLASS_TABLE": {
+    "ASSIGNMENTS_TABLE": {
       "TITLE": "مواد {{className}} — شعبة {{sectionName}}",
       "TOTAL": "المواد",
       "ADD": "إضافة مادة للشعبة",
@@ -645,7 +645,7 @@
       "MISSING": "لهذه المواد خطة في هذا الصف لكن بلا معلم في شعبة {{sectionName}}: {{names}}. سيُعدّ طلاب الشعبة ناقصي العلامات فيها عند الترحيل.",
       "ASSIGN_TEACHER": "إسناد معلم"
     },
-    "ASSIGNMENT_FORM": {
+    "ASSIGNMENTS_FORM": {
       "ADD_TITLE": "إضافة مادة للشعبة",
       "EDIT_TITLE": "تعديل مادة الشعبة",
       "TERM": "الفصل الدراسي",
@@ -685,6 +685,7 @@
       "NONE": "بلا خطة"
     },
     "PLANS": {
+      "RETRY": "إعادة المحاولة",
       "TITLE": "خطط {{className}}",
       "COUNT_SUBJECTS": "المواد",
       "COUNT_READY": "جاهزة",
@@ -750,6 +751,8 @@
       "SAVING": "جاري الحفظ..."
     },
     "PLAN_DETAILS": {
+      "RETRY": "إعادة المحاولة",
+      "ACTIONS": "الإجراءات",
       "BREADCRUMB": "مسار الصفحة",
       "TITLE": "خطة {{subject}}",
       "LOADING": "جاري تحميل الخطة...",

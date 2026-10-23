@@ -12,8 +12,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { SubjectPlan } from '../../../../core/models/subject-plan';
 
 import {
-  ClassSubjectRow,
-  ClassSubjectsCounts,
+  SubjectAssignmentRow,
+  SubjectAssignmentsCounts,
   formatNumber,
   getPlanStatus,
   PLAN_STATUS_BADGE,
@@ -29,9 +29,9 @@ export interface MissingPlanSubject {
 
 // The subjects of one section: toolbar (title, counters, add),
 // table and the states (error / loading / select / empty).
-// All data is owned by the parent (class-subjects).
+// All data is owned by the parent (subject-assignments-tab).
 @Component({
-  selector: 'app-class-subjects-table',
+  selector: 'app-subject-assignments-table',
   imports: [
     MatButtonModule,
     MatIconModule,
@@ -41,15 +41,15 @@ export interface MissingPlanSubject {
     MatTableModule,
     TranslatePipe,
   ],
-  templateUrl: './class-subjects-table.html',
-  styleUrl: './class-subjects-table.css',
+  templateUrl: './subject-assignments-table.html',
+  styleUrl: './subject-assignments-table.css',
 })
-export class ClassSubjectsTable {
+export class SubjectAssignmentsTable {
 
   // ===== Inputs =====
 
-  readonly rows = input<ClassSubjectRow[]>([]);
-  readonly counts = input<ClassSubjectsCounts>({ total: 0, active: 0, inactive: 0 });
+  readonly rows = input<SubjectAssignmentRow[]>([]);
+  readonly counts = input<SubjectAssignmentsCounts>({ total: 0, active: 0, inactive: 0 });
 
   // Subjects with a plan for the class but no teacher in this section.
   readonly missingSubjects = input<MissingPlanSubject[]>([]);
@@ -94,9 +94,9 @@ export class ClassSubjectsTable {
   // a subjectId = a subject of the "no teacher" line (preselected in the form).
   readonly addSubject = output<number | null>();
 
-  readonly editSubject = output<ClassSubjectRow>();
-  readonly viewPlan = output<ClassSubjectRow>();
-  readonly toggleStatus = output<ClassSubjectRow>();
+  readonly editSubject = output<SubjectAssignmentRow>();
+  readonly viewPlan = output<SubjectAssignmentRow>();
+  readonly toggleStatus = output<SubjectAssignmentRow>();
 
 
   // The Assistant Principal has no actions, so the column is hidden.
