@@ -190,6 +190,10 @@ export class ParentForm {
 
   private phoneCheckRequest: Subscription | null = null;
 
+  // True when "Save" was pressed before the phone check answered:
+  // the save continues by itself once the check finishes.
+  private submitAfterPhoneCheck = false;
+
 
   // ===== Children (add mode) =====
 
@@ -230,6 +234,13 @@ export class ParentForm {
           this.phoneCheckRequest?.unsubscribe();
           this.phoneCheck.set('idle');
           this.matchedParent.set(null);
+
+          // Forget the old result, so typing the same number again
+          // runs a new check instead of staying "idle".
+          this.checkedPhone = '';
+
+          // The admin is editing the number again: cancel a waiting save.
+          this.submitAfterPhoneCheck = false;
         }
       });
   }
@@ -320,6 +331,7 @@ export class ParentForm {
 
           if (!response.success) {
             this.phoneCheck.set('error');
+            this.continuePendingSubmit();
             return;
           }
 
@@ -329,6 +341,7 @@ export class ParentForm {
 
           this.matchedParent.set(match ?? null);
           this.phoneCheck.set(match ? 'match' : 'none');
+          this.continuePendingSubmit();
         },
 
         error: (error: HttpErrorResponse) => {
@@ -337,8 +350,23 @@ export class ParentForm {
 
           this.checkedPhone = phone;
           this.phoneCheck.set('error');
+          this.continuePendingSubmit();
         },
       });
+  }
+
+
+  // "Save" was pressed while the check was running: save now.
+  // onSubmit checks everything again, so a matched number still
+  // stops the save and asks the admin to decide first.
+  private continuePendingSubmit(): void {
+
+    if (!this.submitAfterPhoneCheck) {
+      return;
+    }
+
+    this.submitAfterPhoneCheck = false;
+    this.onSubmit();
   }
 
 
@@ -483,6 +511,20 @@ export class ParentForm {
 
     if (this.parentForm.invalid || childrenInvalid) {
       this.parentForm.markAllAsTouched();
+      return;
+    }
+
+    // The phone check has not answered yet (for example Enter was pressed
+    // inside the phone field, so it never lost focus): wait for it,
+    // then the save continues by itself (continuePendingSubmit).
+    if (this.phoneCheck() === 'checking') {
+      this.submitAfterPhoneCheck = true;
+      return;
+    }
+
+    if (this.phoneCheck() === 'idle') {
+      this.submitAfterPhoneCheck = true;
+      this.checkPhone();
       return;
     }
 
