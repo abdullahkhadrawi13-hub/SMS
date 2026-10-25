@@ -236,7 +236,7 @@
 /* ================================
    History button (staff only)
    The same look as the grade sheet. Hidden until the chip is hovered
-   or focused, the edited marks too (they turn blue when they show).
+   or focused; edited marks always show, in blue.
    ================================ */
 
 .history-button {
@@ -291,8 +291,10 @@
   outline-offset: 1px;
 }
 
-/* Edited after it was first entered: blue (still hidden until hover). */
+/* Edited after it was first entered: always visible, in blue. */
 .history-button.edited {
+  opacity: 1;
+
   color: #2554a4;
   background: #eef3fc;
 
