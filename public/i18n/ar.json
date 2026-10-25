@@ -43,8 +43,7 @@
     "STUDENTS": "الطلاب",
     "TEACHERS": "المعلمين",
     "PARENTS": "أولياء الأمور",
-    "CLASSES": "الصفوف",
-    "SECTIONS": "الشعب",
+    "CLASSES_SECTIONS": "الصفوف والشعب",
     "SUBJECTS": "المواد الدراسية",
     "TIMETABLE": "الجدول الدراسي",
     "ATTENDANCE": "الحضور والغياب",
@@ -313,8 +312,9 @@
 
   "CLASSES": {
     "HEADER": {
-      "TITLE": "إدارة الصفوف",
-      "SUBTITLE": "إدارة الصفوف الدراسية وإعداداتها"
+      "TITLE": "الصفوف والشعب",
+      "SUBTITLE": "اختر صفًا لعرض شعبه وعدد طلاب كل شعبة",
+      "COUNTS_TERM": "الأعداد حسب {{term}}"
     },
     "GRID": {
       "LOADING": "جاري تحميل الصفوف...",
@@ -329,7 +329,9 @@
       "ACTIONS": "الإجراءات",
       "EDIT": "تعديل",
       "ACTIVATE": "تفعيل",
-      "DEACTIVATE": "تعطيل"
+      "DEACTIVATE": "تعطيل",
+      "OPEN": "فتح {{name}}",
+      "NO_SECTIONS": "لا توجد شعب بعد"
     },
     "FORM": {
       "ADD_TITLE": "إضافة صف",
@@ -354,6 +356,24 @@
         "LEVEL_INVALID": "المستوى يجب أن يكون رقمًا صحيحًا أكبر من 0"
       }
     },
+    "COUNTS": {
+      "SECTIONS": {
+        "ZERO": "لا توجد شعب",
+        "ONE": "شعبة واحدة",
+        "TWO": "شعبتان",
+        "FEW": "{{count}} شعب",
+        "MANY": "{{count}} شعبة",
+        "OTHER": "{{count}} شعبة"
+      },
+      "STUDENTS": {
+        "ZERO": "لا يوجد طلاب",
+        "ONE": "طالب واحد",
+        "TWO": "طالبان",
+        "FEW": "{{count}} طلاب",
+        "MANY": "{{count}} طالبًا",
+        "OTHER": "{{count}} طالب"
+      }
+    },
     "ERROR": {
       "LOAD_FAILED": "تعذّر تحميل الصفوف. حاول مرة أخرى."
     },
@@ -361,65 +381,79 @@
     "INACTIVE": "غير فعال"
   },
 
-  "SECTIONS": {
-    "TITLE": "إدارة الشعب",
-    "SUBTITLE": "إدارة بيانات الشعب وصفوفها",
-    "ADD_SECTION": "إضافة شعبة",
-    "FILTER": "فلتر",
-
-    "TABLE": {
-      "CLASS_NAME": "اسم الصف",
-      "SECTION": "الشعبة",
-      "STUDENT_COUNT": "عدد الطلاب",
-      "STATUS": "الحالة",
-      "ACTIONS": "العمليات",
-      "LOADING": "جاري تحميل الشعب..."
+  "CLASS_SECTIONS": {
+    "BACK": "الصفوف والشعب",
+    "LOADING": "جاري تحميل الصف...",
+    "RETRY": "إعادة المحاولة",
+    "BANNER": {
+      "ACTIVE_SECTIONS": "شعب فعالة",
+      "STUDENTS": "الطلاب",
+      "EMPTY_SECTIONS": "شعب فارغة",
+      "INACTIVE_CLASS": "صف غير فعال",
+      "EDIT_CLASS": "تعديل الصف",
+      "ACTIVATE_CLASS": "تفعيل الصف",
+      "DEACTIVATE_CLASS": "تعطيل الصف"
     },
-
-    "ACTIVE": "فعال",
-    "INACTIVE": "غير فعال",
-    "ACTIVATE": "تفعيل",
-    "DEACTIVATE": "تعطيل",
-    "EDIT": "تعديل",
-
-    "EMPTY": {
-      "TITLE": "لا توجد شعب",
-      "MESSAGE": "لا توجد شعب دراسية لعرضها حالياً."
+    "TOOLBAR": {
+      "TERM": "عدد الطلاب في",
+      "CURRENT": "الحالي",
+      "STATUS": "حالة الشعبة",
+      "STATUS_ALL": "الكل",
+      "STATUS_ACTIVE": "فعالة",
+      "STATUS_INACTIVE": "غير فعالة"
     },
-
-    "SECTION_FORM": {
+    "LIST": {
+      "LOADING": "جاري تحميل الشعب...",
+      "EMPTY": "لا توجد شعب لهذا الصف بعد.",
+      "NO_MATCH": "لا توجد شعب بهذه الحالة.",
+      "SHOW_ALL": "عرض كل الشعب",
+      "ADD_TITLE": "إضافة شعبة",
+      "ADD_HINT": "إلى {{className}}",
+      "ADD_HINT_FIRST": "هذا الصف بلا شعب بعد"
+    },
+    "ROW": {
+      "NAME_AR": "شعبة {{name}}",
+      "NAME_EN": "Section {{name}}",
+      "STUDENTS_UNIT": {
+        "ZERO": "طالب",
+        "ONE": "طالب",
+        "TWO": "طالبان",
+        "FEW": "طلاب",
+        "MANY": "طالبًا",
+        "OTHER": "طالب"
+      },
+      "ACTIVE": "فعالة",
+      "INACTIVE": "غير فعالة",
+      "EMPTY": "فارغة",
+      "ACTIONS": "إجراءات شعبة {{name}}",
+      "EDIT": "تعديل الشعبة",
+      "ACTIVATE": "تفعيل الشعبة",
+      "DEACTIVATE": "تعطيل الشعبة"
+    },
+    "FORM": {
       "ADD_TITLE": "إضافة شعبة",
       "EDIT_TITLE": "تعديل شعبة",
-
       "CLASS": "الصف",
-      "CLASS_REQUIRED": "يرجى اختيار الصف",
-
-      "SECTION_AR": "اسم الشعبة بالعربي",
-      "SECTION_AR_PLACEHOLDER": "أدخل اسم الشعبة بالعربي",
-      "SECTION_AR_REQUIRED": "يرجى إدخال اسم الشعبة بالعربي",
-
-      "SECTION_EN": "اسم الشعبة بالإنجليزي",
-      "SECTION_EN_PLACEHOLDER": "أدخل اسم الشعبة بالإنجليزي",
-      "SECTION_EN_REQUIRED": "يرجى إدخال اسم الشعبة بالإنجليزي",
-
-      "SECTION_MAX_LENGTH": "اسم الشعبة يجب ألا يتجاوز 100 حرف",
-
+      "NAME_AR": "اسم الشعبة بالعربي",
+      "NAME_AR_PLACEHOLDER": "مثال: أ",
+      "NAME_EN": "اسم الشعبة بالإنجليزي",
+      "NAME_EN_PLACEHOLDER": "مثال: A",
       "CANCEL": "إلغاء",
       "ADD": "إضافة",
-      "EDIT": "تعديل"
+      "SAVE": "حفظ",
+      "SAVING": "جاري الحفظ...",
+      "VALIDATION": {
+        "NAME_AR_REQUIRED": "يرجى إدخال اسم الشعبة بالعربي",
+        "NAME_EN_REQUIRED": "يرجى إدخال اسم الشعبة بالإنجليزي",
+        "NAME_MAX_LENGTH": "اسم الشعبة يجب ألا يتجاوز 100 حرف",
+        "ARABIC_ONLY": "أحرف عربية وأرقام ومسافات فقط",
+        "ENGLISH_ONLY": "أحرف إنجليزية وأرقام ومسافات فقط"
+      }
     },
-
-    "FILTER_DIALOG": {
-      "TITLE": "فلترة الشعب",
-      "CLASS": "الصف",
-      "SECTION": "الشعبة",
-      "STATUS": "الحالة",
-      "ACADEMIC_YEAR": "السنة الدراسية",
-      "ACADEMIC_TERM": "الفصل الدراسي",
-      "ALL": "الكل",
-      "CLEAR": "مسح",
-      "CANCEL": "إلغاء",
-      "APPLY": "تطبيق"
+    "ERROR": {
+      "LOAD_FAILED": "تعذّر تحميل الصف. حاول مرة أخرى.",
+      "NOT_FOUND": "هذا الصف غير موجود.",
+      "SECTIONS_FAILED": "تعذّر تحميل الشعب. حاول مرة أخرى."
     }
   },
 

@@ -1,0 +1,96 @@
+/* Same layout as the class form: one field per row. */
+.section-form {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  padding-top: 8px;
+
+}
+
+
+/* =========================
+   Form Fields
+   ========================= */
+
+mat-form-field {
+
+  width: 100%;
+
+}
+
+input[dir='rtl'] {
+
+  text-align: right;
+
+}
+
+input[dir='ltr'] {
+
+  text-align: left;
+
+}
+
+
+/* =========================
+   Locked Class
+   ========================= */
+
+.locked-class {
+
+  margin-bottom: 12px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+}
+
+.locked-label {
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  color: #6b7280;
+
+}
+
+.locked-value {
+
+  height: 48px;
+
+  padding: 0 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  border-radius: 8px;
+
+  background: #f3f4f6;
+
+  color: #4b5563;
+
+  font-size: 15px;
+
+}
+
+.locked-value mat-icon {
+
+  width: 18px;
+
+  height: 18px;
+
+  font-size: 18px;
+
+  color: #9ca3af;
+
+}

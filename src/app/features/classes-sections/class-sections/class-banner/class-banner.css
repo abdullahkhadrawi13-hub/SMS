@@ -1,0 +1,318 @@
+:host {
+
+  display: block;
+
+}
+
+
+/* ================================
+   Banner
+   Same colors as the class card:
+   --card-main, --card-soft, --card-dark
+   ================================ */
+
+.class-banner {
+
+  margin-bottom: 18px;
+
+  padding: 22px 24px;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 18px 24px;
+
+  border: 1px solid color-mix(in srgb, var(--card-main) 22%, transparent);
+
+  border-radius: 20px;
+
+  background:
+    radial-gradient(
+      circle at 8% 0%,
+      color-mix(in srgb, var(--card-main) 18%, transparent) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      170deg,
+      var(--card-soft) 0%,
+      color-mix(in srgb, var(--card-soft) 40%, #ffffff) 100%
+    );
+
+  box-sizing: border-box;
+
+}
+
+
+/* ================================
+   Identity: icon + name + badges
+   ================================ */
+
+.identity {
+
+  flex: 1;
+
+  min-width: 240px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+}
+
+.class-icon {
+
+  width: 56px;
+
+  height: 56px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: var(--card-main);
+
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--card-main) 35%, transparent);
+
+}
+
+.class-banner.inactive .class-icon {
+
+  box-shadow: none;
+
+}
+
+.class-icon mat-icon {
+
+  width: 28px;
+
+  height: 28px;
+
+  font-size: 28px;
+
+  color: #ffffff;
+
+}
+
+.identity-text {
+
+  min-width: 0;
+
+}
+
+.identity-text h1 {
+
+  margin: 0 0 6px;
+
+  font-size: 26px;
+
+  font-weight: 700;
+
+  line-height: 1.3;
+
+  color: var(--card-dark);
+
+}
+
+
+/* ================================
+   Badges (same as the class card)
+   ================================ */
+
+.badges {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+}
+
+.badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  height: 24px;
+
+  padding: 0 9px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.75);
+
+  color: var(--card-dark);
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+}
+
+.graduation-badge {
+
+  background: linear-gradient(135deg, #fdebb0, #f2c14e);
+
+  color: #5c3d02;
+
+}
+
+.graduation-badge mat-icon {
+
+  width: 15px;
+
+  height: 15px;
+
+  font-size: 15px;
+
+}
+
+.inactive-badge {
+
+  background: #ffffff;
+
+  color: #991b1b;
+
+}
+
+
+/* ================================
+   Stats
+   ================================ */
+
+.stats {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+}
+
+.stat {
+
+  min-width: 96px;
+
+  padding: 10px 16px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.8);
+
+  box-sizing: border-box;
+
+}
+
+.stat-value {
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+  color: var(--card-dark);
+
+  font-variant-numeric: tabular-nums;
+
+}
+
+.stat-label {
+
+  font-size: 12px;
+
+  color: #6b7280;
+
+}
+
+/* Empty sections: amber, so they catch the eye. */
+.stat.warning .stat-value {
+
+  color: #b45309;
+
+}
+
+
+/* ================================
+   Actions
+   ================================ */
+
+.actions {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+}
+
+.edit-button {
+
+  background: rgba(255, 255, 255, 0.85);
+
+  color: var(--card-dark);
+
+  border-color: color-mix(in srgb, var(--card-main) 35%, transparent);
+
+}
+
+.more-button {
+
+  color: var(--card-dark);
+
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .class-banner {
+
+    padding: 18px;
+
+  }
+
+  .identity-text h1 {
+
+    font-size: 23px;
+
+  }
+
+  .stats {
+
+    width: 100%;
+
+  }
+
+  .stat {
+
+    flex: 1;
+
+    min-width: 0;
+
+  }
+
+}

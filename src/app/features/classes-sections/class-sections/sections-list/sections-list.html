@@ -1,0 +1,114 @@
+<!-- Error -->
+@if (errorMessage()) {
+
+  <div class="state-card error-state">
+
+    <mat-icon>error_outline</mat-icon>
+
+    <p>
+      {{ errorMessage() | translate }}
+    </p>
+
+    <button mat-flat-button type="button" (click)="retry.emit()">
+      <mat-icon>refresh</mat-icon>
+      {{ 'CLASS_SECTIONS.RETRY' | translate }}
+    </button>
+
+  </div>
+
+}
+
+
+<!-- First load -->
+@else if (isInitialLoading()) {
+
+  <div class="state-card">
+    <mat-spinner diameter="42"></mat-spinner>
+    <p>
+      {{ 'CLASS_SECTIONS.LIST.LOADING' | translate }}
+    </p>
+  </div>
+
+}
+
+
+<!-- Sections exist, but none match the status filter -->
+@else if (isFilteredEmpty()) {
+
+  <div class="state-card">
+    <mat-icon class="empty-icon">filter_alt_off</mat-icon>
+    <p>
+      {{ 'CLASS_SECTIONS.LIST.NO_MATCH' | translate }}
+    </p>
+    <button mat-button type="button" (click)="showAll.emit()">
+      {{ 'CLASS_SECTIONS.LIST.SHOW_ALL' | translate }}
+    </button>
+  </div>
+
+}
+
+
+<!-- No sections, and the user cannot add one -->
+@else if (sections().length === 0 && !showAddRow()) {
+
+  <div class="state-card">
+    <mat-icon class="empty-icon">groups</mat-icon>
+    <p>
+      {{ 'CLASS_SECTIONS.LIST.EMPTY' | translate }}
+    </p>
+  </div>
+
+}
+
+
+<!-- The rows -->
+@else {
+
+  <div class="list-wrapper" [class.is-refreshing]="isRefreshing()">
+
+    <!-- Reload indicator: sits on top without taking any height -->
+    @if (isRefreshing()) {
+      <mat-progress-bar class="refresh-bar" mode="indeterminate"></mat-progress-bar>
+    }
+
+    <div class="rows">
+
+      @for (section of sections(); track section.sectionId) {
+        <app-section-row
+          [section]="section"
+          [color]="color()"
+          [maxStudentCount]="maxStudentCount()"
+          [canManage]="canManage()"
+          [isToggling]="togglingSectionId() !== null"
+          (edit)="editSection.emit(section)"
+          (toggleStatus)="toggleStatus.emit(section)"
+        />
+      }
+
+      <!-- Add section (Admin, active class) -->
+      @if (showAddRow()) {
+        <button type="button" class="add-row" (click)="addSection.emit()">
+
+          <span class="add-icon">
+            <mat-icon>add</mat-icon>
+          </span>
+
+          <span class="add-text">
+            <strong>{{ 'CLASS_SECTIONS.LIST.ADD_TITLE' | translate }}</strong>
+            <small>
+              {{
+                totalCount() === 0
+                  ? ('CLASS_SECTIONS.LIST.ADD_HINT_FIRST' | translate)
+                  : ('CLASS_SECTIONS.LIST.ADD_HINT' | translate: { className: className() })
+              }}
+            </small>
+          </span>
+
+        </button>
+      }
+
+    </div>
+
+  </div>
+
+}

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
 import { PagedResult } from '../models/paged-result';
@@ -82,6 +82,62 @@ export class SectionsService {
       { params }
     );
   }
+
+
+  // GET /api/Sections, every page, as one list.
+  // The API returns at most 100 sections per page. A school usually has
+  // fewer, so this is one request; more pages are loaded only if needed.
+  // Used by the "Classes & Sections" pages, which group the sections by class.
+  getAllSections(
+    filters: Omit<SectionFilters, 'pageNumber' | 'pageSize'> = {}
+  ): Observable<ApiResponse<Section[]>> {
+
+    const pageSize = SectionsService.MAX_PAGE_SIZE;
+
+    return this.getSections({ ...filters, pageNumber: 1, pageSize }).pipe(
+      switchMap(first => {
+
+        // A business error, or everything fits in the first page.
+        if (!first.success || first.data.totalPages <= 1) {
+          return of({
+            ...first,
+            data: first.success ? first.data.items : []
+          });
+        }
+
+        // Pages 2, 3, ... loaded together.
+        const otherPages = Array.from(
+          { length: first.data.totalPages - 1 },
+          (_, index) => this.getSections({
+            ...filters,
+            pageNumber: index + 2,
+            pageSize
+          })
+        );
+
+        return forkJoin(otherPages).pipe(
+          map(pages => {
+            const failed = pages.find(page => !page.success);
+
+            if (failed) {
+              return { ...failed, data: [] as Section[] };
+            }
+
+            return {
+              ...first,
+              data: [
+                ...first.data.items,
+                ...pages.flatMap(page => page.data.items)
+              ]
+            };
+          })
+        );
+      })
+    );
+  }
+
+  // The largest page the API accepts (bigger values become 100).
+  private static readonly MAX_PAGE_SIZE = 100;
 
 
   // GET /api/Sections/by-class/{classId}

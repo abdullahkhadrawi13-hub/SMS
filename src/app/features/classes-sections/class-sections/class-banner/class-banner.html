@@ -1,0 +1,118 @@
+<section
+  class="class-banner"
+  [class.inactive]="!schoolClass().isActive"
+  [style.--card-main]="color().main"
+  [style.--card-soft]="color().soft"
+  [style.--card-dark]="color().dark"
+>
+
+  <!-- Icon, name, level and badges -->
+  <div class="identity">
+
+    <div class="class-icon">
+      <mat-icon>school</mat-icon>
+    </div>
+
+    <div class="identity-text">
+
+      <h1>{{ className() }}</h1>
+
+      <div class="badges">
+
+        <span class="badge">
+          {{ 'CLASSES.CARD.LEVEL' | translate }} {{ schoolClass().level }}
+        </span>
+
+        @if (schoolClass().isGraduationGrade) {
+          <span class="badge graduation-badge">
+            <mat-icon>workspace_premium</mat-icon>
+            {{ 'CLASSES.CARD.GRADUATION_BADGE' | translate }}
+          </span>
+        }
+
+        @if (!schoolClass().isActive) {
+          <span class="badge inactive-badge">
+            {{ 'CLASS_SECTIONS.BANNER.INACTIVE_CLASS' | translate }}
+          </span>
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Numbers about the sections (in the chosen term) -->
+  @if (sectionsLoaded()) {
+    <div class="stats">
+
+      <div class="stat">
+        <span class="stat-value">{{ activeSections() }}</span>
+        <span class="stat-label">{{ 'CLASS_SECTIONS.BANNER.ACTIVE_SECTIONS' | translate }}</span>
+      </div>
+
+      <div class="stat">
+        <span class="stat-value">{{ studentsCount() }}</span>
+        <span class="stat-label">{{ 'CLASS_SECTIONS.BANNER.STUDENTS' | translate }}</span>
+      </div>
+
+      @if (emptySections() > 0) {
+        <div class="stat warning">
+          <span class="stat-value">{{ emptySections() }}</span>
+          <span class="stat-label">{{ 'CLASS_SECTIONS.BANNER.EMPTY_SECTIONS' | translate }}</span>
+        </div>
+      }
+
+    </div>
+  }
+
+
+  <!-- Class actions (Admin only) -->
+  @if (canManage()) {
+    <div class="actions">
+
+      <button
+        mat-stroked-button
+        type="button"
+        class="edit-button"
+        (click)="editClass.emit()"
+      >
+        <mat-icon>edit</mat-icon>
+        {{ 'CLASS_SECTIONS.BANNER.EDIT_CLASS' | translate }}
+      </button>
+
+      <button
+        mat-icon-button
+        type="button"
+        class="more-button"
+        [matMenuTriggerFor]="classMenu"
+        [attr.aria-label]="'CLASSES.CARD.ACTIONS' | translate"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #classMenu="matMenu">
+        <button
+          mat-menu-item
+          type="button"
+          [disabled]="isToggling()"
+          (click)="toggleStatus.emit()"
+        >
+          <mat-icon>
+            {{ schoolClass().isActive ? 'block' : 'check_circle' }}
+          </mat-icon>
+          <span>
+            {{
+              schoolClass().isActive
+                ? ('CLASS_SECTIONS.BANNER.DEACTIVATE_CLASS' | translate)
+                : ('CLASS_SECTIONS.BANNER.ACTIVATE_CLASS' | translate)
+            }}
+          </span>
+        </button>
+      </mat-menu>
+
+    </div>
+  }
+
+</section>

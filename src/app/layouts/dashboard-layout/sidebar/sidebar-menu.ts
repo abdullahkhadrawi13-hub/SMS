@@ -53,17 +53,11 @@ export const SIDEBAR_MENU: MenuItem[] = [
     roles: [Admin, AssistantPrincipal]
   },
 
+  // Classes and their sections (one section: /classes-sections).
   {
-    label: 'SIDEBAR.CLASSES',
+    label: 'SIDEBAR.CLASSES_SECTIONS',
     icon: 'class',
-    route: '/classes',
-    roles: [Admin, AssistantPrincipal]
-  },
-
-  {
-    label: 'SIDEBAR.SECTIONS',
-    icon: 'groups',
-    route: '/sections',
+    route: '/classes-sections',
     roles: [Admin, AssistantPrincipal]
   },
 

@@ -1,0 +1,110 @@
+/* ================================
+   Page Header
+   ================================ */
+
+.page-header {
+
+  margin-bottom: 24px;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: flex-end;
+
+  gap: 12px 24px;
+
+}
+
+
+/* ================================
+   Title
+   ================================ */
+
+.title-section {
+
+  flex: 1;
+
+  min-width: 240px;
+
+}
+
+.title-section h1 {
+
+  margin: 0 0 8px;
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+  line-height: 1.3;
+
+  color: #111827;
+
+}
+
+.title-section p {
+
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+
+  line-height: 1.5;
+
+}
+
+
+/* ================================
+   Term Note (which term the counts are for)
+   ================================ */
+
+.term-note {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 6px 12px;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  color: #6b7280;
+
+  font-size: 13px;
+
+}
+
+.term-note mat-icon {
+
+  width: 17px;
+
+  height: 17px;
+
+  font-size: 17px;
+
+  color: #2554a4;
+
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .title-section h1 {
+
+    font-size: 24px;
+
+  }
+
+}

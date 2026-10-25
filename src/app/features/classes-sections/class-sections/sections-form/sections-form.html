@@ -1,0 +1,126 @@
+<h2 mat-dialog-title>
+
+  {{
+    isEditMode
+      ? ('CLASS_SECTIONS.FORM.EDIT_TITLE' | translate)
+      : ('CLASS_SECTIONS.FORM.ADD_TITLE' | translate)
+  }}
+
+</h2>
+
+
+<mat-dialog-content>
+
+  <form
+    id="section-form"
+    [formGroup]="sectionForm"
+    class="section-form"
+    (ngSubmit)="submit()"
+    novalidate>
+
+    <!-- The class: locked (a section never moves to another class) -->
+    <div class="locked-class">
+      <span class="locked-label">
+        {{ 'CLASS_SECTIONS.FORM.CLASS' | translate }}
+      </span>
+      <span class="locked-value">
+        <mat-icon>lock</mat-icon>
+        {{ className }}
+      </span>
+    </div>
+
+
+    <!-- Arabic name -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASS_SECTIONS.FORM.NAME_AR' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="sectionAr"
+        dir="rtl"
+        autocomplete="off"
+        [placeholder]="'CLASS_SECTIONS.FORM.NAME_AR_PLACEHOLDER' | translate">
+
+      @if (isFieldInvalid('sectionAr')) {
+        <mat-error>
+          @if (sectionForm.controls.sectionAr.hasError('required')) {
+            {{ 'CLASS_SECTIONS.FORM.VALIDATION.NAME_AR_REQUIRED' | translate }}
+          } @else if (sectionForm.controls.sectionAr.hasError('pattern')) {
+            {{ 'CLASS_SECTIONS.FORM.VALIDATION.ARABIC_ONLY' | translate }}
+          } @else if (sectionForm.controls.sectionAr.hasError('maxlength')) {
+            {{ 'CLASS_SECTIONS.FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
+          }
+        </mat-error>
+      }
+
+    </mat-form-field>
+
+
+    <!-- English name -->
+    <mat-form-field appearance="outline">
+
+      <mat-label>
+        {{ 'CLASS_SECTIONS.FORM.NAME_EN' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        type="text"
+        formControlName="sectionEn"
+        dir="ltr"
+        autocomplete="off"
+        [placeholder]="'CLASS_SECTIONS.FORM.NAME_EN_PLACEHOLDER' | translate">
+
+      @if (isFieldInvalid('sectionEn')) {
+        <mat-error>
+          @if (sectionForm.controls.sectionEn.hasError('required')) {
+            {{ 'CLASS_SECTIONS.FORM.VALIDATION.NAME_EN_REQUIRED' | translate }}
+          } @else if (sectionForm.controls.sectionEn.hasError('pattern')) {
+            {{ 'CLASS_SECTIONS.FORM.VALIDATION.ENGLISH_ONLY' | translate }}
+          } @else if (sectionForm.controls.sectionEn.hasError('maxlength')) {
+            {{ 'CLASS_SECTIONS.FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
+          }
+        </mat-error>
+      }
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    [disabled]="isSubmitting()"
+    (click)="cancel()">
+
+    {{ 'CLASS_SECTIONS.FORM.CANCEL' | translate }}
+
+  </button>
+
+
+  <button
+    mat-flat-button
+    type="submit"
+    form="section-form"
+    [disabled]="isSubmitting()">
+
+    {{
+      isSubmitting()
+        ? ('CLASS_SECTIONS.FORM.SAVING' | translate)
+        : isEditMode
+          ? ('CLASS_SECTIONS.FORM.SAVE' | translate)
+          : ('CLASS_SECTIONS.FORM.ADD' | translate)
+    }}
+
+  </button>
+
+</mat-dialog-actions>

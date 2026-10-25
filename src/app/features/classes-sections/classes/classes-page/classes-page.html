@@ -1,0 +1,21 @@
+<div class="classes-page">
+
+  <!-- Page Header (+ which term the counts are for) -->
+  <app-classes-header [currentTerm]="currentTerm()" />
+
+  <!-- Classes Grid (error / loading / cards / add card) -->
+  <app-classes-grid
+    [classes]="classes()"
+    [sectionsByClass]="sectionsByClass()"
+    [sectionsLoaded]="sectionsLoaded()"
+    [isLoading]="isLoading()"
+    [errorMessage]="errorMessage()"
+    [canManage]="canManage()"
+    [togglingClassId]="togglingClassId()"
+    (retry)="retry()"
+    (addClass)="openAddClass()"
+    (editClass)="openEditClass($event)"
+    (toggleStatus)="toggleClassStatus($event)"
+  />
+
+</div>

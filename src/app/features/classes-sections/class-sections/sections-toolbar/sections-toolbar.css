@@ -1,0 +1,69 @@
+:host {
+
+  display: block;
+
+}
+
+
+/* ================================
+   Toolbar
+   ================================ */
+
+.sections-toolbar {
+
+  margin-bottom: 16px;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 12px 20px;
+
+}
+
+.term-field {
+
+  width: 340px;
+
+  max-width: 100%;
+
+}
+
+
+/* A little lower than Material's default, so it sits lighter next to the term field. */
+.status-toggle {
+
+  --mat-button-toggle-height: 40px;
+
+  background: #ffffff;
+
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .term-field {
+
+    width: 100%;
+
+  }
+
+  .status-toggle {
+
+    width: 100%;
+
+  }
+
+  .status-toggle mat-button-toggle {
+
+    flex: 1;
+
+  }
+
+}

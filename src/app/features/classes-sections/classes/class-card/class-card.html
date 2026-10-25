@@ -1,0 +1,143 @@
+<article
+  class="class-card"
+  [class.inactive]="!schoolClass().isActive"
+  [style.--card-main]="color().main"
+  [style.--card-soft]="color().soft"
+  [style.--card-dark]="color().dark"
+>
+
+  <!-- The whole card opens the class page.
+       A real link: it also opens in a new tab with a middle click. -->
+  <a
+    class="card-link"
+    [routerLink]="['/classes-sections', schoolClass().schoolClassId]"
+    [attr.aria-label]="'CLASSES.CARD.OPEN' | translate: { name: className() }"
+  ></a>
+
+
+  <!-- Top: icon + actions (Admin only) -->
+  <div class="card-top">
+
+    <div class="class-icon">
+      <mat-icon>school</mat-icon>
+    </div>
+
+    @if (canManage()) {
+      <button
+        mat-icon-button
+        type="button"
+        class="actions-button"
+        [matMenuTriggerFor]="actionsMenu"
+        [attr.aria-label]="'CLASSES.CARD.ACTIONS' | translate"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #actionsMenu="matMenu">
+
+        <button
+          mat-menu-item
+          type="button"
+          (click)="edit.emit()"
+        >
+          <mat-icon>edit</mat-icon>
+          <span>
+            {{ 'CLASSES.CARD.EDIT' | translate }}
+          </span>
+        </button>
+
+        <button
+          mat-menu-item
+          type="button"
+          [disabled]="isToggling()"
+          (click)="toggleStatus.emit()"
+        >
+          <mat-icon>
+            {{ schoolClass().isActive ? 'block' : 'check_circle' }}
+          </mat-icon>
+          <span>
+            {{
+              schoolClass().isActive
+                ? ('CLASSES.CARD.DEACTIVATE' | translate)
+                : ('CLASSES.CARD.ACTIVATE' | translate)
+            }}
+          </span>
+        </button>
+
+      </mat-menu>
+    }
+
+  </div>
+
+
+  <!-- Name -->
+  <h3 [title]="className()">
+    {{ className() }}
+  </h3>
+
+
+  <!-- Level + badges -->
+  <div class="badges">
+
+    <span class="badge">
+      {{ 'CLASSES.CARD.LEVEL' | translate }} {{ schoolClass().level }}
+    </span>
+
+    @if (schoolClass().isGraduationGrade) {
+      <span class="badge graduation-badge">
+        <mat-icon>workspace_premium</mat-icon>
+        {{ 'CLASSES.CARD.GRADUATION_BADGE' | translate }}
+      </span>
+    }
+
+    @if (!schoolClass().isActive) {
+      <span class="badge inactive-badge">
+        {{ 'CLASSES.INACTIVE' | translate }}
+      </span>
+    }
+
+  </div>
+
+
+  <!-- The class's sections (an inactive section is crossed out) -->
+  <div class="section-letters">
+    @if (sections(); as sectionList) {
+      @for (section of sectionList; track section.sectionId) {
+        <span
+          class="letter"
+          [class.inactive]="!section.isActive"
+          [title]="sectionName(section)"
+        >
+          {{ sectionName(section) }}
+        </span>
+      } @empty {
+        <span class="no-sections">
+          {{ 'CLASSES.CARD.NO_SECTIONS' | translate }}
+        </span>
+      }
+    }
+  </div>
+
+
+  <!-- Counts + "open" arrow -->
+  <div class="card-footer">
+
+    @if (sections() !== null) {
+      <span class="count">
+        <mat-icon>groups</mat-icon>
+        {{ sectionsKey() | translate: { count: activeSectionsCount() } }}
+      </span>
+
+      <span class="count">
+        <mat-icon>person</mat-icon>
+        {{ studentsKey() | translate: { count: studentsCount() } }}
+      </span>
+    }
+
+    <span class="open-arrow" aria-hidden="true">
+      <mat-icon>{{ isArabic() ? 'chevron_left' : 'chevron_right' }}</mat-icon>
+    </span>
+
+  </div>
+
+</article>
