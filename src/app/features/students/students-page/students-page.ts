@@ -8,6 +8,8 @@ import { PageEvent } from '@angular/material/paginator';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -20,8 +22,6 @@ import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
 
 import { Student } from '../../../core/models/student';
-
-import { StudentsDetails } from '../students-details/students-details';
 
 import { StudentsForm } from '../students-form/students-form';
 
@@ -62,6 +62,10 @@ export class StudentsPage {
 
   private readonly dialog =
     inject(MatDialog);
+
+  private readonly router = inject(Router);
+
+  private readonly route = inject(ActivatedRoute);
 
   private readonly apiMessageService =
     inject(ApiMessageService);
@@ -108,12 +112,74 @@ export class StudentsPage {
 
   constructor() {
 
+    // Restore the search, filter and page from the URL
+    // (e.g. after "Back" from a student's page, or a refresh).
+    this.readStateFromUrl(this.route.snapshot.queryParamMap);
+
     this.loadStudents();
 
   }
 
 
+  // ===== List state in the URL =====
+  // /students?search=..&classId=..&sectionId=..&isActive=..&page=..&pageSize=..
+  // Empty values are left out, so the plain list stays /students.
+
+  private readStateFromUrl(params: ParamMap): void {
+
+    this.search.set(params.get('search') ?? '');
+
+    this.classFilter.set(this.toPositiveNumber(params.get('classId')));
+    this.sectionFilter.set(this.toPositiveNumber(params.get('sectionId')));
+
+    const isActive = params.get('isActive');
+    this.statusFilter.set(
+      isActive === 'true' ? true : isActive === 'false' ? false : undefined
+    );
+
+    this.pageNumber.set(this.toPositiveNumber(params.get('page')) ?? 1);
+    this.pageSize.set(this.toPositiveNumber(params.get('pageSize')) ?? 10);
+
+  }
+
+
+  private writeStateToUrl(): void {
+
+    const urlTree = this.router.createUrlTree([], {
+      relativeTo: this.route,
+      queryParams: {
+        search: this.search().trim() || null,
+        classId: this.classFilter() ?? null,
+        sectionId: this.sectionFilter() ?? null,
+        isActive: this.statusFilter() ?? null,
+        page: this.pageNumber() > 1 ? this.pageNumber() : null,
+        pageSize: this.pageSize() !== 10 ? this.pageSize() : null
+      }
+    });
+
+    // Nothing changed (e.g. the first load): no navigation.
+    if (this.router.serializeUrl(urlTree) === this.router.url) {
+      return;
+    }
+
+    // Replace, so every filter change does not add a step to "Back".
+    this.router.navigateByUrl(urlTree, { replaceUrl: true });
+
+  }
+
+
+  private toPositiveNumber(value: string | null): number | undefined {
+
+    const number = Number(value);
+
+    return Number.isInteger(number) && number > 0 ? number : undefined;
+
+  }
+
+
   loadStudents(): void {
+
+    this.writeStateToUrl();
 
     this.isLoading.set(true);
 
@@ -250,22 +316,15 @@ export class StudentsPage {
   }
 
 
+  // Opens the student's page (/students/:id).
+  // fromStudentsList tells that page that "Back" can return here
+  // with the same search, filter and page.
   openStudentDetails(
     studentId: number
   ): void {
 
-    this.dialog.open(StudentsDetails, {
-
-      width: '850px',
-
-      maxWidth: '95vw',
-
-      maxHeight: '90vh',
-
-      data: {
-        studentId
-      }
-
+    this.router.navigate(['/students', studentId], {
+      state: { fromStudentsList: true }
     });
 
   }

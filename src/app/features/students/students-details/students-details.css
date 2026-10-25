@@ -1,144 +1,94 @@
 /* ================================
-   Student Details Dialog
+   Student Details Page (/students/:id)
    ================================ */
 
-.student-dialog {
+.student-page {
   width: 100%;
   box-sizing: border-box;
-  background: #ffffff;
   text-align: start;
 }
 
-.student-dialog[dir='rtl'] {
-  direction: rtl;
-}
-
-.student-dialog[dir='ltr'] {
-  direction: ltr;
-}
-
 
 /* ================================
-   Dialog Header
+   Back link (the same as the settings sub-pages)
    ================================ */
 
-.dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 16px;
-
-  padding: 20px 24px;
-
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-
-  gap: 14px;
-
-  min-width: 0;
-}
-
-.header-icon {
-  width: 44px;
-  height: 44px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 10px;
-
-  background: #e1f5ee;
-
-  color: #085041;
-}
-
-.header-icon mat-icon {
-  width: 22px;
-  height: 22px;
-
-  font-size: 22px;
-}
-
-.header-content h2 {
-  margin: 0;
-
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.4;
-
-  color: #111827;
-}
-
-.header-content p {
-  margin: 4px 0 0;
-
-  color: #6b7280;
-
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-
-/* ================================
-   Tabs (Details / Attendance)
-   ================================ */
-
-.details-tabs {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-/* Icon + text of a tab.
-   gap is used (not a margin on the icon) so the space is correct
-   in both Arabic (RTL) and English (LTR). */
-.tab-label {
+.back-link {
   display: inline-flex;
   align-items: center;
 
-  gap: 8px;
+  gap: 6px;
+
+  margin-bottom: 14px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.back-link mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  transition: transform 0.2s ease;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  color: #2554a4;
+}
+
+.back-link:focus-visible {
+  outline: 2px solid #2554a4;
+  outline-offset: 4px;
+}
+
+/* On hover the arrow moves a little towards "back". */
+.back-link:hover mat-icon {
+  transform: translateX(-3px);
+}
+
+/* Arabic (RTL): the arrow points to the right
+   and moves to the right on hover. */
+:host-context([dir='rtl']) .back-link mat-icon {
+  transform: scaleX(-1);
+}
+
+:host-context([dir='rtl']) .back-link:hover mat-icon {
+  transform: scaleX(-1) translateX(-3px);
 }
 
 
 /* ================================
-   Dialog Content
-   ================================ */
-
-.dialog-content {
-  padding: 24px;
-
-  box-sizing: border-box;
-}
-
-
-/* ================================
-   Student Profile (teal card)
+   Profile Header (teal card)
    ================================ */
 
 .student-profile {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 
-  gap: 16px;
+  gap: 16px 20px;
 
-  padding: 16px;
-  margin-bottom: 18px;
+  padding: 20px 22px;
 
-  border-radius: 14px;
+  border-radius: 16px;
 
   background: #e1f5ee;
 }
 
 /* Initials of the student */
 .student-avatar {
-  width: 60px;
-  height: 60px;
+  width: 68px;
+  height: 68px;
 
   flex-shrink: 0;
 
@@ -152,20 +102,20 @@
 
   color: #ffffff;
 
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
 }
 
 .student-name {
   flex: 1;
-  min-width: 0;
+  min-width: 200px;
 }
 
-.student-name h2 {
+.student-name h1 {
   margin: 0;
 
-  font-size: 19px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
   line-height: 1.4;
 
   color: #04342c;
@@ -173,42 +123,175 @@
   word-break: break-word;
 }
 
-.student-number {
+.profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px 18px;
+
+  margin-top: 6px;
+
+  color: #0f6e56;
+
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.profile-meta span {
   display: inline-flex;
   align-items: center;
 
   gap: 4px;
+}
 
-  margin-top: 4px;
+.profile-meta mat-icon {
+  width: 17px;
+  height: 17px;
 
-  color: #0f6e56;
+  font-size: 17px;
+}
+
+.profile-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+/* ================================
+   Status
+   ================================ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  width: fit-content;
+  flex-shrink: 0;
+
+  padding: 6px 14px;
+
+  border-radius: 999px;
 
   font-size: 13px;
   font-weight: 500;
 }
 
-.student-number mat-icon {
-  width: 16px;
-  height: 16px;
+.status-badge.active {
+  background: #ffffff;
+  color: #047857;
+}
 
-  font-size: 16px;
+.status-badge.inactive {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+/* Graduated: gold, the same as the students table. */
+.graduated-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  background: linear-gradient(135deg, #fdebb0, #f2c14e);
+  color: #5c3d02;
+}
+
+.graduated-badge mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
+
+/* ================================
+   Tabs (Details / Attendance / Grades / Parents)
+   ================================ */
+
+.details-tabs {
+  margin-top: 18px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Icon + text of a tab.
+   gap is used (not a margin on the icon) so the space is correct
+   in both Arabic (RTL) and English (LTR). */
+.tab-label {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.tab-panel {
+  display: block;
+
+  padding-top: 20px;
+}
+
+/* No tabs (teacher): a little space under the profile header. */
+.student-profile + .tab-panel {
+  padding-top: 18px;
 }
 
 
 /* ================================
    Details Sections
+   Two columns: Personal Information on its own row,
+   Academic and Account side by side.
    ================================ */
 
+.details-sections {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+
+  align-items: start;
+}
+
 .details-section {
-  margin-bottom: 14px;
-  padding: 16px;
+  min-width: 0;
+
+  padding: 18px;
 
   border: 1px solid #e5e7eb;
   border-radius: 14px;
+
+  background: #ffffff;
 }
 
-.details-section:last-child {
-  margin-bottom: 0;
+.details-section.wide {
+  grid-column: 1 / -1;
 }
 
 .section-header {
@@ -284,15 +367,15 @@
 
 /* ================================
    Details Grid
-   Always two columns: when the phone is hidden (teacher),
-   the student number keeps half the width.
+   As many columns as fit (Personal Information shows
+   its four fields on one row on a wide screen).
    ================================ */
 
 .details-grid {
   display: grid;
 
   grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+    repeat(auto-fit, minmax(180px, 1fr));
 
   gap: 10px;
 }
@@ -327,49 +410,6 @@
   line-height: 1.5;
 
   word-break: break-word;
-}
-
-
-/* ================================
-   Status
-   ================================ */
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 7px;
-
-  width: fit-content;
-  flex-shrink: 0;
-
-  padding: 5px 12px;
-
-  border-radius: 999px;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-badge.active {
-  background: #ffffff;
-  color: #047857;
-}
-
-.status-badge.inactive {
-  background: #fef2f2;
-  color: #b91c1c;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: currentColor;
 }
 
 
@@ -426,7 +466,21 @@
 
   padding: 24px;
 
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  background: #ffffff;
+
   text-align: center;
+}
+
+.state-card h3 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  color: #111827;
 }
 
 .state-card p {
@@ -446,21 +500,13 @@
   color: #dc2626;
 }
 
+.error-state button mat-icon {
+  width: 20px;
+  height: 20px;
 
-/* ================================
-   Dialog Actions
-   ================================ */
+  font-size: 20px;
 
-.dialog-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  gap: 10px;
-
-  padding: 14px 24px;
-
-  border-top: 1px solid #e5e7eb;
+  color: inherit;
 }
 
 
@@ -468,79 +514,40 @@
    Responsive
    ================================ */
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
 
-  .dialog-header {
-    padding: 16px;
-  }
-
-  .dialog-content {
-    padding: 18px;
-  }
-
-  .student-profile {
-    align-items: flex-start;
+  .details-sections {
+    grid-template-columns: 1fr;
   }
 
 }
 
 
-/* ================================
-   Small Mobile
-   ================================ */
-
 @media (max-width: 480px) {
 
-  .dialog-header {
-    padding: 14px;
-  }
-
-  .header-content {
-    gap: 10px;
-  }
-
-  .header-icon {
-    width: 38px;
-    height: 38px;
-  }
-
-  .header-content h2 {
-    font-size: 18px;
-  }
-
-  .header-content p {
-    font-size: 12px;
-  }
-
-  .dialog-content {
-    padding: 16px;
-  }
-
   .student-profile {
+    padding: 16px;
+
     gap: 12px;
   }
 
   .student-avatar {
-    width: 50px;
-    height: 50px;
+    width: 54px;
+    height: 54px;
 
-    font-size: 17px;
+    font-size: 18px;
+  }
+
+  .student-name h1 {
+    font-size: 20px;
   }
 
   .details-section {
     padding: 14px;
   }
 
-  .student-name h2 {
-    font-size: 18px;
-  }
-
   .details-grid {
     grid-template-columns: 1fr;
-  }
-
-  .dialog-actions {
-    padding: 12px 16px;
   }
 
 }
