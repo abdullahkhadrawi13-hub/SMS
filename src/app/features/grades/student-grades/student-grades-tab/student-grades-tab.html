@@ -1,0 +1,95 @@
+<!-- Loading -->
+@if (loading()) {
+  <div class="state-card">
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <p>{{ 'STUDENT_GRADES.LOADING' | translate }}</p>
+  </div>
+}
+
+<!-- Error -->
+@else if (errorMessage()) {
+  <div class="state-card">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+
+    <p>{{ errorMessage() | translate }}</p>
+
+    <button mat-stroked-button type="button" (click)="load()">
+      <mat-icon>refresh</mat-icon>
+
+      {{ 'GRADES.SHEET.RETRY' | translate }}
+    </button>
+  </div>
+}
+
+<!-- The student has no record in any term -->
+@else if (!selectedTerm()) {
+  <div class="state-card">
+    <mat-icon>menu_book</mat-icon>
+
+    <p>{{ 'STUDENT_GRADES.EMPTY.STAFF' | translate }}</p>
+  </div>
+}
+
+<!-- The selected term -->
+@else {
+
+  @if (selectedTerm(); as term) {
+
+    <app-term-grades
+      [term]="term"
+      viewer="staff"
+      [studentName]="studentName()"
+    >
+
+      <!-- More than one term: a field to choose -->
+      @if (termOptions().length > 1) {
+
+        <mat-form-field termSelect appearance="outline" subscriptSizing="dynamic" class="term-field">
+
+          <mat-label>{{ 'STUDENT_GRADES.TERM' | translate }}</mat-label>
+
+          <mat-select
+            [value]="termId()"
+            (selectionChange)="onTermChange($event.value)"
+          >
+
+            <mat-select-trigger>
+              @if (selectedOption(); as option) {
+                {{ 'STUDENT_GRADES.TERM_LABEL' | translate: option.label }}
+
+                @if (option.areGradesClosed) {
+                  <span class="closed-tag">{{ 'GRADES.SELECTOR.CLOSED' | translate }}</span>
+                }
+              }
+            </mat-select-trigger>
+
+            @for (option of termOptions(); track option.academicTermId) {
+              <mat-option [value]="option.academicTermId">
+                {{ 'STUDENT_GRADES.TERM_LABEL' | translate: option.label }}
+
+                @if (option.areGradesClosed) {
+                  <span class="closed-tag">{{ 'GRADES.SELECTOR.CLOSED' | translate }}</span>
+                }
+              </mat-option>
+            }
+
+          </mat-select>
+
+        </mat-form-field>
+
+      } @else if (selectedOption(); as option) {
+
+        <!-- One term only: its name, without a field -->
+        <span termSelect class="term-name">
+          <mat-icon>event</mat-icon>
+          {{ 'STUDENT_GRADES.TERM_LABEL' | translate: option.label }}
+        </span>
+
+      }
+
+    </app-term-grades>
+
+  }
+
+}

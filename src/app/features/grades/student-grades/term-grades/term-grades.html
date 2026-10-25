@@ -1,0 +1,126 @@
+<!-- ===== Staff: toolbar (counters · term field), then chips and note ===== -->
+@if (isStaff()) {
+
+  <div class="term-toolbar">
+
+    @if (isActive()) {
+      <ng-container [ngTemplateOutlet]="countersTemplate" />
+    } @else {
+      <span></span>
+    }
+
+    <!-- The term field of the parent (only when there is a choice) -->
+    <ng-content select="[termSelect]" />
+
+  </div>
+
+  <div class="term-info">
+
+    <div class="chips">
+
+      <span class="class-chip">
+        <mat-icon>school</mat-icon>
+        {{ 'STUDENT_GRADES.CLASS_SECTION' | translate: classSection() }}
+      </span>
+
+      @if (term().areGradesClosed) {
+        <span class="closed-chip">
+          <mat-icon>lock</mat-icon>
+          {{ 'STUDENT_GRADES.GRADES_CLOSED' | translate }}
+        </span>
+      }
+
+    </div>
+
+    @if (isActive()) {
+      <ng-container [ngTemplateOutlet]="noteTemplate" />
+    }
+
+  </div>
+
+}
+
+
+<!-- ===== Not active in this term: a message instead of the grades ===== -->
+@if (!isActive()) {
+
+  <div class="state-card">
+    <mat-icon>{{ statusMessage().icon }}</mat-icon>
+
+    <p>{{ statusMessage().key | translate }}</p>
+  </div>
+
+} @else {
+
+  <!-- Portal: counters and note in one box -->
+  @if (!isStaff()) {
+    <div class="summary-box">
+      <ng-container [ngTemplateOutlet]="countersTemplate" />
+      <ng-container [ngTemplateOutlet]="noteTemplate" />
+    </div>
+  }
+
+  @if (term().subjects.length === 0) {
+
+    <div class="state-card">
+      <mat-icon>menu_book</mat-icon>
+
+      <p>{{ 'STUDENT_GRADES.EMPTY.NO_SUBJECTS' | translate }}</p>
+    </div>
+
+  } @else {
+
+    <div class="cards">
+      @for (subject of term().subjects; track subject.subjectId) {
+        <app-subject-grades-card
+          [subject]="subject"
+          [viewer]="viewer()"
+          [studentName]="studentName()"
+        />
+      }
+    </div>
+
+  }
+
+}
+
+
+<!-- The four counters (from the backend's results) -->
+<ng-template #countersTemplate>
+
+  <div class="counters">
+
+    <span class="counter total">
+      {{ 'STUDENT_GRADES.COUNTERS.SUBJECTS' | translate }}
+      <strong>{{ counts().subjects }}</strong>
+    </span>
+
+    <span class="counter passed">
+      {{ 'GRADES.SHEET.COUNTERS.PASSED' | translate }}
+      <strong>{{ counts().passed }}</strong>
+    </span>
+
+    <span class="counter failed">
+      {{ 'GRADES.SHEET.COUNTERS.FAILED' | translate }}
+      <strong>{{ counts().failed }}</strong>
+    </span>
+
+    <span class="counter incomplete">
+      {{ 'GRADES.SHEET.COUNTERS.INCOMPLETE' | translate }}
+      <strong>{{ counts().incomplete }}</strong>
+    </span>
+
+  </div>
+
+</ng-template>
+
+
+<!-- A missing mark is never counted as zero -->
+<ng-template #noteTemplate>
+
+  <p class="note">
+    <mat-icon>info</mat-icon>
+    <span>{{ noteKey() | translate }}</span>
+  </p>
+
+</ng-template>

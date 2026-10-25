@@ -9,6 +9,10 @@ import {
   GradeHistory,
   GradeSheet,
 } from '../models/student-grade';
+import {
+  StudentGradesQuery,
+  StudentGradesReport,
+} from '../models/student-grades-report';
 import { environment } from '../../../environments/environment';
 
 
@@ -16,6 +20,10 @@ import { environment } from '../../../environments/environment';
 // Reads: Admin, AssistantPrincipal and the teacher who owns the assignment.
 // Writes: Admin, or the teacher who owns the assignment
 // (AssistantPrincipal gets 403, another teacher gets 400).
+//
+// One student's grades (read only, see core/models/student-grades-report.ts):
+//   - getByStudent(): Admin, AssistantPrincipal, Parent (own children)
+//   - getMine():      Student
 @Injectable({
   providedIn: 'root',
 })
@@ -68,5 +76,50 @@ export class StudentGradesService {
     return this.http.get<ApiResponse<GradeHistory>>(
       `${this.apiUrl}/${studentGradeId}/history`
     );
+  }
+
+
+  // GET /api/studentgrades/by-student/{studentId}
+  // One student's grades. Without a query: every term, newest first.
+  // A parent asking for a student who is not their child gets 400.
+  getByStudent(
+    studentId: number,
+    query: StudentGradesQuery = {}
+  ): Observable<ApiResponse<StudentGradesReport>> {
+
+    return this.http.get<ApiResponse<StudentGradesReport>>(
+      `${this.apiUrl}/by-student/${studentId}`,
+      { params: this.toParams(query) }
+    );
+  }
+
+
+  // GET /api/studentgrades/me
+  // The logged-in student's own grades (Student role only).
+  // 404 when the account has no student record.
+  getMine(
+    query: StudentGradesQuery = {}
+  ): Observable<ApiResponse<StudentGradesReport>> {
+
+    return this.http.get<ApiResponse<StudentGradesReport>>(
+      `${this.apiUrl}/me`,
+      { params: this.toParams(query) }
+    );
+  }
+
+
+  // currentOnly and academicTermId together answer 400,
+  // so only one of them is ever sent (currentOnly wins).
+  private toParams(query: StudentGradesQuery): HttpParams {
+
+    let params = new HttpParams();
+
+    if (query.currentOnly) {
+      params = params.set('currentOnly', true);
+    } else if (query.academicTermId !== undefined) {
+      params = params.set('academicTermId', query.academicTermId);
+    }
+
+    return params;
   }
 }

@@ -151,6 +151,28 @@
   font-size: 17px;
 }
 
+/* "Saved marks are visible to the student and their parents right away." */
+.save-bar-visible {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #7c2d12;
+}
+
+.save-bar-visible mat-icon {
+  flex-shrink: 0;
+
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
 
 /* ================================
    Actions

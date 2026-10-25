@@ -135,6 +135,15 @@ export class Permissions {
     () => this.isAdmin() || this.isTeacher()
   );
 
+  // The "Grades" tab in the student details
+  // (GET /api/studentgrades/by-student/{studentId}, every term):
+  // Admin and AssistantPrincipal. A teacher gets 403, so the tab is hidden.
+  // (A parent reads the same endpoint for their own children,
+  // from their own Grades page, not from this dialog.)
+  readonly canViewStudentGrades = computed(
+    () => this.isAdmin() || this.isAssistantPrincipal()
+  );
+
 
   // ===== Settings =====
 

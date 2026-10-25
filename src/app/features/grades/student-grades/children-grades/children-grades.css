@@ -1,0 +1,343 @@
+/* ================================
+   Page (same spacing as the grades page)
+   ================================ */
+
+.student-grades-page {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Page Header (same look as grades-header)
+   ================================ */
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 12px 20px;
+
+  margin-bottom: 20px;
+}
+
+.title-section {
+  min-width: 0;
+}
+
+.title-section h1 {
+  margin: 0 0 8px;
+
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+
+  color: #111827;
+}
+
+.title-section p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.class-chip {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  background: #e7f6ee;
+  color: #166534;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.class-chip mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+.selected-class {
+  margin-bottom: 12px;
+}
+
+
+/* ================================
+   Children cards
+   ================================ */
+
+.children {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 16px;
+}
+
+.child-card {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: inherit;
+
+  font: inherit;
+  text-align: start;
+
+  cursor: pointer;
+
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.child-card:hover {
+  border-color: #b9c6dd;
+}
+
+.child-card:focus-visible {
+  outline: 2px solid #2554a4;
+  outline-offset: 2px;
+}
+
+/* The picked child (the border is 2px, so the padding is 1px less). */
+.child-card.selected {
+  padding: 11px;
+
+  border: 2px solid #2554a4;
+
+  background: #f5f8ff;
+}
+
+.avatar {
+  flex-shrink: 0;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.child-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.child-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 4px 6px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.child-class {
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   Status badges
+   The same badges as the Parents section (parent-details.css),
+   plus "Inactive" (the same look as an inactive status there).
+   ================================ */
+
+.graduated-badge,
+.transferred-badge,
+.inactive-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 3px 9px;
+
+  border-radius: 20px;
+
+  font-size: 11.5px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.graduated-badge {
+  background: linear-gradient(135deg, #fdebb0, #f2c14e);
+  color: #5c3d02;
+}
+
+.graduated-badge mat-icon {
+  width: 14px;
+  height: 14px;
+
+  font-size: 14px;
+}
+
+.transferred-badge {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.inactive-badge {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+
+/* ================================
+   State Card (loading / error / empty / not active)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  box-sizing: border-box;
+}
+
+.state-card > mat-icon {
+  width: 48px;
+  height: 48px;
+
+  font-size: 48px;
+
+  margin-bottom: 4px;
+
+  color: #9ca3af;
+}
+
+.state-card > mat-icon.error-icon {
+  color: #dc2626;
+}
+
+.state-card h3 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.state-card p {
+  max-width: 520px;
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.state-card button {
+  margin-top: 8px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .student-grades-page {
+    padding: 16px;
+  }
+
+  .title-section h1 {
+    font-size: 24px;
+  }
+
+  /* Phones: the children scroll sideways in one row. */
+  .children {
+    display: flex;
+
+    overflow-x: auto;
+
+    scroll-snap-type: x mandatory;
+
+    padding-bottom: 6px;
+  }
+
+  .child-card {
+    flex: 0 0 220px;
+
+    scroll-snap-align: start;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .child-card {
+    transition: none;
+  }
+
+}

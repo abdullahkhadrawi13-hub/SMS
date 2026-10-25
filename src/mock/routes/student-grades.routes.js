@@ -9,6 +9,8 @@ const sections = require('../data/sections');
 const schoolClasses = require('../data/school-classes');
 const users = require('../data/users');
 const academicTerms = require('../data/academic-terms');
+const academicYears = require('../data/academic-years');
+const { parents, parentStudents } = require('../data/parents');
 
 const { syncWithPlan } = require('./assessments.routes');
 
@@ -30,6 +32,12 @@ const READ_ROLES = [0, 1, 2];
 const WRITE_ROLES = [0, 2];
 
 const TEACHER_ROLE = 2;
+const STUDENT_ROLE = 3;
+const PARENT_ROLE = 4;
+
+// One student's grades (by-student): Admin and Assistant Principal read
+// any student, a parent reads their own children only (400 otherwise).
+const REPORT_STAFF_ROLES = [0, 1];
 
 const FULL_WEIGHT = 100;
 
@@ -47,8 +55,8 @@ const BULK_LIMIT = 2000;
 //    the students of a sheet are the ACTIVE, not graduated students whose
 //    classId and sectionId are the assignment's (data/students.js), in
 //    every term. An inactive assignment has no students.
-// 2. Only the sheet, the bulk save and a mark's history are built (the
-//    grades page uses only these three). GET/POST/PUT of a single grade
+// 2. Only the sheet, the bulk save, a mark's history and one student's
+//    grades (by-student, me) are built. GET/POST/PUT of a single grade
 //    answer 404 here.
 // 3. Saving marks also updates the flags the other mocks use for "marks
 //    exist": plan.isLocked, plan.hasGrades, component.hasMarks and
@@ -57,6 +65,16 @@ const BULK_LIMIT = 2000;
 // 5. A closed term (data/academic-terms.js, areGradesClosed) blocks only
 //    the bulk save here. The other mocks (plans, assessments, assignments,
 //    placements) do not check it.
+// 6. One student's grades (by-student, me): the terms of a student are the
+//    terms that have a subject plan for the student's class (the mock keeps
+//    the same class and section in every term, see 1). The subjects are
+//    those plans; a subject with no active assignment in the student's
+//    section has no teacher (hasTeacher: false). The status of a term's
+//    record is 0, except:
+//      - a graduated student (studentStatus 2) has no record in the
+//        current term (the rollover graduated them before it),
+//      - studentStatus 1 or 3 is the status of the current term's record,
+//      - MOCK_RECORD_STATUS below.
 
 
 // =====================================================
@@ -104,6 +122,15 @@ const SEED = [
     }
   },
   {
+    // Islamic Education · Class 1 / A: every mark exists → totals.
+    // Student 2 (the "student" login and the "parent" login's child): 86, passed.
+    classId: 1, sectionId: 1, subjectId: 5,
+    marks: {
+      'Recitation: Al-Fatiha': [9, 7, 10, 4],
+      'Final exam': [50, 44, 57, 18]
+    }
+  },
+  {
     termId: PREVIOUS_TERM,
     classId: 1, sectionId: 1, subjectId: 1, // Arabic · Class 1 / A, term 4 (closed)
     marks: {
@@ -133,6 +160,14 @@ const SEED_EDITS = [
     changes: [],
     editedByUserId: 3,
     editedAt: '2026-10-17T11:20:00'
+  },
+  {
+    // Student 2's recitation: the edited mark of the "Grades" tab and pages.
+    classId: 1, sectionId: 1, subjectId: 5, assessment: 'Recitation: Al-Fatiha', student: 0,
+    recordedAt: '2026-10-15T08:30:00',
+    changes: [
+      { oldMark: 8, newMark: 9, changedByUserId: 3, changedAt: '2026-10-19T10:15:00' }
+    ]
   },
   {
     termId: PREVIOUS_TERM,
@@ -664,6 +699,266 @@ function buildSheet(assignment) {
 }
 
 
+// =====================================================
+// One student's grades (by-student, me). See ASSUMPTIONS 6.
+// =====================================================
+//
+// Things to try:
+// - "student" login → Grades: student 2 (Class 1 / A), current term only.
+//   Islamic Education is complete (86, passed, its recitation was edited),
+//   Arabic has some marks, Art Education and Computer have no teacher.
+// - "parent" login → Grades: children 2 and 8 (Class 1 / B, Arabic 88).
+//   To see a graduated child: as "admin", Parents → parent 1 → link
+//   student 7 (graduated), then log in as "parent" again.
+// - "admin" → Students → student 2 → Grades tab: terms 5 and 4 (closed).
+//   Students 14, 32 and 50 (Class 1 / C): record status 1, 3 and 2 in the
+//   current term → the status message instead of the cards.
+
+// The "student" login of data/users.js (userId 4) has no student record
+// (students start at userId 10), so it reads student 2 here.
+// Other students are found by their own userId.
+const MOCK_STUDENT_LINKS = { 4: 2 };
+
+// Record status by student and term (only for trying the messages).
+const MOCK_RECORD_STATUS = {
+  14: { [CURRENT_TERM]: 1 },
+  32: { [CURRENT_TERM]: 3 },
+  50: { [CURRENT_TERM]: 2 }
+};
+
+const GRADUATED_STATUS = 2;
+
+
+function findStudentOfUser(user) {
+
+  const linkedId = MOCK_STUDENT_LINKS[user.userId];
+
+  return students.find(s =>
+    linkedId !== undefined
+      ? s.studentId === linkedId
+      : s.userId === user.userId
+  ) || null;
+}
+
+
+function isChildOfParent(user, studentId) {
+
+  const parent = parents.find(p => p.userId === user.userId);
+
+  return !!parent && parentStudents.some(link =>
+    link.parentId === parent.parentId && link.studentId === studentId
+  );
+}
+
+
+// The status of the student's record in one term (ASSUMPTIONS 6).
+function recordStatus(student, term) {
+
+  const override = MOCK_RECORD_STATUS[student.studentId];
+
+  if (override && override[term.academicTermId] !== undefined) {
+    return override[term.academicTermId];
+  }
+
+  if (term.isCurrent && student.studentStatus !== GRADUATED_STATUS) {
+    return student.studentStatus;
+  }
+
+  return 0;
+}
+
+
+// The terms the student has a record in, newest first.
+function studentTerms(student) {
+
+  return academicTerms
+    .filter(term =>
+      subjectPlans.some(p =>
+        p.academicTermId === term.academicTermId &&
+        p.classId === student.classId
+      )
+    )
+    .filter(term =>
+      !(term.isCurrent && student.studentStatus === GRADUATED_STATUS)
+    )
+    .sort((a, b) => b.academicTermId - a.academicTermId);
+}
+
+
+// One subject of the student in one term (same formula as buildSheet).
+function buildStudentSubject(student, term, plan) {
+
+  const subject = subjects.find(s => s.subjectId === plan.subjectId);
+
+  const assignment = teacherAssignments.find(a =>
+    a.isActive &&
+    a.academicTermId === term.academicTermId &&
+    a.classId === student.classId &&
+    a.sectionId === student.sectionId &&
+    a.subjectId === plan.subjectId
+  );
+
+  const base = {
+    subjectId: plan.subjectId,
+    subjectAr: subject ? subject.subjectAr : '',
+    subjectEn: subject ? subject.subjectEn : '',
+    passingMark: plan.passingMark
+  };
+
+  // In the class's plan, but nobody teaches it in this section.
+  if (!assignment) {
+    return {
+      ...base,
+      hasTeacher: false,
+      teacherAssignmentId: null,
+      teacherNameAr: null,
+      teacherNameEn: null,
+      total: null,
+      isPassed: null,
+      components: []
+    };
+  }
+
+  const teacher = teachers.find(t => t.teacherId === assignment.teacherId);
+  const list = sectionAssessments(assignment, plan);
+
+  const components = sortedComponents(plan).map(component => {
+
+    const own = list.filter(
+      a => a.subjectPlanComponentId === component.subjectPlanComponentId
+    );
+
+    const rows = own.map(a => {
+
+      const grade = findGrade(student.studentId, a.assessmentId);
+
+      return {
+        assessmentId: a.assessmentId,
+        nameAr: a.nameAr,
+        nameEn: a.nameEn,
+        maxMark: a.maxMark,
+        studentGradeId: grade ? grade.studentGradeId : null,
+        mark: grade ? grade.mark : null,
+        isEdited: !!(grade && grade.editedAt)
+      };
+    });
+
+    const complete = rows.length > 0 && rows.every(r => r.mark !== null);
+
+    return {
+      subjectPlanComponentId: component.subjectPlanComponentId,
+      nameAr: component.nameAr,
+      nameEn: component.nameEn,
+      weight: component.weight,
+      score: complete
+        ? round2(rows.reduce((sum, r) => sum + r.mark / r.maxMark, 0) / rows.length * component.weight)
+        : null,
+      assessments: rows
+    };
+  });
+
+  const ready = canEnterGrades(plan)
+    && components.length > 0
+    && components.every(c => c.score !== null);
+
+  const total = ready
+    ? round2(components.reduce((sum, c) => sum + c.score, 0))
+    : null;
+
+  return {
+    ...base,
+    hasTeacher: true,
+    teacherAssignmentId: assignment.teacherAssignmentId,
+    teacherNameAr: teacher ? `${teacher.firstNameAr} ${teacher.familyNameAr}` : null,
+    teacherNameEn: teacher ? `${teacher.firstNameEn} ${teacher.familyNameEn}` : null,
+    total,
+    isPassed: total === null ? null : total >= plan.passingMark,
+    components
+  };
+}
+
+
+function buildStudentTerm(student, term) {
+
+  const year = academicYears.find(y => y.academicYearId === term.academicYearId);
+  const schoolClass = schoolClasses.find(c => c.schoolClassId === student.classId);
+  const section = sections.find(s => s.sectionId === student.sectionId);
+  const status = recordStatus(student, term);
+
+  const plans = subjectPlans
+    .filter(p =>
+      p.academicTermId === term.academicTermId &&
+      p.classId === student.classId
+    )
+    .sort((a, b) => a.subjectId - b.subjectId);
+
+  return {
+    academicTermId: term.academicTermId,
+    termNameAr: term.nameAr,
+    termNameEn: term.nameEn,
+    yearName: year ? year.yearName : '',
+    isCurrent: term.isCurrent,
+
+    classId: student.classId,
+    classNameAr: schoolClass ? schoolClass.classNameAr : '',
+    classNameEn: schoolClass ? schoolClass.classNameEn : '',
+
+    sectionId: student.sectionId,
+    sectionAr: section ? section.sectionAr : '',
+    sectionEn: section ? section.sectionEn : '',
+
+    studentStatus: status,
+    areGradesClosed: term.areGradesClosed === true,
+
+    // Not active in that term: the marks are kept, but not returned.
+    subjects: status === 0
+      ? plans.map(plan => buildStudentSubject(student, term, plan))
+      : []
+  };
+}
+
+
+// currentOnly and academicTermId together → an error (400).
+function readReportQuery(url) {
+
+  const currentOnly = (url.searchParams.get('currentOnly') || '').toLowerCase() === 'true';
+  const termParam = url.searchParams.get('academicTermId');
+
+  if (currentOnly && termParam !== null) {
+    return {
+      error: [
+        'لا يمكن استخدام currentOnly و academicTermId معًا.',
+        'currentOnly and academicTermId cannot be used together.'
+      ]
+    };
+  }
+
+  return {
+    currentOnly,
+    academicTermId: termParam !== null ? Number(termParam) : null
+  };
+}
+
+
+function buildStudentReport(student, query) {
+
+  const terms = studentTerms(student)
+    .filter(term => !query.currentOnly || term.isCurrent)
+    .filter(term => query.academicTermId === null || term.academicTermId === query.academicTermId);
+
+  return {
+    studentId: student.studentId,
+    studentNumber: student.studentNumber,
+    studentNameAr: fullName(student, 'Ar'),
+    studentNameEn: fullName(student, 'En'),
+    terms: terms.map(term => buildStudentTerm(student, term))
+  };
+}
+
+
+const STUDENT_NOT_FOUND = ['الطالب غير موجود.', 'Student not found.'];
+
+
 const NOT_OWNER_ERROR = [
   'يمكنك فقط عرض أو تسجيل أو تعديل علامات المواد المسندة إليك.',
   'You can only view, record or edit grades for your own assignments.'
@@ -716,6 +1011,80 @@ async function handleStudentGrades(req, res, url, pathname) {
     sendEmpty(res, 401);
     return;
   }
+
+  // =====================================================
+  // GET /api/studentgrades/by-student/{studentId}
+  // Admin, Assistant Principal (any student), Parent (own children).
+  // =====================================================
+
+  const byStudentMatch = pathname.match(/^\/api\/studentgrades\/by-student\/(\d+)$/);
+
+  if (req.method === 'GET' && byStudentMatch) {
+
+    const isParent = currentUser.role === PARENT_ROLE;
+
+    if (!isParent && !REPORT_STAFF_ROLES.includes(currentUser.role)) {
+      sendEmpty(res, 403);
+      return;
+    }
+
+    const query = readReportQuery(url);
+
+    if (query.error) {
+      sendError(res, 400, query.error[0], query.error[1]);
+      return;
+    }
+
+    const student = students.find(s => s.studentId === Number(byStudentMatch[1]));
+
+    if (!student) {
+      sendError(res, 404, STUDENT_NOT_FOUND[0], STUDENT_NOT_FOUND[1]);
+      return;
+    }
+
+    if (isParent && !isChildOfParent(currentUser, student.studentId)) {
+      sendError(res, 400, 'يمكنك فقط عرض علامات أبنائك.', 'You can only view the grades of your own children.');
+      return;
+    }
+
+    seedOnce();
+
+    sendOk(res, 200, 'تم جلب علامات الطالب بنجاح', 'Student grades retrieved successfully', buildStudentReport(student, query));
+    return;
+  }
+
+
+  // =====================================================
+  // GET /api/studentgrades/me (Student)
+  // =====================================================
+
+  if (req.method === 'GET' && pathname === '/api/studentgrades/me') {
+
+    if (currentUser.role !== STUDENT_ROLE) {
+      sendEmpty(res, 403);
+      return;
+    }
+
+    const query = readReportQuery(url);
+
+    if (query.error) {
+      sendError(res, 400, query.error[0], query.error[1]);
+      return;
+    }
+
+    const student = findStudentOfUser(currentUser);
+
+    if (!student) {
+      sendError(res, 404, STUDENT_NOT_FOUND[0], STUDENT_NOT_FOUND[1]);
+      return;
+    }
+
+    seedOnce();
+
+    sendOk(res, 200, 'تم جلب علاماتك بنجاح', 'Your grades were retrieved successfully', buildStudentReport(student, query));
+    return;
+  }
+
 
   const isRead = req.method === 'GET';
 

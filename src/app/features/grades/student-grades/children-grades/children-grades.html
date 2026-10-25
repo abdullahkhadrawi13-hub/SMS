@@ -1,0 +1,188 @@
+<div class="student-grades-page">
+
+  <!-- Page Header: title, term (and "pick a child") -->
+  <div class="page-header">
+
+    <div class="title-section">
+      <h1>{{ 'STUDENT_GRADES.CHILDREN_TITLE' | translate }}</h1>
+
+      @if (termLabel() || hasManyChildren()) {
+        <p>
+          @if (termLabel(); as label) {
+            {{ 'STUDENT_GRADES.TERM_LABEL' | translate: label }}@if (hasManyChildren()) {.}
+          }
+
+          @if (hasManyChildren()) {
+            {{ 'STUDENT_GRADES.CHILDREN.PICK' | translate }}
+          }
+        </p>
+      }
+    </div>
+
+    <!-- One child: no cards, the class is next to the title -->
+    @if (!hasManyChildren() && !statusMessage()) {
+      @if (classSection(); as classSection) {
+        <span class="class-chip">
+          <mat-icon>school</mat-icon>
+          {{ 'STUDENT_GRADES.CLASS_SECTION' | translate: classSection }}
+        </span>
+      }
+    }
+
+  </div>
+
+
+  <!-- Loading the children -->
+  @if (childrenLoading()) {
+    <div class="state-card">
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>{{ 'STUDENT_GRADES.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @else if (childrenError()) {
+    <div class="state-card">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+
+      <p>{{ childrenError() }}</p>
+
+      <button mat-stroked-button type="button" (click)="loadChildren()">
+        <mat-icon>refresh</mat-icon>
+
+        {{ 'GRADES.SHEET.RETRY' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- No children linked to this account -->
+  @else if (cards().length === 0) {
+    <div class="state-card">
+      <mat-icon>family_restroom</mat-icon>
+
+      <p>{{ 'STUDENT_GRADES.CHILDREN.NONE' | translate }}</p>
+    </div>
+  }
+
+  @else {
+
+    <!-- The children (more than one): pick one -->
+    @if (hasManyChildren()) {
+
+      <div class="children" role="group" [attr.aria-label]="'STUDENT_GRADES.CHILDREN.LIST' | translate">
+
+        @for (card of cards(); track card.studentId) {
+
+          <button
+            type="button"
+            class="child-card"
+            [class.selected]="card.studentId === selectedId()"
+            [attr.aria-pressed]="card.studentId === selectedId()"
+            (click)="select(card.studentId)"
+          >
+
+            <span class="avatar" [style.background]="card.color">
+              {{ card.initial }}
+            </span>
+
+            <span class="child-info">
+
+              <span class="child-name">
+                <span>{{ card.name }}</span>
+
+                <!-- Not active: the same badges as the Parents section -->
+                @if (card.status === statusGraduated) {
+                  <span class="graduated-badge">
+                    <mat-icon>workspace_premium</mat-icon>
+                    {{ 'PARENTS.DETAILS.GRADUATED' | translate }}
+                  </span>
+                } @else if (card.status === statusTransferred) {
+                  <span class="transferred-badge">
+                    {{ 'PARENTS.DETAILS.TRANSFERRED' | translate }}
+                  </span>
+                } @else if (card.status === statusInactive) {
+                  <span class="inactive-badge">
+                    <span class="status-dot"></span>
+                    {{ 'STUDENT_GRADES.CHILDREN.BADGE_INACTIVE' | translate }}
+                  </span>
+                }
+              </span>
+
+              <span class="child-class">
+                {{ 'STUDENT_GRADES.CLASS_SECTION' | translate: card.classSection }}
+              </span>
+
+            </span>
+
+          </button>
+
+        }
+
+      </div>
+
+    }
+
+
+    <!-- The selected child -->
+    @if (statusMessage(); as message) {
+
+      <!-- Not active: no record in the current term (no request is sent) -->
+      <div class="state-card">
+        <mat-icon>{{ message.icon }}</mat-icon>
+
+        <h3>{{ selectedCard()?.name }}</h3>
+
+        <p>{{ message.key | translate }}</p>
+      </div>
+
+    } @else if (gradesLoading()) {
+
+      <div class="state-card">
+        <mat-spinner diameter="42"></mat-spinner>
+
+        <p>{{ 'STUDENT_GRADES.LOADING' | translate }}</p>
+      </div>
+
+    } @else if (gradesError()) {
+
+      <div class="state-card">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+
+        <p>{{ gradesError() | translate }}</p>
+
+        <button mat-stroked-button type="button" (click)="retryGrades()">
+          <mat-icon>refresh</mat-icon>
+
+          {{ 'GRADES.SHEET.RETRY' | translate }}
+        </button>
+      </div>
+
+    } @else if (selectedTerm() === null) {
+
+      <!-- No record in the current term -->
+      <div class="state-card">
+        <mat-icon>event_busy</mat-icon>
+
+        <p>{{ 'STUDENT_GRADES.EMPTY.TERM' | translate }}</p>
+      </div>
+
+    } @else if (selectedTerm(); as term) {
+
+      <!-- More than one child: the class of the picked one, above its grades -->
+      @if (hasManyChildren() && classSection(); as classSection) {
+        <div class="selected-class">
+          <span class="class-chip">
+            <mat-icon>school</mat-icon>
+            {{ 'STUDENT_GRADES.CLASS_SECTION' | translate: classSection }}
+          </span>
+        </div>
+      }
+
+      <app-term-grades [term]="term" viewer="portal" />
+
+    }
+
+  }
+
+</div>

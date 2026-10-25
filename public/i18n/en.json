@@ -208,6 +208,7 @@
     "CLOSE": "Close",
     "TAB_DETAILS": "Details",
     "TAB_ATTENDANCE": "Attendance",
+    "TAB_GRADES": "Grades",
     "TAB_PARENTS": "Parents",
     "ACADEMIC_INFORMATION": "Academic Information",
     "ACADEMIC_INFORMATION_DESCRIPTION": "The class and section the student studies in",
@@ -724,6 +725,51 @@
     "ACTIVE": "Active",
     "INACTIVE": "Inactive",
     "FILTER_BUTTON": "Filter"
+  },
+
+  "STUDENT_GRADES": {
+    "MY_TITLE": "My grades",
+    "CHILDREN_TITLE": "My children's grades",
+    "LOADING": "Loading grades...",
+    "NOT_FOUND": "Student not found.",
+    "TERM": "Academic term",
+    "TERM_LABEL": "{{term}}, {{year}}",
+    "CLASS_SECTION": "{{class}}, section {{section}}",
+    "GRADES_CLOSED": "Grades closed",
+    "NOTE_STAFF": "The total shows when every mark of the subject is entered. A mark not entered is not counted as zero.",
+    "NOTE_PORTAL": "A mark shows here as soon as the teacher saves it. The total shows when every mark of the subject is entered.",
+    "COUNTERS": {
+      "SUBJECTS": "Subjects"
+    },
+    "CARD": {
+      "OUT_OF": "{{mark}} of {{max}}",
+      "OUT_OF_100": "of 100",
+      "TEACHER_AND_PASSING": "{{teacher}}, passing mark {{mark}}",
+      "NOT_ENTERED": "Not entered yet",
+      "NO_ASSESSMENTS": "No assessments yet",
+      "NO_TEACHER_STAFF": "No teacher teaches this subject in the student's section, so it has no marks. It counts as incomplete in the rollover.",
+      "NO_TEACHER_PORTAL": "No grades for this subject yet."
+    },
+    "EMPTY": {
+      "STAFF": "This student has no grades yet.",
+      "TERM": "No grades for this term.",
+      "NO_SUBJECTS": "No subjects for this term yet."
+    },
+    "STATUS": {
+      "STAFF_INACTIVE": "The student's record is not active in this term (withdrawn), so the grades are not shown. They are kept, and show again if the record becomes active.",
+      "STAFF_GRADUATED": "The student's record in this term is \"Graduated\", so the grades are not shown. They are kept, and show again if the record becomes active.",
+      "STAFF_TRANSFERRED": "The student moved to another school in this term, so the grades are not shown. They are kept, and show again if the record becomes active.",
+      "PORTAL": "The student is not enrolled in this term, so the grades are not shown."
+    },
+    "CHILDREN": {
+      "LIST": "Children",
+      "PICK": "Pick a child to see their grades.",
+      "NONE": "No children are linked to your account.",
+      "BADGE_INACTIVE": "Inactive",
+      "INACTIVE": "The student's record at the school is not active, so the grades are not shown.",
+      "GRADUATED": "Graduated from the school, so there are no grades in the current term.",
+      "TRANSFERRED": "The student moved to another school, so there are no grades in the current term."
+    }
   },
 
   "STUDENT_PARENTS": {
@@ -1547,6 +1593,7 @@
       "CHANGES": "Unsaved marks: {{count}}",
       "INVALID": "Marks that are not valid: {{count}} (fix them before saving)",
       "HINT": "The totals and results update after saving.",
+      "VISIBLE": "Saved marks are visible to the student and their parents right away.",
       "RESET": "Undo",
       "SAVE": "Save sheet",
       "SAVING": "Saving..."

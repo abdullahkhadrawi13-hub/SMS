@@ -1,0 +1,365 @@
+/* The card behaves like a block inside the cards grid. */
+:host {
+  display: block;
+  min-width: 0;
+}
+
+
+/* ================================
+   Card
+   ================================ */
+
+.subject-card {
+  padding: 16px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  box-sizing: border-box;
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.head-text {
+  min-width: 0;
+}
+
+.subject-name {
+  margin: 0 0 4px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  color: #111827;
+}
+
+.head-sub {
+  margin: 0;
+
+  font-size: 12.5px;
+  line-height: 1.5;
+
+  color: #6b7280;
+}
+
+.head-total {
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  gap: 6px;
+}
+
+.total {
+  display: inline-flex;
+  align-items: baseline;
+
+  gap: 4px;
+
+  white-space: nowrap;
+}
+
+.total strong {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+
+  color: #111827;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.total small {
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+
+/* Same colors as the grade sheet. */
+.result-badge {
+  display: inline-block;
+
+  padding: 4px 12px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.result-badge.passed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.result-badge.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.result-badge.incomplete {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+/* ================================
+   Components
+   ================================ */
+
+.components {
+  margin-top: 14px;
+  padding-top: 6px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+.component {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  padding: 8px 0;
+}
+
+.component-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  font-size: 13.5px;
+
+  color: #374151;
+}
+
+.component-name {
+  min-width: 0;
+}
+
+.component-score {
+  white-space: nowrap;
+
+  color: #111827;
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* A thin bar: score ÷ weight. It fills from the start side
+   (the right in Arabic, the left in English). */
+.bar {
+  height: 5px;
+
+  border-radius: 4px;
+
+  background: #e9edf2;
+
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+
+  height: 100%;
+
+  border-radius: 4px;
+
+  background: #1f6f54;
+}
+
+
+/* ================================
+   Mark chips
+   ================================ */
+
+.marks {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+.mark-chip {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 3px 10px;
+
+  border: 1px solid transparent;
+  border-radius: 14px;
+
+  background: #f1f5f9;
+  color: #475569;
+
+  font-size: 12px;
+
+  white-space: nowrap;
+}
+
+.mark-chip strong {
+  color: #111827;
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* Not entered yet / no assessment yet. */
+.mark-chip.missing {
+  background: transparent;
+  border: 1px dashed #b8c0cc;
+}
+
+/* Room for the history button at the end of the chip. */
+.mark-chip.has-history {
+  padding-inline-end: 28px;
+}
+
+
+/* ================================
+   History button (staff only)
+   The same look as the grade sheet. Hidden until the chip is hovered
+   or focused, the edited marks too (they turn blue when they show).
+   ================================ */
+
+.history-button {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 3px;
+
+  width: 20px;
+  height: 20px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #64748b;
+
+  cursor: pointer;
+
+  opacity: 0;
+
+  transform: translateY(-50%);
+  transition: opacity 0.15s ease;
+}
+
+.history-button mat-icon {
+  width: 13px;
+  height: 13px;
+
+  font-size: 13px;
+}
+
+.mark-chip:hover .history-button,
+.mark-chip:focus-within .history-button,
+.history-button[aria-expanded='true'] {
+  opacity: 1;
+}
+
+.history-button:hover {
+  color: #2554a4;
+}
+
+.history-button:focus-visible {
+  opacity: 1;
+
+  outline: 2px solid #2554a4;
+  outline-offset: 1px;
+}
+
+/* Edited after it was first entered: blue (still hidden until hover). */
+.history-button.edited {
+  color: #2554a4;
+  background: #eef3fc;
+
+  border-color: #bfd0ee;
+}
+
+/* Touch screens have no hover: every saved mark shows a faint button. */
+@media (hover: none) {
+
+  .history-button {
+    opacity: 0.75;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .history-button {
+    transition: none;
+  }
+
+}
+
+
+/* ================================
+   No teacher in the student's section
+   ================================ */
+
+.subject-card.no-teacher {
+  border-style: dashed;
+  border-color: #c8cfd9;
+
+  background: #fbfcfd;
+}
+
+.subject-card.no-teacher .subject-name {
+  margin: 0;
+}
+
+.no-teacher-text {
+  margin: 10px 0 0;
+
+  font-size: 13px;
+  line-height: 1.7;
+
+  color: #6b7280;
+}
+
+
+/* ================================
+   History menu / bottom sheet
+   ::ng-deep is needed because both open in an overlay, outside this
+   component. Same rules as grades-sheet.css: that file is not loaded
+   here (the student dialog has no grade sheet).
+   ================================ */
+
+/* Wide screens: the menu is wider than a normal menu (280px). */
+::ng-deep .grade-history-menu.mat-mdc-menu-panel {
+  width: 340px;
+  max-width: calc(100vw - 32px);
+}
+
+::ng-deep .grade-history-menu .mat-mdc-menu-content {
+  padding: 0;
+}
+
+/* Narrow screens: the history fills the bottom sheet edge to edge. */
+::ng-deep .grade-history-sheet.mat-bottom-sheet-container {
+  padding: 0;
+}

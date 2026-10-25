@@ -158,7 +158,7 @@ export const routes: Routes = [
 
 
       // العلامات: الصفحة المعروضة تُحدَّد حسب الدور داخل grades.routes.ts
-      // (Admin / Teacher: كشف العلامات - AssistantPrincipal: عرض فقط - Student / Parent: Coming Soon)
+      // (Admin / Teacher: كشف العلامات - AssistantPrincipal: عرض فقط - Student: علاماتي - Parent: علامات أبنائي)
       {
         path: 'grades',
         loadChildren: () =>

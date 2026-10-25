@@ -25,6 +25,7 @@ import { getRoleTranslationKey } from '../../../core/models/user-role';
 
 import { AttendanceHistory } from '../../attendance/attendance-history/attendance-history';
 import { StudentParents } from '../student-parents/student-parents';
+import { StudentGradesTab } from '../../grades/student-grades/student-grades-tab/student-grades-tab';
 
 import { Student } from '../../../core/models/student';
 
@@ -33,7 +34,7 @@ export interface StudentDetailsDialogData {
 }
 
 // The tabs of the dialog.
-export type StudentDetailsTab = 'details' | 'attendance' | 'parents';
+export type StudentDetailsTab = 'details' | 'attendance' | 'grades' | 'parents';
 
 @Component({
   selector: 'app-student-details',
@@ -46,7 +47,8 @@ export type StudentDetailsTab = 'details' | 'attendance' | 'parents';
     MatTabsModule,
     TranslatePipe,
     AttendanceHistory,
-    StudentParents
+    StudentParents,
+    StudentGradesTab
   ],
   templateUrl: './students-details.html',
   styleUrl: './students-details.css'
@@ -80,6 +82,14 @@ export class StudentsDetails {
   // The parents tab is created the first time it is opened,
   // then kept (hidden) while the dialog is open, so it loads only once.
   readonly parentsTabOpened = signal(false);
+
+  // The "Grades" tab (GET /api/studentgrades/by-student/{studentId}, every term):
+  // Admin and AssistantPrincipal only (a teacher gets 403).
+  readonly canViewGrades = this.permissions.canViewStudentGrades;
+
+  // Like the parents tab: created the first time it is opened, then kept
+  // (hidden) while the dialog is open, so the grades load only once.
+  readonly gradesTabOpened = signal(false);
 
   // The phone number and the "Account Information" section
   // are for Admin and AssistantPrincipal only (hidden from a teacher).
@@ -224,6 +234,10 @@ export class StudentsDetails {
 
     if (tab === 'parents') {
       this.parentsTabOpened.set(true);
+    }
+
+    if (tab === 'grades') {
+      this.gradesTabOpened.set(true);
     }
 
     this.activeTab.set(tab);

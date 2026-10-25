@@ -1,0 +1,185 @@
+@if (view(); as card) {
+
+  <!-- In the class's plan, but no teacher in the student's section: no marks -->
+  @if (!card.hasTeacher) {
+
+    <article class="subject-card no-teacher">
+
+      <div class="card-head">
+        <h3 class="subject-name">{{ card.name }}</h3>
+
+        <span class="result-badge incomplete">
+          {{ resultKeys.incomplete | translate }}
+        </span>
+      </div>
+
+      <p class="no-teacher-text">
+        {{
+          (showHistory()
+            ? 'STUDENT_GRADES.CARD.NO_TEACHER_STAFF'
+            : 'STUDENT_GRADES.CARD.NO_TEACHER_PORTAL') | translate
+        }}
+      </p>
+
+    </article>
+
+  } @else {
+
+    <article class="subject-card">
+
+      <!-- Header: subject, teacher and passing mark / total and result -->
+      <div class="card-head">
+
+        <div class="head-text">
+          <h3 class="subject-name">{{ card.name }}</h3>
+
+          <p class="head-sub">
+            @if (card.passingMark) {
+              {{
+                'STUDENT_GRADES.CARD.TEACHER_AND_PASSING' | translate: {
+                  teacher: card.teacher,
+                  mark: card.passingMark
+                }
+              }}
+            } @else {
+              {{ card.teacher }}
+            }
+          </p>
+        </div>
+
+        <div class="head-total">
+
+          <span class="total">
+            <strong>{{ card.total || '—' }}</strong>
+            <small>{{ 'STUDENT_GRADES.CARD.OUT_OF_100' | translate }}</small>
+          </span>
+
+          <span
+            class="result-badge"
+            [class.passed]="card.result === 'passed'"
+            [class.failed]="card.result === 'failed'"
+            [class.incomplete]="card.result === 'incomplete'"
+          >
+            {{ resultKeys[card.result] | translate }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Components -->
+      <div class="components">
+
+        @for (component of card.components; track component.subjectPlanComponentId) {
+
+          <div class="component">
+
+            <div class="component-line">
+              <span class="component-name">{{ component.name }}</span>
+
+              <strong class="component-score">
+                {{
+                  'STUDENT_GRADES.CARD.OUT_OF' | translate: {
+                    mark: component.score || '—',
+                    max: component.weight
+                  }
+                }}
+              </strong>
+            </div>
+
+            <!-- score ÷ weight (empty while a mark is missing) -->
+            <div class="bar" aria-hidden="true">
+              <span class="bar-fill" [style.width.%]="component.percent"></span>
+            </div>
+
+            <div class="marks">
+
+              @for (assessment of component.assessments; track assessment.assessmentId) {
+
+                @if (assessment.mark) {
+
+                  <span class="mark-chip" [class.has-history]="assessment.history">
+
+                    {{ assessment.name }}:
+                    <strong>
+                      {{
+                        'STUDENT_GRADES.CARD.OUT_OF' | translate: {
+                          mark: assessment.mark,
+                          max: assessment.max
+                        }
+                      }}
+                    </strong>
+
+                    <!--
+                      Staff only: who entered the mark, and every change.
+                      Hidden until the chip is hovered or focused.
+                      Wide screen: opens the menu below. Narrow screen: no menu
+                      (null), the click opens the bottom sheet instead.
+                    -->
+                    @if (assessment.history; as target) {
+                      <button
+                        type="button"
+                        class="history-button"
+                        [class.edited]="assessment.isEdited"
+                        [matMenuTriggerFor]="isNarrow() ? null : historyMenu"
+                        [matMenuTriggerData]="{ target: target }"
+                        [attr.aria-label]="('GRADES.SHEET.HISTORY.OPEN' | translate) + ': ' + assessment.name"
+                        [matTooltip]="(assessment.isEdited ? 'GRADES.SHEET.HISTORY.EDITED' : 'GRADES.SHEET.HISTORY.OPEN') | translate"
+                        (click)="openHistory(target)"
+                      >
+                        <mat-icon>history</mat-icon>
+                      </button>
+                    }
+
+                  </span>
+
+                } @else {
+
+                  <!-- Not entered yet: never shown as 0 -->
+                  <span class="mark-chip missing">
+                    {{ assessment.name }}:
+                    {{ 'STUDENT_GRADES.CARD.NOT_ENTERED' | translate }}
+                  </span>
+
+                }
+
+              } @empty {
+
+                <!-- An open component with no assessment yet (e.g. no quiz) -->
+                <span class="mark-chip missing">
+                  {{ 'STUDENT_GRADES.CARD.NO_ASSESSMENTS' | translate }}
+                </span>
+
+              }
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </article>
+
+  }
+
+}
+
+
+<!--
+  A mark's history (wide screens). One menu for the card: each history
+  button passes its target, and the content is created only when the menu
+  opens, so the history is loaded only then.
+-->
+<mat-menu #historyMenu="matMenu" class="grade-history-menu">
+
+  <ng-template matMenuContent let-target="target">
+    <app-grade-history
+      [target]="target"
+      (closed)="historyMenu.closed.emit('click')"
+    />
+  </ng-template>
+
+</mat-menu>

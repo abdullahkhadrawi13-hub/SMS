@@ -1,0 +1,62 @@
+<div class="student-grades-page">
+
+  <!-- Page Header: title, term / class and section -->
+  <div class="page-header">
+
+    <div class="title-section">
+      <h1>{{ 'STUDENT_GRADES.MY_TITLE' | translate }}</h1>
+
+      @if (termLabel(); as label) {
+        <p>{{ 'STUDENT_GRADES.TERM_LABEL' | translate: label }}</p>
+      }
+    </div>
+
+    @if (classSection(); as classSection) {
+      <span class="class-chip">
+        <mat-icon>school</mat-icon>
+        {{ 'STUDENT_GRADES.CLASS_SECTION' | translate: classSection }}
+      </span>
+    }
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="state-card">
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>{{ 'STUDENT_GRADES.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @else if (errorMessage()) {
+    <div class="state-card">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+
+      <p>{{ errorMessage() | translate }}</p>
+
+      <button mat-stroked-button type="button" (click)="load()">
+        <mat-icon>refresh</mat-icon>
+
+        {{ 'GRADES.SHEET.RETRY' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- No record in the current term -->
+  @else if (term() === null) {
+    <div class="state-card">
+      <mat-icon>event_busy</mat-icon>
+
+      <p>{{ 'STUDENT_GRADES.EMPTY.TERM' | translate }}</p>
+    </div>
+  }
+
+  <!-- The current term (or the "not enrolled" message) -->
+  @else if (term(); as term) {
+    <app-term-grades [term]="term" viewer="portal" />
+  }
+
+</div>

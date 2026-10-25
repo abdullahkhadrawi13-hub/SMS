@@ -4,7 +4,7 @@ import { roleMatchGuard } from '../../core/guards/role-match-guard';
 import { unsavedChangesGuard } from '../../core/guards/unsaved-changes-guard';
 import { UserRole } from '../../core/models/user-role';
 
-// Two routes share the same path (/grades), like the attendance section.
+// Three routes share the same path (/grades), like the attendance section.
 // The router takes the first one that matches the role of the user.
 export const GRADES_ROUTES: Routes = [
 
@@ -12,7 +12,7 @@ export const GRADES_ROUTES: Routes = [
   {
     path: '',
 
-    // Skipped for the other roles (the next route is used instead).
+    // Skipped for the other roles (the next routes are used instead).
     canMatch: [roleMatchGuard],
     data: {
       roles: [UserRole.Admin, UserRole.AssistantPrincipal, UserRole.Teacher]
@@ -26,13 +26,28 @@ export const GRADES_ROUTES: Routes = [
         .then(m => m.GradesPage)
   },
 
-  // Student / Parent: they have no grades endpoints yet.
-  // Temporary: shows "Coming Soon" until their pages are built.
+  // Student: their own grades in the current term («علاماتي»).
   {
     path: '',
+    canMatch: [roleMatchGuard],
+    data: {
+      roles: [UserRole.Student]
+    },
     loadComponent: () =>
-      import('../../shared/components/coming-soon/coming-soon')
-        .then(m => m.ComingSoon)
+      import('./student-grades/my-grades/my-grades')
+        .then(m => m.MyGrades)
+  },
+
+  // Parent: their children's grades in the current term («علامات أبنائي»).
+  {
+    path: '',
+    canMatch: [roleMatchGuard],
+    data: {
+      roles: [UserRole.Parent]
+    },
+    loadComponent: () =>
+      import('./student-grades/children-grades/children-grades')
+        .then(m => m.ChildrenGrades)
   }
 
 ];

@@ -1,0 +1,135 @@
+/* The tab behaves like a block inside the student dialog.
+   Many subjects scroll inside the tab, so the dialog keeps its header,
+   tabs and Close button on screen (like the attendance history table).
+   The dialog is at most 90vh high; about 270px of it is the header,
+   the tabs, the padding and the footer. */
+:host {
+  display: block;
+
+  max-height: max(320px, calc(90vh - 270px));
+
+  overflow-y: auto;
+
+  /* Room for the floating label of the term field
+     (the scroll area would cut it off at the top). */
+  padding-top: 8px;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Term field / term name
+   (projected into the toolbar of app-term-grades)
+   ================================ */
+
+.term-field {
+  width: 340px;
+  max-width: 100%;
+}
+
+.term-name {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 8px 12px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  background: #f8fafc;
+
+  font-size: 14px;
+
+  color: #374151;
+}
+
+.term-name mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  color: #6b7280;
+}
+
+/* "Closed" next to a term (same tag as the grades page term field). */
+.closed-tag {
+  display: inline-block;
+
+  margin-inline-start: 6px;
+  padding: 1px 8px;
+
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+
+  color: #334155;
+  background: #eef2f7;
+
+  vertical-align: middle;
+}
+
+
+/* ================================
+   State Card (loading / error / empty)
+   ================================ */
+
+.state-card {
+  min-height: 220px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  text-align: center;
+}
+
+.state-card > mat-icon {
+  width: 48px;
+  height: 48px;
+
+  font-size: 48px;
+
+  margin-bottom: 4px;
+
+  color: #9ca3af;
+}
+
+.state-card > mat-icon.error-icon {
+  color: #dc2626;
+}
+
+.state-card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.state-card button {
+  margin-top: 8px;
+}
+
+
+/* ================================
+   Responsive
+   ================================ */
+
+@media (max-width: 650px) {
+
+  .term-field {
+    width: 100%;
+  }
+
+}

@@ -32,8 +32,8 @@
     </button>
   </div>
 
-  <!-- Tabs: Details / Attendance / Parents (Admin and Assistant Principal only) -->
-  @if (canViewAttendance() || canViewParents()) {
+  <!-- Tabs: Details / Attendance / Grades / Parents (Admin and Assistant Principal only) -->
+  @if (canViewAttendance() || canViewGrades() || canViewParents()) {
     <nav
       mat-tab-nav-bar
       mat-stretch-tabs="false"
@@ -71,6 +71,22 @@
         </a>
       }
 
+      @if (canViewGrades()) {
+        <a
+          mat-tab-link
+          [active]="activeTab() === 'grades'"
+          (click)="openTab('grades')"
+        >
+          <span class="tab-label">
+            <mat-icon>bar_chart</mat-icon>
+
+            <span>
+              {{ 'STUDENTS_DETAILS.TAB_GRADES' | translate }}
+            </span>
+          </span>
+        </a>
+      }
+
       @if (canViewParents()) {
         <a
           mat-tab-link
@@ -91,6 +107,26 @@
   }
 
   <mat-tab-nav-panel #tabPanel>
+
+    <!-- Grades tab: the student's grades in every term (read only).
+         Like the parents tab, it is created the first time the tab is
+         opened, then only hidden, so the grades are loaded once. -->
+    @if (gradesTabOpened()) {
+      <div [hidden]="activeTab() !== 'grades'">
+        <div class="dialog-content">
+          <app-student-grades-tab
+            [studentId]="data.studentId"
+          ></app-student-grades-tab>
+        </div>
+
+        <!-- Dialog Footer -->
+        <div class="dialog-actions">
+          <button mat-button type="button" (click)="close()">
+            {{ 'STUDENTS_DETAILS.CLOSE' | translate }}
+          </button>
+        </div>
+      </div>
+    }
 
     <!-- Parents tab: the student's parents (read only).
          It is created the first time the tab is opened, then only hidden,
