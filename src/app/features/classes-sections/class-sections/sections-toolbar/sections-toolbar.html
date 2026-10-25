@@ -1,0 +1,42 @@
+<div class="sections-toolbar">
+
+  <!-- The term of the student counts -->
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="term-field">
+
+    <mat-label>
+      {{ 'CLASS_SECTIONS.TOOLBAR.TERM' | translate }}
+    </mat-label>
+
+    <mat-select
+      [value]="selectedTermId()"
+      [disabled]="terms().length === 0"
+      (selectionChange)="termChange.emit($event.value)"
+    >
+      @for (term of terms(); track term.academicTermId) {
+        <mat-option [value]="term.academicTermId">
+          {{ termLabel(term) }}
+          @if (term.isCurrent) {
+            ({{ 'CLASS_SECTIONS.TOOLBAR.CURRENT' | translate }})
+          }
+        </mat-option>
+      }
+    </mat-select>
+
+  </mat-form-field>
+
+
+  <!-- Status: all / active / inactive -->
+  <mat-button-toggle-group
+    class="status-toggle"
+    [value]="statusFilter()"
+    [attr.aria-label]="'CLASS_SECTIONS.TOOLBAR.STATUS' | translate"
+    (change)="statusChange.emit($event.value)"
+  >
+    @for (option of statusOptions; track option.value) {
+      <mat-button-toggle [value]="option.value">
+        {{ option.label | translate }}
+      </mat-button-toggle>
+    }
+  </mat-button-toggle-group>
+
+</div>

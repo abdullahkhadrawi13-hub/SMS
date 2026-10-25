@@ -1,0 +1,103 @@
+<div
+  class="section-row"
+  [class.inactive]="!section().isActive"
+  [class.zero]="section().studentCount === 0"
+  [style.--card-main]="color().main"
+  [style.--card-soft]="color().soft"
+  [style.--card-dark]="color().dark"
+>
+
+  <!-- Letter -->
+  <span class="letter">{{ letter() }}</span>
+
+
+  <!-- Name in both languages -->
+  <div class="names">
+    <strong>
+      {{ mainNameKey() | translate: { name: mainName() } }}
+    </strong>
+    <span [attr.dir]="otherNameDir()">
+      {{ otherNameKey() | translate: { name: otherName() } }}
+    </span>
+  </div>
+
+
+  <!-- Students + bar -->
+  <div class="students">
+    <div class="students-count">
+      <span class="count-value">{{ section().studentCount }}</span>
+      <span class="count-unit">{{ studentsUnitKey() | translate }}</span>
+    </div>
+
+    <div class="bar" aria-hidden="true">
+      <span class="bar-fill" [style.width.%]="barWidth()"></span>
+    </div>
+  </div>
+
+
+  <!-- Status -->
+  <div class="badges">
+    <span
+      class="status-badge"
+      [class.active]="section().isActive"
+      [class.inactive]="!section().isActive"
+    >
+      <span class="status-dot"></span>
+      {{
+        section().isActive
+          ? ('CLASS_SECTIONS.ROW.ACTIVE' | translate)
+          : ('CLASS_SECTIONS.ROW.INACTIVE' | translate)
+      }}
+    </span>
+
+    @if (isEmpty()) {
+      <span class="empty-badge">
+        {{ 'CLASS_SECTIONS.ROW.EMPTY' | translate }}
+      </span>
+    }
+  </div>
+
+
+  <!-- Actions (Admin only; an empty cell keeps the columns aligned) -->
+  @if (canManage()) {
+    <button
+      mat-icon-button
+      type="button"
+      class="actions-button"
+      [matMenuTriggerFor]="actionsMenu"
+      [attr.aria-label]="'CLASS_SECTIONS.ROW.ACTIONS' | translate: { name: letter() }"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #actionsMenu="matMenu">
+
+      <button mat-menu-item type="button" (click)="edit.emit()">
+        <mat-icon>edit</mat-icon>
+        <span>{{ 'CLASS_SECTIONS.ROW.EDIT' | translate }}</span>
+      </button>
+
+      <button
+        mat-menu-item
+        type="button"
+        [disabled]="isToggling()"
+        (click)="toggleStatus.emit()"
+      >
+        <mat-icon>
+          {{ section().isActive ? 'block' : 'check_circle' }}
+        </mat-icon>
+        <span>
+          {{
+            section().isActive
+              ? ('CLASS_SECTIONS.ROW.DEACTIVATE' | translate)
+              : ('CLASS_SECTIONS.ROW.ACTIVATE' | translate)
+          }}
+        </span>
+      </button>
+
+    </mat-menu>
+  } @else {
+    <span></span>
+  }
+
+</div>

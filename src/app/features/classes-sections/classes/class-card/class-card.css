@@ -1,0 +1,464 @@
+/* The card behaves like a block inside the grid. */
+:host {
+
+  display: block;
+
+}
+
+
+/* ================================
+   Card
+   The colors come from the component
+   (shared/constants/card-colors.ts, grey for an inactive class):
+   --card-main  icon, arrow, borders
+   --card-soft  light background
+   --card-dark  text on the light background
+   ================================ */
+
+.class-card {
+
+  /* Every card is above the link that covers it,
+     so the link can sit under the actions button. */
+  position: relative;
+
+  /* Fixed height: all cards have the same size. */
+  height: 232px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  padding: 16px 16px 12px 18px;
+
+  color: var(--card-dark);
+
+  /* A light tint in the corner + the soft color fading to almost white. */
+  background:
+    radial-gradient(
+      circle at 12% 0%,
+      color-mix(in srgb, var(--card-main) 16%, transparent) 0%,
+      transparent 55%
+    ),
+    linear-gradient(
+      170deg,
+      var(--card-soft) 0%,
+      color-mix(in srgb, var(--card-soft) 45%, #ffffff) 100%
+    );
+
+  border: 1px solid color-mix(in srgb, var(--card-main) 22%, transparent);
+
+  border-radius: 18px;
+
+  box-sizing: border-box;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+}
+
+.class-card:hover {
+
+  transform: translateY(-3px);
+
+  border-color: color-mix(in srgb, var(--card-main) 45%, transparent);
+
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--card-main) 20%, transparent);
+
+}
+
+
+/* ================================
+   Link (covers the whole card)
+   ================================ */
+
+.card-link {
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 1;
+
+  border-radius: inherit;
+
+}
+
+.card-link:focus-visible {
+
+  outline: 3px solid var(--card-main);
+
+  outline-offset: 2px;
+
+}
+
+
+/* ================================
+   Top: icon + actions
+   ================================ */
+
+.card-top {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+}
+
+.class-icon {
+
+  width: 44px;
+
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: var(--card-main);
+
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--card-main) 35%, transparent);
+
+}
+
+.class-card.inactive .class-icon {
+
+  box-shadow: none;
+
+}
+
+.class-icon mat-icon {
+
+  width: 24px;
+
+  height: 24px;
+
+  font-size: 24px;
+
+  color: #ffffff;
+
+}
+
+/* Above the card link, so it opens the menu and not the class page. */
+.actions-button {
+
+  position: relative;
+
+  z-index: 2;
+
+  color: var(--card-dark);
+
+}
+
+.actions-button:hover {
+
+  background: rgba(255, 255, 255, 0.7);
+
+}
+
+
+/* ================================
+   Name
+   ================================ */
+
+.class-card h3 {
+
+  margin: 0;
+
+  font-size: 19px;
+
+  font-weight: 700;
+
+  color: var(--card-dark);
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+}
+
+
+/* ================================
+   Badges
+   ================================ */
+
+.badges {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-top: -4px;
+
+}
+
+.badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  height: 24px;
+
+  padding: 0 9px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.75);
+
+  color: var(--card-dark);
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+}
+
+/* Graduation: gold, the same on every card. */
+.graduation-badge {
+
+  background: linear-gradient(135deg, #fdebb0, #f2c14e);
+
+  color: #5c3d02;
+
+}
+
+.graduation-badge mat-icon {
+
+  width: 15px;
+
+  height: 15px;
+
+  font-size: 15px;
+
+}
+
+.inactive-badge {
+
+  background: #ffffff;
+
+  color: #991b1b;
+
+}
+
+
+/* ================================
+   Section Letters
+   ================================ */
+
+.section-letters {
+
+  flex: 1;
+
+  min-height: 0;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-content: flex-start;
+
+  gap: 6px;
+
+  overflow: hidden;
+
+}
+
+.letter {
+
+  min-width: 30px;
+
+  height: 30px;
+
+  padding: 0 6px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 1px solid color-mix(in srgb, var(--card-main) 18%, transparent);
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.85);
+
+  color: var(--card-dark);
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  box-sizing: border-box;
+
+}
+
+/* An inactive section: faded and crossed out. */
+.letter.inactive {
+
+  opacity: 0.45;
+
+  text-decoration: line-through;
+
+}
+
+.no-sections {
+
+  height: 30px;
+
+  padding: 0 10px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.6);
+
+  color: #6b7280;
+
+  font-size: 12px;
+
+}
+
+
+/* ================================
+   Footer: counts + arrow
+   ================================ */
+
+.card-footer {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding-top: 10px;
+
+  border-top: 1px solid color-mix(in srgb, var(--card-main) 16%, transparent);
+
+  font-size: 13px;
+
+}
+
+.count {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  white-space: nowrap;
+
+  font-variant-numeric: tabular-nums;
+
+}
+
+.count mat-icon {
+
+  width: 17px;
+
+  height: 17px;
+
+  font-size: 17px;
+
+  opacity: 0.8;
+
+}
+
+.open-arrow {
+
+  margin-inline-start: auto;
+
+  width: 30px;
+
+  height: 30px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--card-main);
+
+  color: #ffffff;
+
+  transition: transform 0.2s ease;
+
+}
+
+.open-arrow mat-icon {
+
+  width: 20px;
+
+  height: 20px;
+
+  font-size: 20px;
+
+}
+
+/* The arrow moves a little toward "forward" on hover. */
+.class-card:hover .open-arrow {
+
+  transform: translateX(3px);
+
+}
+
+:host-context([dir='rtl']) .class-card:hover .open-arrow {
+
+  transform: translateX(-3px);
+
+}
+
+
+/* ================================
+   Reduced Motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .class-card,
+  .open-arrow {
+
+    transition: none;
+
+  }
+
+  .class-card:hover,
+  .class-card:hover .open-arrow {
+
+    transform: none;
+
+  }
+
+}

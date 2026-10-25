@@ -1,0 +1,77 @@
+<div class="class-sections-page">
+
+  <!-- Back to the classes -->
+  <a class="back-link" routerLink="/classes-sections">
+    <mat-icon>arrow_back</mat-icon>
+    {{ 'CLASS_SECTIONS.BACK' | translate }}
+  </a>
+
+
+  <!-- First load -->
+  @if (isLoadingPage()) {
+    <div class="state-card">
+      <mat-spinner diameter="42"></mat-spinner>
+      <p>
+        {{ 'CLASS_SECTIONS.LOADING' | translate }}
+      </p>
+    </div>
+  }
+
+  <!-- The class could not be loaded, or does not exist -->
+  @else if (pageError()) {
+    <div class="state-card error-state">
+      <mat-icon>error_outline</mat-icon>
+      <p>
+        {{ pageError() | translate }}
+      </p>
+      <button mat-flat-button type="button" (click)="loadPage()">
+        <mat-icon>refresh</mat-icon>
+        {{ 'CLASS_SECTIONS.RETRY' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- The class and its sections -->
+  @else if (schoolClass(); as currentClass) {
+
+    <app-class-banner
+      [schoolClass]="currentClass"
+      [color]="color()!"
+      [sections]="sections()"
+      [sectionsLoaded]="!isLoadingSections() && !sectionsError()"
+      [canManage]="canManageClass()"
+      [isToggling]="isTogglingClass()"
+      (editClass)="openEditClass()"
+      (toggleStatus)="toggleClassStatus()"
+    />
+
+    <app-sections-toolbar
+      [terms]="terms()"
+      [selectedTermId]="selectedTermId()"
+      [statusFilter]="statusFilter()"
+      (termChange)="onTermChange($event)"
+      (statusChange)="onStatusChange($event)"
+    />
+
+    <app-sections-list
+      [sections]="visibleSections()"
+      [totalCount]="sections().length"
+      [statusFilter]="statusFilter()"
+      [color]="color()!"
+      [maxStudentCount]="maxStudentCount()"
+      [schoolClass]="currentClass"
+      [isLoading]="isLoadingSections()"
+      [errorMessage]="sectionsError()"
+      [canManage]="canManageSections()"
+      [canAdd]="canAddSection()"
+      [togglingSectionId]="togglingSectionId()"
+      (retry)="loadSections()"
+      (addSection)="openAddSection()"
+      (editSection)="openEditSection($event)"
+      (toggleStatus)="toggleSectionStatus($event)"
+      (showAll)="onStatusChange('all')"
+    />
+
+  }
+
+</div>

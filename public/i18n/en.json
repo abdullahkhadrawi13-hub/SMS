@@ -43,8 +43,7 @@
     "STUDENTS": "Students",
     "TEACHERS": "Teachers",
     "PARENTS": "Parents",
-    "CLASSES": "Classes",
-    "SECTIONS": "Sections",
+    "CLASSES_SECTIONS": "Classes & Sections",
     "SUBJECTS": "Subjects",
     "TIMETABLE": "Timetable",
     "ATTENDANCE": "Attendance",
@@ -314,8 +313,9 @@
 
   "CLASSES": {
     "HEADER": {
-      "TITLE": "Class Management",
-      "SUBTITLE": "Manage school classes and their settings"
+      "TITLE": "Classes & Sections",
+      "SUBTITLE": "Choose a class to see its sections and how many students each has",
+      "COUNTS_TERM": "Counts for {{term}}"
     },
     "GRID": {
       "LOADING": "Loading classes...",
@@ -330,7 +330,9 @@
       "ACTIONS": "Actions",
       "EDIT": "Edit",
       "ACTIVATE": "Activate",
-      "DEACTIVATE": "Deactivate"
+      "DEACTIVATE": "Deactivate",
+      "OPEN": "Open {{name}}",
+      "NO_SECTIONS": "No sections yet"
     },
     "FORM": {
       "ADD_TITLE": "Add Class",
@@ -355,6 +357,24 @@
         "LEVEL_INVALID": "Level must be a whole number above 0"
       }
     },
+    "COUNTS": {
+      "SECTIONS": {
+        "ZERO": "No sections",
+        "ONE": "1 section",
+        "TWO": "2 sections",
+        "FEW": "{{count}} sections",
+        "MANY": "{{count}} sections",
+        "OTHER": "{{count}} sections"
+      },
+      "STUDENTS": {
+        "ZERO": "No students",
+        "ONE": "1 student",
+        "TWO": "2 students",
+        "FEW": "{{count}} students",
+        "MANY": "{{count}} students",
+        "OTHER": "{{count}} students"
+      }
+    },
     "ERROR": {
       "LOAD_FAILED": "Could not load classes. Please try again."
     },
@@ -362,74 +382,79 @@
     "INACTIVE": "Inactive"
   },
 
-  "SECTIONS": {
-    "TITLE": "Section Management",
-    "SUBTITLE": "Manage section information and classes",
-    "ADD_SECTION": "Add Section",
-    "FILTER": "Filter",
-
-    "TABLE": {
-      "CLASS_NAME": "Class Name",
-      "SECTION": "Section",
-      "STUDENT_COUNT": "Student Count",
-      "STATUS": "Status",
-      "ACTIONS": "Actions",
-      "LOADING": "Loading sections..."
+  "CLASS_SECTIONS": {
+    "BACK": "Classes & Sections",
+    "LOADING": "Loading the class...",
+    "RETRY": "Retry",
+    "BANNER": {
+      "ACTIVE_SECTIONS": "Active sections",
+      "STUDENTS": "Students",
+      "EMPTY_SECTIONS": "Empty sections",
+      "INACTIVE_CLASS": "Inactive class",
+      "EDIT_CLASS": "Edit class",
+      "ACTIVATE_CLASS": "Activate class",
+      "DEACTIVATE_CLASS": "Deactivate class"
     },
-
-    "ACTIVE": "Active",
-    "INACTIVE": "Inactive",
-    "ACTIVATE": "Activate",
-    "DEACTIVATE": "Deactivate",
-    "EDIT": "Edit",
-
-    "EMPTY": {
-      "TITLE": "No Sections",
-      "MESSAGE": "There are currently no sections to display."
+    "TOOLBAR": {
+      "TERM": "Students in",
+      "CURRENT": "current",
+      "STATUS": "Section status",
+      "STATUS_ALL": "All",
+      "STATUS_ACTIVE": "Active",
+      "STATUS_INACTIVE": "Inactive"
     },
-
-    "SECTION_FORM": {
+    "LIST": {
+      "LOADING": "Loading sections...",
+      "EMPTY": "This class has no sections yet.",
+      "NO_MATCH": "No sections with this status.",
+      "SHOW_ALL": "Show all sections",
+      "ADD_TITLE": "Add section",
+      "ADD_HINT": "To {{className}}",
+      "ADD_HINT_FIRST": "This class has no sections yet"
+    },
+    "ROW": {
+      "NAME_AR": "شعبة {{name}}",
+      "NAME_EN": "Section {{name}}",
+      "STUDENTS_UNIT": {
+        "ZERO": "students",
+        "ONE": "student",
+        "TWO": "students",
+        "FEW": "students",
+        "MANY": "students",
+        "OTHER": "students"
+      },
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "EMPTY": "Empty",
+      "ACTIONS": "Section {{name}} actions",
+      "EDIT": "Edit section",
+      "ACTIVATE": "Activate section",
+      "DEACTIVATE": "Deactivate section"
+    },
+    "FORM": {
       "ADD_TITLE": "Add Section",
       "EDIT_TITLE": "Edit Section",
-
       "CLASS": "Class",
-      "CLASS_REQUIRED": "Please select a class",
-
-      "SECTION_AR": "Section Name in Arabic",
-      "SECTION_AR_PLACEHOLDER": "Enter section name in Arabic",
-      "SECTION_AR_REQUIRED": "Please enter the section name in Arabic",
-
-      "SECTION_EN": "Section Name in English",
-      "SECTION_EN_PLACEHOLDER": "Enter section name in English",
-      "SECTION_EN_REQUIRED": "Please enter the section name in English",
-
-      "SECTION_MAX_LENGTH": "Section name must not exceed 100 characters",
-
+      "NAME_AR": "Section Name in Arabic",
+      "NAME_AR_PLACEHOLDER": "e.g. أ",
+      "NAME_EN": "Section Name in English",
+      "NAME_EN_PLACEHOLDER": "e.g. A",
       "CANCEL": "Cancel",
       "ADD": "Add",
-      "EDIT": "Edit"
+      "SAVE": "Save",
+      "SAVING": "Saving...",
+      "VALIDATION": {
+        "NAME_AR_REQUIRED": "Please enter the section name in Arabic",
+        "NAME_EN_REQUIRED": "Please enter the section name in English",
+        "NAME_MAX_LENGTH": "Section name must not exceed 100 characters",
+        "ARABIC_ONLY": "Arabic letters, numbers and spaces only",
+        "ENGLISH_ONLY": "English letters, numbers and spaces only"
+      }
     },
-
-    "FILTER_DIALOG": {
-      "TITLE": "Filter Sections",
-
-      "CLASS": "Class",
-
-      "SECTION": "Section",
-
-      "STATUS": "Status",
-
-      "ACADEMIC_YEAR": "Academic Year",
-
-      "ACADEMIC_TERM": "Academic Term",
-
-      "ALL": "All",
-
-      "CLEAR": "Clear",
-
-      "CANCEL": "Cancel",
-
-      "APPLY": "Apply"
+    "ERROR": {
+      "LOAD_FAILED": "Could not load the class. Please try again.",
+      "NOT_FOUND": "This class was not found.",
+      "SECTIONS_FAILED": "Could not load the sections. Please try again."
     }
   },
 

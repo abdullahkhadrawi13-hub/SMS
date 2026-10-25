@@ -69,22 +69,13 @@ export const routes: Routes = [
             .then(m => m.STUDENTS_ROUTES)
       },
 
+      // Classes and their sections in one section:
+      // /classes-sections (the classes) and /classes-sections/:classId (one class).
       {
-        path: 'classes',
+        path: 'classes-sections',
         loadChildren: () =>
-          import('./features/classes/classes.routes')
-            .then(m => m.CLASSES_ROUTES),
-        canActivate: [roleGuard],
-        data: {
-          roles: [UserRole.Admin, UserRole.AssistantPrincipal]
-        }
-      },
-
-      {
-        path: 'sections',
-        loadChildren: () =>
-          import('./features/sections/sections.routes')
-            .then(m => m.SECTIONS_ROUTES),
+          import('./features/classes-sections/classes-sections.routes')
+            .then(m => m.CLASSES_SECTIONS_ROUTES),
         canActivate: [roleGuard],
         data: {
           roles: [UserRole.Admin, UserRole.AssistantPrincipal]
