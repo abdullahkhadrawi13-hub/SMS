@@ -25,7 +25,7 @@ import { AssessmentsService } from '../../../../core/services/assessments';
 import { ActionResult } from '../../../../shared/services/action-result';
 import { Assessment } from '../../../../core/models/assessment';
 
-import { formatNumber } from '../../../subjects/subject';
+import { formatNumber } from '../../../subjects/shared/subjects-shared';
 import {
   arabicNameValidator,
   COMPONENT_NAME_MAX_LENGTH,

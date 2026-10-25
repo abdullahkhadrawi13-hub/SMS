@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ActiveSectionDto } from '../../../core/models/section';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
-import { getTermLabel as formatTermLabel, TermOption } from '../../subjects/subject';
+import { getTermLabel as formatTermLabel, TermOption } from '../../subjects/shared/subjects-shared';
 
 import { GradesAssignmentOption, GradesSelectorMode } from '../grades';
 

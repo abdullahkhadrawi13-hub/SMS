@@ -36,7 +36,7 @@ import {
   SubjectOption,
   teacherOptionFromDto,
   TeacherOption,
-} from '../../subject';
+} from '../../shared/subjects-shared';
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 

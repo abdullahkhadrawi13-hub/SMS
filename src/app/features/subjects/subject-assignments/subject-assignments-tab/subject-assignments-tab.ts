@@ -32,9 +32,9 @@ import {
   SubjectAssignmentsCounts,
   SubjectOption,
   teacherOptionFromAssignment,
-} from '../../subject';
-import { SubjectsSelection } from '../../subjects-selection';
-import { TermClassSelector } from '../../term-class-selector/term-class-selector';
+} from '../../shared/subjects-shared';
+import { SubjectsSelection } from '../../shared/subjects-selection';
+import { TermClassSelector } from '../../shared/term-class-selector/term-class-selector';
 import {
   SubjectAssignmentsTable,
   MissingPlanSubject,

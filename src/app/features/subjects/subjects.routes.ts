@@ -13,7 +13,7 @@ export const SUBJECTS_ROUTES: Routes = [
   {
     path: 'plans/:planId',
     loadComponent: () =>
-      import('./subject-plans/plan-details/plan-details')
-        .then(m => m.PlanDetails)
+      import('./subject-plans/plan-details-page/plan-details-page')
+        .then(m => m.PlanDetailsPage)
   }
 ];

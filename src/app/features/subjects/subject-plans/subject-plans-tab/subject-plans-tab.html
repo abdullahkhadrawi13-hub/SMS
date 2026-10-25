@@ -1,0 +1,173 @@
+<!-- Term / Class (shared with the assignments tab) -->
+<app-term-class-selector
+  [terms]="selection.terms()"
+  [termsLoading]="selection.isLoading()"
+  [termId]="selection.termId()"
+  [classes]="selection.classes()"
+  [classId]="selection.classId()"
+  [showSection]="false"
+  (termChange)="onTermChange($event)"
+  (classChange)="onClassChange($event)"
+></app-term-class-selector>
+
+
+<!-- Error -->
+@if (selection.errorMessage() || errorMessage()) {
+
+  <div class="state-card error-state">
+
+    <mat-icon>error_outline</mat-icon>
+
+    <p>{{ (selection.errorMessage() || errorMessage()) | translate }}</p>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="retry()"
+    >
+      <mat-icon>refresh</mat-icon>
+      {{ 'SUBJECTS.PLANS_TAB.RETRY' | translate }}
+    </button>
+
+  </div>
+
+}
+
+<!-- No class chosen yet -->
+@else if (!hasSelection()) {
+
+  <div class="state-card">
+
+    <mat-icon>rule</mat-icon>
+
+    <h3>{{ 'SUBJECTS.PLANS_TAB.SELECT_TITLE' | translate }}</h3>
+
+    <p>{{ 'SUBJECTS.PLANS_TAB.SELECT_MESSAGE' | translate }}</p>
+
+  </div>
+
+}
+
+<!-- First load -->
+@else if (isInitialLoading()) {
+
+  <div class="state-card">
+
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <p>{{ 'SUBJECTS.PLANS_TAB.LOADING' | translate }}</p>
+
+  </div>
+
+}
+
+<!-- No active subjects at all -->
+@else if (counts().total === 0) {
+
+  <div class="state-card">
+
+    <mat-icon>menu_book</mat-icon>
+
+    <h3>{{ 'SUBJECTS.PLANS_TAB.EMPTY_TITLE' | translate }}</h3>
+
+    <p>{{ 'SUBJECTS.PLANS_TAB.EMPTY_MESSAGE' | translate }}</p>
+
+  </div>
+
+}
+
+@else {
+
+  <div class="plans-area" [class.is-refreshing]="isRefreshing()">
+
+    @if (isRefreshing()) {
+      <mat-progress-bar class="refresh-bar" mode="indeterminate"></mat-progress-bar>
+    }
+
+    <!-- Title + counters -->
+    <div class="plans-toolbar">
+
+      <div class="toolbar-title">
+        <h2>
+          {{ 'SUBJECTS.PLANS_TAB.TITLE' | translate: { className: selection.selectedClassName() } }}
+        </h2>
+
+        <p>{{ selection.selectedTermLabel() }}</p>
+      </div>
+
+      <div class="toolbar-counters">
+
+        <span class="counter total">
+          {{ 'SUBJECTS.PLANS_TAB.COUNT_SUBJECTS' | translate }}
+          <strong>{{ counts().total }}</strong>
+        </span>
+
+        <span class="counter ok">
+          {{ 'SUBJECTS.PLANS_TAB.COUNT_READY' | translate }}
+          <strong>{{ counts().ready }}</strong>
+        </span>
+
+        @if (counts().incomplete > 0) {
+          <span class="counter warn">
+            {{ 'SUBJECTS.PLANS_TAB.COUNT_INCOMPLETE' | translate }}
+            <strong>{{ counts().incomplete }}</strong>
+          </span>
+        }
+
+        @if (counts().withoutPlan > 0) {
+          <span class="counter bad">
+            {{ 'SUBJECTS.PLANS_TAB.COUNT_NO_PLAN' | translate }}
+            <strong>{{ counts().withoutPlan }}</strong>
+          </span>
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- One card per plan, then one per subject without a plan -->
+    <div class="plans-grid">
+
+      @for (plan of plans(); track plan.subjectPlanId) {
+        <app-plan-card
+          [plan]="plan"
+          [canManage]="canManage()"
+          (assignTeacher)="assignTeacher.emit()"
+        ></app-plan-card>
+      }
+
+      @for (subject of subjectsWithoutPlan(); track subject.subjectId) {
+
+        <div class="empty-plan">
+
+          <div class="empty-icon">
+            <mat-icon>post_add</mat-icon>
+          </div>
+
+          <h3>{{ isArabic() ? subject.subjectAr : subject.subjectEn }}</h3>
+
+          <p>{{ 'SUBJECTS.PLANS_TAB.NO_PLAN_MESSAGE' | translate }}</p>
+
+          @if (canManage()) {
+            <button
+              mat-stroked-button
+              type="button"
+              [disabled]="openingForm()"
+              (click)="openCreatePlan(subject.subjectId)"
+            >
+              <mat-icon>add</mat-icon>
+              {{ 'SUBJECTS.PLANS_TAB.CREATE_PLAN' | translate }}
+            </button>
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+}

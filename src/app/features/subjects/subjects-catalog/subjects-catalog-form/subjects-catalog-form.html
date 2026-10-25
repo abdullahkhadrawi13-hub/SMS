@@ -1,0 +1,135 @@
+<!-- Subject form dialog -->
+
+<h2 mat-dialog-title>
+  {{
+    isEditMode
+      ? ('SUBJECTS.CATALOG_FORM.EDIT_TITLE' | translate)
+      : ('SUBJECTS.CATALOG_FORM.TITLE' | translate)
+  }}
+</h2>
+
+
+<mat-dialog-content>
+
+  <form
+    [formGroup]="subjectForm"
+    (ngSubmit)="onSubmit()"
+  >
+
+    <!-- Arabic Subject Name -->
+    <mat-form-field
+      appearance="outline"
+      class="form-field"
+    >
+
+      <mat-label>
+        {{ 'SUBJECTS.CATALOG_FORM.NAME_AR' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        formControlName="subjectAr"
+        dir="rtl"
+        [placeholder]="'SUBJECTS.CATALOG_FORM.NAME_AR_PLACEHOLDER' | translate"
+      />
+
+      @if (isFieldInvalid('subjectAr')) {
+
+        <mat-error>
+
+          @if (subjectForm.controls.subjectAr.hasError('required')) {
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_REQUIRED' | translate }}
+          }
+
+          @else if (subjectForm.controls.subjectAr.hasError('minlength')) {
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_MIN_LENGTH' | translate }}
+          }
+
+          @else if (subjectForm.controls.subjectAr.hasError('pattern')) {
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_PATTERN' | translate }}
+          }
+
+        </mat-error>
+
+      }
+
+    </mat-form-field>
+
+
+    <!-- English Subject Name -->
+    <mat-form-field
+      appearance="outline"
+      class="form-field"
+    >
+
+      <mat-label>
+        {{ 'SUBJECTS.CATALOG_FORM.NAME_EN' | translate }}
+      </mat-label>
+
+      <input
+        matInput
+        formControlName="subjectEn"
+        dir="ltr"
+        [placeholder]="'SUBJECTS.CATALOG_FORM.NAME_EN_PLACEHOLDER' | translate"
+      />
+
+      @if (isFieldInvalid('subjectEn')) {
+
+        <mat-error>
+
+          @if (subjectForm.controls.subjectEn.hasError('required')) {
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_REQUIRED' | translate }}
+          }
+
+          @else if (subjectForm.controls.subjectEn.hasError('minlength')) {
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_MIN_LENGTH' | translate }}
+          }
+
+          @else if (subjectForm.controls.subjectEn.hasError('pattern')) {
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_PATTERN' | translate }}
+          }
+
+        </mat-error>
+
+      }
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<!-- Dialog actions -->
+
+<mat-dialog-actions align="end">
+
+  <!-- Cancel -->
+  <button
+    mat-button
+    type="button"
+    [disabled]="isSubmitting()"
+    (click)="cancel()"
+  >
+    {{ 'SUBJECTS.CATALOG_FORM.CANCEL' | translate }}
+  </button>
+
+
+  <!-- Save -->
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    [disabled]="subjectForm.invalid || isSubmitting()"
+    (click)="onSubmit()"
+  >
+    <mat-icon>save</mat-icon>
+
+    {{
+      isSubmitting()
+        ? ('SUBJECTS.CATALOG_FORM.SAVING' | translate)
+        : ('SUBJECTS.CATALOG_FORM.SAVE' | translate)
+    }}
+  </button>
+
+</mat-dialog-actions>

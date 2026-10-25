@@ -21,7 +21,7 @@ import { GradeHistory as GradeHistoryData } from '../../../core/models/student-g
 import { ApiMessageService } from '../../../core/services/api-message';
 import { Language } from '../../../core/services/language';
 import { formatApiDateTime } from '../../../shared/utils/date-time';
-import { formatNumber } from '../../subjects/subject';
+import { formatNumber } from '../../subjects/shared/subjects-shared';
 
 import { GradeHistoryTarget } from '../grades';
 import { GradeHistoryCache } from '../grade-history-cache';

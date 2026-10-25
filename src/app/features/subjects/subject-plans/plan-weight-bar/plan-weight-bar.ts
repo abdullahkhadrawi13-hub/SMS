@@ -2,7 +2,7 @@ import { Component, computed, input } from '@angular/core';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { componentColor, formatNumber, FULL_WEIGHT } from '../../subject';
+import { componentColor, formatNumber, FULL_WEIGHT } from '../../shared/subjects-shared';
 
 
 // The weights of a plan as one bar: one colored part per component

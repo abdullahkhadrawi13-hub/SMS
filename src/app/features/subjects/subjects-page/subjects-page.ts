@@ -15,12 +15,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 
 import { Permissions } from '../../../core/services/permissions';
 
-import { SUBJECTS_TABS, SubjectsTab } from '../subject';
-import { SubjectsSelection } from '../subjects-selection';
+import { SUBJECTS_TABS, SubjectsTab } from '../shared/subjects-shared';
+import { SubjectsSelection } from '../shared/subjects-selection';
 import { SubjectsHeader } from '../subjects-header/subjects-header';
-import { PlansTab } from '../subject-plans/plans-tab/plans-tab';
+import { SubjectPlansTab } from '../subject-plans/subject-plans-tab/subject-plans-tab';
 import { SubjectAssignmentsTab } from '../subject-assignments/subject-assignments-tab/subject-assignments-tab';
-import { SubjectsListTab } from '../subjects-list/subjects-list-tab/subjects-list-tab';
+import { SubjectsCatalogTab } from '../subjects-catalog/subjects-catalog-tab/subjects-catalog-tab';
 
 
 // The subtitle under the page title, for each tab.
@@ -44,9 +44,9 @@ const TAB_SUBTITLES: Record<SubjectsTab, string> = {
   selector: 'app-subjects-page',
   imports: [
     SubjectsHeader,
-    PlansTab,
+    SubjectPlansTab,
     SubjectAssignmentsTab,
-    SubjectsListTab,
+    SubjectsCatalogTab,
     MatIconModule,
     MatTabsModule,
     TranslatePipe,
@@ -78,8 +78,8 @@ export class SubjectsPage implements OnInit {
   readonly subtitleKey = computed(() => TAB_SUBTITLES[this.activeTab()]);
 
   // The tabs the header buttons talk to.
-  private readonly plansTab = viewChild(PlansTab);
-  private readonly subjectsListTab = viewChild(SubjectsListTab);
+  private readonly plansTab = viewChild(SubjectPlansTab);
+  private readonly subjectsCatalogTab = viewChild(SubjectsCatalogTab);
 
 
   constructor() {
@@ -132,7 +132,7 @@ export class SubjectsPage implements OnInit {
 
   // Header "Add subject" button (subjects list tab only).
   openAddSubject(): void {
-    this.subjectsListTab()?.openAddSubject();
+    this.subjectsCatalogTab()?.openAddSubject();
   }
 
   // Header "New plan" button (plans tab only).

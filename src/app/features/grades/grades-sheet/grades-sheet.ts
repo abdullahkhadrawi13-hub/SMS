@@ -30,7 +30,7 @@ import {
   PLAN_STATUS_BADGE,
   PlanStatus,
   sortComponents,
-} from '../../subjects/subject';
+} from '../../subjects/shared/subjects-shared';
 
 import {
   getMarkError,

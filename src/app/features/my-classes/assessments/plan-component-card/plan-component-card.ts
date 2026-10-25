@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Language } from '../../../../core/services/language';
 import { Assessment } from '../../../../core/models/assessment';
 
-import { formatNumber } from '../../../subjects/subject';
+import { formatNumber } from '../../../subjects/shared/subjects-shared';
 import { ComponentGroup } from '../assessments';
 
 

@@ -1,0 +1,36 @@
+<!-- Search and Filter -->
+<div class="filters-card">
+
+  <div class="search-container">
+
+    <!-- Subject Search (Arabic or English name) -->
+    <app-subjects-catalog-search
+      (searchChange)="search.set($event)"
+      (searchSubmit)="search.set($event)"
+    ></app-subjects-catalog-search>
+
+    <!-- Subject Filter (status) -->
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="openFilter()"
+    >
+      <mat-icon>filter_list</mat-icon>
+      {{ 'SUBJECTS.CATALOG_TAB.FILTER_BUTTON' | translate }}
+    </button>
+
+  </div>
+
+</div>
+
+<!-- Subject Table (error / loading / table / empty state) -->
+<app-subjects-catalog-table
+  [subjects]="filteredSubjects()"
+  [isLoading]="isLoading()"
+  [errorMessage]="errorMessage()"
+  [isFiltered]="isFiltered()"
+  [canManage]="canManage()"
+  (retry)="loadSubjects()"
+  (editSubject)="openEditSubject($event)"
+  (toggleStatus)="toggleSubjectStatus($event)"
+></app-subjects-catalog-table>
