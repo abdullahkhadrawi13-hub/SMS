@@ -292,7 +292,7 @@ export class SubjectPlansTab {
     if (termId === null || classId === null) {
       this.actionResult.show(
         'info',
-        this.translate.instant('SUBJECTS.PLANS.SELECT_CLASS_FIRST')
+        this.translate.instant('SUBJECTS.PLANS_TAB.SELECT_CLASS_FIRST')
       );
       return;
     }

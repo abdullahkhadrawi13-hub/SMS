@@ -1,7 +1,7 @@
 <!-- Copy the plans of an earlier term -->
 
 <h2 mat-dialog-title>
-  {{ 'SUBJECTS.PLAN_COPY.TITLE' | translate }}
+  {{ 'SUBJECTS.COPY_PLANS.TITLE' | translate }}
 </h2>
 
 
@@ -10,7 +10,7 @@
   <div class="copy-content">
 
     <p class="copy-subtitle">
-      {{ 'SUBJECTS.PLAN_COPY.SUBTITLE' | translate }}
+      {{ 'SUBJECTS.COPY_PLANS.SUBTITLE' | translate }}
     </p>
 
     @if (result(); as done) {
@@ -21,7 +21,7 @@
 
         <span>
           {{
-            'SUBJECTS.PLAN_COPY.RESULT'
+            'SUBJECTS.COPY_PLANS.RESULT'
               | translate: { copied: done.copiedCount, skipped: done.skippedCount }
           }}
         </span>
@@ -31,7 +31,7 @@
 
       <div class="message-card warning">
         <mat-icon>info</mat-icon>
-        <span>{{ 'SUBJECTS.PLAN_COPY.NO_TERMS' | translate }}</span>
+        <span>{{ 'SUBJECTS.COPY_PLANS.NO_TERMS' | translate }}</span>
       </div>
 
     } @else {
@@ -39,7 +39,7 @@
       <!-- From -->
       <mat-form-field appearance="outline">
 
-        <mat-label>{{ 'SUBJECTS.PLAN_COPY.FROM' | translate }}</mat-label>
+        <mat-label>{{ 'SUBJECTS.COPY_PLANS.FROM' | translate }}</mat-label>
 
         <mat-select [formControl]="fromTermId">
           @for (term of fromTerms; track term.academicTermId) {
@@ -50,20 +50,20 @@
         </mat-select>
 
         @if (fromTermId.invalid && fromTermId.touched) {
-          <mat-error>{{ 'SUBJECTS.PLAN_COPY.REQUIRED' | translate }}</mat-error>
+          <mat-error>{{ 'SUBJECTS.COPY_PLANS.REQUIRED' | translate }}</mat-error>
         }
 
       </mat-form-field>
 
       <!-- To (the term selected in the tab) -->
       <div class="context-box">
-        <span class="context-label">{{ 'SUBJECTS.PLAN_COPY.TO' | translate }}</span>
+        <span class="context-label">{{ 'SUBJECTS.COPY_PLANS.TO' | translate }}</span>
         <span class="context-value">{{ termLabel(toTerm) }}</span>
       </div>
 
       <p class="form-note">
         <mat-icon>info</mat-icon>
-        <span>{{ 'SUBJECTS.PLAN_COPY.SKIP_NOTE' | translate }}</span>
+        <span>{{ 'SUBJECTS.COPY_PLANS.SKIP_NOTE' | translate }}</span>
       </p>
 
     }
@@ -83,7 +83,7 @@
       type="button"
       (click)="close()"
     >
-      {{ 'SUBJECTS.PLAN_COPY.CLOSE' | translate }}
+      {{ 'SUBJECTS.COPY_PLANS.CLOSE' | translate }}
     </button>
 
   } @else {
@@ -94,7 +94,7 @@
       [disabled]="isSubmitting()"
       (click)="close()"
     >
-      {{ 'SUBJECTS.PLAN_COPY.CANCEL' | translate }}
+      {{ 'SUBJECTS.COPY_PLANS.CANCEL' | translate }}
     </button>
 
     <button
@@ -108,8 +108,8 @@
 
       {{
         isSubmitting()
-          ? ('SUBJECTS.PLAN_COPY.COPYING' | translate)
-          : ('SUBJECTS.PLAN_COPY.COPY' | translate)
+          ? ('SUBJECTS.COPY_PLANS.COPYING' | translate)
+          : ('SUBJECTS.COPY_PLANS.COPY' | translate)
       }}
     </button>
 

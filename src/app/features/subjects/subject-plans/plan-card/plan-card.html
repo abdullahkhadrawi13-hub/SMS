@@ -11,7 +11,7 @@
       <h3>{{ subjectName() }}</h3>
 
       <span class="passing-mark">
-        {{ 'SUBJECTS.PLANS.PASSING_MARK' | translate: { mark: formatNumber(plan().passingMark) } }}
+        {{ 'SUBJECTS.PLAN_CARD.PASSING_MARK' | translate: { mark: formatNumber(plan().passingMark) } }}
       </span>
     </div>
 
@@ -41,9 +41,9 @@
               <span class="component-type">
                 ·
                 @if (item.component.teacherAddsAssessments) {
-                  {{ 'SUBJECTS.PLANS.OPEN' | translate }}
+                  {{ 'SUBJECTS.PLAN_CARD.OPEN' | translate }}
                 } @else {
-                  {{ 'SUBJECTS.PLANS.FIXED_OUT_OF' | translate: { max: formatNumber(item.component.maxMark) } }}
+                  {{ 'SUBJECTS.PLAN_CARD.FIXED_OUT_OF' | translate: { max: formatNumber(item.component.maxMark) } }}
                 }
               </span>
             </span>
@@ -56,7 +56,7 @@
     } @else {
 
       <p class="no-components">
-        {{ 'SUBJECTS.PLANS.NO_COMPONENTS' | translate }}
+        {{ 'SUBJECTS.PLAN_CARD.NO_COMPONENTS' | translate }}
       </p>
 
     }
@@ -67,7 +67,7 @@
         <mat-icon>info</mat-icon>
 
         <span>
-          {{ 'SUBJECTS.PLANS.INCOMPLETE_HINT' | translate: { remaining: remainingWeight() } }}
+          {{ 'SUBJECTS.PLAN_CARD.INCOMPLETE_HINT' | translate: { remaining: remainingWeight() } }}
         </span>
       </div>
     }
@@ -82,13 +82,13 @@
 
       <span>
         <mat-icon>groups</mat-icon>
-        {{ 'SUBJECTS.PLANS.SECTIONS' | translate: { count: plan().assignmentCount } }}
+        {{ 'SUBJECTS.PLAN_CARD.SECTIONS' | translate: { count: plan().assignmentCount } }}
       </span>
 
       @if (plan().hasGrades) {
         <span>
           <mat-icon>edit_note</mat-icon>
-          {{ 'SUBJECTS.PLANS.HAS_GRADES' | translate }}
+          {{ 'SUBJECTS.PLAN_CARD.HAS_GRADES' | translate }}
         </span>
       } @else if (plan().assignmentCount === 0 && canManage()) {
         <button
@@ -96,7 +96,7 @@
           class="link-button"
           (click)="assignTeacher.emit()"
         >
-          {{ 'SUBJECTS.PLANS.ASSIGN_TEACHER' | translate }}
+          {{ 'SUBJECTS.PLAN_CARD.ASSIGN_TEACHER' | translate }}
         </button>
       }
 
@@ -109,8 +109,8 @@
     >
       {{
         !plan().isComplete && canManage()
-          ? ('SUBJECTS.PLANS.COMPLETE' | translate)
-          : ('SUBJECTS.PLANS.OPEN_PLAN' | translate)
+          ? ('SUBJECTS.PLAN_CARD.COMPLETE' | translate)
+          : ('SUBJECTS.PLAN_CARD.OPEN_PLAN' | translate)
       }}
 
       <mat-icon iconPositionEnd class="direction-arrow">chevron_right</mat-icon>

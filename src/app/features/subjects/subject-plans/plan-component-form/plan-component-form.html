@@ -3,8 +3,8 @@
 <h2 mat-dialog-title>
   {{
     isEditMode
-      ? ('SUBJECTS.COMPONENT_FORM.EDIT_TITLE' | translate)
-      : ('SUBJECTS.COMPONENT_FORM.ADD_TITLE' | translate)
+      ? ('SUBJECTS.PLAN_COMPONENT_FORM.EDIT_TITLE' | translate)
+      : ('SUBJECTS.PLAN_COMPONENT_FORM.ADD_TITLE' | translate)
   }}
 </h2>
 
@@ -20,33 +20,33 @@
     <!-- Type (add mode only; fixed after creation) -->
     <div class="type-block">
 
-      <span class="field-label">{{ 'SUBJECTS.COMPONENT_FORM.TYPE' | translate }}</span>
+      <span class="field-label">{{ 'SUBJECTS.PLAN_COMPONENT_FORM.TYPE' | translate }}</span>
 
       <mat-button-toggle-group
         formControlName="isOpen"
         class="type-toggle"
-        [attr.aria-label]="'SUBJECTS.COMPONENT_FORM.TYPE' | translate"
+        [attr.aria-label]="'SUBJECTS.PLAN_COMPONENT_FORM.TYPE' | translate"
       >
         <mat-button-toggle [value]="false">
           <mat-icon>push_pin</mat-icon>
-          {{ 'SUBJECTS.COMPONENT_FORM.FIXED' | translate }}
+          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED' | translate }}
         </mat-button-toggle>
 
         <mat-button-toggle [value]="true">
           <mat-icon>playlist_add</mat-icon>
-          {{ 'SUBJECTS.COMPONENT_FORM.OPEN' | translate }}
+          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OPEN' | translate }}
         </mat-button-toggle>
       </mat-button-toggle-group>
 
       <p class="type-hint">
         @if (isFixed()) {
-          {{ 'SUBJECTS.COMPONENT_FORM.FIXED_HINT' | translate }}
+          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED_HINT' | translate }}
         } @else {
-          {{ 'SUBJECTS.COMPONENT_FORM.OPEN_HINT' | translate }}
+          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OPEN_HINT' | translate }}
         }
 
         @if (isEditMode) {
-          {{ 'SUBJECTS.COMPONENT_FORM.TYPE_LOCKED' | translate }}
+          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.TYPE_LOCKED' | translate }}
         }
       </p>
 
@@ -56,32 +56,32 @@
     <div class="two-fields">
 
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'SUBJECTS.COMPONENT_FORM.NAME_AR' | translate }}</mat-label>
+        <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.NAME_AR' | translate }}</mat-label>
         <input matInput formControlName="nameAr" dir="rtl" [maxlength]="nameMaxLength" />
         @if (isInvalid(componentForm.controls.nameAr)) {
           <mat-error>
             @if (componentForm.controls.nameAr.hasError('required')) {
-              {{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}
             } @else if (componentForm.controls.nameAr.hasError('invalidChars')) {
-              {{ 'SUBJECTS.COMPONENT_FORM.ARABIC_ONLY' | translate }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.ARABIC_ONLY' | translate }}
             } @else if (componentForm.controls.nameAr.hasError('minLetters')) {
-              {{ 'SUBJECTS.COMPONENT_FORM.MIN_LETTERS_AR' | translate }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MIN_LETTERS_AR' | translate }}
             }
           </mat-error>
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'SUBJECTS.COMPONENT_FORM.NAME_EN' | translate }}</mat-label>
+        <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.NAME_EN' | translate }}</mat-label>
         <input matInput formControlName="nameEn" dir="ltr" [maxlength]="nameMaxLength" />
         @if (isInvalid(componentForm.controls.nameEn)) {
           <mat-error>
             @if (componentForm.controls.nameEn.hasError('required')) {
-              {{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}
             } @else if (componentForm.controls.nameEn.hasError('invalidChars')) {
-              {{ 'SUBJECTS.COMPONENT_FORM.ENGLISH_ONLY' | translate }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.ENGLISH_ONLY' | translate }}
             } @else if (componentForm.controls.nameEn.hasError('minLetters')) {
-              {{ 'SUBJECTS.COMPONENT_FORM.MIN_LETTERS_EN' | translate }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MIN_LETTERS_EN' | translate }}
             }
           </mat-error>
         }
@@ -94,22 +94,22 @@
 
       <!-- Weight (up to what is left to reach 100) -->
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'SUBJECTS.COMPONENT_FORM.WEIGHT' | translate }}</mat-label>
+        <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT' | translate }}</mat-label>
         <input matInput type="number" min="0" [max]="remaining" step="any" formControlName="weight" />
         <span matTextSuffix>%</span>
 
         <mat-hint>
-          {{ 'SUBJECTS.COMPONENT_FORM.REMAINING' | translate: { remaining: remainingLabel } }}
+          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REMAINING' | translate: { remaining: remainingLabel } }}
         </mat-hint>
 
         @if (isInvalid(componentForm.controls.weight)) {
           <mat-error>
             @if (componentForm.controls.weight.hasError('required')) {
-              {{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}
             } @else if (componentForm.controls.weight.hasError('overRemaining')) {
-              {{ 'SUBJECTS.COMPONENT_FORM.OVER_REMAINING' | translate: { remaining: remainingLabel } }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OVER_REMAINING' | translate: { remaining: remainingLabel } }}
             } @else {
-              {{ 'SUBJECTS.COMPONENT_FORM.WEIGHT_ERROR' | translate }}
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT_ERROR' | translate }}
             }
           </mat-error>
         }
@@ -118,15 +118,15 @@
       <!-- Max mark (fixed components only) -->
       @if (isFixed()) {
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>{{ 'SUBJECTS.COMPONENT_FORM.MAX_MARK' | translate }}</mat-label>
+          <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK' | translate }}</mat-label>
           <input matInput type="number" min="0" step="any" formControlName="maxMark" />
 
           @if (isInvalid(componentForm.controls.maxMark)) {
             <mat-error>
               @if (componentForm.controls.maxMark.hasError('required')) {
-                {{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}
+                {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}
               } @else {
-                {{ 'SUBJECTS.COMPONENT_FORM.MAX_MARK_ERROR' | translate }}
+                {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK_ERROR' | translate }}
               }
             </mat-error>
           }
@@ -135,10 +135,10 @@
 
       <!-- Order -->
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'SUBJECTS.COMPONENT_FORM.ORDER' | translate }}</mat-label>
+        <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.ORDER' | translate }}</mat-label>
         <input matInput type="number" min="0" step="1" formControlName="order" />
         @if (isInvalid(componentForm.controls.order)) {
-          <mat-error>{{ 'SUBJECTS.COMPONENT_FORM.REQUIRED' | translate }}</mat-error>
+          <mat-error>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}</mat-error>
         }
       </mat-form-field>
 
@@ -153,7 +153,7 @@
       <!-- The weight was cut down so the total stays at 100 -->
       <div class="message-card warning" role="status">
         <mat-icon>warning_amber</mat-icon>
-        <span>{{ 'SUBJECTS.COMPONENT_FORM.WEIGHT_LIMIT' | translate }}</span>
+        <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT_LIMIT' | translate }}</span>
       </div>
 
     }
@@ -162,14 +162,14 @@
     @if (showMaxMarkNote) {
       <p class="form-note">
         <mat-icon>info</mat-icon>
-        <span>{{ 'SUBJECTS.COMPONENT_FORM.MAX_MARK_NOTE' | translate }}</span>
+        <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK_NOTE' | translate }}</span>
       </p>
     }
 
     @if (!isEditMode && isFixed()) {
       <p class="form-note">
         <mat-icon>info</mat-icon>
-        <span>{{ 'SUBJECTS.COMPONENT_FORM.FIXED_NOTE' | translate }}</span>
+        <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED_NOTE' | translate }}</span>
       </p>
     }
 
@@ -186,7 +186,7 @@
     [disabled]="isSubmitting()"
     (click)="cancel()"
   >
-    {{ 'SUBJECTS.COMPONENT_FORM.CANCEL' | translate }}
+    {{ 'SUBJECTS.PLAN_COMPONENT_FORM.CANCEL' | translate }}
   </button>
 
   <button
@@ -200,8 +200,8 @@
 
     {{
       isSubmitting()
-        ? ('SUBJECTS.COMPONENT_FORM.SAVING' | translate)
-        : ('SUBJECTS.COMPONENT_FORM.SAVE' | translate)
+        ? ('SUBJECTS.PLAN_COMPONENT_FORM.SAVING' | translate)
+        : ('SUBJECTS.PLAN_COMPONENT_FORM.SAVE' | translate)
     }}
   </button>
 

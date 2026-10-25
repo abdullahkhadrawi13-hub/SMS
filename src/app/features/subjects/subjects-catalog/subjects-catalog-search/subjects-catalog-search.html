@@ -9,7 +9,7 @@
 
     <!-- Search field label -->
     <mat-label>
-      {{ 'SUBJECTS.SEARCH.LABEL' | translate }}
+      {{ 'SUBJECTS.CATALOG_SEARCH.LABEL' | translate }}
     </mat-label>
 
     <!-- Search input -->
@@ -17,7 +17,7 @@
       matInput
       [value]="search()"
       (input)="search.set($any($event.target).value); searchChange.emit(search())"
-      [placeholder]="'SUBJECTS.SEARCH.PLACEHOLDER' | translate"
+      [placeholder]="'SUBJECTS.CATALOG_SEARCH.PLACEHOLDER' | translate"
       (keyup.enter)="onSearch()"
     />
 
@@ -28,7 +28,7 @@
         matSuffix
         type="button"
         (click)="clearSearch()"
-        [attr.aria-label]="'SUBJECTS.SEARCH.CLEAR' | translate"
+        [attr.aria-label]="'SUBJECTS.CATALOG_SEARCH.CLEAR' | translate"
       >
         <mat-icon>close</mat-icon>
       </button>
@@ -40,11 +40,11 @@
       matSuffix
       type="button"
       (click)="onSearch()"
-      [attr.aria-label]="'SUBJECTS.SEARCH.SUBMIT' | translate"
+      [attr.aria-label]="'SUBJECTS.CATALOG_SEARCH.SUBMIT' | translate"
     >
       <mat-icon>search</mat-icon>
     </button>
 
   </mat-form-field>
 
-</div>
+</div>

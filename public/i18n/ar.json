@@ -789,14 +789,16 @@
       "ASSIGNMENTS": "إسناد المواد",
       "CATALOG": "قائمة المواد"
     },
-    "SEARCH": {
+    "CATALOG_SEARCH": {
       "LABEL": "بحث",
       "PLACEHOLDER": "البحث باسم المادة",
       "CLEAR": "مسح البحث",
       "SUBMIT": "بحث"
     },
-    "FILTER_BUTTON": "فلتر",
-    "FILTER": {
+    "CATALOG_TAB": {
+      "FILTER_BUTTON": "فلتر"
+    },
+    "CATALOG_FILTER": {
       "TITLE": "تصفية المواد الدراسية",
       "STATUS": "الحالة",
       "ALL": "الكل",
@@ -806,7 +808,7 @@
     },
     "ACTIVE": "فعال",
     "INACTIVE": "غير فعال",
-    "TABLE": {
+    "CATALOG_TABLE": {
       "SUBJECT_ID": "رقم المادة",
       "NAME_AR": "اسم المادة بالعربي",
       "NAME_EN": "اسم المادة بالإنجليزي",
@@ -820,7 +822,7 @@
       "LOADING": "جاري تحميل المواد...",
       "RETRY": "إعادة المحاولة"
     },
-    "FORM": {
+    "CATALOG_FORM": {
       "TITLE": "إضافة مادة دراسية",
       "EDIT_TITLE": "تعديل مادة دراسية",
       "NAME_AR": "اسم المادة بالعربي",
@@ -909,24 +911,13 @@
       "INCOMPLETE": "أوزان ناقصة",
       "NONE": "بلا خطة"
     },
-    "PLANS": {
+    "PLANS_TAB": {
       "RETRY": "إعادة المحاولة",
       "TITLE": "خطط {{className}}",
       "COUNT_SUBJECTS": "المواد",
       "COUNT_READY": "جاهزة",
       "COUNT_INCOMPLETE": "أوزان ناقصة",
       "COUNT_NO_PLAN": "بلا خطة",
-      "PASSING_MARK": "علامة النجاح {{mark}} من 100",
-      "TOTAL_WEIGHT": "مجموع الأوزان",
-      "OPEN": "مفتوح",
-      "FIXED_OUT_OF": "ثابت من {{max}}",
-      "NO_COMPONENTS": "لا توجد بنود بعد.",
-      "INCOMPLETE_HINT": "بقي {{remaining}}%. لا يستطيع المعلمون إدخال العلامات قبل أن يصبح المجموع 100.",
-      "SECTIONS": "الشعب: {{count}}",
-      "HAS_GRADES": "فيها علامات",
-      "ASSIGN_TEACHER": "إسناد معلم",
-      "OPEN_PLAN": "فتح",
-      "COMPLETE": "إكمال",
       "NO_PLAN_MESSAGE": "لا توجد خطة لهذه المادة في هذا الصف. يجب إنشاؤها قبل إسناد معلم للمادة.",
       "CREATE_PLAN": "إنشاء خطة",
       "SELECT_TITLE": "اختر الصف",
@@ -935,6 +926,21 @@
       "LOADING": "جاري تحميل خطط المواد...",
       "EMPTY_TITLE": "لا توجد مواد فعالة",
       "EMPTY_MESSAGE": "أضف المواد من «قائمة المواد» أولًا، ثم أنشئ خططها."
+    },
+    "PLAN_CARD": {
+      "PASSING_MARK": "علامة النجاح {{mark}} من 100",
+      "OPEN": "مفتوح",
+      "FIXED_OUT_OF": "ثابت من {{max}}",
+      "NO_COMPONENTS": "لا توجد بنود بعد.",
+      "INCOMPLETE_HINT": "بقي {{remaining}}%. لا يستطيع المعلمون إدخال العلامات قبل أن يصبح المجموع 100.",
+      "SECTIONS": "الشعب: {{count}}",
+      "HAS_GRADES": "فيها علامات",
+      "ASSIGN_TEACHER": "إسناد معلم",
+      "OPEN_PLAN": "فتح",
+      "COMPLETE": "إكمال"
+    },
+    "PLAN_WEIGHT_BAR": {
+      "TOTAL_WEIGHT": "مجموع الأوزان"
     },
     "PLAN_FORM": {
       "TITLE": "خطة مادة جديدة",
@@ -1013,9 +1019,13 @@
       "MAX_MARK_TEACHER": "يحددها المعلم لكل كويز",
       "EDIT_COMPONENT": "تعديل",
       "DELETE_COMPONENT": "حذف",
-      "FOOTER_HINT": "حتى بعد فتح القفل: البند الذي عليه علامات لا يُحذف، والبند الثابت لا تتغير علامته القصوى إذا كان عليه علامات."
+      "FOOTER_HINT": "حتى بعد فتح القفل: البند الذي عليه علامات لا يُحذف، والبند الثابت لا تتغير علامته القصوى إذا كان عليه علامات.",
+      "SAVE": "حفظ",
+      "CANCEL": "إلغاء",
+      "OUT_OF": "من 100",
+      "PASSING_MARK_ERROR": "علامة النجاح يجب أن تكون أكبر من 0 ولا تتجاوز 100"
     },
-    "COMPONENT_FORM": {
+    "PLAN_COMPONENT_FORM": {
       "ADD_TITLE": "إضافة بند",
       "EDIT_TITLE": "تعديل البند",
       "TYPE": "نوع البند",
@@ -1045,7 +1055,7 @@
       "SAVE": "حفظ",
       "SAVING": "جاري الحفظ..."
     },
-    "PLAN_COPY": {
+    "COPY_PLANS": {
       "TITLE": "نسخ الخطط من فصل سابق",
       "SUBTITLE": "تُنسخ كل خطط الفصل (البنود وعلامة النجاح) لكل الصفوف، وتصل مفتوحة لتعدّل عليها.",
       "FROM": "من الفصل",

@@ -237,20 +237,20 @@
                   [formControl]="markControl"
                   [attr.aria-label]="'SUBJECTS.PLAN_DETAILS.PASSING_MARK' | translate"
                 />
-                <span matTextSuffix>{{ 'SUBJECTS.PLAN_FORM.OUT_OF' | translate }}</span>
+                <span matTextSuffix>{{ 'SUBJECTS.PLAN_DETAILS.OUT_OF' | translate }}</span>
 
                 @if (markControl.invalid && markControl.touched) {
-                  <mat-error>{{ 'SUBJECTS.PLAN_FORM.PASSING_MARK_ERROR' | translate }}</mat-error>
+                  <mat-error>{{ 'SUBJECTS.PLAN_DETAILS.PASSING_MARK_ERROR' | translate }}</mat-error>
                 }
               </mat-form-field>
 
               <div class="mark-actions">
                 <button mat-button type="button" [disabled]="isBusy()" (click)="cancelEditMark()">
-                  {{ 'SUBJECTS.PLAN_FORM.CANCEL' | translate }}
+                  {{ 'SUBJECTS.PLAN_DETAILS.CANCEL' | translate }}
                 </button>
 
                 <button mat-flat-button color="primary" type="submit" [disabled]="isBusy()">
-                  {{ 'SUBJECTS.PLAN_FORM.SAVE' | translate }}
+                  {{ 'SUBJECTS.PLAN_DETAILS.SAVE' | translate }}
                 </button>
               </div>
 
@@ -260,7 +260,7 @@
 
             <div class="big-mark">
               <strong>{{ formatNumber(current.passingMark) }}</strong>
-              <span>{{ 'SUBJECTS.PLAN_FORM.OUT_OF' | translate }}</span>
+              <span>{{ 'SUBJECTS.PLAN_DETAILS.OUT_OF' | translate }}</span>
             </div>
 
           }

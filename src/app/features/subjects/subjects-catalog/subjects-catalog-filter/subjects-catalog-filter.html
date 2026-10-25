@@ -1,6 +1,6 @@
 <!-- Dialog title -->
 <h2 mat-dialog-title>
-  {{ 'SUBJECTS.FILTER.TITLE' | translate }}
+  {{ 'SUBJECTS.CATALOG_FILTER.TITLE' | translate }}
 </h2>
 
 <!-- Filter content -->
@@ -12,7 +12,7 @@
     <mat-form-field appearance="outline">
 
       <mat-label>
-        {{ 'SUBJECTS.FILTER.STATUS' | translate }}
+        {{ 'SUBJECTS.CATALOG_FILTER.STATUS' | translate }}
       </mat-label>
 
       <mat-select
@@ -22,7 +22,7 @@
 
         <!-- Show all subjects -->
         <mat-option [value]="null">
-          {{ 'SUBJECTS.FILTER.ALL' | translate }}
+          {{ 'SUBJECTS.CATALOG_FILTER.ALL' | translate }}
         </mat-option>
 
         <!-- Show active subjects -->
@@ -52,7 +52,7 @@
     type="button"
     (click)="clear()"
   >
-    {{ 'SUBJECTS.FILTER.CLEAR' | translate }}
+    {{ 'SUBJECTS.CATALOG_FILTER.CLEAR' | translate }}
   </button>
 
   <!-- Close dialog without applying changes -->
@@ -61,7 +61,7 @@
     type="button"
     mat-dialog-close
   >
-    {{ 'SUBJECTS.FILTER.CANCEL' | translate }}
+    {{ 'SUBJECTS.CATALOG_FILTER.CANCEL' | translate }}
   </button>
 
   <!-- Apply selected filter -->
@@ -71,7 +71,7 @@
     type="button"
     (click)="apply()"
   >
-    {{ 'SUBJECTS.FILTER.APPLY' | translate }}
+    {{ 'SUBJECTS.CATALOG_FILTER.APPLY' | translate }}
   </button>
 
-</mat-dialog-actions>
+</mat-dialog-actions>

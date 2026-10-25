@@ -799,14 +799,16 @@
       "ASSIGNMENTS": "Subject Assignments",
       "CATALOG": "Subjects List"
     },
-    "SEARCH": {
+    "CATALOG_SEARCH": {
       "LABEL": "Search",
       "PLACEHOLDER": "Search by subject name",
       "CLEAR": "Clear search",
       "SUBMIT": "Search"
     },
-    "FILTER_BUTTON": "Filter",
-    "FILTER": {
+    "CATALOG_TAB": {
+      "FILTER_BUTTON": "Filter"
+    },
+    "CATALOG_FILTER": {
       "TITLE": "Filter Subjects",
       "STATUS": "Status",
       "ALL": "All",
@@ -816,7 +818,7 @@
     },
     "ACTIVE": "Active",
     "INACTIVE": "Inactive",
-    "TABLE": {
+    "CATALOG_TABLE": {
       "SUBJECT_ID": "Subject ID",
       "NAME_AR": "Subject Name (Arabic)",
       "NAME_EN": "Subject Name (English)",
@@ -830,7 +832,7 @@
       "LOADING": "Loading subjects...",
       "RETRY": "Retry"
     },
-    "FORM": {
+    "CATALOG_FORM": {
       "TITLE": "Add Subject",
       "EDIT_TITLE": "Edit Subject",
       "NAME_AR": "Subject Name (Arabic)",
@@ -919,24 +921,13 @@
       "INCOMPLETE": "Incomplete",
       "NONE": "No plan"
     },
-    "PLANS": {
+    "PLANS_TAB": {
       "RETRY": "Retry",
       "TITLE": "{{className}} Plans",
       "COUNT_SUBJECTS": "Subjects",
       "COUNT_READY": "Ready",
       "COUNT_INCOMPLETE": "Incomplete",
       "COUNT_NO_PLAN": "No plan",
-      "PASSING_MARK": "Passing mark {{mark}} of 100",
-      "TOTAL_WEIGHT": "Total weights",
-      "OPEN": "open",
-      "FIXED_OUT_OF": "fixed, out of {{max}}",
-      "NO_COMPONENTS": "No components yet.",
-      "INCOMPLETE_HINT": "{{remaining}}% left. Teachers can't enter marks until the total is 100.",
-      "SECTIONS": "Sections: {{count}}",
-      "HAS_GRADES": "Has marks",
-      "ASSIGN_TEACHER": "Assign a teacher",
-      "OPEN_PLAN": "Open",
-      "COMPLETE": "Complete",
       "NO_PLAN_MESSAGE": "This subject has no plan for this class. Create it before assigning a teacher.",
       "CREATE_PLAN": "Create Plan",
       "SELECT_TITLE": "Choose a Class",
@@ -945,6 +936,21 @@
       "LOADING": "Loading subject plans...",
       "EMPTY_TITLE": "No Active Subjects",
       "EMPTY_MESSAGE": "Add subjects in the \"Subjects List\" first, then create their plans."
+    },
+    "PLAN_CARD": {
+      "PASSING_MARK": "Passing mark {{mark}} of 100",
+      "OPEN": "open",
+      "FIXED_OUT_OF": "fixed, out of {{max}}",
+      "NO_COMPONENTS": "No components yet.",
+      "INCOMPLETE_HINT": "{{remaining}}% left. Teachers can't enter marks until the total is 100.",
+      "SECTIONS": "Sections: {{count}}",
+      "HAS_GRADES": "Has marks",
+      "ASSIGN_TEACHER": "Assign a teacher",
+      "OPEN_PLAN": "Open",
+      "COMPLETE": "Complete"
+    },
+    "PLAN_WEIGHT_BAR": {
+      "TOTAL_WEIGHT": "Total weights"
     },
     "PLAN_FORM": {
       "TITLE": "New Subject Plan",
@@ -1023,9 +1029,13 @@
       "MAX_MARK_TEACHER": "Set by the teacher per quiz",
       "EDIT_COMPONENT": "Edit",
       "DELETE_COMPONENT": "Delete",
-      "FOOTER_HINT": "Even after unlocking: a component with marks can't be deleted, and a fixed component with marks keeps its max mark."
+      "FOOTER_HINT": "Even after unlocking: a component with marks can't be deleted, and a fixed component with marks keeps its max mark.",
+      "SAVE": "Save",
+      "CANCEL": "Cancel",
+      "OUT_OF": "of 100",
+      "PASSING_MARK_ERROR": "The passing mark must be above 0 and at most 100"
     },
-    "COMPONENT_FORM": {
+    "PLAN_COMPONENT_FORM": {
       "ADD_TITLE": "Add Component",
       "EDIT_TITLE": "Edit Component",
       "TYPE": "Component type",
@@ -1055,7 +1065,7 @@
       "SAVE": "Save",
       "SAVING": "Saving..."
     },
-    "PLAN_COPY": {
+    "COPY_PLANS": {
       "TITLE": "Copy Plans from an Earlier Term",
       "SUBTITLE": "Every plan of the term (components and passing mark) is copied for every class, unlocked so you can edit it.",
       "FROM": "From term",

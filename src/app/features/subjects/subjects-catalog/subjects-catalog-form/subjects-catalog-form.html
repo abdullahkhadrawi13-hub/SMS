@@ -3,8 +3,8 @@
 <h2 mat-dialog-title>
   {{
     isEditMode
-      ? ('SUBJECTS.FORM.EDIT_TITLE' | translate)
-      : ('SUBJECTS.FORM.TITLE' | translate)
+      ? ('SUBJECTS.CATALOG_FORM.EDIT_TITLE' | translate)
+      : ('SUBJECTS.CATALOG_FORM.TITLE' | translate)
   }}
 </h2>
 
@@ -23,14 +23,14 @@
     >
 
       <mat-label>
-        {{ 'SUBJECTS.FORM.NAME_AR' | translate }}
+        {{ 'SUBJECTS.CATALOG_FORM.NAME_AR' | translate }}
       </mat-label>
 
       <input
         matInput
         formControlName="subjectAr"
         dir="rtl"
-        [placeholder]="'SUBJECTS.FORM.NAME_AR_PLACEHOLDER' | translate"
+        [placeholder]="'SUBJECTS.CATALOG_FORM.NAME_AR_PLACEHOLDER' | translate"
       />
 
       @if (isFieldInvalid('subjectAr')) {
@@ -38,15 +38,15 @@
         <mat-error>
 
           @if (subjectForm.controls.subjectAr.hasError('required')) {
-            {{ 'SUBJECTS.FORM.NAME_AR_REQUIRED' | translate }}
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_REQUIRED' | translate }}
           }
 
           @else if (subjectForm.controls.subjectAr.hasError('minlength')) {
-            {{ 'SUBJECTS.FORM.NAME_AR_MIN_LENGTH' | translate }}
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_MIN_LENGTH' | translate }}
           }
 
           @else if (subjectForm.controls.subjectAr.hasError('pattern')) {
-            {{ 'SUBJECTS.FORM.NAME_AR_PATTERN' | translate }}
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_PATTERN' | translate }}
           }
 
         </mat-error>
@@ -63,14 +63,14 @@
     >
 
       <mat-label>
-        {{ 'SUBJECTS.FORM.NAME_EN' | translate }}
+        {{ 'SUBJECTS.CATALOG_FORM.NAME_EN' | translate }}
       </mat-label>
 
       <input
         matInput
         formControlName="subjectEn"
         dir="ltr"
-        [placeholder]="'SUBJECTS.FORM.NAME_EN_PLACEHOLDER' | translate"
+        [placeholder]="'SUBJECTS.CATALOG_FORM.NAME_EN_PLACEHOLDER' | translate"
       />
 
       @if (isFieldInvalid('subjectEn')) {
@@ -78,15 +78,15 @@
         <mat-error>
 
           @if (subjectForm.controls.subjectEn.hasError('required')) {
-            {{ 'SUBJECTS.FORM.NAME_EN_REQUIRED' | translate }}
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_REQUIRED' | translate }}
           }
 
           @else if (subjectForm.controls.subjectEn.hasError('minlength')) {
-            {{ 'SUBJECTS.FORM.NAME_EN_MIN_LENGTH' | translate }}
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_MIN_LENGTH' | translate }}
           }
 
           @else if (subjectForm.controls.subjectEn.hasError('pattern')) {
-            {{ 'SUBJECTS.FORM.NAME_EN_PATTERN' | translate }}
+            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_PATTERN' | translate }}
           }
 
         </mat-error>
@@ -111,7 +111,7 @@
     [disabled]="isSubmitting()"
     (click)="cancel()"
   >
-    {{ 'SUBJECTS.FORM.CANCEL' | translate }}
+    {{ 'SUBJECTS.CATALOG_FORM.CANCEL' | translate }}
   </button>
 
 
@@ -127,8 +127,8 @@
 
     {{
       isSubmitting()
-        ? ('SUBJECTS.FORM.SAVING' | translate)
-        : ('SUBJECTS.FORM.SAVE' | translate)
+        ? ('SUBJECTS.CATALOG_FORM.SAVING' | translate)
+        : ('SUBJECTS.CATALOG_FORM.SAVE' | translate)
     }}
   </button>
 
