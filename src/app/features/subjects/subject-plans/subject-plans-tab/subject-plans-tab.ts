@@ -33,11 +33,11 @@ import {
   SubjectPlan,
 } from '../../../../core/models/subject-plan';
 
-import { SubjectsSelection } from '../../subjects-selection';
-import { TermClassSelector } from '../../term-class-selector/term-class-selector';
+import { SubjectsSelection } from '../../shared/subjects-selection';
+import { TermClassSelector } from '../../shared/term-class-selector/term-class-selector';
 import { PlanCard } from '../plan-card/plan-card';
 import { PlanForm, PlanFormData } from '../plan-form/plan-form';
-import { PlansCopyData, PlansCopyDialog } from '../plans-copy-dialog/plans-copy-dialog';
+import { CopyPlansData, CopyPlansDialog } from '../copy-plans-dialog/copy-plans-dialog';
 
 
 // The "Subject plans" tab (SMS API Reference, section 9).
@@ -52,7 +52,7 @@ import { PlansCopyData, PlansCopyDialog } from '../plans-copy-dialog/plans-copy-
 // "New plan" and "Copy from an earlier term" are buttons of the page header:
 // the page calls openCreatePlan() and openCopy() on this tab.
 @Component({
-  selector: 'app-plans-tab',
+  selector: 'app-subject-plans-tab',
   imports: [
     TermClassSelector,
     MatButtonModule,
@@ -63,10 +63,10 @@ import { PlansCopyData, PlansCopyDialog } from '../plans-copy-dialog/plans-copy-
     PlanCard,
     TranslatePipe,
   ],
-  templateUrl: './plans-tab.html',
-  styleUrl: './plans-tab.css',
+  templateUrl: './subject-plans-tab.html',
+  styleUrl: './subject-plans-tab.css',
 })
-export class PlansTab {
+export class SubjectPlansTab {
 
   private readonly plansService = inject(SubjectPlansService);
   private readonly subjectsService = inject(SubjectsService);
@@ -374,13 +374,13 @@ export class PlansTab {
       return;
     }
 
-    const data: PlansCopyData = {
+    const data: CopyPlansData = {
       terms: this.selection.terms(),
       toTermId: termId,
     };
 
     this.dialog
-      .open(PlansCopyDialog, {
+      .open(CopyPlansDialog, {
         width: '520px',
         maxWidth: '95vw',
         data,

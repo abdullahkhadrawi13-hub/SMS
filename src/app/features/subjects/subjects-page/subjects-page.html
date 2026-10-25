@@ -66,11 +66,11 @@
 
     <!-- Subject plans of a class (term / class) -->
     <div [hidden]="activeTab() !== 'plans'">
-      <app-plans-tab
+      <app-subject-plans-tab
         [canManage]="canManage()"
         [active]="activeTab() === 'plans'"
         (assignTeacher)="selectTab('assignments')"
-      ></app-plans-tab>
+      ></app-subject-plans-tab>
     </div>
 
     <!-- Subjects of a section and their teachers (class / section / term) -->
@@ -84,9 +84,9 @@
 
     <!-- General subjects list -->
     <div [hidden]="activeTab() !== 'catalog'">
-      <app-subjects-list-tab
+      <app-subjects-catalog-tab
         [canManage]="canManage()"
-      ></app-subjects-list-tab>
+      ></app-subjects-catalog-tab>
     </div>
 
   </mat-tab-nav-panel>

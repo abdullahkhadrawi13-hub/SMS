@@ -20,11 +20,11 @@ import { SubjectPlansService } from '../../../../core/services/subject-plans';
 import { ActionResult } from '../../../../shared/services/action-result';
 import { CopySubjectPlansResult } from '../../../../core/models/subject-plan';
 
-import { getTermLabel, TermOption } from '../../subject';
+import { getTermLabel, TermOption } from '../../shared/subjects-shared';
 
 
 // Data passed by the plans tab.
-export interface PlansCopyData {
+export interface CopyPlansData {
   // Every term, newest first.
   terms: TermOption[];
 
@@ -40,7 +40,7 @@ export interface PlansCopyData {
 // After copying, the dialog shows the counts; it closes with the result
 // so the tab reloads its cards.
 @Component({
-  selector: 'app-plans-copy-dialog',
+  selector: 'app-copy-plans-dialog',
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
@@ -50,20 +50,20 @@ export interface PlansCopyData {
     MatSelectModule,
     TranslatePipe,
   ],
-  templateUrl: './plans-copy-dialog.html',
-  styleUrl: './plans-copy-dialog.css',
+  templateUrl: './copy-plans-dialog.html',
+  styleUrl: './copy-plans-dialog.css',
 })
-export class PlansCopyDialog {
+export class CopyPlansDialog {
 
   private readonly dialogRef =
-    inject(MatDialogRef<PlansCopyDialog, CopySubjectPlansResult>);
+    inject(MatDialogRef<CopyPlansDialog, CopySubjectPlansResult>);
 
   private readonly plansService = inject(SubjectPlansService);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly data = inject<PlansCopyData>(MAT_DIALOG_DATA);
+  readonly data = inject<CopyPlansData>(MAT_DIALOG_DATA);
 
 
   // The target term (read-only).

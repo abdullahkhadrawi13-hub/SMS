@@ -16,7 +16,7 @@ import {
   getPlanStatus,
   PLAN_STATUS_BADGE,
   sortComponents,
-} from '../../subject';
+} from '../../shared/subjects-shared';
 import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
 
 

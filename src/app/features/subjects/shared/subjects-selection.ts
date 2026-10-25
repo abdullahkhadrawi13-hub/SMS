@@ -4,14 +4,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { forkJoin } from 'rxjs';
 
-import { AcademicTermsService } from '../../core/services/academic-terms';
-import { AcademicYearsService } from '../../core/services/academic-years';
-import { ApiMessageService } from '../../core/services/api-message';
-import { Language } from '../../core/services/language';
-import { SchoolClassesService } from '../../core/services/school-classes';
-import { SchoolClassSimpleDto } from '../../core/models/school-class';
+import { AcademicTermsService } from '../../../core/services/academic-terms';
+import { AcademicYearsService } from '../../../core/services/academic-years';
+import { ApiMessageService } from '../../../core/services/api-message';
+import { Language } from '../../../core/services/language';
+import { SchoolClassesService } from '../../../core/services/school-classes';
+import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 
-import { getTermLabel, TermOption } from './subject';
+import { getTermLabel, TermOption } from './subjects-shared';
 
 
 // The term and class chosen in the Subjects page, shared by the

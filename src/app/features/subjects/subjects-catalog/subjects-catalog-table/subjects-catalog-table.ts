@@ -13,7 +13,7 @@ import { SubjectDto } from '../../../../core/models/subject';
 
 
 @Component({
-  selector: 'app-subjects-table',
+  selector: 'app-subjects-catalog-table',
   imports: [
     MatButtonModule,
     MatIconModule,
@@ -23,10 +23,10 @@ import { SubjectDto } from '../../../../core/models/subject';
     MatTableModule,
     TranslatePipe,
   ],
-  templateUrl: './subjects-table.html',
-  styleUrl: './subjects-table.css',
+  templateUrl: './subjects-catalog-table.html',
+  styleUrl: './subjects-catalog-table.css',
 })
-export class SubjectsTable {
+export class SubjectsCatalogTable {
 
   // ===== Inputs (all data is owned and loaded by the parent) =====
 

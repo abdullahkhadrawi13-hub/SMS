@@ -31,7 +31,7 @@ import {
   SubjectPlanComponent,
 } from '../../../../core/models/subject-plan';
 
-import { formatNumber, FULL_WEIGHT, sortComponents } from '../../subject';
+import { formatNumber, FULL_WEIGHT, sortComponents } from '../../shared/subjects-shared';
 import {
   arabicNameValidator,
   COMPONENT_NAME_MAX_LENGTH,
@@ -44,7 +44,7 @@ import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
 
 
 // Data passed by the plan details page.
-export interface ComponentFormData {
+export interface PlanComponentFormData {
   mode: 'add' | 'edit';
 
   plan: SubjectPlan;
@@ -78,7 +78,7 @@ function withinRemaining(remaining: number): ValidatorFn {
 // to change it, delete the component and add a new one.
 // Both requests return the whole plan; the dialog closes with it.
 @Component({
-  selector: 'app-component-form',
+  selector: 'app-plan-component-form',
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
@@ -90,22 +90,22 @@ function withinRemaining(remaining: number): ValidatorFn {
     PlanWeightBar,
     TranslatePipe,
   ],
-  templateUrl: './component-form.html',
-  styleUrl: './component-form.css',
+  templateUrl: './plan-component-form.html',
+  styleUrl: './plan-component-form.css',
 })
-export class ComponentForm {
+export class PlanComponentForm {
 
   private readonly fb = inject(FormBuilder);
 
   private readonly dialogRef =
-    inject(MatDialogRef<ComponentForm, SubjectPlan>);
+    inject(MatDialogRef<PlanComponentForm, SubjectPlan>);
 
   private readonly plansService = inject(SubjectPlansService);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly data = inject<ComponentFormData>(MAT_DIALOG_DATA);
+  readonly data = inject<PlanComponentFormData>(MAT_DIALOG_DATA);
 
   readonly isEditMode = this.data.mode === 'edit';
 

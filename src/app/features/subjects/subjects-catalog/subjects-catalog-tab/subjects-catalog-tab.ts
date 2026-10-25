@@ -20,16 +20,16 @@ import { SubjectsService } from '../../../../core/services/subjects';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { ActionResult } from '../../../../shared/services/action-result';
 
-import { SubjectsSearch } from '../subjects-search/subjects-search';
+import { SubjectsCatalogSearch } from '../subjects-catalog-search/subjects-catalog-search';
 import {
   SubjectFilterValues,
-  SubjectsFilter,
-} from '../subjects-filter/subjects-filter';
-import { SubjectsTable } from '../subjects-table/subjects-table';
+  SubjectsCatalogFilter,
+} from '../subjects-catalog-filter/subjects-catalog-filter';
+import { SubjectsCatalogTable } from '../subjects-catalog-table/subjects-catalog-table';
 import {
   SubjectFormData,
-  SubjectsForm,
-} from '../subjects-form/subjects-form';
+  SubjectsCatalogForm,
+} from '../subjects-catalog-form/subjects-catalog-form';
 import { SubjectDto } from '../../../../core/models/subject';
 
 
@@ -37,19 +37,19 @@ import { SubjectDto } from '../../../../core/models/subject';
 // GET /api/subjects has no search or status filter,
 // so the search and the filter are applied here, on the loaded list.
 @Component({
-  selector: 'app-subjects-list-tab',
+  selector: 'app-subjects-catalog-tab',
   imports: [
-    SubjectsSearch,
-    SubjectsTable,
+    SubjectsCatalogSearch,
+    SubjectsCatalogTable,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
     TranslatePipe,
   ],
-  templateUrl: './subjects-list-tab.html',
-  styleUrl: './subjects-list-tab.css',
+  templateUrl: './subjects-catalog-tab.html',
+  styleUrl: './subjects-catalog-tab.css',
 })
-export class SubjectsListTab implements OnInit {
+export class SubjectsCatalogTab implements OnInit {
 
   private readonly subjectsService = inject(SubjectsService);
   private readonly apiMessageService = inject(ApiMessageService);
@@ -157,7 +157,7 @@ export class SubjectsListTab implements OnInit {
     };
 
     this.dialog
-      .open(SubjectsFilter, {
+      .open(SubjectsCatalogFilter, {
         width: '420px',
         data: current,
       })
@@ -229,7 +229,7 @@ export class SubjectsListTab implements OnInit {
   private openForm(data: SubjectFormData): void {
 
     this.dialog
-      .open(SubjectsForm, {
+      .open(SubjectsCatalogForm, {
         width: '500px',
         maxWidth: '95vw',
         maxHeight: '90vh',

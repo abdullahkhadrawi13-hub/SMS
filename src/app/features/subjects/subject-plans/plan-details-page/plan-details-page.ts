@@ -46,10 +46,10 @@ import {
   PLAN_STATUS_BADGE,
   sortComponents,
   SubjectsTab,
-} from '../../subject';
+} from '../../shared/subjects-shared';
 import { passingMarkValidator } from '../plan-validators';
 import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
-import { ComponentForm, ComponentFormData } from '../component-form/component-form';
+import { PlanComponentForm, PlanComponentFormData } from '../plan-component-form/plan-component-form';
 import {
   PlanConfirmData,
   PlanConfirmDialog,
@@ -88,7 +88,7 @@ interface PlanSection {
 // Every write returns the whole plan, so the page just shows what comes back.
 // The Assistant Principal sees everything without the actions.
 @Component({
-  selector: 'app-plan-details',
+  selector: 'app-plan-details-page',
   imports: [
     ReactiveFormsModule,
     RouterLink,
@@ -104,10 +104,10 @@ interface PlanSection {
     PlanWeightBar,
     TranslatePipe,
   ],
-  templateUrl: './plan-details.html',
-  styleUrl: './plan-details.css',
+  templateUrl: './plan-details-page.html',
+  styleUrl: './plan-details-page.css',
 })
-export class PlanDetails implements OnInit {
+export class PlanDetailsPage implements OnInit {
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -475,14 +475,14 @@ export class PlanDetails implements OnInit {
     );
   }
 
-  private openComponentForm(data: ComponentFormData): void {
+  private openComponentForm(data: PlanComponentFormData): void {
 
     if (!data.plan) {
       return;
     }
 
     this.dialog
-      .open(ComponentForm, {
+      .open(PlanComponentForm, {
         width: '600px',
         maxWidth: '95vw',
         maxHeight: '90vh',

@@ -33,7 +33,7 @@ export interface SubjectFormData {
 
 
 @Component({
-  selector: 'app-subjects-form',
+  selector: 'app-subjects-catalog-form',
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
@@ -43,17 +43,17 @@ export interface SubjectFormData {
     MatIconModule,
     TranslatePipe,
   ],
-  templateUrl: './subjects-form.html',
-  styleUrl: './subjects-form.css',
+  templateUrl: './subjects-catalog-form.html',
+  styleUrl: './subjects-catalog-form.css',
 })
-export class SubjectsForm {
+export class SubjectsCatalogForm {
 
   // Form builder used to create and configure the subject form.
   private readonly fb = inject(FormBuilder);
 
   // Reference used to close the subject form dialog.
   private readonly dialogRef =
-    inject(MatDialogRef<SubjectsForm>);
+    inject(MatDialogRef<SubjectsCatalogForm>);
 
   private readonly subjectsService = inject(SubjectsService);
   private readonly apiMessageService = inject(ApiMessageService);

@@ -17,7 +17,7 @@ import {
   formatNumber,
   getPlanStatus,
   PLAN_STATUS_BADGE,
-} from '../../subject';
+} from '../../shared/subjects-shared';
 
 
 // A subject with a plan for the class but no teacher in the section.

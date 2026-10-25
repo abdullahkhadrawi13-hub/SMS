@@ -1,6 +1,6 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-import { FULL_WEIGHT } from '../subject';
+import { FULL_WEIGHT } from '../shared/subjects-shared';
 
 
 // Limits of a subject plan (SMS API Reference, section 9).

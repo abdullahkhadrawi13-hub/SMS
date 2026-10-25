@@ -18,7 +18,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { StudentGradesSubject } from '../../../../core/models/student-grades-report';
 import { Language } from '../../../../core/services/language';
-import { formatNumber } from '../../../subjects/subject';
+import { formatNumber } from '../../../subjects/shared/subjects-shared';
 
 import { GradeHistoryTarget } from '../../grades';
 import { GradeHistory } from '../../grade-history/grade-history';

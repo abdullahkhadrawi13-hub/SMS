@@ -26,7 +26,7 @@ export const EMPTY_SUBJECT_FILTER: SubjectFilterValues = {
 
 
 @Component({
-  selector: 'app-subjects-filter',
+  selector: 'app-subjects-catalog-filter',
 
   imports: [
     MatDialogModule,
@@ -36,14 +36,14 @@ export const EMPTY_SUBJECT_FILTER: SubjectFilterValues = {
     TranslatePipe,
   ],
 
-  templateUrl: './subjects-filter.html',
-  styleUrl: './subjects-filter.css',
+  templateUrl: './subjects-catalog-filter.html',
+  styleUrl: './subjects-catalog-filter.css',
 })
-export class SubjectsFilter {
+export class SubjectsCatalogFilter {
 
   // Reference to the current filter dialog.
   private readonly dialogRef =
-    inject(MatDialogRef<SubjectsFilter>);
+    inject(MatDialogRef<SubjectsCatalogFilter>);
 
   // Previous filter values passed when the dialog is opened.
   private readonly initial =
@@ -71,4 +71,4 @@ export class SubjectsFilter {
       isActive: this.isActive(),
     } satisfies SubjectFilterValues);
   }
-}
+}

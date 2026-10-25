@@ -4,10 +4,10 @@
   <div class="search-container">
 
     <!-- Subject Search (Arabic or English name) -->
-    <app-subjects-search
+    <app-subjects-catalog-search
       (searchChange)="search.set($event)"
       (searchSubmit)="search.set($event)"
-    ></app-subjects-search>
+    ></app-subjects-catalog-search>
 
     <!-- Subject Filter (status) -->
     <button
@@ -24,7 +24,7 @@
 </div>
 
 <!-- Subject Table (error / loading / table / empty state) -->
-<app-subjects-table
+<app-subjects-catalog-table
   [subjects]="filteredSubjects()"
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
@@ -33,4 +33,4 @@
   (retry)="loadSubjects()"
   (editSubject)="openEditSubject($event)"
   (toggleStatus)="toggleSubjectStatus($event)"
-></app-subjects-table>
+></app-subjects-catalog-table>

@@ -1,7 +1,7 @@
-import { SubjectDto } from '../../core/models/subject';
-import { SubjectPlan } from '../../core/models/subject-plan';
-import { TeacherListDto } from '../../core/models/teacher';
-import { TeacherAssignment } from '../../core/models/teacher-assignment';
+import { SubjectDto } from '../../../core/models/subject';
+import { SubjectPlan } from '../../../core/models/subject-plan';
+import { TeacherListDto } from '../../../core/models/teacher';
+import { TeacherAssignment } from '../../../core/models/teacher-assignment';
 
 
 // =========================

@@ -35,7 +35,7 @@ import {
   DEFAULT_PASSING_MARK,
   formatNumber,
   FULL_WEIGHT,
-} from '../../subject';
+} from '../../shared/subjects-shared';
 import {
   arabicNameValidator,
   COMPONENT_NAME_MAX_LENGTH,

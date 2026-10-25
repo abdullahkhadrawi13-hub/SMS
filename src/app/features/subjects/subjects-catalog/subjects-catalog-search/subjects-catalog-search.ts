@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-subjects-search',
+  selector: 'app-subjects-catalog-search',
   standalone: true,
   imports: [
     FormsModule,
@@ -18,10 +18,10 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatButtonModule,
   ],
-  templateUrl: './subjects-search.html',
-  styleUrl: './subjects-search.css',
+  templateUrl: './subjects-catalog-search.html',
+  styleUrl: './subjects-catalog-search.css',
 })
-export class SubjectsSearch {
+export class SubjectsCatalogSearch {
 
   // Stores the current value entered in the search field.
   search = signal('');
@@ -44,4 +44,4 @@ export class SubjectsSearch {
   onSearch(): void {
     this.searchSubmit.emit(this.search().trim());
   }
-}
+}

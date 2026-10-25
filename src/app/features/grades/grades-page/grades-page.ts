@@ -39,7 +39,7 @@ import {
 } from '../../../core/models/student-grade';
 import { TeacherAssignment } from '../../../core/models/teacher-assignment';
 
-import { getTermLabel, TermOption } from '../../subjects/subject';
+import { getTermLabel, TermOption } from '../../subjects/shared/subjects-shared';
 import {
   PlanConfirmData,
   PlanConfirmDialog,
