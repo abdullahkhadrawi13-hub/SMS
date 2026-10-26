@@ -497,7 +497,7 @@ th.student-col {
 
   cursor: pointer;
 
-  /* Hidden until the row is hovered (or the button / its input is focused). */
+  /* Hidden until its own cell is hovered (or the button / its input is focused). */
   opacity: 0;
 
   transition: opacity 0.15s ease, color 0.15s ease;
@@ -510,7 +510,7 @@ th.student-col {
   font-size: 14px;
 }
 
-.grades-table tbody tr:hover .history-button,
+.grades-table tbody .mark-col:hover .history-button,
 .mark-cell:focus-within .history-button,
 .history-button[aria-expanded='true'] {
   opacity: 1;
