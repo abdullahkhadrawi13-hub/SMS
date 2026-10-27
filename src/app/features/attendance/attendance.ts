@@ -27,7 +27,21 @@ export interface AttendanceSheetStats {
   changes: number;
 }
 
-export type AttendanceTab = 'record' | 'summary';
+// The tabs of the attendance page. The active tab is kept in the URL:
+// /attendance (record), /attendance?tab=summary, /attendance?tab=absentees.
+export type AttendanceTab = 'record' | 'summary' | 'absentees';
+
+// One section in the absentees tab (its class and section names).
+// Kept by the page when the user picks a section, so the section stays
+// selected (with 0 absent) when another date has no absent students in it.
+export interface AbsenteeSection {
+  classId: number;
+  classNameAr: string;
+  classNameEn: string;
+  sectionId: number;
+  sectionAr: string;
+  sectionEn: string;
+}
 
 // Counters shown above a student's attendance history.
 export interface AttendanceHistoryStats {

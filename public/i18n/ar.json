@@ -1220,7 +1220,8 @@
 
     "TABS": {
       "RECORD": "تسجيل الحضور",
-      "SUMMARY": "المتابعة اليومية"
+      "SUMMARY": "المتابعة اليومية",
+      "ABSENTEES": "الغائبون"
     },
 
     "STATUS": {
@@ -1299,6 +1300,37 @@
       "EMPTY": {
         "TITLE": "لا توجد شعب",
         "MESSAGE": "لا توجد شعب فيها طلاب في التاريخ المحدد."
+      }
+    },
+
+    "ABSENTEES": {
+      "TODAY_ONLY": "اليوم فقط",
+      "LOADING": "جارٍ تحميل قائمة الغائبين...",
+      "TOTAL_ABSENT": "الطلاب الغائبون",
+      "WITHOUT_PARENT": "بلا وليّ أمر مرتبط",
+      "SEARCH": "بحث",
+      "SEARCH_PLACEHOLDER": "ابحث باسم الطالب أو الرقم المدرسي",
+      "CLEAR_SEARCH": "مسح البحث",
+      "SEARCH_RESULT": "{{shown}} من {{total}} طالب غائب يطابق البحث",
+      "ALL_SECTIONS": "كل الشعب",
+      "SECTION_OPTION": "شعبة {{sectionName}}",
+      "SECTION_TITLE": "{{className}} · شعبة {{sectionName}}",
+      "ABSENT_COUNT": "{{count}} غائب",
+      "OPEN_SHEET": "فتح الكشف",
+      "OPEN_STUDENT": "صفحة الطالب (تبويب الحضور)",
+      "INACTIVE_PARENT": "الحساب غير مفعّل",
+      "INACTIVE_PARENT_HINT": "لا يستطيع تسجيل الدخول، لكن رقم الهاتف يعمل",
+      "CALL": "اتصال",
+      "NO_PARENT": "لا يوجد وليّ أمر مرتبط بهذا الطالب.",
+      "LINK_PARENT": "ربط وليّ أمر",
+      "SHOW_ALL": "عرض كل الشعب ({{count}})",
+      "EMPTY": {
+        "DAY_TITLE": "لا يوجد غائبون",
+        "DAY_MESSAGE": "لم يُسجَّل أي طالب غائبًا في هذا اليوم.",
+        "SECTION_TITLE": "لا يوجد غائبون في هذه الشعبة",
+        "SECTION_MESSAGE": "{{className}} · شعبة {{sectionName}}، {{date}}",
+        "SEARCH_TITLE": "لا توجد نتائج",
+        "SEARCH_MESSAGE": "لا يوجد طالب غائب يطابق البحث."
       }
     },
 

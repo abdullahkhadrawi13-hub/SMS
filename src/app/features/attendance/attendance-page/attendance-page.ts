@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { DateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,8 +22,10 @@ import { AttendanceHeader } from '../attendance-header/attendance-header';
 import { AttendanceSelector } from '../attendance-selector/attendance-selector';
 import { AttendanceSheet } from '../attendance-sheet/attendance-sheet';
 import { AttendanceSummary } from '../attendance-summary/attendance-summary';
+import { AttendanceAbsentees } from '../attendance-absentees/attendance-absentees';
 
 import {
+  AbsenteeSection,
   ATTENDANCE_LOCALE_AR,
   ATTENDANCE_LOCALE_EN,
   AttendanceDraft,
@@ -39,11 +42,13 @@ import { AttendanceAccessService } from '../../../core/services/attendance-acces
 import { Language } from '../../../core/services/language';
 import { SchoolClassesService } from '../../../core/services/school-classes';
 import { SectionsService } from '../../../core/services/sections';
+import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 import { ActiveSectionDto } from '../../../core/models/section';
 import {
   ATTENDANCE_PRESENT,
+  AttendanceAbsentees as AttendanceAbsenteesData,
   AttendanceDailySummary,
   AttendanceEntry,
   AttendanceSheet as AttendanceSheetData,
@@ -64,6 +69,7 @@ interface AttendanceSaveResult {
     AttendanceSelector,
     AttendanceSheet,
     AttendanceSummary,
+    AttendanceAbsentees,
 
     MatIconModule,
     MatTabsModule,
@@ -84,6 +90,9 @@ export class AttendancePage implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly language = inject(Language);
   private readonly dateAdapter = inject<DateAdapter<Date>>(DateAdapter);
+  private readonly permissions = inject(Permissions);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -103,6 +112,18 @@ export class AttendancePage implements OnInit {
   // The attendance officer sees the summary of today only.
   readonly canViewSummary = this.attendanceAccess.canViewSummary;
 
+  // The absentees list has the same rules as the daily summary:
+  // Admin and AssistantPrincipal any day, the attendance officer today only.
+  readonly canViewAbsentees = this.attendanceAccess.canViewSummary;
+
+  // Admin and AssistantPrincipal: a student's name opens the student page.
+  readonly canOpenStudent = this.attendanceAccess.fullAccess;
+
+  // Admin only: "Link a parent" for a student with no parent.
+  readonly canLinkParent = this.permissions.canManageParents;
+
+  // The active tab comes from the URL (?tab=summary / ?tab=absentees),
+  // see the queryParamMap subscription in the constructor.
   readonly activeTab = signal<AttendanceTab>('record');
 
   private readonly isArabic = computed(
@@ -219,11 +240,28 @@ export class AttendancePage implements OnInit {
   readonly summaryError = signal<string | null>(null);
 
 
+  // =========================
+  // Absentees tab
+  // =========================
+
+  readonly absenteesDate = signal(this.today);
+  readonly absentees = signal<AttendanceAbsenteesData | null>(null);
+  readonly absenteesLoading = signal(false);
+  readonly absenteesError = signal<string | null>(null);
+
+  // The search and the selected section stay when the user changes the
+  // tab or the date. The selected section stays selected even on a date
+  // with no absent students in it (the tab then says so).
+  readonly absenteesSearch = signal('');
+  readonly absenteesSection = signal<AbsenteeSection | null>(null);
+
+
   // Running requests. A new request cancels the previous one,
   // so an old response never replaces a newer selection.
   private sectionsRequest?: Subscription;
   private sheetRequest?: Subscription;
   private summaryRequest?: Subscription;
+  private absenteesRequest?: Subscription;
 
 
   constructor() {
@@ -237,6 +275,14 @@ export class AttendancePage implements OnInit {
           : ATTENDANCE_LOCALE_EN
       );
     });
+
+    // The tab follows the URL: /attendance, ?tab=summary or ?tab=absentees.
+    // (A tab click only changes the URL; this shows the tab.)
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        this.showTab(this.toAllowedTab(params.get('tab')));
+      });
   }
 
   ngOnInit(): void {
@@ -248,18 +294,54 @@ export class AttendancePage implements OnInit {
   // Tabs
   // =========================
 
+  // A tab click: only the URL changes (?tab=...);
+  // the queryParamMap subscription shows the tab.
   selectTab(tab: AttendanceTab): void {
 
-    // The summary tab is only for users who can record attendance
-    if (tab === 'summary' && !this.canViewSummary()) {
+    tab = this.toAllowedTab(tab);
+
+    // The same tab again: load its data again (fresh numbers).
+    if (tab === this.activeTab()) {
+      this.showTab(tab);
       return;
     }
 
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: tab === 'record' ? null : tab },
+      queryParamsHandling: 'merge',
+      // Replace: a tab is not a new step for the browser's "Back".
+      replaceUrl: true
+    });
+  }
+
+  // Shows the tab and loads its data.
+  private showTab(tab: AttendanceTab): void {
+
     this.activeTab.set(tab);
 
-    // Always show fresh numbers when the summary is opened.
+    // Always show fresh data when the summary or the absentees list is opened
+    // (attendance may have been changed in the record tab).
     if (tab === 'summary') {
       this.loadSummary();
+    }
+
+    if (tab === 'absentees') {
+      this.loadAbsentees();
+    }
+  }
+
+  // The tab from the URL, or "record" when it is unknown
+  // or the user may not see it.
+  private toAllowedTab(value: string | null): AttendanceTab {
+
+    switch (value) {
+      case 'summary':
+        return this.canViewSummary() ? 'summary' : 'record';
+      case 'absentees':
+        return this.canViewAbsentees() ? 'absentees' : 'record';
+      default:
+        return 'record';
     }
   }
 
@@ -650,10 +732,81 @@ export class AttendancePage implements OnInit {
 
   // Opens the sheet of a section (on the summary date) in the record tab.
   openSectionSheet(section: AttendanceSummarySection): void {
+    this.openSheet(section.classId, section.sectionId, this.summaryDate());
+  }
+
+
+  // =========================
+  // Absentees
+  // =========================
+
+  // GET /api/attendance/absentees
+  private loadAbsentees(): void {
+
+    this.absenteesRequest?.unsubscribe();
+
+    // The old list stays on the screen while the new one loads
+    // (the absentees component shows a thin progress bar on top of it).
+    this.absenteesError.set(null);
+    this.absenteesLoading.set(true);
+
+    this.absenteesRequest = this.attendanceService
+      .getAbsentees(this.absenteesDate())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+
+          this.absenteesLoading.set(false);
+
+          if (!response.success || !response.data) {
+            this.absentees.set(null);
+            this.absenteesError.set(
+              this.apiMessageService.getMessage(response)
+            );
+            return;
+          }
+
+          this.absentees.set(response.data);
+        },
+
+        error: (error: HttpErrorResponse) => {
+          console.error('Failed to load absent students:', error);
+
+          this.absenteesLoading.set(false);
+          this.absentees.set(null);
+          this.absenteesError.set(this.apiMessageService.getErrorMessage(error));
+        }
+      });
+  }
+
+  onAbsenteesDateChange(date: string): void {
+
+    // The attendance officer cannot leave today
+    if (this.todayOnly()) {
+      return;
+    }
+
+    this.absenteesDate.set(date);
+    this.loadAbsentees();
+  }
+
+  // Opens the sheet of a section (on the absentees date) in the record tab.
+  openAbsenteesSheet(section: AbsenteeSection): void {
+    this.openSheet(section.classId, section.sectionId, this.absenteesDate());
+  }
+
+
+  // =========================
+  // Open a sheet from another tab
+  // =========================
+
+  // Opens the sheet of a section on a date in the record tab
+  // (used by the daily summary and the absentees list).
+  private openSheet(classId: number, sectionId: number, date: string): void {
 
     // Do not replace a sheet that has unsaved changes
     if (this.selectionLocked()) {
-      this.activeTab.set('record');
+      this.selectTab('record');
 
       this.actionResult.show(
         'warning',
@@ -662,17 +815,17 @@ export class AttendancePage implements OnInit {
       return;
     }
 
-    this.activeTab.set('record');
+    this.selectTab('record');
 
-    this.date.set(this.summaryDate());
-    this.classId.set(section.classId);
+    this.date.set(date);
+    this.classId.set(classId);
     this.sectionId.set(null);
     this.sections.set([]);
 
     // Clears the old sheet until the section list is loaded
     this.loadSheet();
 
-    this.loadSections(section.classId, section.sectionId);
+    this.loadSections(classId, sectionId);
   }
 
 }

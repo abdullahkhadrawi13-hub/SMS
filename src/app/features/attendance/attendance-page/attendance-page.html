@@ -4,7 +4,8 @@
   <app-attendance-header></app-attendance-header>
 
   <!-- Tabs: Admin, Assistant Principal and the attendance officer.
-       (The attendance officer sees the summary of today only.) -->
+       (The attendance officer sees the summary and the absentees of today only.)
+       The active tab is kept in the URL: ?tab=summary / ?tab=absentees -->
   @if (canViewSummary()) {
     <nav
       mat-tab-nav-bar
@@ -40,6 +41,22 @@
           </span>
         </span>
       </a>
+
+      @if (canViewAbsentees()) {
+        <a
+          mat-tab-link
+          [active]="activeTab() === 'absentees'"
+          (click)="selectTab('absentees')"
+        >
+          <span class="tab-label">
+            <mat-icon>person_off</mat-icon>
+
+            <span>
+              {{ 'ATTENDANCE.TABS.ABSENTEES' | translate }}
+            </span>
+          </span>
+        </a>
+      }
 
     </nav>
   }
@@ -80,7 +97,7 @@
         (save)="saveAttendance()"
       ></app-attendance-sheet>
 
-    } @else {
+    } @else if (activeTab() === 'summary') {
 
       <!-- Daily Summary (date / statistics / sections table) -->
       <app-attendance-summary
@@ -93,6 +110,26 @@
         (dateChange)="onSummaryDateChange($event)"
         (openSection)="openSectionSheet($event)"
       ></app-attendance-summary>
+
+    } @else {
+
+      <!-- Absent students with their parents' phone numbers -->
+      <app-attendance-absentees
+        [absentees]="absentees()"
+        [date]="absenteesDate()"
+        [maxDate]="today"
+        [todayOnly]="todayOnly()"
+        [loading]="absenteesLoading()"
+        [errorMessage]="absenteesError()"
+        [search]="absenteesSearch()"
+        [section]="absenteesSection()"
+        [canOpenStudent]="canOpenStudent()"
+        [canLinkParent]="canLinkParent()"
+        (dateChange)="onAbsenteesDateChange($event)"
+        (searchChange)="absenteesSearch.set($event)"
+        (sectionChange)="absenteesSection.set($event)"
+        (openSheet)="openAbsenteesSheet($event)"
+      ></app-attendance-absentees>
 
     }
 

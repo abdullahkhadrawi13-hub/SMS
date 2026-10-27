@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
 import {
+  AttendanceAbsentees,
   AttendanceAccess,
   AttendanceDailySummary,
   AttendanceEntry,
@@ -146,6 +147,30 @@ export class AttendanceService {
 
     return this.http.get<ApiResponse<AttendanceDailySummary>>(
       `${this.apiUrl}/daily-summary`,
+      { params }
+    );
+  }
+
+
+  // GET /api/attendance/absentees?date=YYYY-MM-DD
+  // (Admin, AssistantPrincipal: any day up to today;
+  //  the attendance officer: today only)
+  // The students marked absent on one day, with their parents' phone numbers.
+  // date is optional: without it, the backend uses today.
+  // There is no search or class / section filter in the API:
+  // the screen filters the returned list itself.
+  getAbsentees(
+    date?: string
+  ): Observable<ApiResponse<AttendanceAbsentees>> {
+
+    let params = new HttpParams();
+
+    if (date) {
+      params = params.set('date', date);
+    }
+
+    return this.http.get<ApiResponse<AttendanceAbsentees>>(
+      `${this.apiUrl}/absentees`,
       { params }
     );
   }

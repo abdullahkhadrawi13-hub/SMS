@@ -6,6 +6,7 @@ const academicTerms = require('../data/academic-terms');
 const users = require('../data/users');
 const teachers = require('../data/teachers');
 const schoolSettings = require('../data/school-settings');
+const { parents, parentStudents } = require('../data/parents');
 
 
 // =====================================================
@@ -59,6 +60,10 @@ const STATUS_ABSENT = 1;
 //    All or nothing: the whole batch fails.
 // 7. daily-summary: the date is optional (without it, today is used).
 // 8. recordedAt / editedAt are UTC without a trailing "Z".
+// 9. absentees: Admin and Assistant Principal any day up to today,
+//    the attendance officer today only (another day: 400).
+//    A teacher who is not the officer gets 400.
+//    The date is optional (without it, today is used).
 //
 // ASSUMPTIONS (not taken from the real backend):
 // - daily-summary is open to the attendance officer (today only).
@@ -789,6 +794,164 @@ function handleAttendance(req, res, url, pathname) {
           0
         ),
         sections: summarySections
+      }
+    });
+
+    return;
+  }
+
+
+  // =====================================================
+  // GET /api/attendance/absentees?date=..
+  // (Admin, Assistant Principal: any day up to today;
+  //  the attendance officer: today only)
+  // The students marked absent on one day, with their parents' phones.
+  // date is optional: without it, today is used.
+  // =====================================================
+
+  if (
+    req.method === 'GET' &&
+    pathname === '/api/attendance/absentees'
+  ) {
+
+    const access = getAccess(currentUser);
+
+    // A teacher who is not the attendance officer.
+    if (!access.canRecord) {
+
+      sendError(
+        res,
+        400,
+        'أنت لست مسؤول الحضور الحالي.',
+        'You are not the currently assigned attendance officer.'
+      );
+
+      return;
+    }
+
+    const date =
+      url.searchParams.get('date') || getToday();
+
+    const term = validateDate(res, date);
+
+    if (!term) {
+      return;
+    }
+
+    if (access.todayOnly && date !== getToday()) {
+
+      sendError(
+        res,
+        400,
+        'مسؤول الحضور يستطيع عرض غائبي اليوم الحالي فقط',
+        'The attendance officer can view today\'s absent students only'
+      );
+
+      return;
+    }
+
+
+    const absentStudents = attendanceRecords
+      .filter(record =>
+        record.date === date &&
+        record.status === STATUS_ABSENT
+      )
+      .map(record => {
+
+        const student = students.find(
+          item => item.studentId === record.studentId
+        );
+
+        if (!student) {
+          return null;
+        }
+
+        const section = sections.find(
+          item => item.sectionId === student.sectionId
+        );
+
+        const schoolClass = schoolClasses.find(
+          item => item.schoolClassId === student.classId
+        );
+
+        // Parents sorted by father, mother, guardian.
+        const studentParents = parentStudents
+          .filter(link => link.studentId === student.studentId)
+          .map(link => {
+
+            const parent = parents.find(
+              item => item.parentId === link.parentId
+            );
+
+            return parent
+              ? {
+                  parentId: parent.parentId,
+                  studentId: student.studentId,
+                  firstNameAr: parent.firstNameAr,
+                  familyNameAr: parent.familyNameAr,
+                  firstNameEn: parent.firstNameEn,
+                  familyNameEn: parent.familyNameEn,
+                  relationship: link.relationship,
+                  phoneNumber: parent.phoneNumber,
+                  isActive: parent.isActive
+                }
+              : null;
+          })
+          .filter(Boolean)
+          .sort((a, b) => a.relationship - b.relationship);
+
+        return {
+          attendanceId: record.attendanceId,
+          studentId: student.studentId,
+          studentNumber: student.studentNumber,
+
+          firstNameAr: student.firstNameAr,
+          fatherNameAr: student.fatherNameAr,
+          grandFatherNameAr: student.grandFatherNameAr,
+          familyNameAr: student.familyNameAr,
+
+          firstNameEn: student.firstNameEn,
+          fatherNameEn: student.fatherNameEn,
+          grandFatherNameEn: student.grandFatherNameEn,
+          familyNameEn: student.familyNameEn,
+
+          classId: student.classId,
+          classNameAr: schoolClass ? schoolClass.classNameAr : '',
+          classNameEn: schoolClass ? schoolClass.classNameEn : '',
+
+          sectionId: student.sectionId,
+          sectionAr: section ? section.sectionAr : '',
+          sectionEn: section ? section.sectionEn : '',
+
+          studentPhoneNumber: student.phoneNumber,
+
+          parents: studentParents,
+
+          // Used for sorting only (removed below).
+          _level: schoolClass ? schoolClass.level : 0,
+          _nameAr: getStudentNameAr(student)
+        };
+      })
+      .filter(Boolean)
+
+      // Sorted by class, then section, then name.
+      .sort((a, b) =>
+        a._level - b._level ||
+        a.sectionAr.localeCompare(b.sectionAr, 'ar') ||
+        a._nameAr.localeCompare(b._nameAr, 'ar')
+      )
+      .map(({ _level, _nameAr, ...student }) => student);
+
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم جلب قائمة الغائبين بنجاح',
+      messageEn: 'Absent students retrieved successfully',
+      data: {
+        date,
+        academicTermId: term.academicTermId,
+        totalAbsent: absentStudents.length,
+        students: absentStudents
       }
     });
 

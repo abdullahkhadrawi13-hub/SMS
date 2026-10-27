@@ -1,3 +1,5 @@
+import { ParentRelationship } from './parent';
+
 // =====================================================
 // Attendance models (SMS API Reference - section 11)
 // =====================================================
@@ -109,4 +111,67 @@ export interface AttendanceDailySummary {
   completedSections: number;
   totalAbsent: number;
   sections: AttendanceSummarySection[];
+}
+
+
+// GET /api/attendance/absentees?date=YYYY-MM-DD
+// (Admin, AssistantPrincipal: any day up to today;
+//  the attendance officer: today only)
+// The students marked absent on one day, with their parents' phone numbers,
+// so the school can call home.
+// Students are sorted by class, then section, then name.
+export interface AttendanceAbsentees {
+  date: string;
+  academicTermId: number;
+  totalAbsent: number;
+  students: AbsentStudent[];
+}
+
+// One absent student.
+export interface AbsentStudent {
+  attendanceId: number;
+  studentId: number;
+  studentNumber: string;
+
+  firstNameAr: string;
+  fatherNameAr: string;
+  grandFatherNameAr: string;
+  familyNameAr: string;
+
+  firstNameEn: string;
+  fatherNameEn: string;
+  grandFatherNameEn: string;
+  familyNameEn: string;
+
+  classId: number;
+  classNameAr: string;
+  classNameEn: string;
+
+  sectionId: number;
+  sectionAr: string;
+  sectionEn: string;
+
+  // The student's own phone number.
+  studentPhoneNumber: string;
+
+  // [] when no parent is linked to the student yet.
+  // Sorted by father, mother, guardian.
+  parents: AbsentStudentParent[];
+}
+
+// One parent of an absent student.
+// isActive: false means the parent cannot log in,
+// but the phone number still works.
+export interface AbsentStudentParent {
+  parentId: number;
+  studentId: number;
+
+  firstNameAr: string;
+  familyNameAr: string;
+  firstNameEn: string;
+  familyNameEn: string;
+
+  relationship: ParentRelationship;
+  phoneNumber: string;
+  isActive: boolean;
 }

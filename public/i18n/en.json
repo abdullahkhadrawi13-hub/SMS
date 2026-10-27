@@ -1221,7 +1221,8 @@
 
     "TABS": {
       "RECORD": "Record Attendance",
-      "SUMMARY": "Daily Summary"
+      "SUMMARY": "Daily Summary",
+      "ABSENTEES": "Absent Students"
     },
 
     "STATUS": {
@@ -1300,6 +1301,37 @@
       "EMPTY": {
         "TITLE": "No sections",
         "MESSAGE": "No sections have students on the selected date."
+      }
+    },
+
+    "ABSENTEES": {
+      "TODAY_ONLY": "Today only",
+      "LOADING": "Loading absent students...",
+      "TOTAL_ABSENT": "Absent students",
+      "WITHOUT_PARENT": "No linked parent",
+      "SEARCH": "Search",
+      "SEARCH_PLACEHOLDER": "Search by student name or student number",
+      "CLEAR_SEARCH": "Clear search",
+      "SEARCH_RESULT": "{{shown}} of {{total}} absent students match the search",
+      "ALL_SECTIONS": "All sections",
+      "SECTION_OPTION": "Section {{sectionName}}",
+      "SECTION_TITLE": "{{className}} · Section {{sectionName}}",
+      "ABSENT_COUNT": "{{count}} absent",
+      "OPEN_SHEET": "Open sheet",
+      "OPEN_STUDENT": "Student page (Attendance tab)",
+      "INACTIVE_PARENT": "Inactive account",
+      "INACTIVE_PARENT_HINT": "Cannot log in, but the phone number still works",
+      "CALL": "Call",
+      "NO_PARENT": "No parent is linked to this student.",
+      "LINK_PARENT": "Link a parent",
+      "SHOW_ALL": "Show all sections ({{count}})",
+      "EMPTY": {
+        "DAY_TITLE": "No absent students",
+        "DAY_MESSAGE": "No student was marked absent on this day.",
+        "SECTION_TITLE": "No absent students in this section",
+        "SECTION_MESSAGE": "{{className}} · Section {{sectionName}}, {{date}}",
+        "SEARCH_TITLE": "No results",
+        "SEARCH_MESSAGE": "No absent student matches the search."
       }
     },
 
