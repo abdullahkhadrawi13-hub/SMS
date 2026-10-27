@@ -1,0 +1,42 @@
+<div class="confirm">
+
+  <div class="confirm-icon">
+    <mat-icon>warning_amber</mat-icon>
+  </div>
+
+  <h2 mat-dialog-title>
+    {{ 'ROLLOVER.THRESHOLD.DIALOG.TITLE' | translate }}
+  </h2>
+
+  <mat-dialog-content>
+    <p>
+      {{
+        (data.changedCount === 1
+          ? 'ROLLOVER.THRESHOLD.DIALOG.MESSAGE_ONE'
+          : 'ROLLOVER.THRESHOLD.DIALOG.MESSAGE_MANY')
+          | translate: { count: data.changedCount }
+      }}
+    </p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+
+    <button
+      mat-button
+      type="button"
+      (click)="cancel()"
+    >
+      {{ 'ROLLOVER.THRESHOLD.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="button"
+      (click)="confirm()"
+    >
+      {{ 'ROLLOVER.THRESHOLD.DIALOG.CONFIRM' | translate }}
+    </button>
+
+  </mat-dialog-actions>
+
+</div>

@@ -10,7 +10,8 @@
 //
 // Shape:
 // {
-//   attendanceOfficerTeacherId: 20   // teacherId, or null when no officer is set
+//   attendanceOfficerTeacherId: 20,  // teacherId, or null when no officer is set
+//   failedSubjectsToRepeat: 1        // the rollover setting (1 to 50, default 1)
 // }
 
 const teachers = require('./teachers');
@@ -24,7 +25,12 @@ const officer = teachers.find(
 );
 
 const schoolSettings = {
-  attendanceOfficerTeacherId: officer ? officer.teacherId : null
+  attendanceOfficerTeacherId: officer ? officer.teacherId : null,
+
+  // How many failed subjects (or more) make the rollover preview
+  // suggest "Repeat" (GET / PUT /api/schoolsettings/promotion).
+  // The rollover mock reads it on every preview.
+  failedSubjectsToRepeat: 1
 };
 
 module.exports = schoolSettings;

@@ -1,20 +1,5 @@
 <div class="preview">
 
-  <!-- The rule behind "Repeat" (school settings) -->
-  @if (preview().isNewYear) {
-    <p class="threshold">
-      <mat-icon>tune</mat-icon>
-
-      {{
-        (preview().failedSubjectsToRepeat === 1
-          ? 'ROLLOVER.PREVIEW.THRESHOLD_ONE'
-          : 'ROLLOVER.PREVIEW.THRESHOLD_MANY')
-          | translate: { count: preview().failedSubjectsToRepeat }
-      }}
-    </p>
-  }
-
-
   <!-- Filter chips -->
   <div
     class="chips"

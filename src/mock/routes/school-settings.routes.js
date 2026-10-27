@@ -14,6 +14,10 @@ const DELAY_MS = 0;
 // Only the Admin (role 0) can read or change the school settings.
 const ALLOWED_ROLES = [0];
 
+// The limits of failedSubjectsToRepeat (API Reference, section 12).
+const MIN_FAILED_SUBJECTS = 1;
+const MAX_FAILED_SUBJECTS = 50;
+
 
 // =====================================================
 // RULES (SMS API Reference - section 12)
@@ -30,6 +34,14 @@ const ALLOWED_ROLES = [0];
 // 4. An inactive teacher cannot be the officer: 400
 //    "An inactive teacher cannot be the attendance officer."
 //    (SMS API Reference - section 5)
+// 5. GET  /api/schoolsettings/promotion
+//    data: { "failedSubjectsToRepeat": 1 } (default 1).
+// 6. PUT  /api/schoolsettings/promotion
+//    Body: { "failedSubjectsToRepeat": 2 }. The value must be between
+//    1 and 50, otherwise 400 "Validation failed: Failed subjects to repeat
+//    must be between 1 and 50." (a validation error: data is an array
+//    of the field messages). Returns the saved value in data.
+//    The rollover preview (rollover.routes.js) uses the new value at once.
 //
 // =====================================================
 // ASSUMPTIONS
@@ -41,7 +53,8 @@ const ALLOWED_ROLES = [0];
 //    "Teacher not found.".
 // 2. PUT returns the new teacherId in "data".
 // 3. The text of the success messages is not the real text.
-// 4. /api/schoolsettings/promotion is not in the mock yet.
+// 4. A decimal value (2.5) or a value that is not a number is rejected
+//    with the same 400 as a value out of range.
 
 
 // =====================================================
@@ -67,6 +80,27 @@ function sendError(res, statusCode, messageAr, messageEn, data = null) {
     messageAr,
     messageEn,
     data
+  });
+}
+
+
+function readBody(req) {
+
+  return new Promise((resolve, reject) => {
+
+    let body = '';
+
+    req.on('data', chunk => {
+      body += chunk;
+    });
+
+    req.on('end', () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (error) {
+        reject(error);
+      }
+    });
   });
 }
 
@@ -129,7 +163,7 @@ function schoolSettingsRoutes(req, res) {
 }
 
 
-function handleSchoolSettings(req, res, pathname) {
+async function handleSchoolSettings(req, res, pathname) {
 
   // =====================================================
   // Current user (from the token)
@@ -229,6 +263,90 @@ function handleSchoolSettings(req, res, pathname) {
       messageAr: 'تم تعيين مسؤول الحضور بنجاح',
       messageEn: 'Attendance officer set successfully',
       data: teacherId
+    });
+
+    return;
+  }
+
+
+  // =====================================================
+  // GET /api/schoolsettings/promotion
+  // The rollover setting
+  // (Admin)
+  // =====================================================
+
+  if (
+    req.method === 'GET' &&
+    pathname === '/api/schoolsettings/promotion'
+  ) {
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم جلب إعداد الترحيل بنجاح',
+      messageEn: 'Promotion settings retrieved successfully',
+      data: {
+        failedSubjectsToRepeat: schoolSettings.failedSubjectsToRepeat
+      }
+    });
+
+    return;
+  }
+
+
+  // =====================================================
+  // PUT /api/schoolsettings/promotion
+  // Change the rollover setting
+  // Body: { "failedSubjectsToRepeat": 2 }
+  // (Admin)
+  // =====================================================
+
+  if (
+    req.method === 'PUT' &&
+    pathname === '/api/schoolsettings/promotion'
+  ) {
+
+    let body;
+
+    try {
+      body = await readBody(req);
+    } catch {
+      sendError(res, 400, 'الطلب غير صالح.', 'Invalid request body.');
+      return;
+    }
+
+    const value = body.failedSubjectsToRepeat;
+
+    if (
+      !Number.isInteger(value) ||
+      value < MIN_FAILED_SUBJECTS ||
+      value > MAX_FAILED_SUBJECTS
+    ) {
+
+      const fieldMessage =
+        `Failed subjects to repeat must be between ${MIN_FAILED_SUBJECTS} and ${MAX_FAILED_SUBJECTS}.`;
+
+      sendError(
+        res,
+        400,
+        `فشل التحقق: يجب أن يكون عدد المواد الراسبة للإعادة بين ${MIN_FAILED_SUBJECTS} و${MAX_FAILED_SUBJECTS}.`,
+        `Validation failed: ${fieldMessage}`,
+        [fieldMessage]
+      );
+
+      return;
+    }
+
+
+    schoolSettings.failedSubjectsToRepeat = value;
+
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم حفظ إعداد الترحيل بنجاح',
+      messageEn: 'Promotion settings saved successfully',
+      data: {
+        failedSubjectsToRepeat: value
+      }
     });
 
     return;

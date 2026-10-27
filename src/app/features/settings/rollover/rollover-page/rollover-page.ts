@@ -28,6 +28,7 @@ import { RolloverService } from '../../../../core/services/rollover';
 import {
   buildDecisions,
   buildSourceOptions,
+  countChangedDecisions,
   countOutcomes,
   groupByClass,
   repeatStudentIds,
@@ -42,6 +43,7 @@ import {
   RolloverConfirmation
 } from '../rollover-confirm/rollover-confirm';
 import { RolloverResult } from '../rollover-result/rollover-result';
+import { RolloverThreshold } from '../rollover-threshold/rollover-threshold';
 
 
 // After 5 wrong passwords (429) the run button waits this long.
@@ -53,9 +55,13 @@ const LOCK_MINUTES = 5;
 // (API Reference, section 13), in the steps of a stepper:
 //   1. Preview: the backend's suggestion for every student; the Admin
 //      decides promote / repeat (new year) and must decide NeedsDecision.
+//      For a new year, the rule behind "Repeat" (failed subjects) can be
+//      changed here too; the preview is then loaded again.
 //   2. Close the old year's grades (new year only).
 //   3. Confirm: the Admin's password (and the year name for a new year).
 // This page holds the state and talks to the API; the steps only show it.
+// One exception: the rule card (RolloverThreshold) saves its own setting
+// (PUT /api/schoolsettings/promotion) and only tells the page it was saved.
 @Component({
   selector: 'app-rollover-page',
   imports: [
@@ -72,7 +78,8 @@ const LOCK_MINUTES = 5;
     RolloverPreview,
     RolloverOpenTerms,
     RolloverConfirm,
-    RolloverResult
+    RolloverResult,
+    RolloverThreshold
   ],
   templateUrl: './rollover-page.html',
   styleUrl: './rollover-page.css',
@@ -152,6 +159,12 @@ export class RolloverPage {
 
   readonly tally = computed(() =>
     countOutcomes(this.preview()?.students ?? [], this.decisions())
+  );
+
+  // Decisions the Admin changed by hand (asked about before the rule
+  // behind "Repeat" is saved, because the new preview resets them).
+  readonly changedDecisions = computed(() =>
+    countChangedDecisions(this.preview()?.students ?? [], this.decisions())
   );
 
   // Step 1 is done when no NeedsDecision student is left undecided.
@@ -328,6 +341,13 @@ export class RolloverPage {
       ...decisions,
       [change.studentId]: change.decision
     }));
+  }
+
+  // Step 1: the rule behind "Repeat" was saved
+  // (PUT /api/schoolsettings/promotion). A new preview brings the new
+  // suggestions, and every decision goes back to its suggestion.
+  onThresholdSaved(): void {
+    this.loadPreview();
   }
 
   // Step 2: the Admin closed terms on the academic years page.

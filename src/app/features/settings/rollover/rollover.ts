@@ -80,6 +80,22 @@ export function buildDecisions(
   return decisions;
 }
 
+// How many decisions the Admin changed by hand: a decision that is not
+// the starting one (a NeedsDecision student counts once decided).
+// Used before saving the rule behind "Repeat": the new preview puts
+// every decision back to its suggestion.
+export function countChangedDecisions(
+  students: RolloverStudent[],
+  decisions: RolloverDecisions
+): number {
+
+  return students.filter(student =>
+    isDecidable(student)
+    && student.studentId in decisions
+    && decisions[student.studentId] !== defaultDecision(student)
+  ).length;
+}
+
 // A promoted student with no target class graduates
 // (a graduation class has no next class).
 export function graduatesIfPromoted(student: RolloverStudent): boolean {

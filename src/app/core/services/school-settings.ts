@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
+import { PromotionSettings } from '../models/school-settings';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -34,5 +35,18 @@ export class SchoolSettingsService {
       null
     );
   }
-  
+
+  // Change the rollover setting: how many failed subjects (or more)
+  // make the rollover preview suggest "Repeat" (between 1 and 50).
+  // The current value comes with the rollover preview
+  // (failedSubjectsToRepeat), so there is no separate GET here.
+  updatePromotion(
+    failedSubjectsToRepeat: number
+  ): Observable<ApiResponse<PromotionSettings>> {
+    return this.http.put<ApiResponse<PromotionSettings>>(
+      `${this.apiUrl}/promotion`,
+      { failedSubjectsToRepeat } satisfies PromotionSettings
+    );
+  }
+
 }

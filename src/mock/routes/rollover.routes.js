@@ -3,6 +3,7 @@ const schoolClasses = require('../data/school-classes');
 const sections = require('../data/sections');
 const academicYears = require('../data/academic-years');
 const academicTerms = require('../data/academic-terms');
+const schoolSettings = require('../data/school-settings');
 const users = require('../data/users');
 
 
@@ -17,8 +18,12 @@ const DELAY_MS = 0;
 // Only the Admin (role 0) can preview or run a rollover.
 const ALLOWED_ROLES = [0];
 
-// From the school settings (GET /api/schoolsettings/promotion), default 1.
-const FAILED_SUBJECTS_TO_REPEAT = 1;
+// The rule behind "Repeat" comes from the school settings
+// (data/school-settings.js, changed by PUT /api/schoolsettings/promotion),
+// and is read again on every preview.
+function failedSubjectsToRepeat() {
+  return schoolSettings.failedSubjectsToRepeat;
+}
 
 // 5 wrong admin passwords -> 429 (shared with the login in the real backend).
 const MAX_WRONG_PASSWORDS = 5;
@@ -52,8 +57,10 @@ const MAX_WRONG_PASSWORDS = 5;
 // =====================================================
 //
 // 1. The marks are not read from the grades mock: some students get
-//    example results by their id (every 11th fails a subject, every 13th
-//    has a missing mark), so every suggestion can be seen.
+//    example results by their id (every 17th fails two subjects, every
+//    19th fails three, every 11th fails one, every 13th has a missing
+//    mark), so every suggestion can be seen, and changing the rule
+//    (failedSubjectsToRepeat) changes who is suggested to repeat.
 // 2. The terms in data/academic-terms.js say the old years were already
 //    rolled over. The mock ignores that, so the rollover can be tried;
 //    who it moved is kept in memory until the mock server restarts.
@@ -183,6 +190,27 @@ function checkTerms(fromAcademicTermId) {
 // Example results by id (see ASSUMPTIONS 1).
 function exampleResult(studentId) {
 
+  if (studentId % 19 === 0) {
+    return {
+      failed: [
+        { subjectId: 1, subjectAr: 'الرياضيات', subjectEn: 'Mathematics', average: 38, passingMark: 50 },
+        { subjectId: 2, subjectAr: 'العلوم', subjectEn: 'Science', average: 44, passingMark: 50 },
+        { subjectId: 3, subjectAr: 'اللغة الإنجليزية', subjectEn: 'English', average: 47.5, passingMark: 50 }
+      ],
+      missing: []
+    };
+  }
+
+  if (studentId % 17 === 0) {
+    return {
+      failed: [
+        { subjectId: 1, subjectAr: 'الرياضيات', subjectEn: 'Mathematics', average: 42, passingMark: 50 },
+        { subjectId: 2, subjectAr: 'العلوم', subjectEn: 'Science', average: 45.5, passingMark: 50 }
+      ],
+      missing: []
+    };
+  }
+
   if (studentId % 11 === 0) {
     return {
       failed: [{ subjectId: 1, subjectAr: 'الرياضيات', subjectEn: 'Mathematics', average: 41.5, passingMark: 50 }],
@@ -272,7 +300,7 @@ function buildItem(student, isNewYear, currentTerm) {
 
   // Graduation class: no next class.
   if (fromClass?.isGraduationGrade) {
-    item.suggestion = result.failed.length >= FAILED_SUBJECTS_TO_REPEAT
+    item.suggestion = result.failed.length >= failedSubjectsToRepeat()
       ? 2
       : result.missing.length > 0 ? 4 : 3;
 
@@ -304,7 +332,7 @@ function buildItem(student, isNewYear, currentTerm) {
 
   setTarget(nextClass, nextSection);
 
-  if (result.failed.length >= FAILED_SUBJECTS_TO_REPEAT) {
+  if (result.failed.length >= failedSubjectsToRepeat()) {
     item.suggestion = 2;
   } else if (result.missing.length > 0) {
     item.suggestion = 4;
@@ -347,7 +375,7 @@ function buildPreview(fromTerm, currentTerm) {
     toTermNameEn: currentTerm.nameEn,
 
     isNewYear,
-    failedSubjectsToRepeat: FAILED_SUBJECTS_TO_REPEAT,
+    failedSubjectsToRepeat: failedSubjectsToRepeat(),
     willCloseGrades: isNewYear,
     fromYearName: isNewYear ? fromYear?.yearName ?? null : null,
     openTerms,

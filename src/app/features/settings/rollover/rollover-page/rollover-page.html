@@ -206,6 +206,16 @@
 
               <div class="step-body">
 
+                <!-- The rule behind "Repeat" (school settings), new year only -->
+                @if (currentPreview.isNewYear) {
+                  <app-rollover-threshold
+                    [value]="currentPreview.failedSubjectsToRepeat"
+                    [changedCount]="changedDecisions()"
+                    [disabled]="isPreviewLoading() || isRunning()"
+                    (saved)="onThresholdSaved()"
+                  ></app-rollover-threshold>
+                }
+
                 <app-rollover-preview
                   [preview]="currentPreview"
                   [groups]="groups()"

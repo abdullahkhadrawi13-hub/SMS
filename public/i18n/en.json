@@ -1714,9 +1714,27 @@
       "ALREADY_PLACED": "Already placed",
        "NO_TARGET": "No section to move to"
     },
+    "THRESHOLD": {
+      "LABEL": "Repeat suggestion rule",
+      "RULE_START": "\"Repeat\" is suggested for students who failed",
+      "RULE_END_ONE": "subject or more",
+      "RULE_END_MANY": "subjects or more",
+      "EDIT": "Edit rule",
+      "FIELD": "Number of failed subjects",
+      "INCREASE": "Increase",
+      "DECREASE": "Decrease",
+      "HINT": "A suggestion only: you can still change any student's decision. From {{min}} to {{max}}.",
+      "RANGE_ERROR": "Enter a whole number from {{min}} to {{max}}.",
+      "SAVE": "Save and refresh the preview",
+      "CANCEL": "Cancel",
+      "DIALOG": {
+        "TITLE": "Changing the rule resets the decisions",
+        "MESSAGE_ONE": "You changed one student's decision by hand. After saving, the preview reloads and every decision goes back to its new suggestion.",
+        "MESSAGE_MANY": "You changed {{count}} students' decisions by hand. After saving, the preview reloads and every decision goes back to its new suggestion.",
+        "CONFIRM": "Save and reset"
+      }
+    },
     "PREVIEW": {
-      "THRESHOLD_ONE": "\"Repeat\" is suggested for students who failed one subject or more.",
-      "THRESHOLD_MANY": "\"Repeat\" is suggested for students who failed {{count}} subjects or more.",
       "FILTER_LABEL": "Filter by suggestion",
       "ALL": "All",
       "EMPTY": "There are no active students in this term.",

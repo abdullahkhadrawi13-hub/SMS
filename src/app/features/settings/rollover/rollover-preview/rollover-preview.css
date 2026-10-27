@@ -11,33 +11,6 @@
 
 
 /* ================================
-   The rule behind "Repeat"
-   ================================ */
-
-.threshold {
-  display: flex;
-  align-items: center;
-
-  gap: 6px;
-
-  margin: 0;
-
-  font-size: 13px;
-
-  color: #6b7280;
-}
-
-.threshold mat-icon {
-  width: 18px;
-  height: 18px;
-
-  font-size: 18px;
-
-  color: #9ca3af;
-}
-
-
-/* ================================
    Filter chips (same look as a Material filter chip)
    ================================ */
 

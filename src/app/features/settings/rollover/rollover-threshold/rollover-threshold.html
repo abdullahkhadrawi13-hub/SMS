@@ -1,0 +1,145 @@
+@if (!isEditing()) {
+
+  <!-- The rule -->
+  <div class="threshold-card">
+
+    <span class="threshold-icon">
+      <mat-icon>rule</mat-icon>
+    </span>
+
+    <div class="threshold-text">
+
+      <span class="threshold-label">
+        {{ 'ROLLOVER.THRESHOLD.LABEL' | translate }}
+      </span>
+
+      <span class="threshold-rule">
+        {{ 'ROLLOVER.THRESHOLD.RULE_START' | translate }}
+
+        <span class="threshold-number">{{ value() }}</span>
+
+        {{
+          (value() === 1
+            ? 'ROLLOVER.THRESHOLD.RULE_END_ONE'
+            : 'ROLLOVER.THRESHOLD.RULE_END_MANY') | translate
+        }}
+      </span>
+
+    </div>
+
+    <button
+      mat-stroked-button
+      type="button"
+      class="edit-button"
+      [disabled]="disabled()"
+      (click)="startEdit()"
+    >
+      <mat-icon>edit</mat-icon>
+      {{ 'ROLLOVER.THRESHOLD.EDIT' | translate }}
+    </button>
+
+  </div>
+
+} @else {
+
+  <!-- The editor -->
+  <div class="threshold-card editing">
+
+    <div class="editor-head">
+      <span class="threshold-icon">
+        <mat-icon>rule</mat-icon>
+      </span>
+
+      <span class="threshold-label">
+        {{ 'ROLLOVER.THRESHOLD.LABEL' | translate }}
+      </span>
+    </div>
+
+    <div class="editor-row">
+
+      <span>{{ 'ROLLOVER.THRESHOLD.RULE_START' | translate }}</span>
+
+      <span class="number-stepper">
+
+        <button
+          type="button"
+          [attr.aria-label]="'ROLLOVER.THRESHOLD.INCREASE' | translate"
+          [disabled]="isSaving() || (draft() ?? 0) >= maxValue"
+          (click)="increase()"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+
+        <input
+          type="number"
+          inputmode="numeric"
+          [min]="minValue"
+          [max]="maxValue"
+          [value]="draft()"
+          [disabled]="isSaving()"
+          [attr.aria-label]="'ROLLOVER.THRESHOLD.FIELD' | translate"
+          [attr.aria-invalid]="!isValid()"
+          (input)="onInput($event)"
+          (keydown)="onKeydown($event)"
+        />
+
+        <button
+          type="button"
+          [attr.aria-label]="'ROLLOVER.THRESHOLD.DECREASE' | translate"
+          [disabled]="isSaving() || (draft() ?? 0) <= minValue"
+          (click)="decrease()"
+        >
+          <mat-icon>remove</mat-icon>
+        </button>
+
+      </span>
+
+      <span>
+        {{
+          (draft() === 1
+            ? 'ROLLOVER.THRESHOLD.RULE_END_ONE'
+            : 'ROLLOVER.THRESHOLD.RULE_END_MANY') | translate
+        }}
+      </span>
+
+    </div>
+
+    @if (isValid()) {
+      <p class="hint">
+        <mat-icon>info</mat-icon>
+        {{ 'ROLLOVER.THRESHOLD.HINT' | translate: { min: minValue, max: maxValue } }}
+      </p>
+    } @else {
+      <p class="field-error">
+        {{ 'ROLLOVER.THRESHOLD.RANGE_ERROR' | translate: { min: minValue, max: maxValue } }}
+      </p>
+    }
+
+    <div class="editor-actions">
+
+      <button
+        mat-flat-button
+        type="button"
+        [disabled]="!canSave()"
+        (click)="save()"
+      >
+        @if (isSaving()) {
+          <mat-spinner diameter="18"></mat-spinner>
+        }
+        {{ 'ROLLOVER.THRESHOLD.SAVE' | translate }}
+      </button>
+
+      <button
+        mat-button
+        type="button"
+        [disabled]="isSaving()"
+        (click)="cancel()"
+      >
+        {{ 'ROLLOVER.THRESHOLD.CANCEL' | translate }}
+      </button>
+
+    </div>
+
+  </div>
+
+}
