@@ -1,11 +1,7 @@
 <div class="login-content">
 
-  <!-- Login Header -->
-  <div class="login-header">
-
-    <div class="login-icon">
-      <mat-icon>account_circle</mat-icon>
-    </div>
+  <!-- Header -->
+  <div class="form-header">
 
     <h1>
       {{ 'LOGIN.TITLE' | translate }}
@@ -17,80 +13,186 @@
 
   </div>
 
-  <!-- Login Form -->
-  <form (ngSubmit)="onSubmit()">
 
-    <!-- Username -->
-    <div class="form-group">
+  <!-- Errors (above the form) -->
+  @if (isLocked()) {
 
-      <label for="username">
-        {{ 'LOGIN.USERNAME' | translate }}
-      </label>
-
-      <input
-        id="username"
-        type="text"
-        name="loginId"
-        [(ngModel)]="loginId"
-        [placeholder]="'LOGIN.USERNAME_PLACEHOLDER' | translate"
-      />
-
+    <div class="form-alert" role="alert">
+      <mat-icon aria-hidden="true">timer</mat-icon>
+      <div>
+        <strong>{{ 'LOGIN.LOCKED_TITLE' | translate }}</strong>
+        {{ 'LOGIN.LOCKED_MESSAGE' | translate }}
+      </div>
     </div>
 
-    <!-- Password -->
-    <div class="form-group">
+  } @else if (error() === 'invalid') {
 
-      <label for="password">
-        {{ 'LOGIN.PASSWORD' | translate }}
-      </label>
+    <div class="form-alert" role="alert">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      <div>
+        <strong>{{ 'LOGIN.ERROR_TITLE' | translate }}</strong>
+        {{ 'LOGIN.ERROR' | translate }}
+      </div>
+    </div>
 
-      <div class="password-input">
+  } @else if (error() === 'network') {
 
-        <input
-          id="password"
-          name="password"
-          [type]="showPassword() ? 'text' : 'password'"
-          [(ngModel)]="password"
-          [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
-        />
+    <div class="form-alert" role="alert">
+      <mat-icon aria-hidden="true">cloud_off</mat-icon>
+      <div>
+        <strong>{{ 'LOGIN.ERROR_TITLE' | translate }}</strong>
+        {{ 'LOGIN.NETWORK_ERROR' | translate }}
+      </div>
+    </div>
 
-        <button
-          type="button"
-          class="password-toggle"
-          (click)="togglePassword()">
+  } @else if (error() === 'server') {
 
-          <mat-icon>
-            {{ showPassword() ? 'visibility' : 'visibility_off' }}
-          </mat-icon>
+    <div class="form-alert" role="alert">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      <div>
+        <strong>{{ 'LOGIN.ERROR_TITLE' | translate }}</strong>
+        {{ serverMessage() }}
+      </div>
+    </div>
 
-        </button>
+  }
+
+
+  <!-- Login Form -->
+  <form (ngSubmit)="onSubmit()" novalidate>
+
+    <div class="fields">
+
+      <!-- Username -->
+      <div class="form-group">
+
+        <label for="username">
+          {{ 'LOGIN.USERNAME' | translate }}
+        </label>
+
+        <div
+          class="input-box"
+          [class.invalid]="submitted() && !loginId.trim()">
+
+          <mat-icon aria-hidden="true">person</mat-icon>
+
+          <input
+            id="username"
+            type="text"
+            name="loginId"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            [ngModel]="loginId"
+            (ngModelChange)="onLoginIdChange($event)"
+            [placeholder]="'LOGIN.USERNAME_PLACEHOLDER' | translate"
+            [attr.aria-invalid]="submitted() && !loginId.trim() ? true : null"
+            [attr.aria-describedby]="submitted() && !loginId.trim() ? 'username-error' : null"
+          />
+
+        </div>
+
+        @if (submitted() && !loginId.trim()) {
+          <p class="field-note error" id="username-error">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+            {{ 'LOGIN.USERNAME_REQUIRED' | translate }}
+          </p>
+        }
 
       </div>
 
+
+      <!-- Password -->
+      <div class="form-group">
+
+        <label for="password">
+          {{ 'LOGIN.PASSWORD' | translate }}
+        </label>
+
+        <div
+          class="input-box"
+          [class.invalid]="submitted() && !password">
+
+          <mat-icon aria-hidden="true">lock</mat-icon>
+
+          <input
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            [type]="showPassword() ? 'text' : 'password'"
+            [(ngModel)]="password"
+            (keyup)="checkCapsLock($event)"
+            (keydown)="checkCapsLock($event)"
+            (blur)="capsLockOn.set(false)"
+            [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
+            [attr.aria-invalid]="submitted() && !password ? true : null"
+            [attr.aria-describedby]="submitted() && !password ? 'password-error' : null"
+          />
+
+          <button
+            type="button"
+            class="password-toggle"
+            [attr.aria-label]="(showPassword() ? 'LOGIN.HIDE_PASSWORD' : 'LOGIN.SHOW_PASSWORD') | translate"
+            (click)="togglePassword()">
+
+            <mat-icon aria-hidden="true">
+              {{ showPassword() ? 'visibility' : 'visibility_off' }}
+            </mat-icon>
+
+          </button>
+
+        </div>
+
+        @if (submitted() && !password) {
+          <p class="field-note error" id="password-error">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+            {{ 'LOGIN.PASSWORD_REQUIRED' | translate }}
+          </p>
+        }
+
+        @if (capsLockOn()) {
+          <p class="field-note warning" role="status">
+            <mat-icon aria-hidden="true">keyboard_capslock</mat-icon>
+            {{ 'LOGIN.CAPS_LOCK' | translate }}
+          </p>
+        }
+
+      </div>
+
+
+      <!-- Login Button -->
+      @if (isLocked()) {
+
+        <!-- معطّل ويقول لماذا -->
+        <button type="submit" class="submit-button" disabled>
+          <mat-icon aria-hidden="true">timer</mat-icon>
+          {{ 'LOGIN.TRY_AGAIN_IN' | translate: { time: lockTimeText() } }}
+        </button>
+
+      } @else if (isLoading()) {
+
+        <button type="submit" class="submit-button loading" disabled>
+          <span class="spinner" aria-hidden="true"></span>
+          {{ 'LOGIN.LOADING' | translate }}
+        </button>
+
+      } @else {
+
+        <button type="submit" class="submit-button">
+          {{ 'LOGIN.BUTTON' | translate }}
+        </button>
+
+      }
+
     </div>
 
-    <!-- Error -->
-    @if (errorMessage()) {
-
-      <p class="error-message">
-        {{ errorMessage() | translate }}
-      </p>
-
-    }
-
-    <!-- Login Button -->
-    <button
-      type="submit"
-      class="login-button"
-      [disabled]="isLoading()">
-
-      {{ isLoading()
-        ? ('LOGIN.LOADING' | translate)
-        : ('LOGIN.BUTTON' | translate)
-      }}
-
-    </button>
-
   </form>
+
+
+  <!-- Forgot password: لا توجد استعادة ذاتية، الإدارة تعيد التعيين -->
+  <p class="forgot">
+    <mat-icon aria-hidden="true">support_agent</mat-icon>
+    {{ 'LOGIN.FORGOT_PASSWORD' | translate }}
+  </p>
 
 </div>

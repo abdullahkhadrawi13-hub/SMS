@@ -183,6 +183,35 @@ const users = [
     phoneNumber: '0790000006',
 
     token: 'mock-teacher2-token'
+  },
+
+  // حساب جديد بكلمة مرور مؤقتة: لتجربة شاشة أول تسجيل دخول
+  // (دخول: newuser / Temp@1234 ثم اختيار كلمة مرور جديدة)
+  // يعود لحالته الأولى عند إعادة تشغيل الـ mock
+  {
+    userId: 8,
+
+    firstNameAr: 'سلمى',
+    fatherNameAr: 'نبيل',
+    grandFatherNameAr: 'فايز',
+    familyNameAr: 'العبادي',
+
+    firstNameEn: 'Salma',
+    fatherNameEn: 'Nabil',
+    grandFatherNameEn: 'Fayez',
+    familyNameEn: 'Al-Abbadi',
+
+    loginId: 'newuser',
+    password: '1234',
+
+    mustChangePassword: true,
+    isActive: true,
+
+    role: 1,
+
+    phoneNumber: '0790000007',
+
+    token: 'mock-newuser-token'
   }
 ];
 

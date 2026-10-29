@@ -1,0 +1,47 @@
+/* ==============================
+   ألوان ومقاسات صفحات الدخول
+   ==============================
+   ملف واحد تستعمله: auth-layout و login و change-password.
+   change-password يفتح أيضًا كـ Dialog من الـ navbar (خارج auth-layout)،
+   لذلك كل مكوّن يضيف هذا الملف إلى styleUrl بنفسه بدل أن يعتمد على الـ layout.
+
+   مؤقت: عند اعتماد نظام الألوان العام للمشروع تُستبدل هذه القيم بمتغيراته.
+*/
+
+:host {
+
+  /* الخلفيات والنصوص */
+  --auth-bg: #f8fafc;
+  --auth-surface: #ffffff;
+  --auth-text: #0f172a;
+  --auth-muted: #475569;
+  --auth-subtle: #64748b;
+
+  /* الحدود */
+  --auth-border: #e2e8f0;
+  --auth-control: #cbd5e1;
+
+  /* اللون الأساسي (الأزرار والتركيز) */
+  --auth-primary: #1e40af;
+  --auth-primary-hover: #1e3a8a;
+  --auth-primary-soft: #dbeafe;
+  --auth-focus: #93c5fd;
+
+  /* اللوحة الكحلية (نفس لون الشريط الجانبي المقترح) */
+  --auth-navy: #111c33;
+  --auth-navy-text: #b4c0d4;
+  --auth-navy-line: #24304a;
+  --auth-gold: #fbbf24;
+
+  /* الحالات */
+  --auth-ok: #15803d;
+  --auth-ok-bg: #dcfce7;
+  --auth-bad: #b91c1c;
+  --auth-bad-bg: #fee2e2;
+  --auth-bad-line: #fecaca;
+  --auth-warn: #92400e;
+
+  /* المقاسات */
+  --auth-radius: 10px;
+  --auth-field-height: 48px;
+}

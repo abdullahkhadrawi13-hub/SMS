@@ -1,0 +1,322 @@
+/* ==============================
+   أجزاء النموذج المشتركة بين login و change-password
+   ==============================
+   (الحقول، زر الإظهار، رسائل الخطأ، زر الإرسال)
+   الألوان من auth-tokens.css
+*/
+
+
+/* ---------- العنوان ---------- */
+
+.form-header h1 {
+  margin: 0 0 6px;
+
+  color: var(--auth-text);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.35;
+
+  text-wrap: balance;
+}
+
+.form-header p {
+  margin: 0 0 24px;
+
+  color: var(--auth-muted);
+  line-height: 1.6;
+}
+
+
+/* ---------- الحقول ---------- */
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: var(--auth-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* الإطار حول الأيقونة + الحقل + زر الإظهار */
+.input-box {
+  height: var(--auth-field-height);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding-inline: 14px 6px;
+
+  background: #ffffff;
+  border: 1px solid var(--auth-control);
+  border-radius: var(--auth-radius);
+
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-box:focus-within {
+  border-color: var(--auth-primary);
+  box-shadow: 0 0 0 3px var(--auth-primary-soft);
+}
+
+.input-box.invalid {
+  border-color: var(--auth-bad);
+}
+
+.input-box.invalid:focus-within {
+  box-shadow: 0 0 0 3px var(--auth-bad-bg);
+}
+
+.input-box > mat-icon {
+  flex-shrink: 0;
+
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+  color: var(--auth-subtle);
+}
+
+.input-box input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+
+  padding: 0;
+
+  border: 0;
+  outline: 0;
+  background: transparent;
+
+  color: var(--auth-text);
+  font: inherit;
+  font-size: 15px;
+}
+
+.input-box input::placeholder {
+  color: var(--auth-subtle);
+}
+
+/* زر إظهار/إخفاء كلمة المرور */
+.password-toggle {
+  flex-shrink: 0;
+
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+
+  color: var(--auth-subtle);
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  background: #f1f5f9;
+  color: var(--auth-text);
+}
+
+.password-toggle:focus-visible {
+  outline: 3px solid var(--auth-focus);
+  outline-offset: 1px;
+}
+
+.password-toggle mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+
+/* ---------- رسائل تحت الحقل ---------- */
+
+.field-note {
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 13px;
+}
+
+.field-note mat-icon {
+  flex-shrink: 0;
+
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+.field-note.error {
+  color: var(--auth-bad);
+}
+
+.field-note.warning {
+  color: var(--auth-warn);
+}
+
+
+/* ---------- صندوق الخطأ أعلى النموذج ---------- */
+
+.form-alert {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  background: var(--auth-bad-bg);
+  border: 1px solid var(--auth-bad-line);
+  border-radius: var(--auth-radius);
+
+  color: var(--auth-bad);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.form-alert mat-icon {
+  flex-shrink: 0;
+
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+
+  font-size: 20px;
+}
+
+.form-alert strong {
+  display: block;
+  font-weight: 600;
+}
+
+
+/* ---------- زر الإرسال ---------- */
+
+.submit-button {
+  width: 100%;
+  height: var(--auth-field-height);
+  margin-top: 8px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border: 0;
+  border-radius: var(--auth-radius);
+
+  background: var(--auth-primary);
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: var(--auth-primary-hover);
+}
+
+.submit-button:focus-visible {
+  outline: 3px solid var(--auth-focus);
+  outline-offset: 2px;
+}
+
+/* معطّل لسبب (قفل أو شروط غير مكتملة): رمادي لكن مقروء */
+.submit-button:disabled {
+  background: var(--auth-border);
+  color: var(--auth-muted);
+  cursor: not-allowed;
+}
+
+/* أثناء الإرسال: يبقى بلونه مع مؤشر تحميل */
+.submit-button.loading:disabled {
+  background: var(--auth-primary);
+  color: #ffffff;
+  cursor: progress;
+}
+
+.submit-button mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+
+  animation: auth-spin 0.8s linear infinite;
+}
+
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ---------- زر نصّي (تسجيل الخروج) ---------- */
+
+.text-button {
+  padding: 4px 2px;
+
+  border: 0;
+  background: none;
+
+  color: var(--auth-primary);
+  font: inherit;
+  font-weight: 500;
+
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  cursor: pointer;
+}
+
+.text-button:focus-visible {
+  outline: 3px solid var(--auth-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .input-box,
+  .submit-button {
+    transition: none;
+  }
+
+  .spinner {
+    animation-duration: 2s;
+  }
+
+}

@@ -1,135 +1,25 @@
-/* Login Header */
+/* الحقول والأزرار والأخطاء في ../auth-form.css
+   هنا فقط ما يخص صفحة الدخول */
 
-.login-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
+.forgot {
+  margin: 20px 0 0;
 
-.login-icon {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-}
+  align-items: flex-start;
+  gap: 8px;
 
-.login-icon mat-icon {
-  font-size: 56px;
-  width: 56px;
-  height: 56px;
-  color: #1ec15a;
-}
-
-.login-header h1 {
-  margin: 0 0 8px;
-  font-size: 27px;
-}
-
-.login-header p {
-  margin: 0;
-  color: #6b7280;
+  color: var(--auth-muted);
+  font-size: 13px;
   line-height: 1.6;
 }
 
+.forgot mat-icon {
+  flex-shrink: 0;
 
-/* Form */
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
 
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.form-group input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 15px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-  border-color: #2563eb;
-}
-
-
-/* Password */
-
-.password-input {
-  position: relative;
-}
-
-.password-input input {
-  padding-inline-end: 45px;
-}
-
-.password-toggle {
-  position: absolute;
-  inset-inline-end: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 36px;
-  height: 36px;
-
-  padding: 0;
-  border: none;
-  background: transparent;
-
-  color: #6b7280;
-  cursor: pointer;
-}
-
-.password-toggle:hover {
-  color: #2563eb;
-}
-
-.password-toggle mat-icon {
-  font-size: 20px;
-}
-
-
-/* Login Button */
-
-.login-button {
-  width: 100%;
-  padding: 13px;
-
-  border: none;
-  border-radius: 8px;
-
-  background: #2563eb;
-  color: white;
-
-  font-size: 16px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: background 0.2s;
-}
-
-.login-button:hover {
-  background: #1d4ed8;
-}
-
-
-/* Error */
-
-.error-message {
-  color: #dc2626;
-  font-size: 14px;
-  font-weight: 500;
-  margin: 10px 0;
-  text-align: center;
+  font-size: 18px;
+  color: var(--auth-subtle);
 }

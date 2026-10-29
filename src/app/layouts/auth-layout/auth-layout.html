@@ -1,37 +1,76 @@
 <div class="auth-page">
 
-  <!-- School Header -->
-  <header class="auth-header">
+  <!-- اللوحة الكحلية: نفس مكان الشريط الجانبي بعد الدخول -->
+  <aside class="brand-panel">
 
-    <img
-      src="/images/sms-logo.jpg"
-      alt="School Management System Logo"
-      class="school-logo">
+    <div class="brand">
 
-    <h1>
-      {{ 'AUTH.SYSTEM_NAME' | translate }}
-    </h1>
+      <img
+        src="/images/sms-emblem.png"
+        alt=""
+        class="emblem">
 
-    <p>
-      {{ 'AUTH.DESCRIPTION' | translate }}
-    </p>
+      <span class="brand-name">
+        {{ 'AUTH.SYSTEM_NAME' | translate }}
+      </span>
 
-  </header>
+      <!-- زر اللغة على الهاتف (اللوحة تصبح شريطًا علويًا) -->
+      <div class="panel-language">
+        <app-language-switcher />
+      </div>
+
+    </div>
+
+    <div class="brand-main">
+
+      <p class="brand-title">
+        {{ 'AUTH.SYSTEM_NAME' | translate }}
+      </p>
+
+      <p class="brand-description">
+        {{ 'AUTH.DESCRIPTION' | translate }}
+      </p>
+
+      <!-- قواعد حقيقية من النظام -->
+      <ul class="facts">
+
+        <li>
+          <mat-icon aria-hidden="true">admin_panel_settings</mat-icon>
+          <span>{{ 'AUTH.FACT_ACCOUNTS' | translate }}</span>
+        </li>
+
+        <li>
+          <mat-icon aria-hidden="true">key</mat-icon>
+          <span>{{ 'AUTH.FACT_TEMP_PASSWORD' | translate }}</span>
+        </li>
+
+        <li>
+          <mat-icon aria-hidden="true">translate</mat-icon>
+          <span>{{ 'AUTH.FACT_LANGUAGE' | translate }}</span>
+        </li>
+
+      </ul>
+
+    </div>
+
+  </aside>
 
 
-  <!-- Auth Content -->
-  <main class="auth-card">
+  <!-- النموذج (تسجيل الدخول أو تغيير كلمة المرور) -->
+  <main class="auth-main">
 
-    <router-outlet />
+    <div class="main-language">
+      <app-language-switcher />
+    </div>
+
+    <div class="auth-content">
+
+      <div class="auth-form">
+        <router-outlet />
+      </div>
+
+    </div>
 
   </main>
-
-
-  <!-- Language -->
-  <div class="language-container">
-
-    <app-language-switcher />
-
-  </div>
 
 </div>

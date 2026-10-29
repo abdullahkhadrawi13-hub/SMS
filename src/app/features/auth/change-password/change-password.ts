@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,7 +12,12 @@ import { ChangePasswordRequest } from '../../../core/models/change-password-requ
 import { ApiMessageService } from '../../../core/services/api-message';
 import { ActionResult } from '../../../shared/services/action-result';
 
+// نفس شروط الـ API (القسم 3): من 8 إلى 100 حرف
 const MIN_PASSWORD_LENGTH = 8;
+const MAX_PASSWORD_LENGTH = 100;
+
+// حالة كل شرط تحت الحقل: '' لم يُكتب شيء بعد، 'ok' متحقق، 'no' غير متحقق
+type RuleState = '' | 'ok' | 'no';
 
 @Component({
   selector: 'app-change-password',
@@ -23,7 +28,11 @@ const MIN_PASSWORD_LENGTH = 8;
     MatIconModule,
   ],
   templateUrl: './change-password.html',
-  styleUrl: './change-password.css'
+  styleUrls: [
+    '../auth-tokens.css',
+    '../auth-form.css',
+    './change-password.css'
+  ]
 })
 export class ChangePassword {
 
@@ -39,8 +48,13 @@ export class ChangePassword {
   );
 
 
-  // true عند الفتح من الـ navbar (Dialog)، false عند الفتح كصفحة (أول تسجيل دخول)
-  isDialog = !!this.dialogRef;
+  // المكوّن يفتح من مكانين:
+  // - صفحة /change-password: أول تسجيل دخول بكلمة مرور مؤقتة (firstLoginGuard يضمن ذلك)
+  // - Dialog من الـ navbar: تغيير عادي لكلمة المرور
+  isFirstLogin = !this.dialogRef;
+
+  // اسم المستخدم لسطر "داخل باسم" (أول دخول فقط)
+  loginId = this.user.getUser()?.loginId ?? '';
 
   passwordVisibility = [
     signal(false),
@@ -48,14 +62,53 @@ export class ChangePassword {
     signal(false)
   ];
 
+  currentPassword = signal('');
+  newPassword = signal('');
+  confirmPassword = signal('');
 
-  currentPassword = '';
-  newPassword = '';
-  confirmPassword = '';
+  // true بعد أول ضغطة على زر الحفظ: عندها تظهر الأخطاء للحقول الفارغة أيضًا
+  submitted = signal(false);
 
-
-  errorMessage = signal('');
   isLoading = signal(false);
+
+  // رسالة الباك اند عند الرفض (مثلًا كلمة المرور الحالية خاطئة)
+  serverError = signal('');
+
+
+  // ---------- الشروط (تتحقق أثناء الكتابة) ----------
+
+  currentMissing = computed(() =>
+    this.submitted() && !this.currentPassword()
+  );
+
+  lengthRule = computed<RuleState>(() => {
+    const value = this.newPassword();
+    if (!value) return this.submitted() ? 'no' : '';
+    return value.length >= MIN_PASSWORD_LENGTH && value.length <= MAX_PASSWORD_LENGTH ? 'ok' : 'no';
+  });
+
+  differentRule = computed<RuleState>(() => {
+    const value = this.newPassword();
+    if (!value) return this.submitted() ? 'no' : '';
+    return value !== this.currentPassword() ? 'ok' : 'no';
+  });
+
+  matchRule = computed<RuleState>(() => {
+    const value = this.confirmPassword();
+    if (!value) return this.submitted() ? 'no' : '';
+    return value === this.newPassword() ? 'ok' : 'no';
+  });
+
+  newPasswordInvalid = computed(() =>
+    this.lengthRule() === 'no' || this.differentRule() === 'no'
+  );
+
+  private isValid = computed(() =>
+    !!this.currentPassword() &&
+    this.lengthRule() === 'ok' &&
+    this.differentRule() === 'ok' &&
+    this.matchRule() === 'ok'
+  );
 
 
   togglePassword(index: number) {
@@ -67,52 +120,41 @@ export class ChangePassword {
   }
 
 
-  // أخطاء الفورم (قبل إرسال الطلب) بترتيب الأولوية
-  private validate(): string | null {
+  ruleIcon(state: RuleState): string {
 
-    // 1. تعبئة جميع الحقول
-    if (
-      !this.currentPassword ||
-      !this.newPassword ||
-      !this.confirmPassword
-    ) {
-      return 'CHANGE_PASSWORD.REQUIRED';
-    }
+    if (state === 'ok') return 'check_circle';
+    if (state === 'no') return 'cancel';
+    return 'radio_button_unchecked';
 
-    // 2. كلمة المرور الجديدة يجب ألا تكون نفس الحالية
-    if (this.currentPassword === this.newPassword) {
-      return 'CHANGE_PASSWORD.SAME_PASSWORD';
-    }
+  }
 
-    // 3. طول كلمة المرور الجديدة 8 أو أكثر
-    if (this.newPassword.length < MIN_PASSWORD_LENGTH) {
-      return 'CHANGE_PASSWORD.MIN_LENGTH';
-    }
 
-    // 4. تطابق New Password مع Confirm Password
-    if (this.newPassword !== this.confirmPassword) {
-      return 'CHANGE_PASSWORD.PASSWORD_MISMATCH';
-    }
+  // أول دخول: إذا دخل بالحساب الخطأ يستطيع الخروج (لا يوجد مكان آخر يذهب إليه)
+  logout() {
 
-    return null;
+    this.router.navigate(['/login']).then(navigated => {
+      if (navigated) {
+        this.auth.logout();
+      }
+    });
+
   }
 
 
   onSubmit() {
 
-    const validationError = this.validate();
+    this.submitted.set(true);
+    this.serverError.set('');
 
-    this.errorMessage.set(validationError ?? '');
-
-    if (validationError) {
+    if (!this.isValid()) {
       return;
     }
 
 
     const data: ChangePasswordRequest = {
-      currentPassword: this.currentPassword,
-      newPassword: this.newPassword,
-      confirmPassword: this.confirmPassword
+      currentPassword: this.currentPassword(),
+      newPassword: this.newPassword(),
+      confirmPassword: this.confirmPassword()
     };
 
 
@@ -128,8 +170,7 @@ export class ChangePassword {
 
         if (!response.success || !response.data) {
 
-          this.actionResult.show(
-            'error',
+          this.serverError.set(
             this.apiMessageService.getMessage(response)
           );
 
@@ -138,17 +179,16 @@ export class ChangePassword {
         }
 
 
+        // mustChangePassword يصبح false، فيسمح mustChangePasswordGuard بدخول لوحة التحكم
         this.user.setUser(response.data);
 
 
-        // إذا كان المكون مفتوحًا داخل Dialog
         if (this.dialogRef) {
 
           this.dialogRef.close(true);
 
         } else {
 
-          // إذا كان المكون مفتوحًا كصفحة
           this.router.navigate(['/dashboard']);
 
         }
@@ -167,8 +207,7 @@ export class ChangePassword {
 
         this.isLoading.set(false);
 
-        this.actionResult.show(
-          'error',
+        this.serverError.set(
           this.apiMessageService.getErrorMessage(error)
         );
       }

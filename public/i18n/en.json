@@ -1,39 +1,62 @@
 {
   "AUTH": {
     "SYSTEM_NAME": "School Management System",
-    "DESCRIPTION": "A centralized system for managing school administration and academic processes"
+    "DESCRIPTION": "A centralized system for managing school administration and academic processes",
+    "FACT_ACCOUNTS": "Accounts are created by the school administration. There is no self sign-up.",
+    "FACT_TEMP_PASSWORD": "You sign in the first time with a temporary password, then choose your own.",
+    "FACT_LANGUAGE": "Switch between Arabic and English at any time."
   },
 
   "LOGIN": {
     "TITLE": "Login",
-    "SUBTITLE": "Sign in to the School Management System",
+    "SUBTITLE": "Enter the username and password the school administration gave you.",
     "USERNAME": "Username",
     "USERNAME_PLACEHOLDER": "Enter your username",
     "PASSWORD": "Password",
     "PASSWORD_PLACEHOLDER": "Enter your password",
+    "SHOW_PASSWORD": "Show password",
+    "HIDE_PASSWORD": "Hide password",
     "BUTTON": "Login",
-    "REQUIRED": "Please enter username and password",
-    "ERROR": "Invalid username or password",
-    "FIRST_LOGIN_NOTICE": "Since this is your first time signing in, you must change your password before continuing.",
-    "LOADING": "Logging in..."
+    "LOADING": "Logging in...",
+    "USERNAME_REQUIRED": "Enter your username.",
+    "PASSWORD_REQUIRED": "Enter your password.",
+    "CAPS_LOCK": "Caps Lock is on.",
+    "ERROR_TITLE": "We couldn't sign you in.",
+    "ERROR": "The username or password is wrong, or the account is inactive.",
+    "NETWORK_ERROR": "Couldn't reach the server. Check your connection and try again.",
+    "LOCKED_TITLE": "Too many failed attempts.",
+    "LOCKED_MESSAGE": "Sign-in is paused for this account on this device for 5 minutes. Try again when the time is up.",
+    "TRY_AGAIN_IN": "Try again in {{time}}",
+    "FORGOT_PASSWORD": "Forgot your password? Ask the school administration to reset it."
   },
 
   "CHANGE_PASSWORD": {
     "TITLE": "Change Password",
     "SUBTITLE": "You can change your password here",
+    "FIRST_LOGIN_TITLE": "Choose a new password",
+    "FIRST_LOGIN_SUBTITLE": "The password you signed in with is temporary. Choose your own to start using the system.",
+    "STEP_SIGN_IN": "Sign in",
+    "STEP_NEW_PASSWORD": "New password",
+    "SIGNED_IN_AS": "Signed in as",
+    "LOGOUT": "Sign out",
     "CURRENT_PASSWORD": "Current Password",
     "CURRENT_PASSWORD_PLACEHOLDER": "Enter your current password",
+    "TEMP_PASSWORD": "Temporary password",
+    "TEMP_PASSWORD_PLACEHOLDER": "The one you just signed in with",
+    "CURRENT_REQUIRED": "Enter your current password.",
     "NEW_PASSWORD": "New Password",
     "NEW_PASSWORD_PLACEHOLDER": "Enter your new password",
     "CONFIRM_PASSWORD": "Confirm Password",
     "CONFIRM_PASSWORD_PLACEHOLDER": "Re-enter your new password",
+    "SHOW_PASSWORD": "Show password",
+    "HIDE_PASSWORD": "Hide password",
+    "RULE_LENGTH": "8 to 100 characters",
+    "RULE_DIFFERENT": "Different from your current password",
+    "RULE_DIFFERENT_TEMP": "Different from the temporary password",
+    "RULE_MATCH": "Matches the new password",
     "LOADING": "Changing password...",
     "BUTTON": "Change Password",
-
-    "REQUIRED": "Please fill in all fields.",
-    "SAME_PASSWORD": "You cannot use your current password as your new password.",
-    "MIN_LENGTH": "The new password must be at least 8 characters long.",
-    "PASSWORD_MISMATCH": "The new password and confirm password fields do not match."
+    "FIRST_LOGIN_BUTTON": "Save and continue"
   },
 
   "SIDEBAR": {

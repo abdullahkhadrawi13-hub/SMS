@@ -10,6 +10,7 @@ import { DashboardLayout } from './layouts/dashboard-layout/dashboard-layout';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
 import { mustChangePasswordGuard } from './core/guards/must-change-password-guard';
+import { firstLoginGuard } from './core/guards/first-login-guard';
 
 import { DASHBOARD_ROUTES } from './features/dashboard/dashboard.routes';
 
@@ -33,10 +34,12 @@ export const routes: Routes = [
         component: Login
       },
 
+      // صفحة أول تسجيل دخول فقط (كلمة مرور مؤقتة)
+      // التغيير العادي يكون من الـ Dialog في الـ navbar
       {
         path: 'change-password',
         component: ChangePassword,
-        canActivate: [authGuard]
+        canActivate: [authGuard, firstLoginGuard]
       }
 
     ]
