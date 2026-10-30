@@ -1,4 +1,4 @@
-/* The absentees component behaves like a block inside the parent page. */
+/* The absentees list behaves like a block inside the absentees tab. */
 :host {
   display: block;
 }

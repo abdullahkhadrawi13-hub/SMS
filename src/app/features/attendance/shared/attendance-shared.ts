@@ -1,5 +1,5 @@
-import { AttendanceStatus } from '../../core/models/attendance';
-import { fromApiDateTime } from '../../shared/utils/date-time';
+import { AttendanceStatus } from '../../../core/models/attendance';
+import { fromApiDateTime } from '../../../shared/utils/date-time';
 
 // The models sent to / received from the API are in core/models/attendance.ts.
 // This file keeps only what the attendance screens use.
@@ -32,7 +32,7 @@ export interface AttendanceSheetStats {
 export type AttendanceTab = 'record' | 'summary' | 'absentees';
 
 // One section in the absentees tab (its class and section names).
-// Kept by the page when the user picks a section, so the section stays
+// Kept by the absentees tab when the user picks a section, so the section stays
 // selected (with 0 absent) when another date has no absent students in it.
 export interface AbsenteeSection {
   classId: number;
@@ -41,6 +41,14 @@ export interface AbsenteeSection {
   sectionId: number;
   sectionAr: string;
   sectionEn: string;
+}
+
+// "Open the sheet of this section on this date", sent by the daily summary
+// and the absentees tabs to the page, which opens it in the record tab.
+export interface AttendanceSheetTarget {
+  classId: number;
+  sectionId: number;
+  date: string;
 }
 
 // Counters shown above a student's attendance history.

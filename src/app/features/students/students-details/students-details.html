@@ -199,9 +199,9 @@
       <!-- Attendance tab: the student's attendance history.
            Created (and its data loaded) only while the tab is open. -->
       @if (activeTab() === 'attendance') {
-        <app-attendance-history
+        <app-student-attendance-history
           [studentId]="studentId()"
-        ></app-attendance-history>
+        ></app-student-attendance-history>
       }
 
       <!-- Details tab -->

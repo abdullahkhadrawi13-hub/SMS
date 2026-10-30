@@ -61,76 +61,33 @@
     </nav>
   }
 
+  <!-- The three tabs stay alive while switching ([hidden], not @if),
+       so the unsaved marks and the absentees search are not lost. -->
   <mat-tab-nav-panel #tabPanel>
 
-    @if (activeTab() === 'record') {
+    <!-- Record attendance: class / section / date, then the sheet -->
+    <div [hidden]="activeTab() !== 'record'">
+      <app-record-tab></app-record-tab>
+    </div>
 
-      <!-- Class / Section / Date -->
-      <app-attendance-selector
-        [classes]="classes()"
-        [sections]="sections()"
-        [sectionsLoading]="sectionsLoading()"
-        [classId]="classId()"
-        [sectionId]="sectionId()"
-        [date]="date()"
-        [maxDate]="today"
-        [todayOnly]="todayOnly()"
-        [locked]="selectionLocked()"
-        (classChange)="onClassChange($event)"
-        (sectionChange)="onSectionChange($event)"
-        (dateChange)="onDateChange($event)"
-      ></app-attendance-selector>
+    <!-- Daily summary: sections recorded and absent students per section -->
+    @if (canViewSummary()) {
+      <div [hidden]="activeTab() !== 'summary'">
+        <app-daily-summary-tab
+          [reloadKey]="summaryReloadKey()"
+          (openSheet)="openSheet($event)"
+        ></app-daily-summary-tab>
+      </div>
+    }
 
-      <!-- Attendance Sheet (error / loading / empty state / table) -->
-      <app-attendance-sheet
-        [sheet]="sheet()"
-        [draft]="draft()"
-        [stats]="stats()"
-        [className]="selectedClassName()"
-        [sectionName]="selectedSectionName()"
-        [loading]="sheetLoading()"
-        [saving]="saving()"
-        [errorMessage]="sheetError()"
-        (statusChange)="onStatusChange($event)"
-        (markRemainingPresent)="markRemainingPresent()"
-        (reset)="resetChanges()"
-        (save)="saveAttendance()"
-      ></app-attendance-sheet>
-
-    } @else if (activeTab() === 'summary') {
-
-      <!-- Daily Summary (date / statistics / sections table) -->
-      <app-attendance-summary
-        [summary]="summary()"
-        [date]="summaryDate()"
-        [maxDate]="today"
-        [todayOnly]="todayOnly()"
-        [loading]="summaryLoading()"
-        [errorMessage]="summaryError()"
-        (dateChange)="onSummaryDateChange($event)"
-        (openSection)="openSectionSheet($event)"
-      ></app-attendance-summary>
-
-    } @else {
-
-      <!-- Absent students with their parents' phone numbers -->
-      <app-attendance-absentees
-        [absentees]="absentees()"
-        [date]="absenteesDate()"
-        [maxDate]="today"
-        [todayOnly]="todayOnly()"
-        [loading]="absenteesLoading()"
-        [errorMessage]="absenteesError()"
-        [search]="absenteesSearch()"
-        [section]="absenteesSection()"
-        [canOpenStudent]="canOpenStudent()"
-        [canLinkParent]="canLinkParent()"
-        (dateChange)="onAbsenteesDateChange($event)"
-        (searchChange)="absenteesSearch.set($event)"
-        (sectionChange)="absenteesSection.set($event)"
-        (openSheet)="openAbsenteesSheet($event)"
-      ></app-attendance-absentees>
-
+    <!-- Absent students with their parents' phone numbers -->
+    @if (canViewAbsentees()) {
+      <div [hidden]="activeTab() !== 'absentees'">
+        <app-absentees-tab
+          [reloadKey]="absenteesReloadKey()"
+          (openSheet)="openSheet($event)"
+        ></app-absentees-tab>
+      </div>
     }
 
   </mat-tab-nav-panel>

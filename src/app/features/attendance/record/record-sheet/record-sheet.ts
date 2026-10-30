@@ -8,19 +8,19 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Language } from '../../../core/services/language';
+import { Language } from '../../../../core/services/language';
 import {
   AttendanceDraft,
   AttendanceSheetStats,
   AttendanceStatusChange,
   formatAttendanceDate
-} from '../attendance';
+} from '../../shared/attendance-shared';
 import {
   ATTENDANCE_ABSENT,
   ATTENDANCE_PRESENT,
   AttendanceSheet as AttendanceSheetData,
   AttendanceStatus
-} from '../../../core/models/attendance';
+} from '../../../../core/models/attendance';
 
 // One row of the sheet table.
 interface AttendanceSheetRow {
@@ -36,7 +36,7 @@ interface AttendanceSheetRow {
 }
 
 @Component({
-  selector: 'app-attendance-sheet',
+  selector: 'app-record-sheet',
   imports: [
     MatButtonModule,
     MatButtonToggleModule,
@@ -45,14 +45,14 @@ interface AttendanceSheetRow {
     MatTableModule,
     TranslatePipe
   ],
-  templateUrl: './attendance-sheet.html',
-  styleUrl: './attendance-sheet.css',
+  templateUrl: './record-sheet.html',
+  styleUrl: './record-sheet.css',
 })
-export class AttendanceSheet {
+export class RecordSheet {
 
   private readonly language = inject(Language);
 
-  // ===== Inputs (all data is owned and loaded by the parent page) =====
+  // ===== Inputs (all data is owned and loaded by the record tab) =====
 
   // The sheet returned by the API (null = nothing loaded).
   readonly sheet = input<AttendanceSheetData | null>(null);
@@ -73,7 +73,7 @@ export class AttendanceSheet {
   // Error message text (already in the current language).
   readonly errorMessage = input<string | null>(null);
 
-  // ===== Outputs (the parent page performs the actual actions) =====
+  // ===== Outputs (the record tab performs the actual actions) =====
 
   readonly statusChange = output<AttendanceStatusChange>();
   readonly markRemainingPresent = output<void>();

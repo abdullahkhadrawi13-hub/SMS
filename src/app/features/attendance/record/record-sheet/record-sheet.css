@@ -1,4 +1,4 @@
-/* The sheet component behaves like a block inside the parent page. */
+/* The sheet behaves like a block inside the record tab. */
 :host {
   display: block;
 }

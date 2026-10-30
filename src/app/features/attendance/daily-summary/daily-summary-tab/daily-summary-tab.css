@@ -1,4 +1,4 @@
-/* The summary component behaves like a block inside the parent page. */
+/* The daily summary tab behaves like a block inside the attendance page. */
 :host {
   display: block;
 }

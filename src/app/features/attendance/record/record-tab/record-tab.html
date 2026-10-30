@@ -1,0 +1,31 @@
+<!-- Class / Section / Date -->
+<app-record-selector
+  [classes]="classes()"
+  [sections]="sections()"
+  [sectionsLoading]="sectionsLoading()"
+  [classId]="classId()"
+  [sectionId]="sectionId()"
+  [date]="date()"
+  [maxDate]="today"
+  [todayOnly]="todayOnly()"
+  [locked]="selectionLocked()"
+  (classChange)="onClassChange($event)"
+  (sectionChange)="onSectionChange($event)"
+  (dateChange)="onDateChange($event)"
+></app-record-selector>
+
+<!-- Attendance Sheet (error / loading / empty state / table) -->
+<app-record-sheet
+  [sheet]="sheet()"
+  [draft]="draft()"
+  [stats]="stats()"
+  [className]="selectedClassName()"
+  [sectionName]="selectedSectionName()"
+  [loading]="sheetLoading()"
+  [saving]="saving()"
+  [errorMessage]="sheetError()"
+  (statusChange)="onStatusChange($event)"
+  (markRemainingPresent)="markRemainingPresent()"
+  (reset)="resetChanges()"
+  (save)="saveAttendance()"
+></app-record-sheet>

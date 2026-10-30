@@ -8,17 +8,17 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Language } from '../../../core/services/language';
-import { ActiveSectionDto } from '../../../core/models/section';
-import { SchoolClassSimpleDto } from '../../../core/models/school-class';
+import { Language } from '../../../../core/services/language';
+import { ActiveSectionDto } from '../../../../core/models/section';
+import { SchoolClassSimpleDto } from '../../../../core/models/school-class';
 import {
   formatAttendanceDate,
   fromApiDate,
   toApiDate
-} from '../attendance';
+} from '../../shared/attendance-shared';
 
 @Component({
-  selector: 'app-attendance-selector',
+  selector: 'app-record-selector',
   imports: [
     MatDatepickerModule,
     MatFormFieldModule,
@@ -27,14 +27,14 @@ import {
     MatSelectModule,
     TranslatePipe
   ],
-  templateUrl: './attendance-selector.html',
-  styleUrl: './attendance-selector.css',
+  templateUrl: './record-selector.html',
+  styleUrl: './record-selector.css',
 })
-export class AttendanceSelector {
+export class RecordSelector {
 
   private readonly language = inject(Language);
 
-  // ===== Inputs (all data is owned and loaded by the parent page) =====
+  // ===== Inputs (all data is owned and loaded by the record tab) =====
 
   // Active classes only.
   readonly classes = input<SchoolClassSimpleDto[]>([]);
@@ -61,7 +61,7 @@ export class AttendanceSelector {
   // The selection cannot be changed then, so nothing is lost by mistake.
   readonly locked = input(false);
 
-  // ===== Outputs (the parent page loads the data) =====
+  // ===== Outputs (the record tab loads the data) =====
 
   readonly classChange = output<number | null>();
   readonly sectionChange = output<number | null>();
