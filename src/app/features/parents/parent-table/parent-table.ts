@@ -81,6 +81,7 @@ export class ParentTable {
   readonly editParent = output<number>();
   readonly linkChild = output<ParentDto>();
   readonly toggleStatus = output<ParentDto>();
+  readonly resetPassword = output<ParentDto>();
 
 
   // Columns displayed in the parents table.

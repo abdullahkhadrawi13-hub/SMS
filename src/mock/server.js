@@ -1,6 +1,7 @@
 const http = require('http');
 
 const authRoutes = require('./routes/auth.routes');
+const usersRoutes = require('./routes/users.routes');
 const studentsRoutes = require('./routes/students.routes');
 const teachersRoutes = require('./routes/teachers.routes');
 const parentsRoutes = require('./routes/parents.routes');
@@ -69,6 +70,15 @@ const server = http.createServer((req, res) => {
   // =========================
 
   if (authRoutes(req, res)) {
+    return;
+  }
+
+
+  // =========================
+  // Users API (reset password)
+  // =========================
+
+  if (usersRoutes(req, res)) {
     return;
   }
 

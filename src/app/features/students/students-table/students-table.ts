@@ -69,6 +69,7 @@ export class StudentsTable {
   readonly viewStudent = output<number>();
   readonly editStudent = output<number>();
   readonly toggleStatus = output<Student>();
+  readonly resetPassword = output<Student>();
 
   // Columns displayed in the students table.
   readonly displayedColumns = [

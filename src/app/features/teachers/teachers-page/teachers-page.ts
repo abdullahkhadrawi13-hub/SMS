@@ -25,6 +25,11 @@ import { TeacherTable } from '../teacher-table/teacher-table';
 import { TeacherForm } from '../teacher-form/teacher-form';
 import { TeacherDetails } from '../teacher-details/teacher-details';
 import { TeacherListDto } from '../../../core/models/teacher';
+import {
+  ResetPasswordDialog,
+  ResetPasswordDialogData,
+  ResetPasswordResult
+} from '../../../shared/components/reset-password-dialog/reset-password-dialog';
 
 
 @Component({
@@ -262,6 +267,28 @@ export class TeachersPage {
           this.loadTeachers();
         }
       });
+  }
+
+
+  // Opens "Reset password" (POST /api/users/{userId}/reset-password).
+  // Nothing in the list changes, so no reload after it.
+  openResetPassword(teacher: TeacherListDto): void {
+
+    this.dialog.open<ResetPasswordDialog, ResetPasswordDialogData, ResetPasswordResult>(
+      ResetPasswordDialog,
+      {
+        width: '520px',
+        maxWidth: '95vw',
+        maxHeight: '90vh',
+        data: {
+          user: teacher,
+          detail: {
+            labelKey: 'TEACHERS.TABLE.TEACHER_NUMBER',
+            value: teacher.teacherNumber
+          }
+        }
+      }
+    );
   }
 
 

@@ -37,6 +37,11 @@ import {
   ParentLinkChildDialogData,
   ParentLinkChildResult,
 } from '../parent-link-child/parent-link-child';
+import {
+  ResetPasswordDialog,
+  ResetPasswordDialogData,
+  ResetPasswordResult
+} from '../../../shared/components/reset-password-dialog/reset-password-dialog';
 
 
 // Parents page (API Reference, section 14).
@@ -314,6 +319,28 @@ export class ParentsPage {
           this.loadParents();
         }
       });
+  }
+
+
+  // Opens "Reset password" (POST /api/users/{userId}/reset-password).
+  // Nothing in the list changes, so no reload after it.
+  openResetPassword(parent: ParentDto): void {
+
+    this.dialog.open<ResetPasswordDialog, ResetPasswordDialogData, ResetPasswordResult>(
+      ResetPasswordDialog,
+      {
+        width: '520px',
+        maxWidth: '95vw',
+        maxHeight: '90vh',
+        data: {
+          user: parent,
+          detail: {
+            labelKey: 'PARENTS.TABLE.PHONE',
+            value: parent.phoneNumber
+          }
+        }
+      }
+    );
   }
 
 

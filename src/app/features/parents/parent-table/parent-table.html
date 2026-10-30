@@ -284,6 +284,16 @@
                   <button
                     mat-menu-item
                     type="button"
+                    (click)="resetPassword.emit(parent)"
+                  >
+                    <mat-icon>lock_reset</mat-icon>
+
+                    {{ 'PARENTS.TABLE.RESET_PASSWORD' | translate }}
+                  </button>
+
+                  <button
+                    mat-menu-item
+                    type="button"
                     (click)="toggleStatus.emit(parent)"
                   >
                     <mat-icon>

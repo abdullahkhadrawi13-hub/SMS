@@ -192,6 +192,7 @@
     "VIEW": "View Details",
 
     "EDIT": "Edit",
+    "RESET_PASSWORD": "Reset password",
 
     "LOADING": "Loading students...",
 
@@ -517,6 +518,35 @@
       "INFO": "Info",
       "WARNING": "Warning",
       "OK": "OK"
+    },
+
+    "RESET_PASSWORD": {
+      "TITLE": "Reset password",
+      "LOGIN_ID": "Login ID",
+      "TEMP_LABEL": "New temporary password",
+      "TEMP_HINT": "Generated for you. You can type another one (at least 8 characters).",
+      "TEMP_TOO_SHORT": "Must be at least 8 characters.",
+      "GENERATE": "Generate a new password",
+      "ADMIN_LABEL": "Your password (to confirm)",
+      "ADMIN_HINT": "The password you sign in with.",
+      "SHOW_PASSWORD": "Show password",
+      "HIDE_PASSWORD": "Hide password",
+      "NOTE_CHANGE": "They must change it at their next login.",
+      "NOTE_SESSIONS": "Any session they have open ends at once.",
+      "LOCKED_TITLE": "Too many wrong attempts",
+      "LOCKED_TEXT": "Try again in",
+      "CANCEL": "Cancel",
+      "SUBMIT": "Reset password",
+      "SUBMITTING": "Saving...",
+      "DONE_TITLE": "The password was reset",
+      "DONE_TEXT": "Give {{name}} these details to sign in.",
+      "TEMP_PASSWORD": "Temporary password",
+      "COPY": "Copy",
+      "COPIED": "Copied",
+      "COPY_BOTH": "Copy both",
+      "COPY_TEXT": "Login ID: {{loginId}}\nTemporary password: {{password}}",
+      "ONE_TIME_WARNING": "This is the only time it is shown, and the system does not keep it. Copy it before closing.",
+      "DONE": "Done"
     }
   },
 
@@ -552,6 +582,7 @@
       "ACTIONS": "Actions",
       "VIEW": "View",
       "EDIT": "Edit",
+      "RESET_PASSWORD": "Reset password",
       "ACTIVATE": "Activate",
       "DEACTIVATE": "Deactivate",
       "EMPTY": "No teachers to display",
@@ -668,6 +699,7 @@
       "VIEW": "View",
       "EDIT": "Edit",
       "LINK_CHILD": "Link a child",
+      "RESET_PASSWORD": "Reset password",
       "ACTIVATE": "Activate",
       "DEACTIVATE": "Deactivate",
       "EMPTY": "No parents to display",

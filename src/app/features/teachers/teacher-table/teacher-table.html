@@ -244,6 +244,17 @@
                     {{ 'TEACHERS.TABLE.EDIT' | translate }}
                   </button>
 
+                  <!-- Reset password -->
+                  <button
+                    mat-menu-item
+                    type="button"
+                    (click)="resetPassword.emit(teacher)"
+                  >
+                    <mat-icon>lock_reset</mat-icon>
+
+                    {{ 'TEACHERS.TABLE.RESET_PASSWORD' | translate }}
+                  </button>
+
                   <!-- Activate / deactivate teacher -->
                   <button
                     mat-menu-item

@@ -169,6 +169,13 @@
                     {{ 'STUDENTS.EDIT' | translate }}
                   </button>
 
+                  <!-- Reset password -->
+                  <button mat-menu-item type="button" (click)="resetPassword.emit(student)">
+                    <mat-icon>lock_reset</mat-icon>
+
+                    {{ 'STUDENTS.RESET_PASSWORD' | translate }}
+                  </button>
+
                   <!-- Activate / Deactivate -->
                   <button mat-menu-item type="button" (click)="toggleStatus.emit(student)">
                     <mat-icon>

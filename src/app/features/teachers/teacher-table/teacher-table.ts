@@ -72,6 +72,7 @@ export class TeacherTable {
   readonly viewTeacher = output<number>();
   readonly editTeacher = output<number>();
   readonly toggleStatus = output<TeacherListDto>();
+  readonly resetPassword = output<TeacherListDto>();
 
 
   // Columns displayed in the teacher table.

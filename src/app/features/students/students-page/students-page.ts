@@ -34,6 +34,12 @@ import { StudentsHeader } from '../students-header/students-header';
 import { StudentsSearch } from '../students-search/students-search';
 import { StudentsTable } from '../students-table/students-table';
 
+import {
+  ResetPasswordDialog,
+  ResetPasswordDialogData,
+  ResetPasswordResult
+} from '../../../shared/components/reset-password-dialog/reset-password-dialog';
+
 
 
 @Component({
@@ -487,6 +493,31 @@ export class StudentsPage {
     });
 
 }
+
+  // Opens "Reset password" (POST /api/users/{userId}/reset-password).
+  // Nothing in the list changes, so no reload after it.
+  openResetPassword(
+    student: Student
+  ): void {
+
+    this.dialog.open<ResetPasswordDialog, ResetPasswordDialogData, ResetPasswordResult>(
+      ResetPasswordDialog,
+      {
+        width: '520px',
+        maxWidth: '95vw',
+        maxHeight: '90vh',
+        data: {
+          user: student,
+          detail: {
+            labelKey: 'STUDENTS.STUDENT_NUMBER',
+            value: student.studentNumber
+          }
+        }
+      }
+    );
+
+  }
+
 
   retry(): void {
 
