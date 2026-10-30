@@ -4,7 +4,7 @@
     <mat-spinner diameter="42"></mat-spinner>
 
     <p>
-      {{ 'ATTENDANCE.HISTORY.LOADING' | translate }}
+      {{ 'ATTENDANCE.STUDENT_HISTORY.LOADING' | translate }}
     </p>
   </div>
 }
@@ -19,7 +19,7 @@
     <button mat-stroked-button type="button" (click)="loadHistory()">
       <mat-icon>refresh</mat-icon>
 
-      {{ 'ATTENDANCE.HISTORY.RETRY' | translate }}
+      {{ 'ATTENDANCE.STUDENT_HISTORY.RETRY' | translate }}
     </button>
   </div>
 }
@@ -30,11 +30,11 @@
     <mat-icon>event_busy</mat-icon>
 
     <h3>
-      {{ 'ATTENDANCE.HISTORY.EMPTY.TITLE' | translate }}
+      {{ 'ATTENDANCE.STUDENT_HISTORY.EMPTY.TITLE' | translate }}
     </h3>
 
     <p>
-      {{ 'ATTENDANCE.HISTORY.EMPTY.MESSAGE' | translate }}
+      {{ 'ATTENDANCE.STUDENT_HISTORY.EMPTY.MESSAGE' | translate }}
     </p>
   </div>
 }
@@ -48,7 +48,7 @@
     <div class="history-counters">
 
       <span class="counter total">
-        {{ 'ATTENDANCE.HISTORY.RECORDED_DAYS' | translate }}
+        {{ 'ATTENDANCE.STUDENT_HISTORY.RECORDED_DAYS' | translate }}
         <strong>{{ stats().recorded }}</strong>
       </span>
 
@@ -69,7 +69,7 @@
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
 
         <mat-label>
-          {{ 'ATTENDANCE.HISTORY.TERM' | translate }}
+          {{ 'ATTENDANCE.STUDENT_HISTORY.TERM' | translate }}
         </mat-label>
 
         <!-- canSelectNullableOptions: "All terms" has the value null.
@@ -81,14 +81,14 @@
         >
 
           <mat-option [value]="null">
-            {{ 'ATTENDANCE.HISTORY.ALL_TERMS' | translate }}
+            {{ 'ATTENDANCE.STUDENT_HISTORY.ALL_TERMS' | translate }}
           </mat-option>
 
           @for (term of termOptions(); track term.academicTermId) {
             <mat-option [value]="term.academicTermId">
               {{
                 term.name
-                  ?? ('ATTENDANCE.HISTORY.TERM_NUMBER' | translate: { id: term.academicTermId })
+                  ?? ('ATTENDANCE.STUDENT_HISTORY.TERM_NUMBER' | translate: { id: term.academicTermId })
               }}
             </mat-option>
           }
@@ -106,7 +106,7 @@
     <mat-icon>info</mat-icon>
 
     <span>
-      {{ 'ATTENDANCE.HISTORY.NOTE' | translate }}
+      {{ 'ATTENDANCE.STUDENT_HISTORY.NOTE' | translate }}
     </span>
   </p>
 
@@ -119,7 +119,7 @@
         <!-- Date -->
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef>
-            {{ 'ATTENDANCE.HISTORY.TABLE.DATE' | translate }}
+            {{ 'ATTENDANCE.STUDENT_HISTORY.TABLE.DATE' | translate }}
           </th>
 
           <td mat-cell *matCellDef="let row">
@@ -130,7 +130,7 @@
         <!-- Status -->
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>
-            {{ 'ATTENDANCE.HISTORY.TABLE.STATUS' | translate }}
+            {{ 'ATTENDANCE.STUDENT_HISTORY.TABLE.STATUS' | translate }}
           </th>
 
           <td mat-cell *matCellDef="let row">
@@ -153,7 +153,7 @@
         <!-- Recorded at -->
         <ng-container matColumnDef="recordedAt">
           <th mat-header-cell *matHeaderCellDef>
-            {{ 'ATTENDANCE.HISTORY.TABLE.RECORDED_AT' | translate }}
+            {{ 'ATTENDANCE.STUDENT_HISTORY.TABLE.RECORDED_AT' | translate }}
           </th>
 
           <td mat-cell *matCellDef="let row">
@@ -164,7 +164,7 @@
         <!-- Last edit -->
         <ng-container matColumnDef="editedAt">
           <th mat-header-cell *matHeaderCellDef>
-            {{ 'ATTENDANCE.HISTORY.TABLE.EDITED_AT' | translate }}
+            {{ 'ATTENDANCE.STUDENT_HISTORY.TABLE.EDITED_AT' | translate }}
           </th>
 
           <td mat-cell *matCellDef="let row">

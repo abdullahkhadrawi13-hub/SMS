@@ -1,4 +1,4 @@
-/* The selector component behaves like a block inside the parent page. */
+/* The selector behaves like a block inside the record tab. */
 :host {
   display: block;
 }

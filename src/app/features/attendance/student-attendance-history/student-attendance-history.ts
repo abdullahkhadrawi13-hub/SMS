@@ -27,7 +27,7 @@ import {
   AttendanceHistoryStats,
   formatAttendanceDate,
   formatAttendanceDateTime
-} from '../attendance';
+} from '../shared/attendance-shared';
 import { AcademicTerm } from '../../../core/models/academic-term';
 import {
   ATTENDANCE_ABSENT,
@@ -57,11 +57,11 @@ interface AttendanceHistoryRow {
 // One student's attendance history.
 // GET /api/attendance/by-student/{studentId} (Admin, AssistantPrincipal).
 //
-// It is shown inside the student details (the "Attendance" tab),
-// so unlike the other attendance components it loads its own data:
-// the parent only gives it the student id.
+// It is not a tab of the attendance page: it is shown inside the student
+// page (its "Attendance" tab). It loads its own data; the student page
+// only gives it the student id.
 @Component({
-  selector: 'app-attendance-history',
+  selector: 'app-student-attendance-history',
   imports: [
     MatButtonModule,
     MatFormFieldModule,
@@ -71,10 +71,10 @@ interface AttendanceHistoryRow {
     MatTableModule,
     TranslatePipe
   ],
-  templateUrl: './attendance-history.html',
-  styleUrl: './attendance-history.css',
+  templateUrl: './student-attendance-history.html',
+  styleUrl: './student-attendance-history.css',
 })
-export class AttendanceHistory implements OnInit {
+export class StudentAttendanceHistory implements OnInit {
 
   private readonly attendanceService = inject(AttendanceService);
   private readonly termsService = inject(AcademicTermsService);

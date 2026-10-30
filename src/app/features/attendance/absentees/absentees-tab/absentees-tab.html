@@ -1,0 +1,17 @@
+<!-- Absent students with their parents' phone numbers -->
+<app-absentees-list
+  [absentees]="absentees()"
+  [date]="date()"
+  [maxDate]="maxDate"
+  [todayOnly]="todayOnly()"
+  [loading]="loading()"
+  [errorMessage]="errorMessage()"
+  [search]="search()"
+  [section]="section()"
+  [canOpenStudent]="canOpenStudent()"
+  [canLinkParent]="canLinkParent()"
+  (dateChange)="onDateChange($event)"
+  (searchChange)="search.set($event)"
+  (sectionChange)="section.set($event)"
+  (openSheet)="openSectionSheet($event)"
+></app-absentees-list>

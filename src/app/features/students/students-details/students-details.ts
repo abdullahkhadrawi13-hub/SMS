@@ -19,7 +19,7 @@ import { AttendanceAccessService } from '../../../core/services/attendance-acces
 import { Permissions } from '../../../core/services/permissions';
 import { getRoleTranslationKey } from '../../../core/models/user-role';
 
-import { AttendanceHistory } from '../../attendance/attendance-history/attendance-history';
+import { StudentAttendanceHistory } from '../../attendance/student-attendance-history/student-attendance-history';
 import { StudentParents } from '../student-parents/student-parents';
 import { StudentGradesTab } from '../../grades/student-grades/student-grades-tab/student-grades-tab';
 
@@ -46,7 +46,7 @@ interface StudentDetailsNavigationState {
     MatProgressSpinnerModule,
     MatTabsModule,
     TranslatePipe,
-    AttendanceHistory,
+    StudentAttendanceHistory,
     StudentParents,
     StudentGradesTab
   ],

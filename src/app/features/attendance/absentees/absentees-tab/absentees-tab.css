@@ -1,0 +1,4 @@
+/* The absentees tab behaves like a block inside the attendance page. */
+:host {
+  display: block;
+}

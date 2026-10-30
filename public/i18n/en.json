@@ -1254,7 +1254,7 @@
       "UNMARKED": "Unmarked"
     },
 
-    "SELECTOR": {
+    "RECORD_SELECTOR": {
       "CLASS": "Class",
       "SECTION": "Section",
       "DATE": "Date",
@@ -1262,7 +1262,7 @@
       "TODAY_ONLY_HINT": "You can record attendance for today only."
     },
 
-    "SHEET": {
+    "RECORD_SHEET": {
       "TITLE": "{{className}} · Section {{sectionName}}",
       "TOTAL": "Total",
       "MARK_REMAINING_PRESENT": "Mark remaining present",
@@ -1292,7 +1292,8 @@
       }
     },
 
-    "SUMMARY": {
+    "DAILY_SUMMARY": {
+      "DATE": "Date",
       "TODAY": "Today",
       "LOADING": "Loading attendance summary...",
       "COMPLETED_SECTIONS": "Completed Sections",
@@ -1327,7 +1328,10 @@
       }
     },
 
-    "ABSENTEES": {
+    "ABSENTEES_LIST": {
+      "DATE": "Date",
+      "SECTION": "Section",
+      "TODAY": "Today",
       "TODAY_ONLY": "Today only",
       "LOADING": "Loading absent students...",
       "TOTAL_ABSENT": "Absent students",
@@ -1358,7 +1362,7 @@
       }
     },
 
-    "HISTORY": {
+    "STUDENT_HISTORY": {
       "RECORDED_DAYS": "Recorded days",
       "TERM": "Academic term",
       "ALL_TERMS": "All terms",

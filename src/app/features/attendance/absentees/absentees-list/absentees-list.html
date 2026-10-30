@@ -7,7 +7,7 @@
     <span class="today-only-chip">
       <mat-icon>lock_clock</mat-icon>
 
-      {{ 'ATTENDANCE.ABSENTEES.TODAY_ONLY' | translate }}
+      {{ 'ATTENDANCE.ABSENTEES_LIST.TODAY_ONLY' | translate }}
     </span>
 
   } @else {
@@ -15,7 +15,7 @@
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
 
       <mat-label>
-        {{ 'ATTENDANCE.SELECTOR.DATE' | translate }}
+        {{ 'ATTENDANCE.ABSENTEES_LIST.DATE' | translate }}
       </mat-label>
 
       <input
@@ -43,7 +43,7 @@
     >
       <mat-icon>today</mat-icon>
 
-      {{ 'ATTENDANCE.SUMMARY.TODAY' | translate }}
+      {{ 'ATTENDANCE.ABSENTEES_LIST.TODAY' | translate }}
     </button>
 
   }
@@ -68,7 +68,7 @@
     <mat-spinner diameter="42"></mat-spinner>
 
     <p>
-      {{ 'ATTENDANCE.ABSENTEES.LOADING' | translate }}
+      {{ 'ATTENDANCE.ABSENTEES_LIST.LOADING' | translate }}
     </p>
   </div>
 }
@@ -97,7 +97,7 @@
 
         <div class="stat-info">
           <h3>
-            {{ 'ATTENDANCE.ABSENTEES.TOTAL_ABSENT' | translate }}
+            {{ 'ATTENDANCE.ABSENTEES_LIST.TOTAL_ABSENT' | translate }}
           </h3>
 
           <span class="stat-value">{{ totalAbsent() }}</span>
@@ -111,7 +111,7 @@
 
         <div class="stat-info">
           <h3>
-            {{ 'ATTENDANCE.ABSENTEES.WITHOUT_PARENT' | translate }}
+            {{ 'ATTENDANCE.ABSENTEES_LIST.WITHOUT_PARENT' | translate }}
           </h3>
 
           <span class="stat-value">{{ withoutParentCount() }}</span>
@@ -127,7 +127,7 @@
       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
 
         <mat-label>
-          {{ 'ATTENDANCE.ABSENTEES.SEARCH' | translate }}
+          {{ 'ATTENDANCE.ABSENTEES_LIST.SEARCH' | translate }}
         </mat-label>
 
         <mat-icon matIconPrefix>search</mat-icon>
@@ -137,7 +137,7 @@
           type="text"
           autocomplete="off"
           [value]="search()"
-          [placeholder]="'ATTENDANCE.ABSENTEES.SEARCH_PLACEHOLDER' | translate"
+          [placeholder]="'ATTENDANCE.ABSENTEES_LIST.SEARCH_PLACEHOLDER' | translate"
           (input)="onSearchInput($any($event.target).value)"
         />
 
@@ -146,7 +146,7 @@
             mat-icon-button
             matSuffix
             type="button"
-            [attr.aria-label]="'ATTENDANCE.ABSENTEES.CLEAR_SEARCH' | translate"
+            [attr.aria-label]="'ATTENDANCE.ABSENTEES_LIST.CLEAR_SEARCH' | translate"
             (click)="clearSearch()"
           >
             <mat-icon>close</mat-icon>
@@ -159,7 +159,7 @@
       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="section-field">
 
         <mat-label>
-          {{ 'ATTENDANCE.SELECTOR.SECTION' | translate }}
+          {{ 'ATTENDANCE.ABSENTEES_LIST.SECTION' | translate }}
         </mat-label>
 
         <mat-select
@@ -170,16 +170,16 @@
           <!-- The text of the closed list -->
           <mat-select-trigger>
             @if (selectedNames(); as names) {
-              {{ 'ATTENDANCE.ABSENTEES.SECTION_TITLE' | translate: names }}
+              {{ 'ATTENDANCE.ABSENTEES_LIST.SECTION_TITLE' | translate: names }}
             } @else {
-              {{ 'ATTENDANCE.ABSENTEES.ALL_SECTIONS' | translate }}
+              {{ 'ATTENDANCE.ABSENTEES_LIST.ALL_SECTIONS' | translate }}
             }
           </mat-select-trigger>
 
           <mat-option [value]="allSections">
             <span class="option-row">
               <span class="option-name">
-                {{ 'ATTENDANCE.ABSENTEES.ALL_SECTIONS' | translate }}
+                {{ 'ATTENDANCE.ABSENTEES_LIST.ALL_SECTIONS' | translate }}
               </span>
 
               <span class="option-count">{{ totalAbsent() }}</span>
@@ -193,7 +193,7 @@
                 <mat-option [value]="option.section.sectionId">
                   <span class="option-row">
                     <span class="option-name">
-                      {{ 'ATTENDANCE.ABSENTEES.SECTION_OPTION' | translate: { sectionName: option.name } }}
+                      {{ 'ATTENDANCE.ABSENTEES_LIST.SECTION_OPTION' | translate: { sectionName: option.name } }}
                     </span>
 
                     <span class="option-count" [class.zero]="option.count === 0">
@@ -214,7 +214,7 @@
       @if (isSearching() && inSection().length > 0) {
         <p class="result-line">
           {{
-            'ATTENDANCE.ABSENTEES.SEARCH_RESULT'
+            'ATTENDANCE.ABSENTEES_LIST.SEARCH_RESULT'
               | translate: { shown: shownStudents().length, total: inSection().length }
           }}
         </p>
@@ -229,13 +229,13 @@
         <mat-icon class="ok">check_circle</mat-icon>
 
         <h3>
-          {{ 'ATTENDANCE.ABSENTEES.EMPTY.SECTION_TITLE' | translate }}
+          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.SECTION_TITLE' | translate }}
         </h3>
 
         @if (selectedNames(); as names) {
           <p>
             {{
-              'ATTENDANCE.ABSENTEES.EMPTY.SECTION_MESSAGE'
+              'ATTENDANCE.ABSENTEES_LIST.EMPTY.SECTION_MESSAGE'
                 | translate: {
                     className: names.className,
                     sectionName: names.sectionName,
@@ -254,7 +254,7 @@
           >
             <mat-icon>list</mat-icon>
 
-            {{ 'ATTENDANCE.ABSENTEES.SHOW_ALL' | translate: { count: totalAbsent() } }}
+            {{ 'ATTENDANCE.ABSENTEES_LIST.SHOW_ALL' | translate: { count: totalAbsent() } }}
           </button>
         }
       </div>
@@ -266,11 +266,11 @@
         <mat-icon class="ok">check_circle</mat-icon>
 
         <h3>
-          {{ 'ATTENDANCE.ABSENTEES.EMPTY.DAY_TITLE' | translate }}
+          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.DAY_TITLE' | translate }}
         </h3>
 
         <p>
-          {{ 'ATTENDANCE.ABSENTEES.EMPTY.DAY_MESSAGE' | translate }}
+          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.DAY_MESSAGE' | translate }}
         </p>
       </div>
     }
@@ -281,11 +281,11 @@
         <mat-icon>search_off</mat-icon>
 
         <h3>
-          {{ 'ATTENDANCE.ABSENTEES.EMPTY.SEARCH_TITLE' | translate }}
+          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.SEARCH_TITLE' | translate }}
         </h3>
 
         <p>
-          {{ 'ATTENDANCE.ABSENTEES.EMPTY.SEARCH_MESSAGE' | translate }}
+          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.SEARCH_MESSAGE' | translate }}
         </p>
       </div>
     }
@@ -298,7 +298,7 @@
           <header class="group-head">
             <h2>
               {{
-                'ATTENDANCE.ABSENTEES.SECTION_TITLE'
+                'ATTENDANCE.ABSENTEES_LIST.SECTION_TITLE'
                   | translate: { className: group.className, sectionName: group.sectionName }
               }}
             </h2>
@@ -306,7 +306,7 @@
             <span class="absent-badge">
               <mat-icon>person_off</mat-icon>
 
-              {{ 'ATTENDANCE.ABSENTEES.ABSENT_COUNT' | translate: { count: group.rows.length } }}
+              {{ 'ATTENDANCE.ABSENTEES_LIST.ABSENT_COUNT' | translate: { count: group.rows.length } }}
             </span>
 
             <span class="spacer"></span>
@@ -319,7 +319,7 @@
             >
               <mat-icon>edit</mat-icon>
 
-              {{ 'ATTENDANCE.ABSENTEES.OPEN_SHEET' | translate }}
+              {{ 'ATTENDANCE.ABSENTEES_LIST.OPEN_SHEET' | translate }}
             </button>
           </header>
 
@@ -341,7 +341,7 @@
                       class="student-name link"
                       [routerLink]="['/students', row.student.studentId]"
                       [queryParams]="{ tab: 'attendance' }"
-                      [title]="'ATTENDANCE.ABSENTEES.OPEN_STUDENT' | translate"
+                      [title]="'ATTENDANCE.ABSENTEES_LIST.OPEN_STUDENT' | translate"
                     >
                       <!-- No spaces inside: a match can split a word -->
                       @for (part of row.nameParts; track $index) {@if (part.match) {<mark>{{ part.text }}</mark>} @else {<span>{{ part.text }}</span>}}
@@ -383,9 +383,9 @@
                     @if (!parentRow.parent.isActive) {
                       <span
                         class="inactive-tag"
-                        [title]="'ATTENDANCE.ABSENTEES.INACTIVE_PARENT_HINT' | translate"
+                        [title]="'ATTENDANCE.ABSENTEES_LIST.INACTIVE_PARENT_HINT' | translate"
                       >
-                        {{ 'ATTENDANCE.ABSENTEES.INACTIVE_PARENT' | translate }}
+                        {{ 'ATTENDANCE.ABSENTEES_LIST.INACTIVE_PARENT' | translate }}
                       </span>
                     }
 
@@ -397,8 +397,8 @@
                       mat-icon-button
                       class="call-button"
                       [href]="'tel:' + parentRow.parent.phoneNumber"
-                      [attr.aria-label]="'ATTENDANCE.ABSENTEES.CALL' | translate"
-                      [title]="'ATTENDANCE.ABSENTEES.CALL' | translate"
+                      [attr.aria-label]="'ATTENDANCE.ABSENTEES_LIST.CALL' | translate"
+                      [title]="'ATTENDANCE.ABSENTEES_LIST.CALL' | translate"
                     >
                       <mat-icon>call</mat-icon>
                     </a>
@@ -409,7 +409,7 @@
                     <mat-icon>warning_amber</mat-icon>
 
                     <span class="no-parent-text">
-                      {{ 'ATTENDANCE.ABSENTEES.NO_PARENT' | translate }}
+                      {{ 'ATTENDANCE.ABSENTEES_LIST.NO_PARENT' | translate }}
                     </span>
 
                     @if (canLinkParent()) {
@@ -421,7 +421,7 @@
                       >
                         <mat-icon>link</mat-icon>
 
-                        {{ 'ATTENDANCE.ABSENTEES.LINK_PARENT' | translate }}
+                        {{ 'ATTENDANCE.ABSENTEES_LIST.LINK_PARENT' | translate }}
                       </a>
                     }
                   </div>

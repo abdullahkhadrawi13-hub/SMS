@@ -12,19 +12,19 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Language } from '../../../core/services/language';
+import { Language } from '../../../../core/services/language';
 import {
   AbsentStudent,
   AbsentStudentParent,
   AttendanceAbsentees as AttendanceAbsenteesData
-} from '../../../core/models/attendance';
-import { getRelationshipTranslationKey } from '../../../core/models/parent';
+} from '../../../../core/models/attendance';
+import { getRelationshipTranslationKey } from '../../../../core/models/parent';
 import {
   AbsenteeSection,
   formatAttendanceDate,
   fromApiDate,
   toApiDate
-} from '../attendance';
+} from '../../shared/attendance-shared';
 
 // The value of "All sections" in the section list.
 // (Section ids are always above 0. null is not used, because mat-select
@@ -76,7 +76,7 @@ interface SectionGroup {
 }
 
 @Component({
-  selector: 'app-attendance-absentees',
+  selector: 'app-absentees-list',
   imports: [
     RouterLink,
 
@@ -90,16 +90,16 @@ interface SectionGroup {
     MatSelectModule,
     TranslatePipe
   ],
-  templateUrl: './attendance-absentees.html',
-  styleUrl: './attendance-absentees.css',
+  templateUrl: './absentees-list.html',
+  styleUrl: './absentees-list.css',
 })
-export class AttendanceAbsentees {
+export class AbsenteesList {
 
   private readonly language = inject(Language);
 
   readonly allSections = ALL_SECTIONS;
 
-  // ===== Inputs (all data is owned and loaded by the parent page) =====
+  // ===== Inputs (all data is owned and loaded by the absentees tab) =====
 
   // The answer of GET /api/attendance/absentees (null = nothing loaded).
   readonly absentees = input<AttendanceAbsenteesData | null>(null);
@@ -118,7 +118,8 @@ export class AttendanceAbsentees {
   readonly errorMessage = input<string | null>(null);
 
   // The search text and the selected section (null = all sections).
-  // Kept by the parent page, so they stay when the user changes tabs.
+  // Kept by the absentees tab, so they stay when the date changes
+  // or the user moves to another tab and comes back.
   readonly search = input('');
   readonly section = input<AbsenteeSection | null>(null);
 
@@ -129,7 +130,7 @@ export class AttendanceAbsentees {
   // Admin only: "Link a parent" for a student with no parent.
   readonly canLinkParent = input(false);
 
-  // ===== Outputs (the parent page performs the actual actions) =====
+  // ===== Outputs (the absentees tab performs the actual actions) =====
 
   readonly dateChange = output<string>();
   readonly searchChange = output<string>();

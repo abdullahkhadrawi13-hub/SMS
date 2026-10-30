@@ -1,4 +1,4 @@
-/* The history component behaves like a block inside the parent. */
+/* The history behaves like a block inside the student page (Attendance tab). */
 :host {
   display: block;
 }
