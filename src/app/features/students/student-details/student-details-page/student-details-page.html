@@ -1,0 +1,219 @@
+<div class="student-page">
+
+  <!-- Back to the students list.
+       A plain href (not routerLink): goBack() decides where to go,
+       and the link still opens in a new tab with a middle click. -->
+  <a
+    class="back-link"
+    href="/students"
+    (click)="goBack($event)"
+  >
+    <mat-icon>arrow_back</mat-icon>
+
+    {{ 'STUDENT_DETAILS.PAGE.BACK' | translate }}
+  </a>
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="state-card">
+      <mat-spinner diameter="42"></mat-spinner>
+
+      <p>
+        {{ 'STUDENT_DETAILS.PAGE.LOADING' | translate }}
+      </p>
+    </div>
+  }
+
+  <!-- Error (also: a teacher opening a student who is not theirs) -->
+  @else if (errorMessage()) {
+    <div class="state-card error-state">
+      <mat-icon>error_outline</mat-icon>
+
+      <h3>
+        {{ 'STUDENT_DETAILS.PAGE.ERROR_TITLE' | translate }}
+      </h3>
+
+      <p>
+        {{ errorMessage() | translate }}
+      </p>
+
+      @if (studentId()) {
+        <button mat-flat-button color="primary" type="button" (click)="retry()">
+          <mat-icon>refresh</mat-icon>
+
+          {{ 'STUDENTS.RETRY' | translate }}
+        </button>
+      }
+    </div>
+  }
+
+  @else if (student(); as currentStudent) {
+
+    <!-- Profile header: name (page language), number, class and section, status -->
+    <header class="student-profile">
+      <div class="student-avatar">
+        {{ getInitials(currentStudent) }}
+      </div>
+
+      <div class="student-name">
+        <h1>
+          {{ getStudentName(currentStudent) }}
+        </h1>
+
+        <div class="profile-meta">
+          <span>
+            <mat-icon>tag</mat-icon>
+            <bdi>{{ currentStudent.studentNumber }}</bdi>
+          </span>
+
+          <span>
+            <mat-icon>school</mat-icon>
+            {{ getClassName(currentStudent) }} · {{ getSectionName(currentStudent) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="profile-badges">
+        <span
+          class="status-badge"
+          [class.active]="currentStudent.isActive"
+          [class.inactive]="!currentStudent.isActive"
+        >
+          <span class="status-dot"></span>
+
+          {{
+            currentStudent.isActive
+              ? ('STUDENTS.ACTIVE' | translate)
+              : ('STUDENTS.INACTIVE' | translate)
+          }}
+        </span>
+
+        <!-- Graduated (studentStatus): next to the account status, not instead of it -->
+        @if (isGraduated(currentStudent)) {
+          <span class="graduated-badge">
+            <mat-icon>workspace_premium</mat-icon>
+            {{ 'STUDENTS.GRADUATED' | translate }}
+          </span>
+        }
+      </div>
+    </header>
+
+    <!-- Tabs: Details / Attendance / Grades / Parents (Admin and Assistant Principal only).
+         The active tab is in the URL (?tab=...). -->
+    @if (hasTabs()) {
+      <nav
+        mat-tab-nav-bar
+        mat-stretch-tabs="false"
+        class="details-tabs"
+        [tabPanel]="tabPanel"
+      >
+
+        <a
+          mat-tab-link
+          [active]="activeTab() === 'details'"
+          (click)="openTab('details')"
+        >
+          <span class="tab-label">
+            <mat-icon>badge</mat-icon>
+
+            <span>
+              {{ 'STUDENT_DETAILS.TABS.DETAILS' | translate }}
+            </span>
+          </span>
+        </a>
+
+        @if (canViewAttendance()) {
+          <a
+            mat-tab-link
+            [active]="activeTab() === 'attendance'"
+            (click)="openTab('attendance')"
+          >
+            <span class="tab-label">
+              <mat-icon>fact_check</mat-icon>
+
+              <span>
+                {{ 'STUDENT_DETAILS.TABS.ATTENDANCE' | translate }}
+              </span>
+            </span>
+          </a>
+        }
+
+        @if (canViewGrades()) {
+          <a
+            mat-tab-link
+            [active]="activeTab() === 'grades'"
+            (click)="openTab('grades')"
+          >
+            <span class="tab-label">
+              <mat-icon>bar_chart</mat-icon>
+
+              <span>
+                {{ 'STUDENT_DETAILS.TABS.GRADES' | translate }}
+              </span>
+            </span>
+          </a>
+        }
+
+        @if (canViewParents()) {
+          <a
+            mat-tab-link
+            [active]="activeTab() === 'parents'"
+            (click)="openTab('parents')"
+          >
+            <span class="tab-label">
+              <mat-icon>family_restroom</mat-icon>
+
+              <span>
+                {{ 'STUDENT_DETAILS.TABS.PARENTS' | translate }}
+              </span>
+            </span>
+          </a>
+        }
+
+      </nav>
+    }
+
+    <mat-tab-nav-panel #tabPanel class="tab-panel">
+
+      <!-- Grades tab: the student's grades in every term (read only).
+           Created the first time the tab is opened, then only hidden,
+           so the grades are loaded once while the page is open. -->
+      @if (gradesTabOpened()) {
+        <div [hidden]="activeTab() !== 'grades'">
+          <app-student-grades-tab
+            [studentId]="studentId()"
+          ></app-student-grades-tab>
+        </div>
+      }
+
+      <!-- Parents tab: the student's parents (read only).
+           Created the first time the tab is opened, then only hidden. -->
+      @if (parentsTabOpened()) {
+        <div [hidden]="activeTab() !== 'parents'">
+          <app-student-parents-tab
+            [studentId]="studentId()"
+          ></app-student-parents-tab>
+        </div>
+      }
+
+      <!-- Attendance tab: the student's attendance history.
+           Created (and its data loaded) only while the tab is open. -->
+      @if (activeTab() === 'attendance') {
+        <app-student-attendance-tab
+          [studentId]="studentId()"
+        ></app-student-attendance-tab>
+      }
+
+      <!-- Details tab -->
+      @else if (activeTab() === 'details') {
+        <app-student-info-tab
+          [student]="currentStudent"
+          [canViewPrivateInfo]="canViewPrivateInfo()"
+        ></app-student-info-tab>
+      }
+
+    </mat-tab-nav-panel>
+
+  }
+
+</div>

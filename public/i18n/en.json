@@ -207,35 +207,64 @@
       "LOAD_FAILED": "Failed to load students. Please try again."
     }
   },
-  "STUDENTS_DETAILS": {
-    "TITLE": "Student Details",
-    "SUBTITLE": "View student information and account details",
-    "SUBTITLE_BASIC": "View student information",
-    "BACK": "Back to Students",
-    "EDIT": "Edit Student",
-    "LOADING": "Loading student...",
-    "ERROR_TITLE": "Unable to load student",
-    "INVALID_ID": "Invalid student ID.",
-    "LOAD_FAILED": "Failed to load student. Please try again.",
-    "PERSONAL_INFORMATION": "Personal Information",
-    "PERSONAL_INFORMATION_DESCRIPTION": "Basic student information",
-    "ACCOUNT_INFORMATION": "Account Information",
-    "ACCOUNT_INFORMATION_DESCRIPTION": "Student account and access information",
-    "PHONE": "Phone Number",
-    "PASSWORD_STATUS": "Password Status",
-    "MUST_CHANGE_PASSWORD": "Must change password",
-    "PASSWORD_NORMAL": "Password is up to date",
-    "ROLE": "Role",
-    "ACCOUNT_STATUS": "Account Status",
-    "CLOSE": "Close",
-    "TAB_DETAILS": "Details",
-    "TAB_ATTENDANCE": "Attendance",
-    "TAB_GRADES": "Grades",
-    "TAB_PARENTS": "Parents",
-    "ACADEMIC_INFORMATION": "Academic Information",
-    "ACADEMIC_INFORMATION_DESCRIPTION": "The class and section the student studies in",
-    "NAME_AR": "Name in Arabic",
-    "NAME_EN": "Name in English"
+  "STUDENT_DETAILS": {
+    "PAGE": {
+      "BACK": "Back to Students",
+      "LOADING": "Loading student...",
+      "ERROR_TITLE": "Unable to load student",
+      "INVALID_ID": "Invalid student ID.",
+      "LOAD_FAILED": "Failed to load student. Please try again."
+    },
+    "TABS": {
+      "DETAILS": "Details",
+      "ATTENDANCE": "Attendance",
+      "GRADES": "Grades",
+      "PARENTS": "Parents"
+    },
+    "INFO_TAB": {
+      "PERSONAL_INFORMATION": "Personal Information",
+      "PERSONAL_INFORMATION_DESCRIPTION": "Basic student information",
+      "NAME_AR": "Name in Arabic",
+      "NAME_EN": "Name in English",
+      "PHONE": "Phone Number",
+      "ACADEMIC_INFORMATION": "Academic Information",
+      "ACADEMIC_INFORMATION_DESCRIPTION": "The class and section the student studies in",
+      "ACCOUNT_INFORMATION": "Account Information",
+      "ACCOUNT_INFORMATION_DESCRIPTION": "Student account and access information",
+      "ROLE": "Role",
+      "PASSWORD_STATUS": "Password Status",
+      "MUST_CHANGE_PASSWORD": "Must change password",
+      "PASSWORD_NORMAL": "Password is up to date"
+    },
+    "ATTENDANCE_TAB": {
+      "RECORDED_DAYS": "Recorded days",
+      "TERM": "Academic term",
+      "ALL_TERMS": "All terms",
+      "TERM_NUMBER": "Term #{{id}}",
+      "NOTE": "Only recorded days are listed. A day with no record does not mean the student was present.",
+      "LOADING": "Loading attendance history...",
+      "RETRY": "Retry",
+      "TABLE": {
+        "DATE": "Date",
+        "STATUS": "Status",
+        "RECORDED_AT": "Recorded at",
+        "EDITED_AT": "Last edit"
+      },
+      "EMPTY": {
+        "TITLE": "No attendance records",
+        "MESSAGE": "No attendance has been recorded for this student yet."
+      }
+    },
+    "PARENTS_TAB": {
+      "TITLE": "Parents",
+      "DESCRIPTION": "Parents linked to the student and their phone numbers",
+      "LOADING": "Loading parents...",
+      "LOAD_FAILED": "Failed to load parents. Please try again.",
+      "RETRY": "Retry",
+      "EMPTY": "No parents are linked to this student.",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    }
   },
 
   "ROLES": {
@@ -820,17 +849,6 @@
     }
   },
 
-  "STUDENT_PARENTS": {
-    "TITLE": "Parents",
-    "DESCRIPTION": "Parents linked to the student and their phone numbers",
-    "LOADING": "Loading parents...",
-    "LOAD_FAILED": "Failed to load parents. Please try again.",
-    "RETRY": "Retry",
-    "EMPTY": "No parents are linked to this student.",
-    "ACTIVE": "Active",
-    "INACTIVE": "Inactive"
-  },
-
   "SUBJECTS": {
     "HEADER": {
       "TITLE": "Subjects",
@@ -1359,28 +1377,6 @@
         "SECTION_MESSAGE": "{{className}} · Section {{sectionName}}, {{date}}",
         "SEARCH_TITLE": "No results",
         "SEARCH_MESSAGE": "No absent student matches the search."
-      }
-    },
-
-    "STUDENT_HISTORY": {
-      "RECORDED_DAYS": "Recorded days",
-      "TERM": "Academic term",
-      "ALL_TERMS": "All terms",
-      "TERM_NUMBER": "Term #{{id}}",
-      "NOTE": "Only recorded days are listed. A day with no record does not mean the student was present.",
-      "LOADING": "Loading attendance history...",
-      "RETRY": "Retry",
-
-      "TABLE": {
-        "DATE": "Date",
-        "STATUS": "Status",
-        "RECORDED_AT": "Recorded at",
-        "EDITED_AT": "Last edit"
-      },
-
-      "EMPTY": {
-        "TITLE": "No attendance records",
-        "MESSAGE": "No attendance has been recorded for this student yet."
       }
     }
   },

@@ -9,7 +9,7 @@
     <div>
 
       <h3>
-        {{ 'STUDENT_PARENTS.TITLE' | translate }}
+        {{ 'STUDENT_DETAILS.PARENTS_TAB.TITLE' | translate }}
 
         @if (!isLoading() && !errorMessage()) {
           <span class="count">{{ rows().length }}</span>
@@ -17,7 +17,7 @@
       </h3>
 
       <p>
-        {{ 'STUDENT_PARENTS.DESCRIPTION' | translate }}
+        {{ 'STUDENT_DETAILS.PARENTS_TAB.DESCRIPTION' | translate }}
       </p>
 
     </div>
@@ -30,7 +30,7 @@
 
     <div class="state">
       <mat-spinner diameter="36"></mat-spinner>
-      <p>{{ 'STUDENT_PARENTS.LOADING' | translate }}</p>
+      <p>{{ 'STUDENT_DETAILS.PARENTS_TAB.LOADING' | translate }}</p>
     </div>
 
   }
@@ -51,7 +51,7 @@
         (click)="loadParents()"
       >
         <mat-icon>refresh</mat-icon>
-        {{ 'STUDENT_PARENTS.RETRY' | translate }}
+        {{ 'STUDENT_DETAILS.PARENTS_TAB.RETRY' | translate }}
       </button>
 
     </div>
@@ -63,7 +63,7 @@
 
     <div class="empty">
       <mat-icon>person_off</mat-icon>
-      <span>{{ 'STUDENT_PARENTS.EMPTY' | translate }}</span>
+      <span>{{ 'STUDENT_DETAILS.PARENTS_TAB.EMPTY' | translate }}</span>
     </div>
 
   }
@@ -101,7 +101,7 @@
             [class.inactive]="!row.parent.isActive"
           >
             <span class="status-dot"></span>
-            {{ (row.parent.isActive ? 'STUDENT_PARENTS.ACTIVE' : 'STUDENT_PARENTS.INACTIVE') | translate }}
+            {{ (row.parent.isActive ? 'STUDENT_DETAILS.PARENTS_TAB.ACTIVE' : 'STUDENT_DETAILS.PARENTS_TAB.INACTIVE') | translate }}
           </span>
 
         </div>

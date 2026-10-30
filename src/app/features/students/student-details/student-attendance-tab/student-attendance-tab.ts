@@ -19,22 +19,22 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { AcademicTermsService } from '../../../core/services/academic-terms';
-import { ApiMessageService } from '../../../core/services/api-message';
-import { AttendanceService } from '../../../core/services/attendance';
-import { Language } from '../../../core/services/language';
+import { AcademicTermsService } from '../../../../core/services/academic-terms';
+import { ApiMessageService } from '../../../../core/services/api-message';
+import { AttendanceService } from '../../../../core/services/attendance';
+import { Language } from '../../../../core/services/language';
 import {
   AttendanceHistoryStats,
   formatAttendanceDate,
   formatAttendanceDateTime
-} from '../shared/attendance-shared';
-import { AcademicTerm } from '../../../core/models/academic-term';
+} from '../../../attendance/shared/attendance-shared';
+import { AcademicTerm } from '../../../../core/models/academic-term';
 import {
   ATTENDANCE_ABSENT,
   ATTENDANCE_PRESENT,
   AttendanceRecord,
   AttendanceStatus
-} from '../../../core/models/attendance';
+} from '../../../../core/models/attendance';
 
 // One academic term in the term list.
 // name = null when the name of the term could not be loaded.
@@ -54,14 +54,14 @@ interface AttendanceHistoryRow {
   editedAt: string | null;
 }
 
-// One student's attendance history.
+// The "Attendance" tab of the student page (/students/:id?tab=attendance):
+// the student's attendance history.
 // GET /api/attendance/by-student/{studentId} (Admin, AssistantPrincipal).
 //
-// It is not a tab of the attendance page: it is shown inside the student
-// page (its "Attendance" tab). It loads its own data; the student page
-// only gives it the student id.
+// It loads its own data; the student page only gives it the student id.
+// The date helpers come from the attendance section (attendance-shared).
 @Component({
-  selector: 'app-student-attendance-history',
+  selector: 'app-student-attendance-tab',
   imports: [
     MatButtonModule,
     MatFormFieldModule,
@@ -71,10 +71,10 @@ interface AttendanceHistoryRow {
     MatTableModule,
     TranslatePipe
   ],
-  templateUrl: './student-attendance-history.html',
-  styleUrl: './student-attendance-history.css',
+  templateUrl: './student-attendance-tab.html',
+  styleUrl: './student-attendance-tab.css',
 })
-export class StudentAttendanceHistory implements OnInit {
+export class StudentAttendanceTab implements OnInit {
 
   private readonly attendanceService = inject(AttendanceService);
   private readonly termsService = inject(AcademicTermsService);

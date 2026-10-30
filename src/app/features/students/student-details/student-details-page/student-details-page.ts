@@ -13,17 +13,24 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Students } from '../../../core/services/students';
-import { ApiMessageService } from '../../../core/services/api-message';
-import { AttendanceAccessService } from '../../../core/services/attendance-access';
-import { Permissions } from '../../../core/services/permissions';
-import { getRoleTranslationKey } from '../../../core/models/user-role';
+import { Students } from '../../../../core/services/students';
+import { ApiMessageService } from '../../../../core/services/api-message';
+import { AttendanceAccessService } from '../../../../core/services/attendance-access';
+import { Permissions } from '../../../../core/services/permissions';
 
-import { StudentAttendanceHistory } from '../../attendance/student-attendance-history/student-attendance-history';
-import { StudentParents } from '../student-parents/student-parents';
-import { StudentGradesTab } from '../../grades/student-grades/student-grades-tab/student-grades-tab';
+import { StudentInfoTab } from '../student-info-tab/student-info-tab';
+import { StudentAttendanceTab } from '../student-attendance-tab/student-attendance-tab';
+import { StudentParentsTab } from '../student-parents-tab/student-parents-tab';
+import { StudentGradesTab } from '../../../grades/student-grades/student-grades-tab/student-grades-tab';
 
-import { Student, StudentStatus } from '../../../core/models/student';
+import { Student, StudentStatus } from '../../../../core/models/student';
+
+import {
+  getStudentClassName,
+  getStudentNameAr,
+  getStudentNameEn,
+  getStudentSectionName
+} from '../student-details';
 
 // The tabs of the page. The active one is in the URL: /students/5?tab=grades
 // (no ?tab = the details tab).
@@ -37,8 +44,11 @@ interface StudentDetailsNavigationState {
 
 // The student's page: /students/:id
 // (it was a dialog opened from the students list).
+// The page shows the profile header and the tabs; each tab is its own
+// component in this folder, except the grades tab, which lives with
+// the other student-grades screens (grades/student-grades).
 @Component({
-  selector: 'app-student-details',
+  selector: 'app-student-details-page',
   imports: [
     CommonModule,
     MatButtonModule,
@@ -46,14 +56,15 @@ interface StudentDetailsNavigationState {
     MatProgressSpinnerModule,
     MatTabsModule,
     TranslatePipe,
-    StudentAttendanceHistory,
-    StudentParents,
+    StudentInfoTab,
+    StudentAttendanceTab,
+    StudentParentsTab,
     StudentGradesTab
   ],
-  templateUrl: './students-details.html',
-  styleUrl: './students-details.css'
+  templateUrl: './student-details-page.html',
+  styleUrl: './student-details-page.css'
 })
-export class StudentsDetails {
+export class StudentDetailsPage {
   private readonly studentsService = inject(Students);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly attendanceAccess = inject(AttendanceAccessService);
@@ -96,6 +107,7 @@ export class StudentsDetails {
 
   // The phone number and the "Account Information" section
   // are for Admin and AssistantPrincipal only (hidden from a teacher).
+  // Passed to the details tab (student-info-tab).
   readonly canViewPrivateInfo = this.permissions.canViewStudentPrivateInfo;
 
   // true = the page was opened from the students list in this visit,
@@ -135,7 +147,7 @@ export class StudentsDetails {
     if (!studentId) {
       this.student.set(null);
       this.isLoading.set(false);
-      this.errorMessage.set('STUDENTS_DETAILS.INVALID_ID');
+      this.errorMessage.set('STUDENT_DETAILS.PAGE.INVALID_ID');
       return;
     }
 
@@ -155,7 +167,7 @@ export class StudentsDetails {
 
             this.errorMessage.set(
               this.apiMessageService.getMessage(response) ||
-              'STUDENTS_DETAILS.LOAD_FAILED'
+              'STUDENT_DETAILS.PAGE.LOAD_FAILED'
             );
 
             this.isLoading.set(false);
@@ -177,7 +189,7 @@ export class StudentsDetails {
           this.student.set(null);
 
           this.errorMessage.set(
-            'STUDENTS_DETAILS.LOAD_FAILED'
+            'STUDENT_DETAILS.PAGE.LOAD_FAILED'
           );
 
           this.isLoading.set(false);
@@ -188,30 +200,8 @@ export class StudentsDetails {
   // The name in the language of the page (used in the profile header).
   getStudentName(student: Student): string {
     return document.documentElement.lang === 'ar'
-      ? this.getStudentNameAr(student) || this.getStudentNameEn(student)
-      : this.getStudentNameEn(student) || this.getStudentNameAr(student);
-  }
-
-  getStudentNameAr(student: Student): string {
-    return [
-      student.firstNameAr,
-      student.fatherNameAr,
-      student.grandFatherNameAr,
-      student.familyNameAr
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
-
-  getStudentNameEn(student: Student): string {
-    return [
-      student.firstNameEn,
-      student.fatherNameEn,
-      student.grandFatherNameEn,
-      student.familyNameEn
-    ]
-      .filter(Boolean)
-      .join(' ');
+      ? getStudentNameAr(student) || getStudentNameEn(student)
+      : getStudentNameEn(student) || getStudentNameAr(student);
   }
 
   // The first letter of the first name and of the family name,
@@ -236,35 +226,15 @@ export class StudentsDetails {
       .toUpperCase();
   }
 
-  // The class name comes with the student (classNameAr / classNameEn).
-  // Falls back to the id if the names are missing.
-  getClassName(student: Student): string {
-    const name = document.documentElement.lang === 'ar'
-      ? student.classNameAr || student.classNameEn
-      : student.classNameEn || student.classNameAr;
-
-    return name || String(student.classId ?? '-');
-  }
-
-  // The section name comes with the student (sectionAr / sectionEn).
-  // Falls back to the id if the names are missing.
-  getSectionName(student: Student): string {
-    const name = document.documentElement.lang === 'ar'
-      ? student.sectionAr || student.sectionEn
-      : student.sectionEn || student.sectionAr;
-
-    return name || String(student.sectionId ?? '-');
-  }
+  // The class and section shown in the profile header.
+  readonly getClassName = getStudentClassName;
+  readonly getSectionName = getStudentSectionName;
 
   // studentStatus = Graduated: the gold "Graduated" badge
   // next to the account status (the same as the students table).
   isGraduated(student: Student): boolean {
     return student.studentStatus === StudentStatus.Graduated;
   }
-
-  // The shared function from user-role.ts, kept here under the same
-  // name so the template can call it.
-  readonly getRoleTranslationKey = getRoleTranslationKey;
 
   // True when the user sees more than the details tab.
   hasTabs(): boolean {

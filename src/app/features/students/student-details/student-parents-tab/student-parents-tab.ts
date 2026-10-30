@@ -15,14 +15,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ParentsService } from '../../../core/services/parents';
-import { ApiMessageService } from '../../../core/services/api-message';
+import { ParentsService } from '../../../../core/services/parents';
+import { ApiMessageService } from '../../../../core/services/api-message';
 import {
   getRelationshipTranslationKey,
   ParentDto,
   ParentRelationship
-} from '../../../core/models/parent';
-import { getFullName } from '../../parents/parents';
+} from '../../../../core/models/parent';
+import { getFullName } from '../../../parents/parents';
 
 
 // One parent of the student, with the relationship to this student.
@@ -32,24 +32,25 @@ interface StudentParentRow {
 }
 
 
-// The parents of one student (the "Parents" tab in the student details).
+// The "Parents" tab of the student page (/students/:id?tab=parents):
+// the parents of one student.
 // GET /api/parents?studentId={id} (Admin, AssistantPrincipal). Read only.
 //
-// Like the attendance history, it loads its own data: the parent dialog
-// only gives it the student id. The tab creates it the first time it is
-// opened, and keeps it while the dialog is open (no second request).
+// Like the attendance tab, it loads its own data: the student page
+// only gives it the student id. The page creates it the first time the
+// tab is opened, and keeps it while the page is open (no second request).
 @Component({
-  selector: 'app-student-parents',
+  selector: 'app-student-parents-tab',
   imports: [
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
     TranslatePipe
   ],
-  templateUrl: './student-parents.html',
-  styleUrl: './student-parents.css',
+  templateUrl: './student-parents-tab.html',
+  styleUrl: './student-parents-tab.css',
 })
-export class StudentParents implements OnInit {
+export class StudentParentsTab implements OnInit {
 
   private readonly parentsService = inject(ParentsService);
   private readonly apiMessageService = inject(ApiMessageService);
@@ -91,7 +92,7 @@ export class StudentParents implements OnInit {
             this.rows.set([]);
             this.errorMessage.set(
               this.apiMessageService.getMessage(response) ||
-              'STUDENT_PARENTS.LOAD_FAILED'
+              'STUDENT_DETAILS.PARENTS_TAB.LOAD_FAILED'
             );
             this.isLoading.set(false);
             return;
@@ -106,7 +107,7 @@ export class StudentParents implements OnInit {
           console.error('Failed to load the student\'s parents:', error);
 
           this.rows.set([]);
-          this.errorMessage.set('STUDENT_PARENTS.LOAD_FAILED');
+          this.errorMessage.set('STUDENT_DETAILS.PARENTS_TAB.LOAD_FAILED');
           this.isLoading.set(false);
         },
       });
