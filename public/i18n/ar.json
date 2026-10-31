@@ -83,7 +83,26 @@
     "PROFILE": "الملف الشخصي",
     "CHANGE_PASSWORD": "تغيير كلمة المرور",
     "SETTINGS": "الإعدادات",
-    "LOGOUT": "تسجيل الخروج"
+    "LOGOUT": "تسجيل الخروج",
+    "USER_MENU": "قائمة المستخدم"
+  },
+
+  "PROFILE_DIALOG": {
+    "TITLE": "الملف الشخصي",
+    "SUBTITLE": "معلومات حسابك في النظام",
+    "CLOSE": "إغلاق",
+    "PERSONAL_INFO": "المعلومات الشخصية",
+    "PERSONAL_INFO_DESCRIPTION": "اسمك ورقم هاتفك كما سجّلتها الإدارة",
+    "NAME_AR": "الاسم (بالعربية)",
+    "NAME_EN": "الاسم (بالإنجليزية)",
+    "PHONE": "رقم الهاتف",
+    "ACCOUNT_INFO": "معلومات الحساب",
+    "ACCOUNT_INFO_DESCRIPTION": "بيانات الدخول إلى النظام",
+    "LOGIN_ID": "اسم المستخدم",
+    "PASSWORD": "كلمة المرور",
+    "CHANGE_PASSWORD": "تغيير",
+    "CHANGE_PASSWORD_LABEL": "تغيير كلمة المرور",
+    "EDIT_NOTE": "لتعديل الاسم أو رقم الهاتف تواصل مع إدارة المدرسة."
   },
 
   "ADMIN_DASHBOARD": {

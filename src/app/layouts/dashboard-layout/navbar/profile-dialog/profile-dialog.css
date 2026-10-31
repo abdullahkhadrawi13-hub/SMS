@@ -1,0 +1,466 @@
+/* ================================
+   Profile Dialog
+   (the same look as teacher-details)
+   ================================ */
+
+.profile-dialog {
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  text-align: start;
+
+  /* Never taller than the window: the header and the footer stay in place
+     and only the content in between scrolls (see .dialog-content).
+     dvh follows the real visible height on phones; vh is the fallback. */
+  display: flex;
+  flex-direction: column;
+
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+
+.dialog-header,
+.dialog-actions {
+  flex-shrink: 0;
+}
+
+
+/* ================================
+   Dialog Header
+   ================================ */
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 20px 24px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  min-width: 0;
+}
+
+.header-icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #eaf2ff;
+
+  color: #2554a4;
+}
+
+.header-icon mat-icon {
+  width: 24px;
+  height: 24px;
+
+  font-size: 24px;
+}
+
+.header-content h2 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: #111827;
+}
+
+.header-content p {
+  margin: 4px 0 0;
+
+  color: #6b7280;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* ================================
+   Dialog Content
+   ================================ */
+
+.dialog-content {
+  padding: 24px;
+
+  box-sizing: border-box;
+
+  /* Takes the space left between the header and the footer,
+     and scrolls when the window is short */
+  flex: 1 1 auto;
+  min-height: 0;
+
+  overflow-y: auto;
+}
+
+
+/* ================================
+   Profile Card (role color)
+   --role-main / --role-soft / --role-dark are set in profile-dialog.html
+   ================================ */
+
+.profile-card {
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 16px;
+  margin-bottom: 18px;
+
+  border-radius: 14px;
+
+  background: var(--role-soft, #f3f4f6);
+}
+
+/* Initials of the user */
+.avatar {
+  width: 60px;
+  height: 60px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--role-main, #4b5563);
+
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.profile-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name h3 {
+  margin: 0;
+
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: var(--role-dark, #1f2937);
+
+  word-break: break-word;
+}
+
+.role-chip {
+  display: inline-block;
+
+  margin-top: 6px;
+  padding: 3px 10px;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+  color: var(--role-main, #4b5563);
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+/* ================================
+   Details Sections
+   ================================ */
+
+.details-section {
+  margin-bottom: 14px;
+  padding: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.section-icon {
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  border-radius: 9px;
+}
+
+/* Each section has its own color (the same as teacher-details) */
+.section-icon.personal {
+  background: #eeedfe;
+  color: #534ab7;
+  border: 1px solid #afa9ec;
+}
+
+.section-icon.account {
+  background: #fbeaf0;
+  color: #993556;
+  border: 1px solid #ed93b1;
+}
+
+.section-icon mat-icon {
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+}
+
+.section-header h4 {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: #111827;
+}
+
+.section-header p {
+  margin: 2px 0 0;
+
+  color: #6b7280;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* ================================
+   Details Grid (two columns)
+   ================================ */
+
+.details-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  min-width: 0;
+
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  background: #f8fafc;
+}
+
+.detail-label {
+  color: #6b7280;
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.detail-value {
+  color: #111827;
+
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+
+  word-break: break-word;
+}
+
+
+/* ================================
+   Password + Change button
+   ================================ */
+
+.password-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+}
+
+.password-dots {
+  color: #374151;
+
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.change-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  flex-shrink: 0;
+
+  padding: 3px 10px;
+
+  border: 1px solid #c7d2e3;
+  border-radius: 999px;
+
+  background: #ffffff;
+  color: #2554a4;
+
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease;
+}
+
+.change-button:hover {
+  background: #f4f8ff;
+}
+
+.change-button:focus-visible {
+  outline: 2px solid #2554a4;
+  outline-offset: 2px;
+}
+
+.change-button mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+
+/* ================================
+   Edit Note
+   ================================ */
+
+.edit-note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  background: #f1f5f9;
+  color: #475569;
+
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.edit-note mat-icon {
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+
+  font-size: 18px;
+
+  color: #64748b;
+}
+
+
+/* ================================
+   Dialog Actions
+   ================================ */
+
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding: 14px 24px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+
+/* ================================
+   Small Mobile
+   ================================ */
+
+@media (max-width: 480px) {
+
+  .dialog-header {
+    padding: 14px 16px;
+  }
+
+  .header-content h2 {
+    font-size: 18px;
+  }
+
+  .dialog-content {
+    padding: 16px;
+  }
+
+  .profile-card {
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+
+    font-size: 17px;
+  }
+
+  .profile-name h3 {
+    font-size: 17px;
+  }
+
+  .details-section {
+    padding: 14px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog-actions {
+    padding: 12px 16px;
+  }
+
+}

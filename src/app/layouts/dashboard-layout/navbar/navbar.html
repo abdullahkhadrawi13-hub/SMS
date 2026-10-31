@@ -16,27 +16,71 @@
 
   <app-language-switcher></app-language-switcher>
 
+
+  <!-- User button: avatar + name (first + family) + role.
+       The role color comes from role-colors.ts through the CSS variables
+       --role-main / --role-soft / --role-dark, used in navbar.css. -->
   <button
-    mat-button
+    type="button"
+    class="user-button"
+    [class.open]="userTrigger.menuOpen"
     [matMenuTriggerFor]="userMenu"
-    class="user-button">
+    #userTrigger="matMenuTrigger"
+    [attr.aria-label]="'NAVBAR.USER_MENU' | translate"
+    [style.--role-main]="roleColor().main">
 
-    <mat-icon>account_circle</mat-icon>
+    @if (user()) {
 
-    <span>
-      {{ 'NAVBAR.USER' | translate }}
-    </span>
+      <span class="avatar" aria-hidden="true">{{ initials() }}</span>
 
-    <mat-icon>arrow_drop_down</mat-icon>
+      <span class="user-text">
+        <span class="user-name">{{ shortName() }}</span>
+        <span class="user-role">{{ roleKey() | translate }}</span>
+      </span>
+
+    } @else {
+
+      <mat-icon class="avatar-icon">account_circle</mat-icon>
+
+      <span class="user-text">
+        <span class="user-name">{{ 'NAVBAR.USER' | translate }}</span>
+      </span>
+
+    }
+
+    <mat-icon class="caret">expand_more</mat-icon>
 
   </button>
 
 </mat-toolbar>
 
 
-<mat-menu #userMenu="matMenu">
+<mat-menu #userMenu="matMenu" xPosition="before">
 
-  <button mat-menu-item>
+  <!-- Menu header: avatar + name + login ID -->
+  @if (user(); as currentUser) {
+
+    <div
+      class="menu-head"
+      [style.--role-main]="roleColor().main">
+
+      <span class="avatar large" aria-hidden="true">{{ initials() }}</span>
+
+      <div class="menu-head-text">
+        <span class="menu-head-name">{{ shortName() }}</span>
+        <bdi class="menu-head-login">{{ currentUser.loginId }}</bdi>
+      </div>
+
+    </div>
+
+    <div class="menu-divider"></div>
+
+  }
+
+
+  <button
+    mat-menu-item
+    (click)="openProfile()">
 
     <mat-icon>person</mat-icon>
 
@@ -60,8 +104,12 @@
   </button>
 
 
+  <div class="menu-divider"></div>
+
+
   <button
     mat-menu-item
+    class="logout-item"
     (click)="logout()">
 
     <mat-icon>logout</mat-icon>

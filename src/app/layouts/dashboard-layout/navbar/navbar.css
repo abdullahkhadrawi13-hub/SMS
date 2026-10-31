@@ -79,18 +79,244 @@
 
 /* ==============================
    User Button
+   avatar + name + role + arrow
    ============================== */
 
 .user-button {
 
-  margin-left: 8px;
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 0;
+
+  margin-inline-start: 8px;
+  padding: 6px;
+  padding-inline-end: 8px;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  background: transparent;
+
+  color: inherit;
+  font: inherit;
+  text-align: start;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+}
+
+.user-button:hover,
+.user-button.open {
+
+  background: #f5f7fb;
+
+  border-color: #e5e7eb;
+
+}
+
+.user-button:focus-visible {
+
+  outline: 2px solid #2554a4;
+  outline-offset: 2px;
 
 }
 
 
-.user-button mat-icon:first-child {
+/* Round avatar with the initials.
+   --role-main is set in navbar.html from role-colors.ts */
+.avatar {
 
-  margin-right: 6px;
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--role-main, #4b5563);
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+
+}
+
+.avatar.large {
+
+  width: 42px;
+  height: 42px;
+
+  font-size: 15px;
+
+}
+
+/* Only when there is no user (a moment while logging out) */
+.avatar-icon {
+
+  width: 38px;
+  height: 38px;
+
+  font-size: 38px;
+
+  color: #6b7280;
+
+}
+
+
+/* Name and role, one under the other */
+.user-text {
+
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+
+  line-height: 1.3;
+
+}
+
+.user-name {
+
+  max-width: 180px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #111827;
+
+}
+
+.user-role {
+
+  font-size: 12px;
+
+  color: #6b7280;
+
+}
+
+/* The arrow turns up while the menu is open */
+.caret {
+
+  flex-shrink: 0;
+
+  color: #6b7280;
+
+  transition: transform 0.15s ease;
+
+}
+
+.user-button.open .caret {
+
+  transform: rotate(180deg);
+
+}
+
+
+/* ==============================
+   User Menu
+   (the elements below are written in navbar.html,
+   so these styles reach them inside the menu panel)
+   ============================== */
+
+.menu-head {
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  /* Also sets the width of the menu panel */
+  min-width: 230px;
+
+  padding: 10px 16px 12px;
+
+  box-sizing: border-box;
+
+}
+
+.menu-head-text {
+
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+
+  line-height: 1.4;
+
+}
+
+.menu-head-name {
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #111827;
+
+}
+
+.menu-head-login {
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 12px;
+
+  color: #6b7280;
+
+}
+
+.menu-divider {
+
+  height: 1px;
+
+  margin: 4px 0;
+
+  background: #eef0f3;
+
+}
+
+/* Logout in red */
+.logout-item,
+.logout-item mat-icon {
+
+  color: #b91c1c;
+
+}
+
+
+/* ==============================
+   Small screens: the avatar only
+   ============================== */
+
+@media (max-width: 760px) {
+
+  .user-text,
+  .caret {
+    display: none;
+  }
+
+  .user-button {
+    padding: 4px;
+  }
 
 }
 

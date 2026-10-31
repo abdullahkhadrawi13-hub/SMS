@@ -83,7 +83,26 @@
     "PROFILE": "Profile",
     "CHANGE_PASSWORD": "Change Password",
     "SETTINGS": "Settings",
-    "LOGOUT": "Logout"
+    "LOGOUT": "Logout",
+    "USER_MENU": "User menu"
+  },
+
+  "PROFILE_DIALOG": {
+    "TITLE": "Profile",
+    "SUBTITLE": "Your account information",
+    "CLOSE": "Close",
+    "PERSONAL_INFO": "Personal Information",
+    "PERSONAL_INFO_DESCRIPTION": "Your name and phone number as the administration entered them",
+    "NAME_AR": "Name (Arabic)",
+    "NAME_EN": "Name (English)",
+    "PHONE": "Phone Number",
+    "ACCOUNT_INFO": "Account Information",
+    "ACCOUNT_INFO_DESCRIPTION": "How you sign in to the system",
+    "LOGIN_ID": "Username",
+    "PASSWORD": "Password",
+    "CHANGE_PASSWORD": "Change",
+    "CHANGE_PASSWORD_LABEL": "Change password",
+    "EDIT_NOTE": "To change your name or phone number, contact the school administration."
   },
 
   "ADMIN_DASHBOARD": {

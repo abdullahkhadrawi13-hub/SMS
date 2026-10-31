@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { User } from '../../../../core/services/user';
 import { Language } from '../../../../core/services/language';
+import { getShortName } from '../../../../shared/utils/person-name';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -19,6 +20,8 @@ export class StudentDashboard {
   private userService = inject(User);
   private languageService = inject(Language);
 
+  // First name + family name for the welcome: "محمد العمري" / "Mohammad Al-Omari"
+  // (the same name as the navbar, from shared/utils/person-name.ts).
   get studentName(): string {
     const user = this.userService.getUser();
 
@@ -26,12 +29,8 @@ export class StudentDashboard {
       return '';
     }
 
-    const language = this.languageService.getCurrentLanguage();
+    const isArabic = this.languageService.getCurrentLanguage() === 'ar';
 
-    if (language === 'ar') {
-      return `${user.firstNameAr} ${user.fatherNameAr}`;
-    }
-
-    return `${user.firstNameEn} ${user.fatherNameEn}`;
+    return getShortName(user, isArabic);
   }
 }
