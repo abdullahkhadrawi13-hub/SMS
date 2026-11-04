@@ -18,6 +18,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import {
+  LOGIN_ID_MAX_LENGTH,
+  USER_NAME_MAX_LENGTH
+} from '../../../shared/constants/field-lengths';
+import { TEMP_PASSWORD_MAX_LENGTH } from '../../../shared/utils/temp-password';
 import { MatIcon } from '@angular/material/icon';
 
 import { TeachersService } from '../../../core/services/teachers';
@@ -50,6 +55,11 @@ export interface TeacherFormDialogData {
   styleUrl: './teacher-form.css',
 })
 export class TeacherForm {
+
+  // Max lengths for the inputs (same limits as the backend).
+  readonly nameMaxLength = USER_NAME_MAX_LENGTH;
+  readonly loginIdMaxLength = LOGIN_ID_MAX_LENGTH;
+  readonly passwordMaxLength = TEMP_PASSWORD_MAX_LENGTH;
 
   // Form builder used to create and configure the teacher form.
   private readonly fb = inject(FormBuilder);

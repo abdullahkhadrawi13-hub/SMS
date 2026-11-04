@@ -23,6 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import { TERM_NAME_MAX_LENGTH } from '../../../../shared/constants/field-lengths';
 
 import { AcademicYear } from '../../../../core/models/academic-year';
 import {
@@ -84,6 +85,9 @@ export interface TermFormResult {
 })
 export class TermForm {
 
+  // Max length for the term names (same limit as the backend).
+  readonly nameMaxLength = TERM_NAME_MAX_LENGTH;
+
   private readonly fb = inject(FormBuilder);
 
   private readonly dialogRef =
@@ -128,7 +132,7 @@ export class TermForm {
       this.data.term?.nameAr ?? '',
       [
         Validators.required,
-        Validators.maxLength(100),
+        Validators.maxLength(TERM_NAME_MAX_LENGTH),
         Validators.pattern(/^[؀-ۿ0-9\s.-]+$/)
       ]
     ],
@@ -138,7 +142,7 @@ export class TermForm {
       this.data.term?.nameEn ?? '',
       [
         Validators.required,
-        Validators.maxLength(100),
+        Validators.maxLength(TERM_NAME_MAX_LENGTH),
         Validators.pattern(/^[A-Za-z0-9\s.-]+$/)
       ]
     ],

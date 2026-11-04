@@ -27,6 +27,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import {
+  LOGIN_ID_MAX_LENGTH,
+  USER_NAME_MAX_LENGTH
+} from '../../../shared/constants/field-lengths';
+import { TEMP_PASSWORD_MAX_LENGTH } from '../../../shared/utils/temp-password';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
 
@@ -74,6 +79,11 @@ export interface StudentFormDialogData {
   styleUrl: './students-form.css'
 })
 export class StudentsForm {
+
+  // Max lengths for the inputs (same limits as the backend).
+  readonly nameMaxLength = USER_NAME_MAX_LENGTH;
+  readonly loginIdMaxLength = LOGIN_ID_MAX_LENGTH;
+  readonly passwordMaxLength = TEMP_PASSWORD_MAX_LENGTH;
 
   private readonly fb = inject(FormBuilder);
   private readonly studentsService = inject(Students);

@@ -68,7 +68,7 @@
               {{ 'STUDENTS_FORM.FIRST_NAME_AR' | translate }}
             </mat-label>
 
-            <input matInput formControlName="firstNameAr" dir="rtl" autocomplete="off" />
+            <input matInput formControlName="firstNameAr" [maxlength]="nameMaxLength" dir="rtl" autocomplete="off" />
 
             @if (isFieldInvalid('firstNameAr')) {
               <mat-error>
@@ -89,7 +89,7 @@
               {{ 'STUDENTS_FORM.FATHER_NAME_AR' | translate }}
             </mat-label>
 
-            <input matInput formControlName="fatherNameAr" dir="rtl" autocomplete="off" />
+            <input matInput formControlName="fatherNameAr" [maxlength]="nameMaxLength" dir="rtl" autocomplete="off" />
 
             @if (isFieldInvalid('fatherNameAr')) {
               <mat-error>
@@ -110,7 +110,7 @@
               {{ 'STUDENTS_FORM.GRAND_FATHER_NAME_AR' | translate }}
             </mat-label>
 
-            <input matInput formControlName="grandFatherNameAr" dir="rtl" autocomplete="off" />
+            <input matInput formControlName="grandFatherNameAr" [maxlength]="nameMaxLength" dir="rtl" autocomplete="off" />
 
             @if (isFieldInvalid('grandFatherNameAr')) {
               <mat-error>
@@ -131,7 +131,7 @@
               {{ 'STUDENTS_FORM.FAMILY_NAME_AR' | translate }}
             </mat-label>
 
-            <input matInput formControlName="familyNameAr" dir="rtl" autocomplete="off" />
+            <input matInput formControlName="familyNameAr" [maxlength]="nameMaxLength" dir="rtl" autocomplete="off" />
 
             @if (isFieldInvalid('familyNameAr')) {
               <mat-error>
@@ -173,7 +173,7 @@
               {{ 'STUDENTS_FORM.FIRST_NAME_EN' | translate }}
             </mat-label>
 
-            <input matInput formControlName="firstNameEn" dir="ltr" autocomplete="off" />
+            <input matInput formControlName="firstNameEn" [maxlength]="nameMaxLength" dir="ltr" autocomplete="off" />
 
             @if (isFieldInvalid('firstNameEn')) {
               <mat-error>
@@ -194,7 +194,7 @@
               {{ 'STUDENTS_FORM.FATHER_NAME_EN' | translate }}
             </mat-label>
 
-            <input matInput formControlName="fatherNameEn" dir="ltr" autocomplete="off" />
+            <input matInput formControlName="fatherNameEn" [maxlength]="nameMaxLength" dir="ltr" autocomplete="off" />
 
             @if (isFieldInvalid('fatherNameEn')) {
               <mat-error>
@@ -215,7 +215,7 @@
               {{ 'STUDENTS_FORM.GRAND_FATHER_NAME_EN' | translate }}
             </mat-label>
 
-            <input matInput formControlName="grandFatherNameEn" dir="ltr" autocomplete="off" />
+            <input matInput formControlName="grandFatherNameEn" [maxlength]="nameMaxLength" dir="ltr" autocomplete="off" />
 
             @if (isFieldInvalid('grandFatherNameEn')) {
               <mat-error>
@@ -236,7 +236,7 @@
               {{ 'STUDENTS_FORM.FAMILY_NAME_EN' | translate }}
             </mat-label>
 
-            <input matInput formControlName="familyNameEn" dir="ltr" autocomplete="off" />
+            <input matInput formControlName="familyNameEn" [maxlength]="nameMaxLength" dir="ltr" autocomplete="off" />
 
             @if (isFieldInvalid('familyNameEn')) {
               <mat-error>
@@ -278,7 +278,7 @@
               {{ 'STUDENTS_FORM.LOGIN_ID' | translate }}
             </mat-label>
 
-            <input matInput formControlName="loginId" dir="ltr" autocomplete="username" />
+            <input matInput formControlName="loginId" [maxlength]="loginIdMaxLength" dir="ltr" autocomplete="username" />
 
             @if (isFieldInvalid('loginId')) {
               <mat-error>
@@ -298,6 +298,7 @@
                 matInput
                 type="text"
                 formControlName="temporaryPassword"
+                [maxlength]="passwordMaxLength"
                 dir="ltr"
                 autocomplete="new-password"
               />

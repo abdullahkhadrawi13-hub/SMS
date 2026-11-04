@@ -21,6 +21,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import {
+  LOGIN_ID_MAX_LENGTH,
+  USER_NAME_MAX_LENGTH
+} from '../../../shared/constants/field-lengths';
+import { TEMP_PASSWORD_MAX_LENGTH } from '../../../shared/utils/temp-password';
 
 import { ParentsService } from '../../../core/services/parents';
 import { ApiMessageService } from '../../../core/services/api-message';
@@ -112,6 +117,11 @@ interface ChildRow {
   styleUrl: './parent-form.css',
 })
 export class ParentForm {
+
+  // Max lengths for the inputs (same limits as the backend).
+  readonly nameMaxLength = USER_NAME_MAX_LENGTH;
+  readonly loginIdMaxLength = LOGIN_ID_MAX_LENGTH;
+  readonly passwordMaxLength = TEMP_PASSWORD_MAX_LENGTH;
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef =

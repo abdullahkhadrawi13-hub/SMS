@@ -214,6 +214,7 @@
           <input
             matInput
             formControlName="firstNameAr"
+            [maxlength]="nameMaxLength"
             dir="rtl"
             autocomplete="off"
           />
@@ -237,6 +238,7 @@
           <input
             matInput
             formControlName="fatherNameAr"
+            [maxlength]="nameMaxLength"
             dir="rtl"
             autocomplete="off"
           />
@@ -260,6 +262,7 @@
           <input
             matInput
             formControlName="grandFatherNameAr"
+            [maxlength]="nameMaxLength"
             dir="rtl"
             autocomplete="off"
           />
@@ -283,6 +286,7 @@
           <input
             matInput
             formControlName="familyNameAr"
+            [maxlength]="nameMaxLength"
             dir="rtl"
             autocomplete="off"
           />
@@ -330,6 +334,7 @@
           <input
             matInput
             formControlName="firstNameEn"
+            [maxlength]="nameMaxLength"
             dir="ltr"
             autocomplete="off"
           />
@@ -353,6 +358,7 @@
           <input
             matInput
             formControlName="fatherNameEn"
+            [maxlength]="nameMaxLength"
             dir="ltr"
             autocomplete="off"
           />
@@ -376,6 +382,7 @@
           <input
             matInput
             formControlName="grandFatherNameEn"
+            [maxlength]="nameMaxLength"
             dir="ltr"
             autocomplete="off"
           />
@@ -399,6 +406,7 @@
           <input
             matInput
             formControlName="familyNameEn"
+            [maxlength]="nameMaxLength"
             dir="ltr"
             autocomplete="off"
           />
@@ -447,6 +455,7 @@
           <input
             matInput
             formControlName="loginId"
+            [maxlength]="loginIdMaxLength"
             dir="ltr"
             autocomplete="username"
           />
@@ -471,6 +480,7 @@
               matInput
               type="text"
               formControlName="temporaryPassword"
+              [maxlength]="passwordMaxLength"
               dir="ltr"
               autocomplete="new-password"
             />
