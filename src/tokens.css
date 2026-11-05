@@ -1,0 +1,54 @@
+/* ==========================================================
+   SMS design tokens — Navy & Gold
+   The single source for colours, sizes and type in the app.
+   Components use var(--...) only; no hex values in component files.
+   Spec: "SMS — مواصفات تصميم الكحلي والذهبي" (5 Nov 2026)
+   ========================================================== */
+
+:root {
+  /* type */
+  --font: "Cairo", system-ui, sans-serif;
+  --fs-11: 11px; --fs-12: 12px; --fs-13: 13px; --fs-14: 14px; --fs-16: 16px;
+  --fs-20: 20px; --fs-24: 24px; --fs-28: 28px;
+
+  /* size */
+  --r-card: 10px; --r-control: 8px; --r-pill: 6px;
+  --h-control: 36px; --h-touch: 44px; --row: 52px;
+  --sidebar-w: 236px; --topbar-h: 56px;
+
+  /* spacing scale (4px base) */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-6: 24px; --sp-8: 32px;
+
+  /* surfaces and text */
+  --ground: #f2f3f6;  --surface: #ffffff; --raised: #f7f8fa; --hover: #f4f6f9;
+  --border: #e0e3e9;  --rule: #eceef2;    --control: #c5cad4; --track: #e3e7ee;
+  --text: #121a2b;    --muted: #535d70;   --faint: #636c7e;
+
+  /* brand */
+  --primary: #15213b; --primary-hover: #0c1528; --on-primary: #ffffff;
+  --mark: #c79a3c;    --gold-light: #e0b961;
+  --accent: #2c5c9e;  --accent-soft: #e9eff8; --accent-ink: #1f4478;
+
+  /* sidebar */
+  --side-bg: #15213b; --side-ink: #ffffff; --side-muted: #a9b4cc;
+  --nav-ink: #c9d1e2; --nav-icon: #98a5c0; --nav-hover: #1e2d4d;
+  --nav-active-bg: #263a63; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
+  --nav-group: #93a0bb; --nav-soon-ink: #8f9bb6; --soon-line: #33466e;
+
+  /* meaning: attendance, results, status */
+  --ok-bg: #dcf3e5;   --ok-ink: #0f4a2b;   --ok-line: #b9e3c9;
+  --bad-bg: #fdeae7;  --bad-ink: #831c1e;  --bad: #c4242a;
+  --warn-bg: #fff6dd; --warn-ink: #7c4508; --warn-line: #f0d189;
+  --gold-bg: #f7edd6; --gold-ink: #5c410b;
+  --chg: #d69a1c;     --chg-bg: #fff8e6;
+
+  /* unsaved-changes bar — warm yellow for now (colour not final yet) */
+  --save-bg: #fff4d6; --save-line: #ecc76b; --save-ink: #5c3d07; --save-muted: #74500f;
+
+  /* elevation: only for things that float above the page */
+  --shadow-pop: 0 12px 32px rgba(15, 23, 42, .16);
+  --shadow-save: 0 8px 24px rgba(92, 61, 7, .14);
+
+  /* motion */
+  --dur: 150ms;
+}

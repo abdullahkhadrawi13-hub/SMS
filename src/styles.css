@@ -1,1 +1,67 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================
+   Global styles — rules shared by the whole app.
+   Colours and sizes come from src/tokens.css.
+   ========================================================== */
+
+/* ---------- Icons ----------
+   Angular's <mat-icon> uses the "material-icons" class by default.
+   We point that class at Material Symbols Outlined, installed from npm
+   (material-symbols), so icons work without internet. */
+.material-icons {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "liga";
+}
+
+/* ---------- Numbers ----------
+   Fixed-width digits so numbers line up in tables, stats and mark inputs. */
+table,
+input[type="number"],
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Keyboard focus ----------
+   A clear ring for keyboard users only (mouse clicks don't show it).
+   Text inputs are left out: Material form fields show their own focus. */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible,
+[tabindex]:not(input):not(textarea):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Direction ----------
+   Add class="flip" to directional arrows (next/back, chevrons).
+   They mirror automatically in Arabic. Don't use it on ✓, ✕ or search. */
+[dir="rtl"] .flip {
+  transform: scaleX(-1);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

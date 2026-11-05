@@ -24,7 +24,15 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/material-theme.scss", "src/styles.css"]
+            "styles": [
+              "@fontsource/cairo/400.css",
+              "@fontsource/cairo/600.css",
+              "@fontsource/cairo/700.css",
+              "material-symbols/outlined.css",
+              "src/tokens.css",
+              "src/material-theme.scss",
+              "src/styles.css"
+            ]
           },
           "configurations": {
             "production": {

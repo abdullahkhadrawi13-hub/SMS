@@ -1,8 +1,8 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+// Angular Material theme — Navy & Gold.
+// mat.theme() builds Material's --mat-sys-* variables; theme-overrides then
+// points the important ones at our own tokens (src/tokens.css), so Material
+// components (buttons, fields, tabs, dialogs, spinners...) follow the same colours.
+// Learn more: https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
 html {
@@ -13,23 +13,54 @@ html {
         primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
       ),
-      typography: Roboto,
+      typography: (
+        plain-family: (Cairo, system-ui, sans-serif),
+        brand-family: (Cairo, system-ui, sans-serif),
+        regular-weight: 400,
+        medium-weight: 600,
+        bold-weight: 700,
+      ),
       density: 0,
+    )
+  );
+
+  @include mat.theme-overrides(
+    (
+      primary: var(--primary),
+      on-primary: var(--on-primary),
+      primary-container: var(--accent-soft),
+      on-primary-container: var(--accent-ink),
+      secondary-container: var(--accent-soft),
+      on-secondary-container: var(--accent-ink),
+
+      background: var(--ground),
+      on-background: var(--text),
+      surface: var(--surface),
+      on-surface: var(--text),
+      on-surface-variant: var(--muted),
+      surface-container-lowest: var(--surface),
+      surface-container-low: var(--surface),
+      surface-container: var(--surface),
+      surface-container-high: var(--surface),
+      surface-container-highest: var(--raised),
+
+      outline: var(--control),
+      outline-variant: var(--border),
+
+      error: var(--bad),
+      on-error: var(--on-primary),
+      error-container: var(--bad-bg),
+      on-error-container: var(--bad-ink),
     )
   );
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
+  // Light theme only (no dark mode in this design).
   color-scheme: light;
 
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
+  background-color: var(--ground);
+  color: var(--text);
   font: var(--mat-sys-body-medium);
 
   // Reset the user agent margin.
