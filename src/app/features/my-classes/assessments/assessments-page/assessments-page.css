@@ -5,8 +5,6 @@
 .assessments-page {
   width: 100%;
 
-  padding: 24px;
-
   display: flex;
   flex-direction: column;
 
@@ -219,10 +217,6 @@
    ================================ */
 
 @media (max-width: 650px) {
-
-  .assessments-page {
-    padding: 16px;
-  }
 
   .cards-grid {
     grid-template-columns: 1fr;

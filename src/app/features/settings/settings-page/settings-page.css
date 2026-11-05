@@ -4,7 +4,6 @@
 
 .settings-page {
   width: 100%;
-  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -271,10 +270,6 @@
    ================================ */
 
 @media (max-width: 650px) {
-
-  .settings-page {
-    padding: 16px;
-  }
 
   .title-section h1 {
     font-size: 24px;

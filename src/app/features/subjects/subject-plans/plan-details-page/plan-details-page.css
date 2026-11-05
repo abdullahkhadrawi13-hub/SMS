@@ -5,8 +5,6 @@
 .plan-details-page {
   width: 100%;
 
-  padding: 24px;
-
   box-sizing: border-box;
 }
 
@@ -670,10 +668,6 @@
 }
 
 @media (max-width: 650px) {
-
-  .plan-details-page {
-    padding: 16px;
-  }
 
   .page-header {
     flex-direction: column;

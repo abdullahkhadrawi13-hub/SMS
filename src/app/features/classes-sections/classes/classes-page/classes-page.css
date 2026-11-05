@@ -4,17 +4,5 @@
 
 .classes-page {
   width: 100%;
-  padding: 24px;
   box-sizing: border-box;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-  .classes-page {
-    padding: 16px;
-  }
 }

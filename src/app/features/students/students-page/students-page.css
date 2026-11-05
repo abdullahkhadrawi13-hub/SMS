@@ -4,7 +4,6 @@
 
 .student-list {
   width: 100%;
-  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -93,11 +92,6 @@
 
 @media (max-width: 650px) {
 
-  .student-list {
-    padding: 16px;
-  }
-
-
   /* Filters */
 
   .filters-card {
@@ -141,10 +135,6 @@
    ================================ */
 
 @media (max-width: 450px) {
-
-  .student-list {
-    padding: 12px;
-  }
 
   .filters-card {
     padding: 12px;
