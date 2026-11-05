@@ -91,7 +91,8 @@
     "CHANGE_PASSWORD": "تغيير كلمة المرور",
     "SETTINGS": "الإعدادات",
     "LOGOUT": "تسجيل الخروج",
-    "USER_MENU": "قائمة المستخدم"
+    "USER_MENU": "قائمة المستخدم",
+    "CURRENT_TERM": "الفصل الحالي"
   },
 
   "PROFILE_DIALOG": {

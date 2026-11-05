@@ -1,0 +1,19 @@
+<!-- Shown only when the current term was found (see current-term-badge.ts). -->
+@if (termName()) {
+
+  <span class="term-badge">
+
+    <span class="dot" aria-hidden="true"></span>
+
+    <!-- Read by screen readers only: "الفصل الحالي: ..." -->
+    <span class="visually-hidden">{{ 'NAVBAR.CURRENT_TERM' | translate }}:</span>
+
+    <span class="term-name">{{ termName() }}</span>
+
+    @if (yearName()) {
+      <bdi class="year-name">{{ yearName() }}</bdi>
+    }
+
+  </span>
+
+}

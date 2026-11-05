@@ -128,15 +128,14 @@
    زر اللغة على الخلفية الكحلية
    ============================== */
 
-/* app-language-switcher يستعمل mat-button: نغيّر لون النص من متغيرات Material،
-   وأيقونة اللغة لونها داخل المكوّن نفسه لذلك نحتاج ::ng-deep */
+/* app-language-switcher زر عادي (ليس mat-button): نلوّنه على الكحلي
+   من متغيّراته (shared/components/language-switcher/language-switcher.css) */
 .panel-language {
-  --mat-button-text-label-text-color: #ffffff;
-  --mat-button-text-state-layer-color: #ffffff;
-}
-
-.panel-language ::ng-deep .language-icon {
-  color: var(--auth-navy-text);
+  --lang-btn-ink: var(--side-ink);
+  --lang-btn-icon: var(--auth-navy-text);
+  --lang-btn-hover-bg: var(--nav-hover);
+  --lang-btn-hover-ink: var(--side-ink);
+  --lang-btn-focus: var(--gold-light);
 }
 
 

@@ -1,42 +1,10 @@
 <button
-  mat-button
-  [matMenuTriggerFor]="languageMenu"
-  class="language-button">
+  type="button"
+  class="language-button"
+  (click)="switchLanguage()">
 
-  <mat-icon class="language-icon">language</mat-icon>
+  <mat-icon class="language-icon" aria-hidden="true">translate</mat-icon>
 
-  <span>
-    {{ currentLanguage === 'ar' ? 'العربية' : 'English' }}
-  </span>
-
-  <mat-icon>arrow_drop_down</mat-icon>
+  <span [attr.lang]="otherLanguage()">{{ otherLanguageName() }}</span>
 
 </button>
-
-<mat-menu #languageMenu="matMenu">
-
-  <button mat-menu-item (click)="changeLanguage('ar')">
-
-    @if (currentLanguage === 'ar') {
-      <mat-icon>check</mat-icon>
-    } @else {
-      <span class="icon-placeholder"></span>
-    }
-
-    <span>العربية</span>
-
-  </button>
-
-  <button mat-menu-item (click)="changeLanguage('en')">
-
-    @if (currentLanguage === 'en') {
-      <mat-icon>check</mat-icon>
-    } @else {
-      <span class="icon-placeholder"></span>
-    }
-
-    <span>English</span>
-
-  </button>
-
-</mat-menu>

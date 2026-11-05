@@ -1,57 +1,69 @@
+/* ==========================================================
+   Navbar — Navy & Gold
+   White bar, 56px, one 1px line under it. No shadow, no rounded corners.
+   Colours and sizes come from src/tokens.css (no hex here).
+   Logical properties only, so it works in RTL and LTR.
+   ========================================================== */
+
 .navbar {
 
-  height: 71px;
+  /* mat-toolbar sizes and colours itself from these Material tokens */
+  --mat-toolbar-standard-height: var(--topbar-h);
+  --mat-toolbar-mobile-height: var(--topbar-h);
+  --mat-toolbar-container-background-color: var(--surface);
+  --mat-toolbar-container-text-color: var(--text);
 
-  padding: 0 20px;
+  height: var(--topbar-h);
+  flex-shrink: 0;
 
   display: flex;
-
   align-items: center;
+  gap: var(--sp-2);
 
   box-sizing: border-box;
+  padding-block: 0;
+  padding-inline: var(--sp-6);
 
-  background: #ffffff;
+  background: var(--surface);
+  border-block-end: 1px solid var(--border);
 
-  border: 1px solid #e5e7eb;
-
-
-  border-radius: 0 0 15px 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-
+  /* mat-toolbar uses the big "title" type; the bar's items set their own */
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
 }
 
 
 /* ==============================
-   Spacer
+   Spacer: pushes everything to the end of the bar
    ============================== */
 
 .spacer {
-
   flex: 1;
-
 }
 
 
 /* ==============================
-   User Button
+   User button
    avatar + name + role + arrow
    ============================== */
 
 .user-button {
-
   display: flex;
   align-items: center;
-
   gap: 10px;
 
   min-width: 0;
+  height: var(--h-touch);
 
-  margin-inline-start: 8px;
-  padding: 6px;
-  padding-inline-end: 8px;
+  box-sizing: border-box;
+  padding-block: 0;
+  padding-inline: 6px var(--sp-2);
 
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: var(--r-control);
 
   background: transparent;
 
@@ -61,33 +73,20 @@
 
   cursor: pointer;
 
-  transition: background 0.15s ease, border-color 0.15s ease;
-
+  transition: background-color var(--dur) ease;
 }
 
 .user-button:hover,
 .user-button.open {
-
-  background: #f5f7fb;
-
-  border-color: #e5e7eb;
-
-}
-
-.user-button:focus-visible {
-
-  outline: 2px solid #2554a4;
-  outline-offset: 2px;
-
+  background: var(--hover);
 }
 
 
 /* Round avatar with the initials.
-   --role-main is set in navbar.html from role-colors.ts */
+   --role-main / --role-dark are set in navbar.html from role-colors.ts */
 .avatar {
-
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
 
   flex-shrink: 0;
 
@@ -97,169 +96,144 @@
 
   border-radius: 50%;
 
-  background: var(--role-main, #4b5563);
-  color: #ffffff;
+  background: var(--role-main, var(--track));
+  color: var(--role-dark, var(--muted));
 
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: 700;
   line-height: 1;
-
 }
 
 .avatar.large {
-
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
 
   font-size: 15px;
-
 }
 
 /* Only when there is no user (a moment while logging out) */
 .avatar-icon {
+  width: 32px;
+  height: 32px;
 
-  width: 38px;
-  height: 38px;
+  font-size: 32px;
 
-  font-size: 38px;
-
-  color: #6b7280;
-
+  color: var(--faint);
 }
 
 
 /* Name and role, one under the other */
 .user-text {
-
   display: flex;
   flex-direction: column;
 
   min-width: 0;
 
   line-height: 1.3;
-
 }
 
 .user-name {
-
   max-width: 180px;
 
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  font-size: 14px;
+  font-size: var(--fs-13);
   font-weight: 600;
 
-  color: #111827;
-
+  color: var(--text);
 }
 
 .user-role {
+  font-size: var(--fs-12);
 
-  font-size: 12px;
-
-  color: #6b7280;
-
+  color: var(--faint);
 }
 
 /* The arrow turns up while the menu is open */
 .caret {
-
   flex-shrink: 0;
 
-  color: #6b7280;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
 
-  transition: transform 0.15s ease;
+  color: var(--faint);
 
+  transition: transform var(--dur) ease;
 }
 
 .user-button.open .caret {
-
   transform: rotate(180deg);
-
 }
 
 
 /* ==============================
-   User Menu
+   User menu
    (the elements below are written in navbar.html,
-   so these styles reach them inside the menu panel)
+   so these styles reach them inside the menu panel.
+   The panel itself — 320px, border, shadow — is in styles.css)
    ============================== */
 
 .menu-head {
-
   display: flex;
   align-items: center;
+  gap: var(--sp-3);
 
-  gap: 12px;
-
-  /* Also sets the width of the menu panel */
-  min-width: 230px;
-
-  padding: 10px 16px 12px;
+  padding: 10px var(--sp-4) var(--sp-3);
 
   box-sizing: border-box;
-
 }
 
 .menu-head-text {
-
   display: flex;
   flex-direction: column;
 
   min-width: 0;
 
   line-height: 1.4;
-
 }
 
 .menu-head-name {
-
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-14);
+  font-weight: 700;
 
-  color: #111827;
-
+  color: var(--text);
 }
 
 .menu-head-login {
-
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  font-size: 12px;
+  font-size: var(--fs-12);
 
-  color: #6b7280;
-
+  color: var(--faint);
 }
 
 .menu-divider {
-
   height: 1px;
 
-  margin: 4px 0;
+  margin-block: var(--sp-1);
 
-  background: #eef0f3;
-
+  background: var(--rule);
 }
 
 /* Logout in red */
 .logout-item,
 .logout-item mat-icon {
-
-  color: #b91c1c;
-
+  color: var(--bad-ink);
 }
 
 
 /* ==============================
    Small screens: the avatar only
+   (the full phone layout comes in step 4)
    ============================== */
 
 @media (max-width: 760px) {
@@ -270,7 +244,7 @@
   }
 
   .user-button {
-    padding: 4px;
+    padding-inline: var(--sp-1);
   }
 
 }

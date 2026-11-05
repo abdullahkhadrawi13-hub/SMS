@@ -52,6 +52,30 @@ button:focus-visible,
   transform: scaleX(-1);
 }
 
+/* ---------- User menu (navbar) ----------
+   <mat-menu class="user-menu-panel"> in navbar.html. The menu panel opens
+   outside the navbar component, so its own look lives here.
+   mat-menu is limited to 280px by default; this menu is 320px. */
+.mat-mdc-menu-panel.user-menu-panel {
+  --mat-menu-container-color: var(--surface);
+  --mat-menu-container-shape: var(--r-card);
+  --mat-menu-container-elevation-shadow: var(--shadow-pop);
+  --mat-menu-item-label-text-size: var(--fs-14);
+  --mat-menu-item-label-text-color: var(--text);
+  --mat-menu-item-icon-color: var(--muted);
+  --mat-menu-item-icon-size: 20px;
+  --mat-menu-item-hover-state-layer-color: var(--hover);
+
+  width: 320px;
+  max-width: calc(100vw - 32px);
+
+  border: 1px solid var(--border);
+}
+
+.user-menu-panel .mat-mdc-menu-item {
+  min-height: 40px;
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -5,26 +5,50 @@ import { CardColor } from './card-colors';
 
 // One color per role, the same shape as the card colors (card-colors.ts):
 //
-//   main: the avatar background (white initials on it), the role text
-//   soft: a light version (the background of the profile card)
-//   dark: a dark version (text on the soft background)
+//   main: the avatar background
+//   soft: a lighter version (the background of the profile card)
+//   dark: the initials on the avatar, and text on the soft background
 //
-// Used by the navbar avatar and the profile dialog.
-// Every main color keeps white text readable (contrast above 4.5:1).
+// Navy & Gold: every role has a light avatar with dark initials;
+// the Admin is gold with navy initials.
+// The values are CSS variables from src/tokens.css (no hex here),
+// so they work in [style.--role-main]="..." bindings.
+//
+// Used by the navbar avatar, the user menu and the profile dialog.
 export const ROLE_COLORS: Record<UserRole, CardColor> = {
-  [UserRole.Admin]:              { main: '#2554A4', soft: '#EAF2FF', dark: '#163A78' }, // blue
-  [UserRole.AssistantPrincipal]: { main: '#534AB7', soft: '#EEEDFE', dark: '#3C3489' }, // purple
-  [UserRole.Teacher]:            { main: '#0F6E56', soft: '#E1F5EE', dark: '#04342C' }, // teal
-  [UserRole.Student]:            { main: '#854F0B', soft: '#FAEEDA', dark: '#633806' }, // amber
-  [UserRole.Parent]:             { main: '#993556', soft: '#FBEAF0', dark: '#72243E' }, // pink
+  [UserRole.Admin]: {
+    main: 'var(--role-admin-main)',
+    soft: 'var(--role-admin-soft)',
+    dark: 'var(--role-admin-dark)'
+  },
+  [UserRole.AssistantPrincipal]: {
+    main: 'var(--role-ap-main)',
+    soft: 'var(--role-ap-soft)',
+    dark: 'var(--role-ap-dark)'
+  },
+  [UserRole.Teacher]: {
+    main: 'var(--role-teacher-main)',
+    soft: 'var(--role-teacher-soft)',
+    dark: 'var(--role-teacher-dark)'
+  },
+  [UserRole.Student]: {
+    main: 'var(--role-student-main)',
+    soft: 'var(--role-student-soft)',
+    dark: 'var(--role-student-dark)'
+  },
+  [UserRole.Parent]: {
+    main: 'var(--role-parent-main)',
+    soft: 'var(--role-parent-soft)',
+    dark: 'var(--role-parent-dark)'
+  },
 };
 
 
 // Gray, for a role the frontend does not know.
 const UNKNOWN_ROLE_COLOR: CardColor = {
-  main: '#4B5563',
-  soft: '#F3F4F6',
-  dark: '#1F2937'
+  main: 'var(--role-unknown-main)',
+  soft: 'var(--role-unknown-soft)',
+  dark: 'var(--role-unknown-dark)'
 };
 
 

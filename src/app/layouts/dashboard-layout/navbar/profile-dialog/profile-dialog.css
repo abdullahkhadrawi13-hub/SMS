@@ -146,7 +146,8 @@
 
   background: var(--role-main, #4b5563);
 
-  color: #ffffff;
+  /* Light avatar (Navy & Gold): the initials take the role's dark colour */
+  color: var(--role-dark, #ffffff);
 
   font-size: 20px;
   font-weight: 600;
@@ -178,7 +179,7 @@
   border-radius: 999px;
 
   background: #ffffff;
-  color: var(--role-main, #4b5563);
+  color: var(--role-dark, #4b5563);
 
   font-size: 12px;
   font-weight: 500;

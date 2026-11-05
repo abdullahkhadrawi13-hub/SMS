@@ -1,15 +1,23 @@
 <mat-toolbar class="navbar">
 
-  <!-- The logo and the system name are in the sidebar now. -->
+  <!-- The logo and the system name are in the sidebar.
+       Everything here sits at the end of the bar, in this order:
+       current term → language → user. -->
 
   <span class="spacer"></span>
 
-  <app-language-switcher></app-language-switcher>
+  <!-- Created only for Admin and AssistantPrincipal:
+       the others get 403 on the academic terms list. -->
+  @if (showCurrentTerm()) {
+    <app-current-term-badge />
+  }
+
+  <app-language-switcher />
 
 
   <!-- User button: avatar + name (first + family) + role.
-       The role color comes from role-colors.ts through the CSS variables
-       --role-main / --role-soft / --role-dark, used in navbar.css. -->
+       The role colors come from role-colors.ts through the CSS variables
+       --role-main (avatar background) and --role-dark (initials). -->
   <button
     type="button"
     class="user-button"
@@ -17,7 +25,8 @@
     [matMenuTriggerFor]="userMenu"
     #userTrigger="matMenuTrigger"
     [attr.aria-label]="'NAVBAR.USER_MENU' | translate"
-    [style.--role-main]="roleColor().main">
+    [style.--role-main]="roleColor().main"
+    [style.--role-dark]="roleColor().dark">
 
     @if (user()) {
 
@@ -30,7 +39,7 @@
 
     } @else {
 
-      <mat-icon class="avatar-icon">account_circle</mat-icon>
+      <mat-icon class="avatar-icon" aria-hidden="true">account_circle</mat-icon>
 
       <span class="user-text">
         <span class="user-name">{{ 'NAVBAR.USER' | translate }}</span>
@@ -38,21 +47,27 @@
 
     }
 
-    <mat-icon class="caret">expand_more</mat-icon>
+    <mat-icon class="caret" aria-hidden="true">expand_more</mat-icon>
 
   </button>
 
 </mat-toolbar>
 
 
-<mat-menu #userMenu="matMenu" xPosition="before">
+<!-- user-menu-panel: width, border and shadow of the panel are in styles.css
+     (the panel opens outside this component). -->
+<mat-menu
+  #userMenu="matMenu"
+  xPosition="before"
+  class="user-menu-panel">
 
   <!-- Menu header: avatar + name + login ID -->
   @if (user(); as currentUser) {
 
     <div
       class="menu-head"
-      [style.--role-main]="roleColor().main">
+      [style.--role-main]="roleColor().main"
+      [style.--role-dark]="roleColor().dark">
 
       <span class="avatar large" aria-hidden="true">{{ initials() }}</span>
 
@@ -72,7 +87,7 @@
     mat-menu-item
     (click)="openProfile()">
 
-    <mat-icon>person</mat-icon>
+    <mat-icon aria-hidden="true">person</mat-icon>
 
     <span>
       {{ 'NAVBAR.PROFILE' | translate }}
@@ -85,7 +100,7 @@
     mat-menu-item
     (click)="openChangePassword()">
 
-    <mat-icon>lock</mat-icon>
+    <mat-icon aria-hidden="true">lock</mat-icon>
 
     <span>
       {{ 'NAVBAR.CHANGE_PASSWORD' | translate }}
@@ -102,7 +117,7 @@
     class="logout-item"
     (click)="logout()">
 
-    <mat-icon>logout</mat-icon>
+    <mat-icon aria-hidden="true">logout</mat-icon>
 
     <span>
       {{ 'NAVBAR.LOGOUT' | translate }}

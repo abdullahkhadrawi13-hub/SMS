@@ -1,14 +1,52 @@
+/* ==========================================================
+   Language button — a transparent button: icon + the other language.
+   Colours come from src/tokens.css. A parent can recolour it with the
+   --lang-btn-* variables (auth-layout does this on the navy panel).
+   ========================================================== */
+
 .language-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+
+  height: var(--h-control);
+  box-sizing: border-box;
+  padding-block: 0;
+  padding-inline: 10px;
+
+  border: 0;
+  border-radius: var(--r-control);
+
+  background: transparent;
+  color: var(--lang-btn-ink, var(--muted));
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color var(--dur) ease,
+    color var(--dur) ease;
+}
+
+.language-button:hover {
+  background: var(--lang-btn-hover-bg, var(--hover));
+  color: var(--lang-btn-hover-ink, var(--text));
+}
+
+.language-button:focus-visible {
+  outline: 2px solid var(--lang-btn-focus, var(--accent));
+  outline-offset: 2px;
 }
 
 .language-icon {
-  color: #1976d2;
-}
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
 
-.icon-placeholder {
-  width: 24px;
-  display: inline-block;
+  color: var(--lang-btn-icon, currentColor);
 }

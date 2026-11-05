@@ -42,6 +42,16 @@
   --gold-bg: #f7edd6; --gold-ink: #5c410b;
   --chg: #d69a1c;     --chg-bg: #fff8e6;
 
+  /* roles: avatar background (main), light card (soft), initials and text (dark).
+     Used by role-colors.ts (navbar avatar, user menu, profile dialog).
+     Every dark colour reads on its main and soft colour (contrast above 7:1). */
+  --role-admin-main: #e0b961;   --role-admin-soft: #f7edd6;   --role-admin-dark: #15213b;
+  --role-ap-main: #d6e2f3;      --role-ap-soft: #eef3fa;      --role-ap-dark: #1f4478;
+  --role-teacher-main: #cfe9df; --role-teacher-soft: #edf6f2; --role-teacher-dark: #134e3c;
+  --role-student-main: #e2dbf4; --role-student-soft: #f3f0fa; --role-student-dark: #3d2f78;
+  --role-parent-main: #f3d9e2;  --role-parent-soft: #faeff3;  --role-parent-dark: #6e2340;
+  --role-unknown-main: #e3e7ee; --role-unknown-soft: #f2f3f6; --role-unknown-dark: #535d70;
+
   /* unsaved-changes bar — warm yellow for now (colour not final yet) */
   --save-bg: #fff4d6; --save-line: #ecc76b; --save-ink: #5c3d07; --save-muted: #74500f;
 

@@ -91,7 +91,8 @@
     "CHANGE_PASSWORD": "Change Password",
     "SETTINGS": "Settings",
     "LOGOUT": "Logout",
-    "USER_MENU": "User menu"
+    "USER_MENU": "User menu",
+    "CURRENT_TERM": "Current term"
   },
 
   "PROFILE_DIALOG": {

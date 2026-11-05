@@ -16,9 +16,11 @@ import { Language } from '../../../core/services/language';
 import { getRoleTranslationKey } from '../../../core/models/user-role';
 import { getInitials, getShortName } from '../../../shared/utils/person-name';
 import { getRoleColor } from '../../../shared/constants/role-colors';
+import { Permissions } from '../../../core/services/permissions';
 
 import { ChangePassword } from '../../../features/auth/change-password/change-password';
 import { ProfileDialog, PROFILE_DIALOG_CHANGE_PASSWORD } from './profile-dialog/profile-dialog';
+import { CurrentTermBadge } from './current-term-badge/current-term-badge';
 
 @Component({
   selector: 'app-navbar',
@@ -28,7 +30,8 @@ import { ProfileDialog, PROFILE_DIALOG_CHANGE_PASSWORD } from './profile-dialog/
     MatButtonModule,
     MatMenuModule,
     TranslatePipe,
-    LanguageSwitcher
+    LanguageSwitcher,
+    CurrentTermBadge
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
@@ -40,6 +43,7 @@ export class Navbar {
   private readonly dialog = inject(MatDialog);
   private readonly userService = inject(User);
   private readonly language = inject(Language);
+  private readonly permissions = inject(Permissions);
 
 
   // The logged-in user (the login data kept by the User service).
@@ -74,6 +78,11 @@ export class Navbar {
   readonly roleColor = computed(() =>
     getRoleColor(this.user()?.role)
   );
+
+  // The current term badge: only for the roles that can read the
+  // academic terms (Admin and AssistantPrincipal). The others get 403,
+  // so the badge is not created and no request is sent.
+  readonly showCurrentTerm = this.permissions.canViewAcademicYears;
 
 
   logout(): void {
