@@ -1,18 +1,31 @@
-<mat-toolbar class="navbar">
+<mat-toolbar class="navbar" [class.phone]="phone()">
 
   <!-- The logo and the system name are in the sidebar.
        Everything here sits at the end of the bar, in this order:
-       current term → language → user. -->
+       current term → language → user.
+       On the phone (under 720px) the bar is navy: the menu button at the
+       start, then the language icon and the avatar at the end. -->
+
+  @if (phone()) {
+    <button
+      type="button"
+      class="menu-button"
+      (click)="menuClick.emit()"
+      [attr.aria-label]="'NAVBAR.OPEN_MENU' | translate">
+      <mat-icon aria-hidden="true">menu</mat-icon>
+    </button>
+  }
 
   <span class="spacer"></span>
 
   <!-- Created only for Admin and AssistantPrincipal:
-       the others get 403 on the academic terms list. -->
-  @if (showCurrentTerm()) {
+       the others get 403 on the academic terms list.
+       Not shown on the phone (no room). -->
+  @if (showCurrentTerm() && !phone()) {
     <app-current-term-badge />
   }
 
-  <app-language-switcher />
+  <app-language-switcher [compact]="phone()" />
 
 
   <!-- User button: avatar + name (first + family) + role.

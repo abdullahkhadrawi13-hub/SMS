@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -44,6 +44,14 @@ export class Navbar {
   private readonly userService = inject(User);
   private readonly language = inject(Language);
   private readonly permissions = inject(Permissions);
+
+
+  // true under 720px (from dashboard-layout): the navy phone bar with the
+  // menu button, the language icon and the avatar only.
+  readonly phone = input(false);
+
+  // The menu button was pressed: dashboard-layout opens the sidebar.
+  readonly menuClick = output<void>();
 
 
   // The logged-in user (the login data kept by the User service).

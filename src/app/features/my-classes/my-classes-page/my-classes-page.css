@@ -4,7 +4,6 @@
 
 .my-classes-page {
   width: 100%;
-  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -140,10 +139,6 @@
    ================================ */
 
 @media (max-width: 650px) {
-
-  .my-classes-page {
-    padding: 16px;
-  }
 
   .page-header h1 {
     font-size: 24px;

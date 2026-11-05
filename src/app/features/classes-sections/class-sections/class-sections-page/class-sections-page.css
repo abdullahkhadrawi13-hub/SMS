@@ -6,8 +6,6 @@
 
   width: 100%;
 
-  padding: 24px;
-
   box-sizing: border-box;
 
 }
@@ -141,21 +139,6 @@
   font-size: 42px;
 
   color: #dc2626;
-
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-
-  .class-sections-page {
-
-    padding: 16px;
-
-  }
 
 }
 

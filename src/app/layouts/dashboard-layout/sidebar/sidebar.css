@@ -230,3 +230,16 @@
 
   color: var(--nav-soon-ink);
 }
+
+/* ==============================
+   Phone (under 720px — the same width as PHONE_QUERY in dashboard-layout.ts)
+   The sidebar opens over the page; links are 44px for touch.
+   ============================== */
+
+@media (max-width: 719.98px) {
+
+  .link {
+    min-height: var(--h-touch);
+  }
+
+}

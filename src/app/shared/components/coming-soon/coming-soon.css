@@ -6,7 +6,6 @@
   align-items: center;
   justify-content: center;
 
-  padding: 32px;
   background: #f5f7fb;
 }
 
@@ -79,9 +78,6 @@
 
 /* Responsive */
 @media (max-width: 600px) {
-  .coming-soon {
-    padding: 20px;
-  }
 
   .coming-soon-card {
     padding: 36px 24px;

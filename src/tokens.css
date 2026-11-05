@@ -15,6 +15,7 @@
   --r-card: 10px; --r-control: 8px; --r-pill: 6px;
   --h-control: 36px; --h-touch: 44px; --row: 52px;
   --sidebar-w: 236px; --topbar-h: 56px;
+  --topbar-h-phone: 52px; /* the navy navbar under 720px */
 
   /* spacing scale (4px base) */
   --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-6: 24px; --sp-8: 32px;
@@ -58,6 +59,10 @@
   /* elevation: only for things that float above the page */
   --shadow-pop: 0 12px 32px rgba(15, 23, 42, .16);
   --shadow-save: 0 8px 24px rgba(92, 61, 7, .14);
+  --shadow-drawer: 0 0 32px rgba(12, 21, 40, .28);  /* the sidebar over the page (phone) */
+
+  /* the dark layer behind the sidebar when it opens over the page (phone) */
+  --scrim: rgba(12, 21, 40, .5);
 
   /* motion */
   --dur: 150ms;

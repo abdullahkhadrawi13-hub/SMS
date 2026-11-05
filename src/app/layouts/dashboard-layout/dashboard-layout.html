@@ -1,21 +1,44 @@
+<!-- The direction is set here (not only on <html>): mat-sidenav reads it
+     from the nearest [dir], so position="start" flips at once when the
+     language changes (right in Arabic, left in English). -->
 <div class="dashboard-layout" [dir]="languageService.getDirection()">
 
-  <!-- Sidebar -->
-  <aside class="sidebar-container">
-    <app-sidebar></app-sidebar>
-  </aside>
+  <mat-sidenav-container class="layout-container">
 
-  <!-- Main Area -->
-  <div class="main-area">
+    <!-- Sidebar
+         Computer (720px and wider): mode="side", always open, as before.
+         Phone (under 720px): mode="over", closed until the navbar menu
+         button opens it. It closes on the backdrop, on Escape (both built
+         into mat-sidenav) and when a link is clicked. -->
+    <mat-sidenav
+      class="sidebar-container"
+      position="start"
+      [mode]="isPhone() ? 'over' : 'side'"
+      [opened]="sidebarOpened()"
+      (openedChange)="sidebarOpened.set($event)"
+      [autoFocus]="isPhone() ? 'first-tabbable' : false">
 
-    <!-- Navbar -->
-    <app-navbar></app-navbar>
+      <app-sidebar (linkClick)="onSidebarLinkClick()"></app-sidebar>
 
-    <!-- Content -->
-    <main class="content-area">
-      <router-outlet></router-outlet>
-    </main>
+    </mat-sidenav>
 
-  </div>
+
+    <!-- Main Area -->
+    <mat-sidenav-content class="main-area">
+
+      <!-- Navbar -->
+      <app-navbar
+        [phone]="isPhone()"
+        (menuClick)="openSidebar()">
+      </app-navbar>
+
+      <!-- Content: the only place with the page padding -->
+      <main class="content-area">
+        <router-outlet></router-outlet>
+      </main>
+
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
 
 </div>

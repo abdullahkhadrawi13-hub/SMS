@@ -4,7 +4,6 @@
 
 .attendance-page {
   width: 100%;
-  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -27,17 +26,4 @@
   align-items: center;
 
   gap: 8px;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-
-  .attendance-page {
-    padding: 16px;
-  }
-
 }

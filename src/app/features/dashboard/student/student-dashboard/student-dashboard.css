@@ -1,6 +1,5 @@
 .student-dashboard {
   width: 100%;
-  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -164,10 +163,6 @@
 
 
 @media (max-width: 650px) {
-
-  .student-dashboard {
-    padding: 16px;
-  }
 
   .dashboard-statistics {
     grid-template-columns: 1fr;
