@@ -47,7 +47,8 @@
                 [class.soon]="link.soon"
                 [routerLink]="link.route"
                 routerLinkActive="active"
-                ariaCurrentWhenActive="page">
+                ariaCurrentWhenActive="page"
+                (click)="linkClick.emit()">
 
                 <mat-icon aria-hidden="true">{{ link.icon }}</mat-icon>
 

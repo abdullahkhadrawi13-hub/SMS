@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -38,6 +38,10 @@ export class Sidebar {
 
   private userService = inject(User);
   private attendanceAccess = inject(AttendanceAccessService);
+
+  // A link was clicked: on the phone, dashboard-layout closes the sidebar.
+  // (Also when the link is the page already open, where no navigation happens.)
+  readonly linkClick = output<void>();
 
   // The groups of the current user, each with its visible links.
   // A group with no visible link is left out, heading and all.
