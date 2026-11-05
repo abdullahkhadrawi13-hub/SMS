@@ -1,11 +1,27 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { User } from '../../../core/services/user';
 import { AttendanceAccessService } from '../../../core/services/attendance-access';
-import { MenuItem, SIDEBAR_MENU } from './sidebar-menu';
+import { UserRole } from '../../../core/models/user-role';
+import {
+  MenuGroupInfo,
+  MenuItem,
+  SIDEBAR_GROUPS,
+  SIDEBAR_MENU
+} from './sidebar-menu';
+
+// One link as the sidebar shows it.
+interface SidebarLink extends MenuItem {
+  soon: boolean;
+}
+
+// One group with the links the current user can see.
+interface SidebarGroup extends MenuGroupInfo {
+  links: SidebarLink[];
+}
 
 @Component({
   selector: 'app-sidebar',
@@ -23,20 +39,34 @@ export class Sidebar {
   private userService = inject(User);
   private attendanceAccess = inject(AttendanceAccessService);
 
-  menuItems = SIDEBAR_MENU;
+  // The groups of the current user, each with its visible links.
+  // A group with no visible link is left out, heading and all.
+  // Recomputed when the user or the attendance access changes.
+  readonly groups = computed<SidebarGroup[]>(() => {
 
-  get visibleMenuItems() {
-    const role =this.userService.getRole();
+    const role = this.userService.getRole();
 
     if (role === null) {
       return [];
     }
 
-    return this.menuItems.filter(item =>
+    const visible = SIDEBAR_MENU.filter(item =>
       item.roles.includes(role) &&
       !this.isHidden(item)
     );
-  }
+
+    return SIDEBAR_GROUPS
+      .map(group => ({
+        ...group,
+        links: visible
+          .filter(item => (item.group ?? null) === group.id)
+          .map(item => ({
+            ...item,
+            soon: this.isComingSoon(item, role)
+          }))
+      }))
+      .filter(group => group.links.length > 0);
+  });
 
   // قسم الحضور والغياب يُخفى عن المعلم إذا لم يكن مسؤول الحضور
   // (GET /api/attendance/my-access أعاد canRecord: false).
@@ -46,5 +76,15 @@ export class Sidebar {
       item.route === '/attendance' &&
       this.attendanceAccess.hideFromSidebar()
     );
+  }
+
+  // The page of this link is not ready yet for this role.
+  private isComingSoon(item: MenuItem, role: UserRole): boolean {
+
+    if (item.comingSoon === true) {
+      return true;
+    }
+
+    return item.comingSoon?.includes(role) ?? false;
   }
 }

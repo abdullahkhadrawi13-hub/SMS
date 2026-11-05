@@ -1,23 +1,70 @@
 <div class="sidebar">
 
-  <div class="sidebar-header">
-    <span>{{ 'SIDEBAR.MENU' | translate }}</span>
+  <!-- Brand: logo + system name (the other language under it) -->
+  <div class="brand">
+
+    <span class="brand-logo">
+      <img
+        src="images/sms-logo.jpg"
+        alt=""
+        width="34"
+        height="34">
+    </span>
+
+    <span class="brand-text">
+      <span class="brand-name">{{ 'SIDEBAR.BRAND_NAME' | translate }}</span>
+      <bdi class="brand-sub">{{ 'SIDEBAR.BRAND_SUBTITLE' | translate }}</bdi>
+    </span>
+
   </div>
 
-  <nav class="sidebar-menu">
 
-    @for (item of visibleMenuItems; track item.route) {
+  <nav
+    class="nav"
+    [attr.aria-label]="'SIDEBAR.MENU' | translate">
 
-      <a
-        class="menu-item"
-        [routerLink]="item.route"
-        routerLinkActive="active">
+    @for (group of groups(); track group.id ?? 'top') {
 
-        <mat-icon>{{ item.icon }}</mat-icon>
+      <div class="group">
 
-        <span>{{ item.label | translate }}</span>
+        @if (group.label) {
+          <div
+            class="group-title"
+            [id]="'nav-group-' + group.id">
+            {{ group.label | translate }}
+          </div>
+        }
 
-      </a>
+        <ul
+          class="links"
+          [attr.aria-labelledby]="group.label ? 'nav-group-' + group.id : null">
+
+          @for (link of group.links; track link.route) {
+
+            <li>
+              <a
+                class="link"
+                [class.soon]="link.soon"
+                [routerLink]="link.route"
+                routerLinkActive="active"
+                ariaCurrentWhenActive="page">
+
+                <mat-icon aria-hidden="true">{{ link.icon }}</mat-icon>
+
+                <span class="link-text">{{ link.label | translate }}</span>
+
+                @if (link.soon) {
+                  <span class="soon-tag">{{ 'SIDEBAR.COMING_SOON' | translate }}</span>
+                }
+
+              </a>
+            </li>
+
+          }
+
+        </ul>
+
+      </div>
 
     }
 

@@ -1,41 +1,30 @@
+/* ==========================================================
+   Sidebar — Navy & Gold
+   Colours and sizes come from src/tokens.css (no hex here).
+   Logical properties only, so it works in RTL and LTR.
+   ========================================================== */
+
 :host {
   display: block;
   height: 100%;
 }
 
 .sidebar {
-  width: 260px;
-  height: 100vh;
+  height: 100%;
 
   box-sizing: border-box;
+  padding: var(--sp-4) var(--sp-3);
 
-  background:
-    radial-gradient(
-      circle at 15% 20%,
-      #33466f 0%,
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 85% 80%,
-      #2a3a5f 0%,
-      transparent 40%
-    ),
-    linear-gradient(
-      135deg,
-      #202d49,
-      #172238
-    );
+  background: var(--side-bg);
 
-  /* شريط تمرير عمودي عند زيادة المحتوى عن ارتفاع الشاشة */
+  /* the menu scrolls on its own when it is taller than the screen */
   overflow-y: auto;
   overflow-x: hidden;
 
-  /* مظهر شريط التمرير (Firefox) */
   scrollbar-width: thin;
-  scrollbar-color: #475569 transparent;
+  scrollbar-color: var(--nav-active-bg) transparent;
 }
 
-/* مظهر شريط التمرير (Chrome / Edge / Safari) */
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }
@@ -45,81 +34,161 @@
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: var(--nav-active-bg);
   border-radius: 3px;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: var(--soon-line);
 }
 
 
 /* ==============================
-   Sidebar Header
+   Brand
    ============================== */
 
-.sidebar-header {
-  font-size: 15px;
-  padding: 20px;
-  margin-bottom: 10px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
-  font-size: 14px;
-  font-weight: 600;
-
-  color: #94a3b8;
+  padding-inline: var(--sp-1);
+  padding-block-end: var(--sp-2);
 }
 
+.brand-logo {
+  flex-shrink: 0;
 
-/* ==============================
-   Sidebar Menu
-   ============================== */
+  width: 40px;
+  height: 40px;
 
-.sidebar-menu {
+  box-sizing: border-box;
+  padding: 3px;
+
+  display: grid;
+  place-items: center;
+
+  background: var(--surface);
+  border-radius: var(--r-card);
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  border-radius: 7px;
+}
+
+.brand-text {
   display: flex;
   flex-direction: column;
 
-  width: 100%;
+  /* each line sits at the start, even the line in the other language */
+  align-items: flex-start;
 
-  padding: 0 10px;
+  min-width: 0;
+  line-height: 1.3;
+}
 
-  box-sizing: border-box;
+.brand-name {
+  font-size: var(--fs-14);
+  font-weight: 600;
+  color: var(--side-ink);
+}
+
+/* In English the name wraps to a second line instead of being cut. */
+.brand-sub {
+  max-width: 100%;
+
+  font-size: var(--fs-12);
+  color: var(--side-muted);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 
 /* ==============================
-   Menu Item
+   Groups
    ============================== */
 
-.menu-item {
+.group-title {
+  margin-block: 14px var(--sp-1);
+  padding-inline: 10px;
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+  line-height: 1.3;
+
+  color: var(--nav-group);
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+
+/* ==============================
+   Link
+   ============================== */
+
+.link {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 
-  width: 100%;
-  min-width: 0;
-
+  min-height: var(--h-control);
   box-sizing: border-box;
+  padding: 6px 10px;
 
-  padding: 12px 14px;
-  margin-bottom: 4px;
+  border-radius: var(--r-control);
 
-  color: #94a3b8;
-
+  font-size: var(--fs-14);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--nav-ink);
   text-decoration: none;
 
-  border-radius: 8px;
-
-  transition: background 0.2s ease;
+  transition: background-color var(--dur) ease;
 }
 
+.link mat-icon {
+  flex-shrink: 0;
 
-/* ==============================
-   Hover
-   ============================== */
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
 
-.menu-item:hover {
-  background: #4f5b77;
-  color: #e4e9ee;
+  color: var(--nav-icon);
+}
+
+.link-text {
+  flex: 1;
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link:hover {
+  background: var(--nav-hover);
+}
+
+/* The global blue focus ring is hard to see on navy:
+   the sidebar uses the light gold one, drawn inside the link. */
+.link:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: -2px;
 }
 
 
@@ -127,40 +196,37 @@
    Active
    ============================== */
 
-.menu-item.active {
-  background: #2554a4;
-  color: #ffffff;
+.link.active {
+  background: var(--nav-active-bg);
+  color: var(--nav-active-ink);
+  font-weight: 600;
 }
 
-.menu-item.active mat-icon {
-  color: #38bdf8;
+.link.active mat-icon {
+  color: var(--nav-active-icon);
 }
+
 
 /* ==============================
-   Icons
+   Coming soon
    ============================== */
 
-.menu-item mat-icon {
+.link.soon,
+.link.soon mat-icon {
+  color: var(--nav-soon-ink);
+}
+
+.soon-tag {
   flex-shrink: 0;
 
-  font-size: 22px;
-  width: 22px;
-  height: 22px;
+  padding: 1px 7px;
 
-  color: inherit;
-}
+  border: 1px solid var(--soon-line);
+  border-radius: 999px;
 
+  font-size: var(--fs-11);
+  font-weight: 600;
+  line-height: 1.4;
 
-/* ==============================
-   Text
-   ============================== */
-
-.menu-item span {
-
-  font-size: 15px;
-  min-width: 0;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  color: var(--nav-soon-ink);
 }

@@ -61,6 +61,13 @@
 
   "SIDEBAR": {
     "MENU": "Main Menu",
+    "BRAND_NAME": "School Management System",
+    "BRAND_SUBTITLE": "نظام إدارة المدرسة",
+    "GROUP_TODAY": "Today",
+    "GROUP_RECORDS": "Records",
+    "GROUP_ACADEMIC": "Academic",
+    "GROUP_SYSTEM": "System",
+    "COMING_SOON": "Soon",
     "DASHBOARD": "Dashboard",
     "MY_CLASSES": "My Classes",
     "STUDENTS": "Students",

@@ -61,6 +61,13 @@
 
   "SIDEBAR": {
     "MENU": "القائمة الرئيسية",
+    "BRAND_NAME": "نظام إدارة المدرسة",
+    "BRAND_SUBTITLE": "School Management System",
+    "GROUP_TODAY": "اليوم",
+    "GROUP_RECORDS": "السجلات",
+    "GROUP_ACADEMIC": "الأكاديمي",
+    "GROUP_SYSTEM": "النظام",
+    "COMING_SOON": "قريبًا",
     "DASHBOARD": "لوحة التحكم",
     "MY_CLASSES": "صفوفي",
     "STUDENTS": "الطلاب",
