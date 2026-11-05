@@ -4,4 +4,4 @@
 export const environment = {
     apiUrl: 'http://localhost:5253/api', // for real
     //apiUrl: 'http://localhost:3000/api', //for mock
-};
+}; 
