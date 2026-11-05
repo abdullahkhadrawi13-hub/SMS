@@ -1,12 +1,44 @@
+/* ==========================================================
+   Dashboard layout — Navy & Gold
+   sidebar (mat-sidenav) + navbar + page.
+   Colours and sizes come from src/tokens.css (no hex here).
+   Phone width: 719.98px, the same as PHONE_QUERY in dashboard-layout.ts.
+   ========================================================== */
+
 .dashboard-layout {
   width: 100%;
-  height: 100vh;
 
-  display: flex;
+  /* dvh: on phones 100vh is taller than the screen (the address bar),
+     so the bottom of the page would hide under it. 100vh stays for
+     the browsers that do not know dvh. */
+  height: 100vh;
+  height: 100dvh;
+
   overflow: hidden;
 
   box-sizing: border-box;
 }
+
+
+/* ==============================
+   Container
+   ============================== */
+
+.layout-container {
+  height: 100%;
+
+  /* mat-sidenav colours and sizes, from the tokens */
+  --mat-sidenav-container-width: var(--sidebar-w);
+  --mat-sidenav-container-shape: 0;
+  --mat-sidenav-container-divider-color: transparent;
+  --mat-sidenav-container-elevation-shadow: var(--shadow-drawer);
+  --mat-sidenav-container-background-color: var(--side-bg);
+  --mat-sidenav-container-text-color: var(--side-ink);
+  --mat-sidenav-content-background-color: var(--ground);
+  --mat-sidenav-content-text-color: var(--text);
+  --mat-sidenav-scrim-color: var(--scrim);
+}
+
 
 /* ==============================
    Sidebar
@@ -14,28 +46,22 @@
 
 .sidebar-container {
   width: var(--sidebar-w);
-  min-width: var(--sidebar-w);
-  height: 100vh;
-
-  flex-shrink: 0;
-
-  box-sizing: border-box;
+  border: 0;
 }
 
 
 /* ==============================
    Main Area
+   navbar on top, the page under it (the page scrolls, not the navbar)
    ============================== */
 
 .main-area {
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
-
-  height: 100vh;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
+
+  min-width: 0;
 
   overflow: hidden;
 }
@@ -43,6 +69,7 @@
 
 /* ==============================
    Content
+   The page padding lives here only, once for every page.
    ============================== */
 
 .content-area {
@@ -50,10 +77,23 @@
   min-width: 0;
   min-height: 0;
 
-  padding: 24px;
-  
+  padding-block: 28px var(--sp-8);
+  padding-inline: var(--sp-8);
 
   box-sizing: border-box;
 
   overflow: auto;
+}
+
+
+/* ==============================
+   Phone (under 720px)
+   ============================== */
+
+@media (max-width: 719.98px) {
+
+  .content-area {
+    padding: var(--sp-4);
+  }
+
 }
