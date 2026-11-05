@@ -232,21 +232,96 @@
 
 
 /* ==============================
-   Small screens: the avatar only
-   (the full phone layout comes in step 4)
+   Phone (under 720px)
+   .phone is set from dashboard-layout (PHONE_QUERY), so the bar and the
+   sidebar switch at the same width.
+   Navy bar, 52px: menu button at the start; language icon and avatar at
+   the end. Every button is 44 × 44 for touch.
    ============================== */
 
-@media (max-width: 760px) {
+.navbar.phone {
+  --mat-toolbar-standard-height: var(--topbar-h-phone);
+  --mat-toolbar-mobile-height: var(--topbar-h-phone);
+  --mat-toolbar-container-background-color: var(--primary);
+  --mat-toolbar-container-text-color: var(--side-ink);
 
-  .user-text,
-  .caret {
-    display: none;
-  }
+  /* the language button on navy (the same colours as the sidebar links) */
+  --lang-btn-ink: var(--nav-ink);
+  --lang-btn-icon: var(--nav-ink);
+  --lang-btn-hover-bg: var(--nav-hover);
+  --lang-btn-hover-ink: var(--side-ink);
+  --lang-btn-focus: var(--gold-light);
 
-  .user-button {
-    padding-inline: var(--sp-1);
-  }
+  height: var(--topbar-h-phone);
+  gap: var(--sp-1);
 
+  padding-inline: var(--sp-1) var(--sp-2);
+
+  background: var(--primary);
+  border-block-end: 0;
+}
+
+.menu-button {
+  width: var(--h-touch);
+  height: var(--h-touch);
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: var(--r-control);
+
+  background: transparent;
+  color: var(--nav-ink);
+
+  cursor: pointer;
+
+  transition:
+    background-color var(--dur) ease,
+    color var(--dur) ease;
+}
+
+.menu-button mat-icon {
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+}
+
+.menu-button:hover {
+  background: var(--nav-hover);
+  color: var(--side-ink);
+}
+
+/* The avatar alone: name, role and arrow are hidden */
+.navbar.phone .user-text,
+.navbar.phone .caret {
+  display: none;
+}
+
+.navbar.phone .user-button {
+  width: var(--h-touch);
+
+  flex-shrink: 0;
+  justify-content: center;
+
+  padding: 0;
+}
+
+.navbar.phone .user-button:hover,
+.navbar.phone .user-button.open {
+  background: var(--nav-hover);
+}
+
+/* The blue focus ring is hard to see on navy: light gold, as in the sidebar */
+.navbar.phone .menu-button:focus-visible,
+.navbar.phone .user-button:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: -2px;
 }
 
 

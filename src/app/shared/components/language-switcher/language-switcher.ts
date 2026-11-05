@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 import { Language } from '../../../core/services/language';
@@ -32,6 +32,10 @@ const LANGUAGE_NAMES: Record<AppLanguage, string> = {
 export class LanguageSwitcher {
 
   private readonly languageService = inject(Language);
+
+  // true = the icon only, 44 × 44 (the navbar on the phone).
+  // The login pages do not set it, so they keep the icon + the name.
+  readonly compact = input(false);
 
   // currentDirection is a signal, so the button updates at once.
   private readonly currentLanguage = computed<AppLanguage>(() =>

@@ -50,3 +50,37 @@
 
   color: var(--lang-btn-icon, currentColor);
 }
+
+
+/* ==============================
+   Compact: the icon only, 44 × 44 (phone navbar)
+   ============================== */
+
+.language-button.compact {
+  position: relative;
+
+  width: var(--h-touch);
+  height: var(--h-touch);
+
+  justify-content: center;
+
+  padding: 0;
+}
+
+.language-button.compact .language-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+/* Hidden on screen, still read by screen readers as the button's name */
+.language-button.compact .language-name {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

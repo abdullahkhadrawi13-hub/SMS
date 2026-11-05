@@ -1,10 +1,13 @@
 <button
   type="button"
   class="language-button"
+  [class.compact]="compact()"
   (click)="switchLanguage()">
 
   <mat-icon class="language-icon" aria-hidden="true">translate</mat-icon>
 
-  <span [attr.lang]="otherLanguage()">{{ otherLanguageName() }}</span>
+  <!-- compact (the phone navbar): the icon only. The name stays in the
+       button for screen readers, hidden on screen. -->
+  <span class="language-name" [attr.lang]="otherLanguage()">{{ otherLanguageName() }}</span>
 
 </button>
