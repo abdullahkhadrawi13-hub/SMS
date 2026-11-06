@@ -15,37 +15,6 @@
 
 
 /* ================================
-   Loading State
-   ================================ */
-
-.state-card {
-  min-height: 220px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 16px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  background: #f8fafc;
-
-  text-align: center;
-}
-
-.state-card p {
-  margin: 0;
-
-  font-size: 14px;
-
-  color: #6b7280;
-}
-
-
-/* ================================
    Messages
    ================================ */
 

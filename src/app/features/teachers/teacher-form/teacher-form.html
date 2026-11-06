@@ -10,15 +10,10 @@
   <!-- Loading (edit mode: while the teacher is being loaded) -->
   @if (isLoading()) {
 
-    <div class="state-card">
-
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>
-        {{ 'TEACHERS.FORM.LOADING' | translate }}
-      </p>
-
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'TEACHERS.FORM.LOADING' | translate"
+    />
 
   } @else {
 

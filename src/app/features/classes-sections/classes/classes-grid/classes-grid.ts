@@ -3,13 +3,13 @@ import { Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { SchoolClass } from '../../../../core/models/school-class';
 import { Section } from '../../../../core/models/section';
 import { ClassCard } from '../class-card/class-card';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // The classes grid: one light colored card per class
@@ -25,8 +25,8 @@ import { ClassCard } from '../class-card/class-card';
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './classes-grid.html',
   styleUrl: './classes-grid.css',

@@ -13,7 +13,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -26,6 +25,7 @@ import { StudentGradesService } from '../../../../core/services/student-grades';
 import { GradeHistoryCache } from '../../grade-history-cache';
 import { TermGrades } from '../term-grades/term-grades';
 import { getTermLabelParams } from '../student-grades';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // One choice of the term field.
@@ -52,10 +52,10 @@ interface TermOption {
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     MatSelectModule,
     TranslatePipe,
     TermGrades,
+    StateCard,
   ],
   providers: [
     GradeHistoryCache,

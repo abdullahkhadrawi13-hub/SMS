@@ -617,7 +617,6 @@ mark {
    State Card (loading) / Empty Card
    ================================ */
 
-.state-card,
 .empty-card {
   display: flex;
   flex-direction: column;
@@ -638,11 +637,7 @@ mark {
   box-sizing: border-box;
 }
 
-.state-card {
-  min-height: 220px;
-}
 
-.state-card p,
 .empty-card p {
   margin: 0;
 

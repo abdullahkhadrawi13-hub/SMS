@@ -9,45 +9,32 @@
 
 <!-- Loading -->
 @if (loading()) {
-  <div class="state-card">
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>
-      {{ 'ATTENDANCE.RECORD_SHEET.LOADING' | translate }}
-    </p>
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'ATTENDANCE.RECORD_SHEET.LOADING' | translate"
+  />
 }
 
 <!-- Nothing selected yet -->
 @else if (!sheet()) {
   @if (!errorMessage()) {
-    <div class="state-card">
-      <mat-icon>fact_check</mat-icon>
-
-      <h3>
-        {{ 'ATTENDANCE.RECORD_SHEET.EMPTY.SELECT_TITLE' | translate }}
-      </h3>
-
-      <p>
-        {{ 'ATTENDANCE.RECORD_SHEET.EMPTY.SELECT_MESSAGE' | translate }}
-      </p>
-    </div>
+    <app-state-card
+      type="empty"
+      icon="fact_check"
+      [title]="'ATTENDANCE.RECORD_SHEET.EMPTY.SELECT_TITLE' | translate"
+      [message]="'ATTENDANCE.RECORD_SHEET.EMPTY.SELECT_MESSAGE' | translate"
+    />
   }
 }
 
 <!-- The section has no students on this date -->
 @else if (rows().length === 0) {
-  <div class="state-card">
-    <mat-icon>groups</mat-icon>
-
-    <h3>
-      {{ 'ATTENDANCE.RECORD_SHEET.EMPTY.NO_STUDENTS_TITLE' | translate }}
-    </h3>
-
-    <p>
-      {{ 'ATTENDANCE.RECORD_SHEET.EMPTY.NO_STUDENTS_MESSAGE' | translate }}
-    </p>
-  </div>
+  <app-state-card
+    type="empty"
+    icon="groups"
+    [title]="'ATTENDANCE.RECORD_SHEET.EMPTY.NO_STUDENTS_TITLE' | translate"
+    [message]="'ATTENDANCE.RECORD_SHEET.EMPTY.NO_STUDENTS_MESSAGE' | translate"
+  />
 }
 
 <!-- Sheet -->

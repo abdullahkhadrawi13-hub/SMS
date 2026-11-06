@@ -56,13 +56,10 @@
 
 <!-- First load only (nothing to show yet) -->
 @if (isInitialLoading()) {
-  <div class="state-card">
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>
-      {{ 'ATTENDANCE.DAILY_SUMMARY.LOADING' | translate }}
-    </p>
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'ATTENDANCE.DAILY_SUMMARY.LOADING' | translate"
+  />
 }
 
 @else if (summary(); as data) {
@@ -284,17 +281,13 @@
         </div>
       } @else {
         <!-- Empty State -->
-        <div class="empty-state">
-          <mat-icon>groups</mat-icon>
-
-          <h3>
-            {{ 'ATTENDANCE.DAILY_SUMMARY.EMPTY.TITLE' | translate }}
-          </h3>
-
-          <p>
-            {{ 'ATTENDANCE.DAILY_SUMMARY.EMPTY.MESSAGE' | translate }}
-          </p>
-        </div>
+        <app-state-card
+          type="empty"
+          icon="groups"
+          [title]="'ATTENDANCE.DAILY_SUMMARY.EMPTY.TITLE' | translate"
+          [message]="'ATTENDANCE.DAILY_SUMMARY.EMPTY.MESSAGE' | translate"
+          [framed]="false"
+        />
       }
 
     </div>

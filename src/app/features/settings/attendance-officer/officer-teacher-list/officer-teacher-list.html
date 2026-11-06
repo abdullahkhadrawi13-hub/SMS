@@ -1,71 +1,43 @@
 <!-- Before any search: the list is empty and a hint is shown -->
 @if (!hasSearched()) {
 
-  <div class="state-card hint-state">
-
-    <mat-icon>person_search</mat-icon>
-
-    <p>
-      {{ 'ATTENDANCE_OFFICER.LIST.SEARCH_HINT' | translate }}
-    </p>
-
-  </div>
+  <app-state-card
+    type="empty"
+    icon="person_search"
+    [message]="'ATTENDANCE_OFFICER.LIST.SEARCH_HINT' | translate"
+  />
 
 }
 
 <!-- Error -->
 @else if (errorMessage()) {
 
-  <div class="state-card error-state">
-
-    <mat-icon>error_outline</mat-icon>
-
-    <p>
-      {{ errorMessage() | translate }}
-    </p>
-
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      (click)="retry.emit()"
-    >
-      <mat-icon>refresh</mat-icon>
-
-      {{ 'ATTENDANCE_OFFICER.STATE.RETRY' | translate }}
-    </button>
-
-  </div>
+  <app-state-card
+    type="error"
+    [message]="errorMessage() | translate"
+    (retry)="retry.emit()"
+  />
 
 }
 
 <!-- First load only (nothing to show yet) -->
 @else if (isInitialLoading()) {
 
-  <div class="state-card">
-
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>
-      {{ 'TEACHERS.TABLE.LOADING' | translate }}
-    </p>
-
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'TEACHERS.TABLE.LOADING' | translate"
+  />
 
 }
 
 <!-- No teacher matches the search -->
 @else if (teachers().length === 0) {
 
-  <div class="state-card">
-
-    <mat-icon>search_off</mat-icon>
-
-    <p>
-      {{ 'ATTENDANCE_OFFICER.LIST.NO_RESULTS' | translate }}
-    </p>
-
-  </div>
+  <app-state-card
+    type="empty"
+    icon="search_off"
+    [message]="'ATTENDANCE_OFFICER.LIST.NO_RESULTS' | translate"
+  />
 
 }
 

@@ -3,7 +3,6 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -14,6 +13,7 @@ import { CardColor } from '../../../../shared/constants/card-colors';
 import { SectionStatusFilter } from '../../shared/classes-sections-shared';
 
 import { SectionRow } from '../section-row/section-row';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 // The sections of a class, one row each, then the "Add section" row (Admin).
 // It also shows the loading, error and empty states.
@@ -26,9 +26,9 @@ import { SectionRow } from '../section-row/section-row';
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
     SectionRow,
+    StateCard,
   ],
   templateUrl: './sections-list.html',
   styleUrl: './sections-list.css',

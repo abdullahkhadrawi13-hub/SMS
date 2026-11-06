@@ -1,42 +1,34 @@
 <!-- Loading -->
 @if (loading()) {
-  <div class="state-card">
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>
-      {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.LOADING' | translate }}
-    </p>
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'STUDENT_DETAILS.ATTENDANCE_TAB.LOADING' | translate"
+    [framed]="false"
+    size="compact"
+  />
 }
 
 <!-- Error -->
 @else if (errorMessage()) {
-  <div class="state-card">
-    <mat-icon class="error-icon">error_outline</mat-icon>
-
-    <p>{{ errorMessage() }}</p>
-
-    <button mat-stroked-button type="button" (click)="loadHistory()">
-      <mat-icon>refresh</mat-icon>
-
-      {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.RETRY' | translate }}
-    </button>
-  </div>
+  <app-state-card
+    type="error"
+    [message]="errorMessage()"
+    [framed]="false"
+    size="compact"
+    (retry)="loadHistory()"
+  />
 }
 
 <!-- The student has no attendance records at all -->
 @else if (records().length === 0) {
-  <div class="state-card">
-    <mat-icon>event_busy</mat-icon>
-
-    <h3>
-      {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.EMPTY.TITLE' | translate }}
-    </h3>
-
-    <p>
-      {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.EMPTY.MESSAGE' | translate }}
-    </p>
-  </div>
+  <app-state-card
+    type="empty"
+    icon="event_busy"
+    [title]="'STUDENT_DETAILS.ATTENDANCE_TAB.EMPTY.TITLE' | translate"
+    [message]="'STUDENT_DETAILS.ATTENDANCE_TAB.EMPTY.MESSAGE' | translate"
+    [framed]="false"
+    size="compact"
+  />
 }
 
 <!-- History -->

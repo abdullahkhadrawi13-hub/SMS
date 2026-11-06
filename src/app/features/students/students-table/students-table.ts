@@ -5,12 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Student, StudentStatus } from '../../../core/models/student';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 @Component({
   selector: 'app-students-table',
@@ -20,9 +20,9 @@ import { Student, StudentStatus } from '../../../core/models/student';
     MatMenuModule,
     MatPaginatorModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './students-table.html',
   styleUrl: './students-table.css',
@@ -46,6 +46,10 @@ export class StudentsTable {
   // Shows "Edit" and "Activate / Deactivate" only for users
   // allowed to manage students. "View" is shown for everyone.
   readonly canManage = input(false);
+
+  // The last list used a search or a filter: the empty state says
+  // "no students match" instead of "no students added yet".
+  readonly hasQuery = input(false);
 
   // ===== Loading modes =====
 

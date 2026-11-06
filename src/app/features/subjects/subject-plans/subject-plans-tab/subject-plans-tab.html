@@ -14,66 +14,45 @@
 <!-- Error -->
 @if (selection.errorMessage() || errorMessage()) {
 
-  <div class="state-card error-state">
-
-    <mat-icon>error_outline</mat-icon>
-
-    <p>{{ (selection.errorMessage() || errorMessage()) | translate }}</p>
-
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      (click)="retry()"
-    >
-      <mat-icon>refresh</mat-icon>
-      {{ 'SUBJECTS.PLANS_TAB.RETRY' | translate }}
-    </button>
-
-  </div>
+  <app-state-card
+    type="error"
+    [message]="(selection.errorMessage() || errorMessage()) | translate"
+    (retry)="retry()"
+  />
 
 }
 
 <!-- No class chosen yet -->
 @else if (!hasSelection()) {
 
-  <div class="state-card">
-
-    <mat-icon>rule</mat-icon>
-
-    <h3>{{ 'SUBJECTS.PLANS_TAB.SELECT_TITLE' | translate }}</h3>
-
-    <p>{{ 'SUBJECTS.PLANS_TAB.SELECT_MESSAGE' | translate }}</p>
-
-  </div>
+  <app-state-card
+    type="empty"
+    icon="rule"
+    [title]="'SUBJECTS.PLANS_TAB.SELECT_TITLE' | translate"
+    [message]="'SUBJECTS.PLANS_TAB.SELECT_MESSAGE' | translate"
+  />
 
 }
 
 <!-- First load -->
 @else if (isInitialLoading()) {
 
-  <div class="state-card">
-
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>{{ 'SUBJECTS.PLANS_TAB.LOADING' | translate }}</p>
-
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'SUBJECTS.PLANS_TAB.LOADING' | translate"
+  />
 
 }
 
 <!-- No active subjects at all -->
 @else if (counts().total === 0) {
 
-  <div class="state-card">
-
-    <mat-icon>menu_book</mat-icon>
-
-    <h3>{{ 'SUBJECTS.PLANS_TAB.EMPTY_TITLE' | translate }}</h3>
-
-    <p>{{ 'SUBJECTS.PLANS_TAB.EMPTY_MESSAGE' | translate }}</p>
-
-  </div>
+  <app-state-card
+    type="empty"
+    icon="menu_book"
+    [title]="'SUBJECTS.PLANS_TAB.EMPTY_TITLE' | translate"
+    [message]="'SUBJECTS.PLANS_TAB.EMPTY_MESSAGE' | translate"
+  />
 
 }
 

@@ -9,7 +9,6 @@ import {
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -18,6 +17,7 @@ import { TeachersService } from '../../../core/services/teachers';
 import { ApiMessageService } from '../../../core/services/api-message';
 import { getRoleTranslationKey } from '../../../core/models/user-role';
 import { TeacherListDto } from '../../../core/models/teacher';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 // Data passed when the details dialog is opened.
@@ -32,8 +32,8 @@ export interface TeacherDetailsDialogData {
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './teacher-details.html',
   styleUrl: './teacher-details.css',

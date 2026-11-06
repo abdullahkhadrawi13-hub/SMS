@@ -7,13 +7,10 @@
 
   <!-- Loading -->
   @if (isLoading()) {
-    <div class="state-card">
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>
-        {{ 'STUDENTS_FORM.LOADING' | translate }}
-      </p>
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'STUDENTS_FORM.LOADING' | translate"
+    />
   } @else {
     <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" novalidate>
       <!-- Error -->

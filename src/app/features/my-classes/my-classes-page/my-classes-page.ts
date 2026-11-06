@@ -11,7 +11,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -26,6 +25,7 @@ import { MyClassCard } from '../my-class-card/my-class-card';
 import { SubjectPlan } from '../../../core/models/subject-plan';
 import { TeacherAssignment } from '../../../core/models/teacher-assignment';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 // "My classes" for the teacher (parent page).
@@ -44,9 +44,9 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
     MyClassCard,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
     PageHeader,
+    StateCard,
   ],
   templateUrl: './my-classes-page.html',
   styleUrl: './my-classes-page.css',

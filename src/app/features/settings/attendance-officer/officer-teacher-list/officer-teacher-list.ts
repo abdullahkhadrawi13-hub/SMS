@@ -7,13 +7,13 @@ import {
   PageEvent,
 } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { TeacherListDto } from '../../../../core/models/teacher';
 
 import { getTeacherName } from '../teacher-name';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 @Component({
@@ -23,8 +23,8 @@ import { getTeacherName } from '../teacher-name';
     MatIconModule,
     MatPaginatorModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './officer-teacher-list.html',
   styleUrl: './officer-teacher-list.css',

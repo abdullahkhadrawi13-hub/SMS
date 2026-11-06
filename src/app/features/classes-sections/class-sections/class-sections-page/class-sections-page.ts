@@ -7,7 +7,6 @@ import { forkJoin } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -44,6 +43,7 @@ import {
   SectionFormData,
   SectionFormResult
 } from '../sections-form/sections-form';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 // The page of one class: /classes-sections/:classId
 // (opened from a class card). It shows the class (banner),
@@ -58,11 +58,11 @@ import {
     MatButtonModule,
     MatDialogModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
     ClassBanner,
     SectionsToolbar,
     SectionsList,
+    StateCard,
   ],
   templateUrl: './class-sections-page.html',
   styleUrl: './class-sections-page.css',

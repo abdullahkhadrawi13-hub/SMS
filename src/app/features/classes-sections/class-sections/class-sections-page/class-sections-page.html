@@ -9,26 +9,19 @@
 
   <!-- First load -->
   @if (isLoadingPage()) {
-    <div class="state-card">
-      <mat-spinner diameter="42"></mat-spinner>
-      <p>
-        {{ 'CLASS_SECTIONS.LOADING' | translate }}
-      </p>
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'CLASS_SECTIONS.LOADING' | translate"
+    />
   }
 
   <!-- The class could not be loaded, or does not exist -->
   @else if (pageError()) {
-    <div class="state-card error-state">
-      <mat-icon>error_outline</mat-icon>
-      <p>
-        {{ pageError() | translate }}
-      </p>
-      <button mat-flat-button type="button" (click)="loadPage()">
-        <mat-icon>refresh</mat-icon>
-        {{ 'CLASS_SECTIONS.RETRY' | translate }}
-      </button>
-    </div>
+    <app-state-card
+      type="error"
+      [message]="pageError() | translate"
+      (retry)="loadPage()"
+    />
   }
 
   <!-- The class and its sections -->

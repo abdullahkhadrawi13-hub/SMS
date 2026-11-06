@@ -38,45 +38,24 @@
   <!-- Loading -->
   @if (isLoading()) {
 
-    <div class="state-card">
-
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>
-        {{ 'PARENTS.DETAILS.LOADING' | translate }}
-      </p>
-
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'PARENTS.DETAILS.LOADING' | translate"
+      [framed]="false"
+    />
 
   }
 
   <!-- Error -->
   @else if (errorMessage()) {
 
-    <div class="state-card error-state">
-
-      <mat-icon>error_outline</mat-icon>
-
-      <h3>
-        {{ 'PARENTS.DETAILS.ERROR_TITLE' | translate }}
-      </h3>
-
-      <p>
-        {{ errorMessage() | translate }}
-      </p>
-
-      <button
-        mat-flat-button
-        color="primary"
-        type="button"
-        (click)="retry()"
-      >
-        <mat-icon>refresh</mat-icon>
-
-        {{ 'PARENTS.DETAILS.RETRY' | translate }}
-      </button>
-
-    </div>
+    <app-state-card
+      type="error"
+      [title]="'PARENTS.DETAILS.ERROR_TITLE' | translate"
+      [message]="errorMessage() | translate"
+      [framed]="false"
+      (retry)="retry()"
+    />
 
   }
 

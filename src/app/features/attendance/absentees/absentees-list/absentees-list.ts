@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -25,6 +24,7 @@ import {
   fromApiDate,
   toApiDate
 } from '../../shared/attendance-shared';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 // The value of "All sections" in the section list.
 // (Section ids are always above 0. null is not used, because mat-select
@@ -86,9 +86,9 @@ interface SectionGroup {
     MatIconModule,
     MatInputModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatSelectModule,
-    TranslatePipe
+    TranslatePipe,
+    StateCard,
   ],
   templateUrl: './absentees-list.html',
   styleUrl: './absentees-list.css',

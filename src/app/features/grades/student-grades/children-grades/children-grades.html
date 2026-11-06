@@ -30,35 +30,28 @@
 
   <!-- Loading the children -->
   @if (childrenLoading()) {
-    <div class="state-card">
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>{{ 'STUDENT_GRADES.LOADING' | translate }}</p>
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'STUDENT_GRADES.LOADING' | translate"
+    />
   }
 
   <!-- Error -->
   @else if (childrenError()) {
-    <div class="state-card">
-      <mat-icon class="error-icon">error_outline</mat-icon>
-
-      <p>{{ childrenError() }}</p>
-
-      <button mat-stroked-button type="button" (click)="loadChildren()">
-        <mat-icon>refresh</mat-icon>
-
-        {{ 'GRADES.SHEET.RETRY' | translate }}
-      </button>
-    </div>
+    <app-state-card
+      type="error"
+      [message]="childrenError()"
+      (retry)="loadChildren()"
+    />
   }
 
   <!-- No children linked to this account -->
   @else if (cards().length === 0) {
-    <div class="state-card">
-      <mat-icon>family_restroom</mat-icon>
-
-      <p>{{ 'STUDENT_GRADES.CHILDREN.NONE' | translate }}</p>
-    </div>
+    <app-state-card
+      type="empty"
+      icon="family_restroom"
+      [message]="'STUDENT_GRADES.CHILDREN.NONE' | translate"
+    />
   }
 
   @else {
@@ -124,44 +117,36 @@
     @if (statusMessage(); as message) {
 
       <!-- Not active: no record in the current term (no request is sent) -->
-      <div class="state-card">
-        <mat-icon>{{ message.icon }}</mat-icon>
-
-        <h3>{{ selectedCard()?.name }}</h3>
-
-        <p>{{ message.key | translate }}</p>
-      </div>
+      <app-state-card
+        type="empty"
+        [icon]="message.icon"
+        [title]="selectedCard()?.name ?? ''"
+        [message]="message.key | translate"
+      />
 
     } @else if (gradesLoading()) {
 
-      <div class="state-card">
-        <mat-spinner diameter="42"></mat-spinner>
-
-        <p>{{ 'STUDENT_GRADES.LOADING' | translate }}</p>
-      </div>
+      <app-state-card
+        type="loading"
+        [message]="'STUDENT_GRADES.LOADING' | translate"
+      />
 
     } @else if (gradesError()) {
 
-      <div class="state-card">
-        <mat-icon class="error-icon">error_outline</mat-icon>
-
-        <p>{{ gradesError() | translate }}</p>
-
-        <button mat-stroked-button type="button" (click)="retryGrades()">
-          <mat-icon>refresh</mat-icon>
-
-          {{ 'GRADES.SHEET.RETRY' | translate }}
-        </button>
-      </div>
+      <app-state-card
+        type="error"
+        [message]="gradesError() | translate"
+        (retry)="retryGrades()"
+      />
 
     } @else if (selectedTerm() === null) {
 
       <!-- No record in the current term -->
-      <div class="state-card">
-        <mat-icon>event_busy</mat-icon>
-
-        <p>{{ 'STUDENT_GRADES.EMPTY.TERM' | translate }}</p>
-      </div>
+      <app-state-card
+        type="empty"
+        icon="event_busy"
+        [message]="'STUDENT_GRADES.EMPTY.TERM' | translate"
+      />
 
     } @else if (selectedTerm(); as term) {
 

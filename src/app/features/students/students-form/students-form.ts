@@ -55,6 +55,7 @@ import {
   StudentStatus
 } from '../../../core/models/student';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 export interface StudentFormDialogData {
@@ -76,6 +77,7 @@ export interface StudentFormDialogData {
     MatSelectModule,
     TranslatePipe,
     PageHeader,
+    StateCard,
   ],
   templateUrl: './students-form.html',
   styleUrl: './students-form.css'

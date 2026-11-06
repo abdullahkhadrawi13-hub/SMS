@@ -1,0 +1,38 @@
+@switch (type()) {
+
+  <!-- Loading: spinner + one line -->
+  @case ('loading') {
+    <mat-spinner diameter="32" aria-hidden="true"></mat-spinner>
+  }
+
+  <!-- Error: small red icon -->
+  @case ('error') {
+    <mat-icon class="state-icon" aria-hidden="true">error</mat-icon>
+  }
+
+  <!-- Empty: big icon (the page chooses it) -->
+  @default {
+    <mat-icon class="state-icon" aria-hidden="true">{{ icon() }}</mat-icon>
+  }
+
+}
+
+@if (title() && type() !== 'loading') {
+  <h3 class="title">{{ title() }}</h3>
+}
+
+@if (message()) {
+  <p class="message">{{ message() }}</p>
+}
+
+<!-- Retry (error only) and the page's own buttons ([actions]) -->
+<div class="actions">
+  @if (type() === 'error' && showRetry()) {
+    <button mat-stroked-button type="button" (click)="retry.emit()">
+      <mat-icon aria-hidden="true">refresh</mat-icon>
+      {{ 'SHARED.STATE_CARD.RETRY' | translate }}
+    </button>
+  }
+
+  <ng-content select="[actions]" />
+</div>

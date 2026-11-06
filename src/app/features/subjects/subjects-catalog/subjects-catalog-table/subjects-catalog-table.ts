@@ -4,12 +4,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { SubjectDto } from '../../../../core/models/subject';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 @Component({
@@ -19,9 +19,9 @@ import { SubjectDto } from '../../../../core/models/subject';
     MatIconModule,
     MatMenuModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './subjects-catalog-table.html',
   styleUrl: './subjects-catalog-table.css',

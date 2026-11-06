@@ -319,81 +319,6 @@
 
 
 /* ================================
-   State Card (loading)
-   ================================ */
-
-.state-card {
-  min-height: 220px;
-
-  padding: 30px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 8px;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  box-sizing: border-box;
-}
-
-.state-card p {
-  margin: 0;
-
-  color: #6b7280;
-
-  font-size: 14px;
-}
-
-
-/* ================================
-   Empty State
-   ================================ */
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  padding: 48px 24px;
-
-  text-align: center;
-}
-
-.empty-state mat-icon {
-  width: 48px;
-  height: 48px;
-
-  font-size: 48px;
-
-  margin-bottom: 12px;
-
-  color: #9ca3af;
-}
-
-.empty-state h3 {
-  margin: 0 0 6px;
-
-  font-size: 17px;
-  font-weight: 600;
-}
-
-.empty-state p {
-  margin: 0;
-
-  color: #6b7280;
-
-  font-size: 14px;
-}
-
-
-/* ================================
    Responsive
    ================================ */
 
@@ -413,7 +338,6 @@
   }
 
 }
-
 
 
 /* ================================

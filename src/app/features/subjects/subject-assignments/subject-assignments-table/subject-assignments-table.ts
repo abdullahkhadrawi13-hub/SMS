@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -18,6 +17,7 @@ import {
   getPlanStatus,
   PLAN_STATUS_BADGE,
 } from '../../shared/subjects-shared';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // A subject with a plan for the class but no teacher in the section.
@@ -37,9 +37,9 @@ export interface MissingPlanSubject {
     MatIconModule,
     MatMenuModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './subject-assignments-table.html',
   styleUrl: './subject-assignments-table.css',

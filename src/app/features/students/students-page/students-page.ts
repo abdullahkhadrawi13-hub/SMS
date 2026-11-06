@@ -115,6 +115,11 @@ export class StudentsPage {
   readonly errorMessage =
     signal('');
 
+  // Did the last loaded list use a search or a filter?
+  // Chooses the empty message: "no match" or "no students yet".
+  readonly hasQuery =
+    signal(false);
+
 
   constructor() {
 
@@ -191,6 +196,12 @@ export class StudentsPage {
 
     this.errorMessage.set('');
 
+    const hasQuery =
+      !!this.search().trim() ||
+      this.classFilter() !== undefined ||
+      this.sectionFilter() !== undefined ||
+      this.statusFilter() !== undefined;
+
     this.studentsService
       .getStudents(
         this.pageNumber(),
@@ -238,6 +249,8 @@ export class StudentsPage {
           this.students.set(data.items);
 
           this.totalCount.set(data.totalCount);
+
+          this.hasQuery.set(hasQuery);
 
           this.pageNumber.set(data.pageNumber);
 

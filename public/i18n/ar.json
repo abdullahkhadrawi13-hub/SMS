@@ -223,9 +223,13 @@
 
     "LOADING": "جاري تحميل الطلاب...",
 
-    "NO_STUDENTS": "لا يوجد طلاب",
+    "NO_STUDENTS": "لا يوجد طلاب يطابقون البحث",
 
-    "NO_STUDENTS_DESCRIPTION": "لا يوجد طلاب يطابقون البحث أو الفلاتر الحالية.",
+    "NO_STUDENTS_DESCRIPTION": "جرّب كلمة أخرى أو أزل بعض الفلاتر.",
+
+    "NO_STUDENTS_YET": "لم تتم إضافة أي طالب بعد",
+
+    "NO_STUDENTS_YET_DESCRIPTION": "ابدأ بإضافة أول طالب من زر «إضافة طالب» في الأعلى.",
 
     "RETRY": "إعادة المحاولة",
 
@@ -539,6 +543,9 @@
   },
 
   "SHARED": {
+    "STATE_CARD": {
+      "RETRY": "إعادة المحاولة"
+    },
     "ACTION_RESULT": {
       "SUCCESS": "نجاح",
       "ERROR": "خطأ",

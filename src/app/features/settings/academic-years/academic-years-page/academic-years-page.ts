@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -47,6 +46,7 @@ import {
   GradesStatusDialog,
   GradesStatusDialogData
 } from '../grades-status-dialog/grades-status-dialog';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 // /settings/academic-years
 // The academic years of the school, each with its terms, and the current term.
@@ -61,12 +61,12 @@ import {
     MatDialogModule,
     MatIconModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
     PageHeader,
 
     CurrentTermBanner,
-    YearCard
+    YearCard,
+    StateCard,
   ],
   templateUrl: './academic-years-page.html',
   styleUrl: './academic-years-page.css',
