@@ -1,14 +1,5 @@
 <!-- Page Header -->
-<div class="page-header">
-
-  <div class="title-section">
-    <h1>
-      {{ 'ATTENDANCE.HEADER.TITLE' | translate }}
-    </h1>
-
-    <p>
-      {{ 'ATTENDANCE.HEADER.SUBTITLE' | translate }}
-    </p>
-  </div>
-
-</div>
+<app-page-header
+  [title]="'ATTENDANCE.HEADER.TITLE' | translate"
+  [subtitle]="'ATTENDANCE.HEADER.SUBTITLE' | translate"
+/>

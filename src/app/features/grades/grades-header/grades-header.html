@@ -1,14 +1,5 @@
 <!-- Page Header -->
-<div class="page-header">
-
-  <div class="title-section">
-    <h1>
-      {{ 'GRADES.HEADER.TITLE' | translate }}
-    </h1>
-
-    <p>
-      {{ subtitleKey() | translate }}
-    </p>
-  </div>
-
-</div>
+<app-page-header
+  [title]="'GRADES.HEADER.TITLE' | translate"
+  [subtitle]="subtitleKey() | translate"
+/>

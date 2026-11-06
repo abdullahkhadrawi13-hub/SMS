@@ -1,35 +1,31 @@
 <div class="student-grades-page">
 
   <!-- Page Header: title, term (and "pick a child") -->
-  <div class="page-header">
+  <app-page-header [title]="'STUDENT_GRADES.CHILDREN_TITLE' | translate">
 
-    <div class="title-section">
-      <h1>{{ 'STUDENT_GRADES.CHILDREN_TITLE' | translate }}</h1>
+    @if (termLabel() || hasManyChildren()) {
+      <span subtitle>
+        @if (termLabel(); as label) {
+          {{ 'STUDENT_GRADES.TERM_LABEL' | translate: label }}@if (hasManyChildren()) {.}
+        }
 
-      @if (termLabel() || hasManyChildren()) {
-        <p>
-          @if (termLabel(); as label) {
-            {{ 'STUDENT_GRADES.TERM_LABEL' | translate: label }}@if (hasManyChildren()) {.}
-          }
-
-          @if (hasManyChildren()) {
-            {{ 'STUDENT_GRADES.CHILDREN.PICK' | translate }}
-          }
-        </p>
-      }
-    </div>
+        @if (hasManyChildren()) {
+          {{ 'STUDENT_GRADES.CHILDREN.PICK' | translate }}
+        }
+      </span>
+    }
 
     <!-- One child: no cards, the class is next to the title -->
     @if (!hasManyChildren() && !statusMessage()) {
       @if (classSection(); as classSection) {
-        <span class="class-chip">
+        <span actions class="class-chip">
           <mat-icon>school</mat-icon>
           {{ 'STUDENT_GRADES.CLASS_SECTION' | translate: classSection }}
         </span>
       }
     }
 
-  </div>
+  </app-page-header>
 
 
   <!-- Loading the children -->

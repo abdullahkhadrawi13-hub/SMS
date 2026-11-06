@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-subjects-header',
@@ -11,9 +12,9 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatButtonModule,
     MatIconModule,
     TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './subjects-header.html',
-  styleUrl: './subjects-header.css',
 })
 export class SubjectsHeader {
 

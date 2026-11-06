@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 
 // The title of the grades page.
@@ -9,6 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   selector: 'app-grades-header',
   imports: [
     TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './grades-header.html',
   styleUrl: './grades-header.css',

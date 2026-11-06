@@ -54,6 +54,7 @@ import {
   StudentRequest,
   StudentStatus
 } from '../../../core/models/student';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 
 export interface StudentFormDialogData {
@@ -73,7 +74,8 @@ export interface StudentFormDialogData {
     MatIconModule,
     MatProgressSpinnerModule,
     MatSelectModule,
-    TranslatePipe
+    TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './students-form.html',
   styleUrl: './students-form.css'

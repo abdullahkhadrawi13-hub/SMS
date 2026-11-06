@@ -1,24 +1,9 @@
 <div class="student-form" [attr.dir]="direction()">
   <!-- Page Header -->
-  <div class="page-header">
-    <div class="title-section">
-      <h1>
-        {{
-          isEditMode()
-            ? ('STUDENTS_FORM.EDIT_TITLE' | translate)
-            : ('STUDENTS_FORM.ADD_TITLE' | translate)
-        }}
-      </h1>
-
-      <p>
-        {{
-          isEditMode()
-            ? ('STUDENTS_FORM.EDIT_SUBTITLE' | translate)
-            : ('STUDENTS_FORM.ADD_SUBTITLE' | translate)
-        }}
-      </p>
-    </div>
-  </div>
+  <app-page-header
+    [title]="(isEditMode() ? 'STUDENTS_FORM.EDIT_TITLE' : 'STUDENTS_FORM.ADD_TITLE') | translate"
+    [subtitle]="(isEditMode() ? 'STUDENTS_FORM.EDIT_SUBTITLE' : 'STUDENTS_FORM.ADD_SUBTITLE') | translate"
+  />
 
   <!-- Loading -->
   @if (isLoading()) {

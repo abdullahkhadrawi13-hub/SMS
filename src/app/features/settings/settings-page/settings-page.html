@@ -1,21 +1,10 @@
 <div class="settings-page">
 
   <!-- Page Header -->
-  <div class="page-header">
-
-    <div class="title-section">
-      <h1>
-        {{ 'SETTINGS.HEADER.TITLE' | translate }}
-      </h1>
-
-      <p>
-        {{ 'SETTINGS.HEADER.SUBTITLE' | translate }}
-      </p>
-    </div>
-
-  </div>
-
-  <hr class="header-divider" />
+  <app-page-header
+    [title]="'SETTINGS.HEADER.TITLE' | translate"
+    [subtitle]="'SETTINGS.HEADER.SUBTITLE' | translate"
+  />
 
   <!-- Settings Options -->
   <nav class="settings-list">

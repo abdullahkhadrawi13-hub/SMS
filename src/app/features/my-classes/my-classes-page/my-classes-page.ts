@@ -25,6 +25,7 @@ import { MyClassesStats } from '../my-classes-stats/my-classes-stats';
 import { MyClassCard } from '../my-class-card/my-class-card';
 import { SubjectPlan } from '../../../core/models/subject-plan';
 import { TeacherAssignment } from '../../../core/models/teacher-assignment';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 
 // "My classes" for the teacher (parent page).
@@ -45,6 +46,7 @@ import { TeacherAssignment } from '../../../core/models/teacher-assignment';
     MatIconModule,
     MatProgressSpinnerModule,
     TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './my-classes-page.html',
   styleUrl: './my-classes-page.css',

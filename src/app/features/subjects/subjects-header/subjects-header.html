@@ -1,36 +1,26 @@
-<div class="page-header">
-
-  <div class="title-section">
-
-    <h1>
-      {{ titleKey() | translate }}
-    </h1>
-
-    <p>
-      {{ subtitleKey() | translate }}
-    </p>
-
-  </div>
+<app-page-header
+  [title]="titleKey() | translate"
+  [subtitle]="subtitleKey() | translate"
+>
 
   <!-- Add subject (Admin only, subjects list tab) -->
   @if (showAdd()) {
-    <div class="header-actions">
-      <button
-        mat-flat-button
-        color="primary"
-        type="button"
-        (click)="addSubject.emit()"
-      >
-        <mat-icon>menu_book</mat-icon>
+    <button
+      actions
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="addSubject.emit()"
+    >
+      <mat-icon>menu_book</mat-icon>
 
-        {{ 'SUBJECTS.HEADER.ADD' | translate }}
-      </button>
-    </div>
+      {{ 'SUBJECTS.HEADER.ADD' | translate }}
+    </button>
   }
 
   <!-- Copy plans + new plan (Admin only, subject plans tab) -->
   @if (showPlanActions()) {
-    <div class="header-actions">
+    <ng-container actions>
       <button
         mat-stroked-button
         type="button"
@@ -51,7 +41,7 @@
 
         {{ 'SUBJECTS.HEADER.ADD_PLAN' | translate }}
       </button>
-    </div>
+    </ng-container>
   }
 
-</div>
+</app-page-header>

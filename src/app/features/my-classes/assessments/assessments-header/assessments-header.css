@@ -2,13 +2,6 @@
    Page Header
    ================================ */
 
-.page-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-
-  gap: 16px;
-}
 
 .subject-icon {
   width: 54px;
@@ -31,29 +24,6 @@
   font-size: 28px;
 }
 
-.title-section {
-  flex: 1;
-  min-width: 220px;
-}
-
-.title-section h1 {
-  margin: 0 0 6px;
-
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.3;
-
-  color: #111827;
-}
-
-.title-section p {
-  margin: 0;
-
-  font-size: 15px;
-  line-height: 1.5;
-
-  color: #6b7280;
-}
 
 .term-name {
   color: #374151;
@@ -129,17 +99,4 @@
 
 .chip.warn mat-icon {
   color: #92400e;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-
-  .title-section h1 {
-    font-size: 23px;
-  }
-
 }

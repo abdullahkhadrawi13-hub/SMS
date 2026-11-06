@@ -1,7 +1,6 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 
@@ -23,6 +22,7 @@ import { OfficerTeacherList } from '../officer-teacher-list/officer-teacher-list
 import { OfficerTeacherSearch } from '../officer-teacher-search/officer-teacher-search';
 import { TeacherListDto } from '../../../../core/models/teacher';
 import { getTeacherName } from '../teacher-name';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 
 // Number of teachers shown in one page of the list.
@@ -32,7 +32,6 @@ const TEACHERS_PAGE_SIZE = 10;
 @Component({
   selector: 'app-attendance-officer-page',
   imports: [
-    RouterLink,
 
     MatButtonModule,
     MatIconModule,
@@ -43,6 +42,7 @@ const TEACHERS_PAGE_SIZE = 10;
     OfficerTeacherList,
     OfficerTeacherSearch,
     SaveBar,
+    PageHeader,
   ],
   templateUrl: './attendance-officer-page.html',
   styleUrl: './attendance-officer-page.css',

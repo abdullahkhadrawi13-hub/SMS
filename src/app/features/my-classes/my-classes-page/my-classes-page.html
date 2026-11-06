@@ -1,22 +1,16 @@
 <div class="my-classes-page">
 
   <!-- Page Header -->
-  <div class="page-header">
-
-    <h1>
-      {{ 'MY_CLASSES.HEADER.TITLE' | translate }}
-    </h1>
-
-    <p>
+  <app-page-header [title]="'MY_CLASSES.HEADER.TITLE' | translate">
+    <span subtitle>
       @if (termName()) {
         <span class="term-name">{{ termName() }}</span>
         <span class="dot">·</span>
       }
 
       {{ 'MY_CLASSES.HEADER.SUBTITLE' | translate }}
-    </p>
-
-  </div>
+    </span>
+  </app-page-header>
 
 
   <!-- Error -->

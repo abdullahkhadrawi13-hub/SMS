@@ -44,6 +44,7 @@ import {
 } from '../rollover-confirm/rollover-confirm';
 import { RolloverResult } from '../rollover-result/rollover-result';
 import { RolloverThreshold } from '../rollover-threshold/rollover-threshold';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 
 // After 5 wrong passwords (429) the run button waits this long.
@@ -79,7 +80,8 @@ const LOCK_MINUTES = 5;
     RolloverOpenTerms,
     RolloverConfirm,
     RolloverResult,
-    RolloverThreshold
+    RolloverThreshold,
+    PageHeader,
   ],
   templateUrl: './rollover-page.html',
   styleUrl: './rollover-page.css',

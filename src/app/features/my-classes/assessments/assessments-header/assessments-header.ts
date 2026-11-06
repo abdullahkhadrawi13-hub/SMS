@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 
 // The badge of the plan state (icon + translation key + CSS class),
@@ -24,6 +25,7 @@ export interface PlanStatusBadge {
     MatIconModule,
     MatTooltipModule,
     TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './assessments-header.html',
   styleUrl: './assessments-header.css',

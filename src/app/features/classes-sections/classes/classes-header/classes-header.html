@@ -1,23 +1,14 @@
-<div class="page-header">
-
-  <div class="title-section">
-
-    <h1>
-      {{ 'CLASSES.HEADER.TITLE' | translate }}
-    </h1>
-
-    <p>
-      {{ 'CLASSES.HEADER.SUBTITLE' | translate }}
-    </p>
-
-  </div>
+<app-page-header
+  [title]="'CLASSES.HEADER.TITLE' | translate"
+  [subtitle]="'CLASSES.HEADER.SUBTITLE' | translate"
+>
 
   <!-- The cards' student counts are for this term -->
   @if (termLabel()) {
-    <span class="term-note">
+    <span actions class="term-note">
       <mat-icon>event</mat-icon>
       {{ 'CLASSES.HEADER.COUNTS_TERM' | translate: { term: termLabel() } }}
     </span>
   }
 
-</div>
+</app-page-header>

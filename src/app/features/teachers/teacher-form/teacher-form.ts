@@ -30,6 +30,7 @@ import { TeachersService } from '../../../core/services/teachers';
 import { ApiMessageService } from '../../../core/services/api-message';
 import { ActionResult } from '../../../shared/services/action-result';
 import { CreateTeacherRequest, UpdateTeacherRequest } from '../../../core/models/teacher';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 
 // Data passed when the dialog is opened.
@@ -49,7 +50,8 @@ export interface TeacherFormDialogData {
     MatInputModule,
     MatProgressSpinnerModule,
     TranslatePipe,
-    MatIcon
+    MatIcon,
+    PageHeader,
 ],
   templateUrl: './teacher-form.html',
   styleUrl: './teacher-form.css',

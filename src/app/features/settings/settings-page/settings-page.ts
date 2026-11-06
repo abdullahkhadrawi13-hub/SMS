@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Permissions } from '../../../core/services/permissions';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 // Colors available for the icon of an option.
 // Each color is defined in settings-page.css (.color-...).
@@ -30,7 +31,8 @@ interface SettingsOption {
     RouterLink,
 
     MatIconModule,
-    TranslatePipe
+    TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './settings-page.html',
   styleUrl: './settings-page.css',

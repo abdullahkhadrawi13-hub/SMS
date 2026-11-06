@@ -1,29 +1,10 @@
 <div class="teacher-form">
 
   <!-- Page Header -->
-  <div class="page-header">
-
-    <div class="title-section">
-
-      <h1>
-        {{
-          isEditMode()
-            ? ('TEACHERS.FORM.EDIT_TITLE' | translate)
-            : ('TEACHERS.FORM.TITLE' | translate)
-        }}
-      </h1>
-
-      <p>
-        {{
-          isEditMode()
-            ? ('TEACHERS.FORM.EDIT_SUBTITLE' | translate)
-            : ('TEACHERS.FORM.SUBTITLE' | translate)
-        }}
-      </p>
-
-    </div>
-
-  </div>
+  <app-page-header
+    [title]="(isEditMode() ? 'TEACHERS.FORM.EDIT_TITLE' : 'TEACHERS.FORM.TITLE') | translate"
+    [subtitle]="(isEditMode() ? 'TEACHERS.FORM.EDIT_SUBTITLE' : 'TEACHERS.FORM.SUBTITLE') | translate"
+  />
 
 
   <!-- Loading (edit mode: while the teacher is being loaded) -->

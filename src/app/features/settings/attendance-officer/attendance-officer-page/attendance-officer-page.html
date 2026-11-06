@@ -1,31 +1,12 @@
 <div class="attendance-officer-page">
 
-  <!-- Back to Settings -->
-  <a
-    class="back-link"
-    routerLink="/settings"
-  >
-    <mat-icon>arrow_back</mat-icon>
-
-    {{ 'ATTENDANCE_OFFICER.HEADER.BACK' | translate }}
-  </a>
-
-  <!-- Page Header -->
-  <div class="page-header">
-
-    <div class="title-section">
-      <h1>
-        {{ 'ATTENDANCE_OFFICER.HEADER.TITLE' | translate }}
-      </h1>
-
-      <p>
-        {{ 'ATTENDANCE_OFFICER.HEADER.SUBTITLE' | translate }}
-      </p>
-    </div>
-
-  </div>
-
-  <hr class="header-divider" />
+  <!-- Page Header (with the back link to Settings) -->
+  <app-page-header
+    [title]="'ATTENDANCE_OFFICER.HEADER.TITLE' | translate"
+    [subtitle]="'ATTENDANCE_OFFICER.HEADER.SUBTITLE' | translate"
+    backLink="/settings"
+    [backLabel]="'ATTENDANCE_OFFICER.HEADER.BACK' | translate"
+  />
 
 
   <!-- Error -->

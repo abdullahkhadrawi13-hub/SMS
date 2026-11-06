@@ -1,35 +1,19 @@
 <div class="academic-years-page">
 
-  <!-- Back to Settings -->
-  <a
-    class="back-link"
-    routerLink="/settings"
+  <!-- Page Header (with the back link to Settings) -->
+  <app-page-header
+    [title]="'ACADEMIC_YEARS.HEADER.TITLE' | translate"
+    [subtitle]="(canManage()
+      ? 'ACADEMIC_YEARS.HEADER.SUBTITLE'
+      : 'ACADEMIC_YEARS.HEADER.SUBTITLE_READ_ONLY') | translate"
+    backLink="/settings"
+    [backLabel]="'ACADEMIC_YEARS.HEADER.BACK' | translate"
   >
-    <mat-icon>arrow_back</mat-icon>
-
-    {{ 'ACADEMIC_YEARS.HEADER.BACK' | translate }}
-  </a>
-
-  <!-- Page Header -->
-  <div class="page-header">
-
-    <div class="title-section">
-      <h1>
-        {{ 'ACADEMIC_YEARS.HEADER.TITLE' | translate }}
-      </h1>
-
-      <p>
-        {{
-          canManage()
-            ? ('ACADEMIC_YEARS.HEADER.SUBTITLE' | translate)
-            : ('ACADEMIC_YEARS.HEADER.SUBTITLE_READ_ONLY' | translate)
-        }}
-      </p>
-    </div>
 
     <!-- Add year (Admin only) -->
     @if (canManage()) {
       <button
+        actions
         mat-flat-button
         type="button"
         (click)="openAddYear()"
@@ -40,9 +24,7 @@
       </button>
     }
 
-  </div>
-
-  <hr class="header-divider" />
+  </app-page-header>
 
 
   <!-- Error -->

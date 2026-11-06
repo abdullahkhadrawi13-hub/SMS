@@ -1,0 +1,42 @@
+@if (backLink(); as link) {
+  <a
+    class="back-link"
+    [routerLink]="link"
+    [queryParams]="backQueryParams()"
+  >
+    <mat-icon class="flip" aria-hidden="true">arrow_back</mat-icon>
+    {{ backLabel() }}
+  </a>
+}
+
+<header class="page-header">
+
+  <div class="title-row">
+
+    <!-- Optional icon before the title (the teacher's assessments page) -->
+    <ng-content select="[leading]" />
+
+    <div class="title-section">
+      <h1>
+        {{ title() }}
+        <ng-content select="[badge]" />
+      </h1>
+
+      <!-- The line under the title: plain text from [subtitle],
+           or richer content from the page (<span subtitle>…</span>). -->
+      <div class="subtitle">
+        @if (subtitle()) {
+          {{ subtitle() }}
+        }
+        <ng-content select="[subtitle]" />
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Buttons or chips at the end of the line -->
+  <div class="header-actions">
+    <ng-content select="[actions]" />
+  </div>
+
+</header>

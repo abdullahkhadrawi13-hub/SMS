@@ -1,16 +1,10 @@
 <div class="parent-form">
 
   <!-- Page Header -->
-  <div class="page-header">
-    <div class="title-section">
-      <h1>
-        {{ (isEditMode ? 'PARENTS.FORM.EDIT_TITLE' : 'PARENTS.FORM.TITLE') | translate }}
-      </h1>
-      <p>
-        {{ (isEditMode ? 'PARENTS.FORM.EDIT_SUBTITLE' : 'PARENTS.FORM.SUBTITLE') | translate }}
-      </p>
-    </div>
-  </div>
+  <app-page-header
+    [title]="(isEditMode ? 'PARENTS.FORM.EDIT_TITLE' : 'PARENTS.FORM.TITLE') | translate"
+    [subtitle]="(isEditMode ? 'PARENTS.FORM.EDIT_SUBTITLE' : 'PARENTS.FORM.SUBTITLE') | translate"
+  />
 
 
   <!-- Loading (edit mode: while the parent is being loaded) -->
