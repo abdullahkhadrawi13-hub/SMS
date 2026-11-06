@@ -1,6 +1,5 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 
@@ -21,6 +20,7 @@ import { ApiMessageService } from '../../../../core/services/api-message';
 import { Language } from '../../../../core/services/language';
 import { Permissions } from '../../../../core/services/permissions';
 import { ActionResult } from '../../../../shared/services/action-result';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 import {
   AcademicYearView,
@@ -56,7 +56,6 @@ import {
 @Component({
   selector: 'app-academic-years-page',
   imports: [
-    RouterLink,
 
     MatButtonModule,
     MatDialogModule,
@@ -64,6 +63,7 @@ import {
     MatProgressBarModule,
     MatProgressSpinnerModule,
     TranslatePipe,
+    PageHeader,
 
     CurrentTermBanner,
     YearCard

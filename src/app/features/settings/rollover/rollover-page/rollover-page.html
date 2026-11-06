@@ -1,31 +1,12 @@
 <div class="rollover-page">
 
-  <!-- Back to Settings -->
-  <a
-    class="back-link"
-    routerLink="/settings"
-  >
-    <mat-icon>arrow_back</mat-icon>
-
-    {{ 'ROLLOVER.HEADER.BACK' | translate }}
-  </a>
-
-  <!-- Page Header -->
-  <div class="page-header">
-
-    <div class="title-section">
-      <h1>
-        {{ 'ROLLOVER.HEADER.TITLE' | translate }}
-      </h1>
-
-      <p>
-        {{ 'ROLLOVER.HEADER.SUBTITLE' | translate }}
-      </p>
-    </div>
-
-  </div>
-
-  <hr class="header-divider" />
+  <!-- Page Header (with the back link to Settings) -->
+  <app-page-header
+    [title]="'ROLLOVER.HEADER.TITLE' | translate"
+    [subtitle]="'ROLLOVER.HEADER.SUBTITLE' | translate"
+    backLink="/settings"
+    [backLabel]="'ROLLOVER.HEADER.BACK' | translate"
+  />
 
 
   <!-- Error (years and terms) -->

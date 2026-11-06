@@ -54,6 +54,7 @@ import {
   PlanConfirmData,
   PlanConfirmDialog,
 } from '../plan-confirm-dialog/plan-confirm-dialog';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 
 // One component row of the table, with its name and color.
@@ -103,6 +104,7 @@ interface PlanSection {
     MatTooltipModule,
     PlanWeightBar,
     TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './plan-details-page.html',
   styleUrl: './plan-details-page.css',

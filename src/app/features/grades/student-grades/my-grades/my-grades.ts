@@ -25,6 +25,7 @@ import {
   getClassSectionParams,
   getTermLabelParams,
 } from '../student-grades';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 
 // The student's Grades page («علاماتي»). Route: /grades (Student).
@@ -42,6 +43,7 @@ import {
     MatProgressSpinnerModule,
     TranslatePipe,
     TermGrades,
+    PageHeader,
   ],
   templateUrl: './my-grades.html',
   styleUrl: './my-grades.css',

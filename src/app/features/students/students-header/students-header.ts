@@ -5,15 +5,17 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { PageHeader } from '../../../shared/components/page-header/page-header';
+
 @Component({
   selector: 'app-students-header',
   imports: [
     MatButtonModule,
     MatIconModule,
     TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './students-header.html',
-  styleUrl: './students-header.css',
 })
 export class StudentsHeader {
 

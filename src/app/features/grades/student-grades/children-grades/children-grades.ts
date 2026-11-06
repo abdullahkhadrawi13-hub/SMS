@@ -33,6 +33,7 @@ import {
   getTermLabelParams,
   StatusMessage,
 } from '../student-grades';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 
 // One child card, ready to show.
@@ -67,6 +68,7 @@ interface ChildCard {
     MatProgressSpinnerModule,
     TranslatePipe,
     TermGrades,
+    PageHeader,
   ],
   templateUrl: './children-grades.html',
   styleUrl: './children-grades.css',

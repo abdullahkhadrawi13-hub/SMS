@@ -1,24 +1,19 @@
 <div class="student-grades-page">
 
   <!-- Page Header: title, term / class and section -->
-  <div class="page-header">
-
-    <div class="title-section">
-      <h1>{{ 'STUDENT_GRADES.MY_TITLE' | translate }}</h1>
-
-      @if (termLabel(); as label) {
-        <p>{{ 'STUDENT_GRADES.TERM_LABEL' | translate: label }}</p>
-      }
-    </div>
+  <app-page-header
+    [title]="'STUDENT_GRADES.MY_TITLE' | translate"
+    [subtitle]="termLabel() ? ('STUDENT_GRADES.TERM_LABEL' | translate: termLabel()) : ''"
+  >
 
     @if (classSection(); as classSection) {
-      <span class="class-chip">
+      <span actions class="class-chip">
         <mat-icon>school</mat-icon>
         {{ 'STUDENT_GRADES.CLASS_SECTION' | translate: classSection }}
       </span>
     }
 
-  </div>
+  </app-page-header>
 
 
   <!-- Loading -->

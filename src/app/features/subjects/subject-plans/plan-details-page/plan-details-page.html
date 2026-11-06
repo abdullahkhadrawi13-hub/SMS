@@ -76,28 +76,21 @@
     @let current = plan()!;
 
     <!-- Header -->
-    <div class="page-header">
+    <app-page-header
+      [title]="'SUBJECTS.PLAN_DETAILS.TITLE' | translate: { subject: subjectName() }"
+      [subtitle]="className() + ' · ' + termName()"
+    >
 
-      <div class="title-section">
-
-        <h1>
-          {{ 'SUBJECTS.PLAN_DETAILS.TITLE' | translate: { subject: subjectName() } }}
-
-          @if (badge(); as b) {
-            <span class="plan-badge {{ b.cssClass }}">
-              <mat-icon>{{ b.icon }}</mat-icon>
-              {{ b.labelKey | translate }}
-            </span>
-          }
-        </h1>
-
-        <p>{{ className() }} · {{ termName() }}</p>
-
-      </div>
+      @if (badge(); as b) {
+        <span badge class="plan-badge {{ b.cssClass }}">
+          <mat-icon>{{ b.icon }}</mat-icon>
+          {{ b.labelKey | translate }}
+        </span>
+      }
 
       @if (canManage()) {
 
-        <div class="header-actions">
+        <ng-container actions>
 
           @if (current.isLocked) {
 
@@ -157,11 +150,11 @@
 
           </mat-menu>
 
-        </div>
+        </ng-container>
 
       }
 
-    </div>
+    </app-page-header>
 
 
     <!-- Notices -->

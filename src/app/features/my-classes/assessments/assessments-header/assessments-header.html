@@ -1,33 +1,27 @@
-<div class="page-header">
+<app-page-header
+  [title]="'MY_CLASSES.ASSESSMENTS.HEADER.TITLE' | translate: { subject: subjectName() }"
+>
 
-  <div class="subject-icon">
+  <div leading class="subject-icon">
     <mat-icon>menu_book</mat-icon>
   </div>
 
-  <div class="title-section">
+  <span subtitle>
+    {{ className() }}
+    <span class="dot">·</span>
+    {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: sectionName() } }}
 
-    <h1>
-      {{ 'MY_CLASSES.ASSESSMENTS.HEADER.TITLE' | translate: { subject: subjectName() } }}
-    </h1>
-
-    <p>
-      {{ className() }}
+    @if (termName()) {
       <span class="dot">·</span>
-      {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: sectionName() } }}
-
-      @if (termName()) {
-        <span class="dot">·</span>
-        <span class="term-name">{{ termName() }}</span>
-      }
-    </p>
-
-  </div>
+      <span class="term-name">{{ termName() }}</span>
+    }
+  </span>
 
 
   <!-- The plan: passing mark and state -->
   @if (passingMark() !== null || planBadge()) {
 
-    <div class="chips">
+    <div actions class="chips">
 
       @if (passingMark() !== null) {
         <span class="chip">
@@ -50,4 +44,4 @@
 
   }
 
-</div>
+</app-page-header>

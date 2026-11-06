@@ -51,6 +51,7 @@ import {
   NO_TAKEN_RELATIONSHIPS,
   TakenRelationships
 } from '../parents';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 
 // Data passed when the dialog is opened.
@@ -112,6 +113,7 @@ interface ChildRow {
     TranslatePipe,
     StudentPicker,
     RelationshipToggle,
+    PageHeader,
   ],
   templateUrl: './parent-form.html',
   styleUrl: './parent-form.css',

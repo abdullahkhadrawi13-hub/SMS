@@ -9,6 +9,7 @@ import {
   ClassesSectionsTerm,
   getTermLabel
 } from '../../shared/classes-sections-shared';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 // Page title and description, and a note saying which term
 // the cards' student counts are for.
@@ -18,6 +19,7 @@ import {
   imports: [
     MatIconModule,
     TranslatePipe,
+    PageHeader,
   ],
   templateUrl: './classes-header.html',
   styleUrl: './classes-header.css',
