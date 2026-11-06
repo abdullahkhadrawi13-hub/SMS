@@ -25,6 +25,10 @@
 
   background: var(--auth-navy);
   color: var(--auth-navy-text);
+
+  /* Same name as the sidebar (dashboard-layout.css): on login the browser
+     turns this panel into the sidebar. Rules: src/view-transitions.css */
+  view-transition-name: side;
 }
 
 .brand {
@@ -160,6 +164,9 @@
 .auth-content {
   flex: 1;
 
+  /* the form area fades on its own (src/view-transitions.css) */
+  view-transition-name: auth;
+
   display: grid;
   place-items: center;
 
@@ -186,6 +193,9 @@
 
   .brand-panel {
     padding: 12px 16px;
+
+    /* a top bar here, not a side panel: it does not turn into the sidebar */
+    view-transition-name: none;
   }
 
   .emblem {

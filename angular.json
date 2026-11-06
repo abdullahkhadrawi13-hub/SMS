@@ -31,7 +31,8 @@
               "material-symbols/outlined.css",
               "src/tokens.css",
               "src/material-theme.scss",
-              "src/styles.css"
+              "src/styles.css",
+              "src/view-transitions.css"
             ]
           },
           "configurations": {

@@ -1,0 +1,221 @@
+/* ==========================================================
+   View Transitions — how the app moves from one screen to the next.
+   Global on purpose: the ::view-transition-* pseudo-elements live on
+   <html>, so a component's own CSS cannot reach them.
+
+   Kinds, set on <html data-vt="..."> by shared/utils/view-transitions.ts:
+     nav     a page change inside the same layout (the sidebar links)
+     lang    the language switch (core/services/language.ts)
+     login   the login pages → the dashboard
+     logout  the dashboard → the login page
+
+   Names, set in each layout's own CSS:
+     side    the sidebar (dashboard-layout.css) and the navy login
+             panel (auth-layout.css). One name, so the browser treats
+             them as the same element and turns one into the other.
+     topbar  the navbar (navbar.css)
+     page    the page area (dashboard-layout.css)
+     auth    the login form area (auth-layout.css)
+
+   A change of query params only (search, filters, page, ?tab=) never
+   gets here: view-transitions.ts skips it, so it changes at once.
+   Durations and easing come from src/tokens.css.
+   ========================================================== */
+
+
+/* ---------- The frame: sidebar and navbar ----------
+   They move only when the frame itself moves (language, login, logout).
+   On a page change they are the same before and after, so nothing moves. */
+
+::view-transition-group(side),
+::view-transition-group(topbar) {
+  animation-duration: var(--dur-frame);
+  animation-timing-function: var(--ease-move);
+}
+
+html[data-vt="logout"]::view-transition-group(side),
+html[data-vt="logout"]::view-transition-group(topbar) {
+  animation-duration: var(--dur-exit);
+}
+
+/* The panel and the sidebar have different sizes: keep the top of the
+   picture in place instead of stretching it. */
+::view-transition-old(side),
+::view-transition-new(side) {
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0;
+}
+
+/* nav: no movement at all */
+::view-transition-old(side),
+::view-transition-old(topbar) {
+  display: none;
+}
+
+::view-transition-new(side),
+::view-transition-new(topbar) {
+  animation: none;
+}
+
+
+/* ---------- lang: the sidebar slides to the other side ----------
+   Its text changes language while it moves. */
+
+html[data-vt="lang"]::view-transition-old(side),
+html[data-vt="lang"]::view-transition-old(topbar) {
+  display: block;
+  animation: vt-fade-out var(--dur-frame) var(--ease-move) both;
+}
+
+html[data-vt="lang"]::view-transition-new(side),
+html[data-vt="lang"]::view-transition-new(topbar) {
+  animation: vt-fade-in var(--dur-frame) var(--ease-move) both;
+}
+
+/* mat-sidenav moves the page beside the sidebar with its own 400ms margin
+   animation. During the switch the page takes its new place at once, so
+   the picture of the new screen is right; the slide above does the moving. */
+html[data-vt="lang"] .mat-drawer-transition .mat-drawer-content {
+  transition: none;
+}
+
+
+/* ---------- login: the wide navy panel becomes the sidebar ----------
+   Old and new pictures cross over the whole time, so the navy stays
+   solid while the panel shrinks into the sidebar. */
+
+html[data-vt="login"]::view-transition-old(side) {
+  display: block;
+  animation: vt-fade-out var(--dur-frame) var(--ease-move) both;
+}
+
+html[data-vt="login"]::view-transition-new(side) {
+  animation: vt-fade-in var(--dur-frame) var(--ease-move) both;
+}
+
+
+/* ---------- logout: the sidebar goes back to the panel, faster ---------- */
+
+html[data-vt="logout"]::view-transition-old(side) {
+  display: block;
+  animation: vt-fade-out var(--dur-exit) var(--ease-move) both;
+}
+
+html[data-vt="logout"]::view-transition-new(side) {
+  animation: vt-fade-in var(--dur-exit) var(--ease-move) both;
+}
+
+
+/* ---------- Something that exists on one side only ----------
+   The navbar appears on login and leaves on logout. Between 720px and
+   768px the login panel is a top bar (no "side" name), so the sidebar
+   only appears or leaves there too. */
+
+::view-transition-new(topbar):only-child,
+::view-transition-new(side):only-child {
+  animation: vt-fade-in var(--dur-page) var(--ease-enter) calc(var(--dur-frame) * .45) both;
+}
+
+::view-transition-old(topbar):only-child,
+::view-transition-old(side):only-child {
+  display: block;
+  animation: vt-fade-out var(--dur-page-out) var(--ease-exit) both;
+}
+
+
+/* ---------- The content: never slides, never rises ----------
+   The old content fades out faster than the new one fades in. */
+
+::view-transition-group(page),
+::view-transition-group(auth) {
+  animation-duration: 0s;
+}
+
+::view-transition-old(page),
+::view-transition-old(auth) {
+  animation: vt-fade-out var(--dur-page-out) var(--ease-exit) both;
+}
+
+::view-transition-new(page),
+::view-transition-new(auth) {
+  animation: vt-fade-in var(--dur-page) var(--ease-enter) both;
+}
+
+/* login: the page waits a little for the sidebar to arrive */
+::view-transition-new(page):only-child {
+  animation: vt-fade-in var(--dur-page) var(--ease-enter) calc(var(--dur-frame) * .45) both;
+}
+
+/* logout: the form waits a little for the panel to open */
+::view-transition-new(auth):only-child {
+  animation: vt-fade-in var(--dur-page) var(--ease-enter) calc(var(--dur-exit) * .4) both;
+}
+
+
+/* ---------- Everything else (the page background, dialogs…) ---------- */
+
+::view-transition-old(root) {
+  animation: vt-fade-out var(--dur-page-out) var(--ease-exit) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-fade-in var(--dur-page) var(--ease-enter) both;
+}
+
+
+/* When the old and new picture overlap, add them instead of stacking two
+   half-transparent pictures (the browser does this by default, but setting
+   our own animation above turns it off). Without it the sidebar looks see-
+   through in the middle of the slide. */
+::view-transition-image-pair(*) {
+  isolation: isolate;
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  mix-blend-mode: plus-lighter;
+}
+
+/* a picture with no partner (the navbar on login, for example) stays normal */
+::view-transition-old(*):only-child,
+::view-transition-new(*):only-child {
+  mix-blend-mode: normal;
+}
+
+
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+}
+
+
+/* ---------- Phone and small tablet ----------
+   The layouts drop the names there (no slide, no shrinking panel),
+   so language, login and logout are one plain fade: no waiting. */
+
+@media (max-width: 768px) {
+
+  ::view-transition-new(page):only-child,
+  ::view-transition-new(auth):only-child {
+    animation-delay: 0s;
+  }
+
+}
+
+
+/* ---------- Reduce motion ----------
+   The code skips the transitions too; this is the safety net. */
+
+@media (prefers-reduced-motion: reduce) {
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+}

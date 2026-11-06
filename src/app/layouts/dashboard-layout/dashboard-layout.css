@@ -47,6 +47,10 @@
 .sidebar-container {
   width: var(--sidebar-w);
   border: 0;
+
+  /* Same name as the navy login panel (auth-layout.css). Still on a page
+     change, slides on a language switch. Rules: src/view-transitions.css */
+  view-transition-name: side;
 }
 
 
@@ -83,6 +87,9 @@
   box-sizing: border-box;
 
   overflow: auto;
+
+  /* only this area fades on a page change (src/view-transitions.css) */
+  view-transition-name: page;
 }
 
 
@@ -94,6 +101,11 @@
 
   .content-area {
     padding: var(--sp-4);
+  }
+
+  /* the sidebar is a hidden drawer here: no slide, a plain fade instead */
+  .sidebar-container {
+    view-transition-name: none;
   }
 
 }

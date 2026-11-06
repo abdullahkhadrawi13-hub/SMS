@@ -65,5 +65,14 @@
   --scrim: rgba(12, 21, 40, .5);
 
   /* motion */
-  --dur: 150ms;
+  --dur: 150ms;            /* colour and hover changes */
+
+  /* page transitions (View Transitions, rules in src/view-transitions.css) */
+  --dur-page: 250ms;       /* the new page content fades in */
+  --dur-page-out: 160ms;   /* the old page content fades out (exit is faster than enter) */
+  --dur-frame: 420ms;      /* the sidebar moves: language switch, sign in */
+  --dur-exit: 300ms;       /* sign out: the sidebar goes back to the wide login panel */
+  --ease-move: cubic-bezier(.65, 0, .35, 1);  /* leaves one place and arrives at another */
+  --ease-enter: cubic-bezier(0, 0, .2, 1);    /* arriving: fast, then slows down */
+  --ease-exit: cubic-bezier(.4, 0, 1, 1);     /* leaving: slow, then speeds up */
 }
