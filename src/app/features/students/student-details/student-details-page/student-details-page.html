@@ -15,36 +15,21 @@
 
   <!-- Loading -->
   @if (isLoading()) {
-    <div class="state-card">
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>
-        {{ 'STUDENT_DETAILS.PAGE.LOADING' | translate }}
-      </p>
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'STUDENT_DETAILS.PAGE.LOADING' | translate"
+    />
   }
 
   <!-- Error (also: a teacher opening a student who is not theirs) -->
   @else if (errorMessage()) {
-    <div class="state-card error-state">
-      <mat-icon>error_outline</mat-icon>
-
-      <h3>
-        {{ 'STUDENT_DETAILS.PAGE.ERROR_TITLE' | translate }}
-      </h3>
-
-      <p>
-        {{ errorMessage() | translate }}
-      </p>
-
-      @if (studentId()) {
-        <button mat-flat-button color="primary" type="button" (click)="retry()">
-          <mat-icon>refresh</mat-icon>
-
-          {{ 'STUDENTS.RETRY' | translate }}
-        </button>
-      }
-    </div>
+    <app-state-card
+      type="error"
+      [title]="'STUDENT_DETAILS.PAGE.ERROR_TITLE' | translate"
+      [message]="errorMessage() | translate"
+      [showRetry]="!!studentId()"
+      (retry)="retry()"
+    />
   }
 
   @else if (student(); as currentStudent) {

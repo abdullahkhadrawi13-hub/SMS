@@ -16,6 +16,7 @@ import {
   isActiveRecord,
   StudentGradesViewer,
 } from '../student-grades';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // The grades of one term: the counters, a note, and one card per subject.
@@ -39,6 +40,7 @@ import {
     MatIconModule,
     TranslatePipe,
     SubjectGradesCard,
+    StateCard,
   ],
   templateUrl: './term-grades.html',
   styleUrl: './term-grades.css',

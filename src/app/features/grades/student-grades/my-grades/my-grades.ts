@@ -11,7 +11,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -26,6 +25,7 @@ import {
   getTermLabelParams,
 } from '../student-grades';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // The student's Grades page («علاماتي»). Route: /grades (Student).
@@ -40,10 +40,10 @@ import { PageHeader } from '../../../../shared/components/page-header/page-heade
   imports: [
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
     TermGrades,
     PageHeader,
+    StateCard,
   ],
   templateUrl: './my-grades.html',
   styleUrl: './my-grades.css',

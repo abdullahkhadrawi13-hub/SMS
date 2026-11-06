@@ -64,13 +64,11 @@
 
 <!-- First load only (nothing to show yet) -->
 @if (isInitialLoading()) {
-  <div class="state-card">
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>
-      {{ 'ATTENDANCE.ABSENTEES_LIST.LOADING' | translate }}
-    </p>
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'ATTENDANCE.ABSENTEES_LIST.LOADING' | translate"
+    [framed]="false"
+  />
 }
 
 @else if (absentees()) {

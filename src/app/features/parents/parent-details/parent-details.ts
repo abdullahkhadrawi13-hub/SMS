@@ -47,6 +47,7 @@ import {
   getFullName,
   getInitials
 } from '../parents';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 // Data passed when the details dialog is opened.
@@ -73,6 +74,7 @@ export interface ParentDetailsResult {
     MatProgressSpinnerModule,
     MatTooltipModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './parent-details.html',
   styleUrl: './parent-details.css',

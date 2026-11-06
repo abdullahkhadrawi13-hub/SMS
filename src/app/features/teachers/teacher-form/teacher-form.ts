@@ -15,7 +15,6 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 import {
@@ -31,6 +30,7 @@ import { ApiMessageService } from '../../../core/services/api-message';
 import { ActionResult } from '../../../shared/services/action-result';
 import { CreateTeacherRequest, UpdateTeacherRequest } from '../../../core/models/teacher';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 // Data passed when the dialog is opened.
@@ -48,10 +48,10 @@ export interface TeacherFormDialogData {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
     MatIcon,
     PageHeader,
+    StateCard,
 ],
   templateUrl: './teacher-form.html',
   styleUrl: './teacher-form.css',

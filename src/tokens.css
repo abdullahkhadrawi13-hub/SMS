@@ -43,6 +43,9 @@
   --gold-bg: #f7edd6; --gold-ink: #5c410b;
   --chg: #d69a1c;     --chg-bg: #fff8e6;
 
+  /* the big icon of an empty state (shared state-card) — chosen 6 Nov 2026 */
+  --state-icon: #7d89a2;
+
   /* roles: avatar background (main), light card (soft), initials and text (dark).
      Used by role-colors.ts (navbar avatar, user menu, profile dialog).
      Every dark colour reads on its main and soft colour (contrast above 7:1). */

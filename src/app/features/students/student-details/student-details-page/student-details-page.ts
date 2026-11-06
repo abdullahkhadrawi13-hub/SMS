@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -31,6 +30,7 @@ import {
   getStudentNameEn,
   getStudentSectionName
 } from '../student-details';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 // The tabs of the page. The active one is in the URL: /students/5?tab=grades
 // (no ?tab = the details tab).
@@ -53,13 +53,13 @@ interface StudentDetailsNavigationState {
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     MatTabsModule,
     TranslatePipe,
     StudentInfoTab,
     StudentAttendanceTab,
     StudentParentsTab,
-    StudentGradesTab
+    StudentGradesTab,
+    StateCard,
   ],
   templateUrl: './student-details-page.html',
   styleUrl: './student-details-page.css'

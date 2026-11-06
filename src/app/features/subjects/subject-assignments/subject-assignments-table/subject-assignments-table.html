@@ -1,88 +1,54 @@
 <!-- Error -->
 @if (errorMessage()) {
 
-  <div class="state-card error-state">
-
-    <mat-icon>error_outline</mat-icon>
-
-    <p>
-      {{ errorMessage() | translate }}
-    </p>
-
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      (click)="retry.emit()"
-    >
-      <mat-icon>refresh</mat-icon>
-
-      {{ 'SUBJECTS.ASSIGNMENTS_TABLE.RETRY' | translate }}
-    </button>
-
-  </div>
+  <app-state-card
+    type="error"
+    [message]="errorMessage() | translate"
+    (retry)="retry.emit()"
+  />
 
 }
 
 <!-- Nothing selected yet -->
 @else if (!hasSelection()) {
 
-  <div class="state-card">
-
-    <mat-icon>assignment_ind</mat-icon>
-
-    <h3>
-      {{ 'SUBJECTS.ASSIGNMENTS_TABLE.SELECT_TITLE' | translate }}
-    </h3>
-
-    <p>
-      {{ 'SUBJECTS.ASSIGNMENTS_TABLE.SELECT_MESSAGE' | translate }}
-    </p>
-
-  </div>
+  <app-state-card
+    type="empty"
+    icon="assignment_ind"
+    [title]="'SUBJECTS.ASSIGNMENTS_TABLE.SELECT_TITLE' | translate"
+    [message]="'SUBJECTS.ASSIGNMENTS_TABLE.SELECT_MESSAGE' | translate"
+  />
 
 }
 
 <!-- First load only (nothing to show yet) -->
 @else if (isInitialLoading()) {
 
-  <div class="state-card">
-
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>
-      {{ 'SUBJECTS.ASSIGNMENTS_TABLE.LOADING' | translate }}
-    </p>
-
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'SUBJECTS.ASSIGNMENTS_TABLE.LOADING' | translate"
+  />
 
 }
 
 <!-- The section has no subjects in this term -->
 @else if (rows().length === 0) {
 
-  <div class="state-card">
-
-    <mat-icon>menu_book</mat-icon>
-
-    <h3>
-      {{ 'SUBJECTS.ASSIGNMENTS_TABLE.EMPTY_TITLE' | translate }}
-    </h3>
-
+  <app-state-card
+    type="empty"
+    icon="menu_book"
+    [title]="'SUBJECTS.ASSIGNMENTS_TABLE.EMPTY_TITLE' | translate"
+    [message]="canManage()
+      ? ('SUBJECTS.ASSIGNMENTS_TABLE.EMPTY_MESSAGE'
+          | translate: { className: className(), sectionName: sectionName(), termName: termLabel() })
+      : ('SUBJECTS.ASSIGNMENTS_TABLE.EMPTY_MESSAGE_READONLY' | translate)"
+  >
     @if (canManage()) {
-
-      <p>
-        {{
-          'SUBJECTS.ASSIGNMENTS_TABLE.EMPTY_MESSAGE'
-            | translate: { className: className(), sectionName: sectionName(), termName: termLabel() }
-        }}
-      </p>
-
       <button
+        actions
         mat-flat-button
         color="primary"
         type="button"
-        class="empty-add-button"
         [disabled]="openingForm()"
         (click)="addSubject.emit(null)"
       >
@@ -90,16 +56,8 @@
 
         {{ 'SUBJECTS.ASSIGNMENTS_TABLE.ADD_FIRST' | translate }}
       </button>
-
-    } @else {
-
-      <p>
-        {{ 'SUBJECTS.ASSIGNMENTS_TABLE.EMPTY_MESSAGE_READONLY' | translate }}
-      </p>
-
     }
-
-  </div>
+  </app-state-card>
 
 }
 

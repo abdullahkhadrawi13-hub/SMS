@@ -44,11 +44,11 @@
 <!-- ===== Not active in this term: a message instead of the grades ===== -->
 @if (!isActive()) {
 
-  <div class="state-card">
-    <mat-icon>{{ statusMessage().icon }}</mat-icon>
-
-    <p>{{ statusMessage().key | translate }}</p>
-  </div>
+  <app-state-card
+    type="empty"
+    [icon]="statusMessage().icon"
+    [message]="statusMessage().key | translate"
+  />
 
 } @else {
 
@@ -62,11 +62,11 @@
 
   @if (term().subjects.length === 0) {
 
-    <div class="state-card">
-      <mat-icon>menu_book</mat-icon>
-
-      <p>{{ 'STUDENT_GRADES.EMPTY.NO_SUBJECTS' | translate }}</p>
-    </div>
+    <app-state-card
+      type="empty"
+      icon="menu_book"
+      [message]="'STUDENT_GRADES.EMPTY.NO_SUBJECTS' | translate"
+    />
 
   } @else {
 

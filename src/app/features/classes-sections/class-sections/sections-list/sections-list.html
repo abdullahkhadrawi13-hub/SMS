@@ -1,20 +1,11 @@
 <!-- Error -->
 @if (errorMessage()) {
 
-  <div class="state-card error-state">
-
-    <mat-icon>error_outline</mat-icon>
-
-    <p>
-      {{ errorMessage() | translate }}
-    </p>
-
-    <button mat-flat-button type="button" (click)="retry.emit()">
-      <mat-icon>refresh</mat-icon>
-      {{ 'CLASS_SECTIONS.RETRY' | translate }}
-    </button>
-
-  </div>
+  <app-state-card
+    type="error"
+    [message]="errorMessage() | translate"
+    (retry)="retry.emit()"
+  />
 
 }
 
@@ -22,12 +13,10 @@
 <!-- First load -->
 @else if (isInitialLoading()) {
 
-  <div class="state-card">
-    <mat-spinner diameter="42"></mat-spinner>
-    <p>
-      {{ 'CLASS_SECTIONS.LIST.LOADING' | translate }}
-    </p>
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'CLASS_SECTIONS.LIST.LOADING' | translate"
+  />
 
 }
 
@@ -35,15 +24,15 @@
 <!-- Sections exist, but none match the status filter -->
 @else if (isFilteredEmpty()) {
 
-  <div class="state-card">
-    <mat-icon class="empty-icon">filter_alt_off</mat-icon>
-    <p>
-      {{ 'CLASS_SECTIONS.LIST.NO_MATCH' | translate }}
-    </p>
-    <button mat-button type="button" (click)="showAll.emit()">
+  <app-state-card
+    type="empty"
+    icon="filter_alt_off"
+    [message]="'CLASS_SECTIONS.LIST.NO_MATCH' | translate"
+  >
+    <button actions mat-button type="button" (click)="showAll.emit()">
       {{ 'CLASS_SECTIONS.LIST.SHOW_ALL' | translate }}
     </button>
-  </div>
+  </app-state-card>
 
 }
 
@@ -51,12 +40,11 @@
 <!-- No sections, and the user cannot add one -->
 @else if (sections().length === 0 && !showAddRow()) {
 
-  <div class="state-card">
-    <mat-icon class="empty-icon">groups</mat-icon>
-    <p>
-      {{ 'CLASS_SECTIONS.LIST.EMPTY' | translate }}
-    </p>
-  </div>
+  <app-state-card
+    type="empty"
+    icon="groups"
+    [message]="'CLASS_SECTIONS.LIST.EMPTY' | translate"
+  />
 
 }
 

@@ -1,34 +1,27 @@
-<!-- Error -->
-@if (errorMessage()) {
-  <div class="state-card error-state">
-    <mat-icon>error_outline</mat-icon>
+<!-- The card keeps its shape in every state; the state is drawn inside it. -->
+<div class="table-card" [class.is-refreshing]="isRefreshing()">
 
-    <p>
-      {{ errorMessage() | translate }}
-    </p>
+  <!-- Error -->
+  @if (errorMessage()) {
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      [framed]="false"
+      (retry)="retry.emit()"
+    />
+  }
 
-    <button mat-flat-button color="primary" type="button" (click)="retry.emit()">
-      <mat-icon>refresh</mat-icon>
+  <!-- First load only (nothing to show yet) -->
+  @else if (isInitialLoading()) {
+    <app-state-card
+      type="loading"
+      [message]="'STUDENTS.LOADING' | translate"
+      [framed]="false"
+    />
+  }
 
-      {{ 'STUDENTS.RETRY' | translate }}
-    </button>
-  </div>
-}
-
-<!-- First load only (nothing to show yet) -->
-@else if (isInitialLoading()) {
-  <div class="state-card">
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>
-      {{ 'STUDENTS.LOADING' | translate }}
-    </p>
-  </div>
-}
-
-<!-- Students Table + Pagination (paginator no longer tied to students().length) -->
-@else {
-  <div class="table-card" [class.is-refreshing]="isRefreshing()">
+  <!-- Students Table + Pagination (paginator no longer tied to students().length) -->
+  @else {
 
     <!-- Reload indicator: sits on top of the card without taking any height -->
     @if (isRefreshing()) {
@@ -200,17 +193,24 @@
         </table>
       </div>
     } @else {
-      <div class="state-card empty-state">
-        <mat-icon>school</mat-icon>
-
-        <h3>
-          {{ 'STUDENTS.NO_STUDENTS' | translate }}
-        </h3>
-
-        <p>
-          {{ 'STUDENTS.NO_STUDENTS_DESCRIPTION' | translate }}
-        </p>
-      </div>
+      <!-- Empty: "no match" after a search or filter, "no students yet" without them -->
+      @if (hasQuery()) {
+        <app-state-card
+          type="empty"
+          icon="search_off"
+          [title]="'STUDENTS.NO_STUDENTS' | translate"
+          [message]="'STUDENTS.NO_STUDENTS_DESCRIPTION' | translate"
+          [framed]="false"
+        />
+      } @else {
+        <app-state-card
+          type="empty"
+          icon="school"
+          [title]="'STUDENTS.NO_STUDENTS_YET' | translate"
+          [message]="canManage() ? ('STUDENTS.NO_STUDENTS_YET_DESCRIPTION' | translate) : ''"
+          [framed]="false"
+        />
+      }
     }
 
     <!-- Pagination: shown whenever there ARE results overall,
@@ -228,5 +228,7 @@
       </mat-paginator>
     }
 
-  </div>
-}
+
+  }
+
+</div>

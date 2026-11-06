@@ -3,7 +3,6 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -22,6 +21,7 @@ import {
   AttendanceStatus
 } from '../../../../core/models/attendance';
 import { SaveBar } from '../../../../shared/components/save-bar/save-bar';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 // One row of the sheet table.
 interface AttendanceSheetRow {
@@ -42,10 +42,10 @@ interface AttendanceSheetRow {
     MatButtonModule,
     MatButtonToggleModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
-    SaveBar
+    SaveBar,
+    StateCard,
   ],
   templateUrl: './record-sheet.html',
   styleUrl: './record-sheet.css',

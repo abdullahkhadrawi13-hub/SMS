@@ -8,7 +8,6 @@ import {
   PageEvent,
 } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -20,6 +19,7 @@ import {
   ParentDto
 } from '../../../core/models/parent';
 import { getFirstName, getFullName, isArabicPage } from '../parents';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 // How many children are shown as chips in the "Children" column.
@@ -35,10 +35,10 @@ const VISIBLE_CHILDREN = 2;
     MatMenuModule,
     MatPaginatorModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     MatTooltipModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './parent-table.html',
   styleUrl: './parent-table.css',

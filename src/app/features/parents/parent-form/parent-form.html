@@ -10,12 +10,10 @@
   <!-- Loading (edit mode: while the parent is being loaded) -->
   @if (isLoading()) {
 
-    <div class="state-card">
-      <mat-spinner diameter="42"></mat-spinner>
-      <p>
-        {{ 'PARENTS.FORM.LOADING' | translate }}
-      </p>
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'PARENTS.FORM.LOADING' | translate"
+    />
 
   } @else {
 

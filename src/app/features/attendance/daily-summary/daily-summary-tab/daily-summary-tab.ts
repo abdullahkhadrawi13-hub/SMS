@@ -18,7 +18,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -36,6 +35,7 @@ import {
   todayApiDate
 } from '../../shared/attendance-shared';
 import { AttendanceDailySummary, AttendanceSummarySection } from '../../../../core/models/attendance';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 // Recording state of one section on the selected day.
 type SectionState = 'complete' | 'partial' | 'notStarted';
@@ -64,9 +64,9 @@ interface AttendanceSummaryRow {
     MatIconModule,
     MatInputModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatTableModule,
-    TranslatePipe
+    TranslatePipe,
+    StateCard,
   ],
   templateUrl: './daily-summary-tab.html',
   styleUrl: './daily-summary-tab.css',

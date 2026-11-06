@@ -16,7 +16,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -38,6 +37,7 @@ import { TermClassSelector } from '../../shared/term-class-selector/term-class-s
 import { PlanCard } from '../plan-card/plan-card';
 import { PlanForm, PlanFormData } from '../plan-form/plan-form';
 import { CopyPlansData, CopyPlansDialog } from '../copy-plans-dialog/copy-plans-dialog';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // The "Subject plans" tab (SMS API Reference, section 9).
@@ -59,9 +59,9 @@ import { CopyPlansData, CopyPlansDialog } from '../copy-plans-dialog/copy-plans-
     MatDialogModule,
     MatIconModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     PlanCard,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './subject-plans-tab.html',
   styleUrl: './subject-plans-tab.css',

@@ -1,41 +1,21 @@
 <!-- Error -->
 @if (errorMessage()) {
 
-  <div class="state-card error-state">
-
-    <mat-icon>error_outline</mat-icon>
-
-    <p>
-      {{ errorMessage() | translate }}
-    </p>
-
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      (click)="retry.emit()"
-    >
-      <mat-icon>refresh</mat-icon>
-
-      {{ 'PARENTS.TABLE.RETRY' | translate }}
-    </button>
-
-  </div>
+  <app-state-card
+    type="error"
+    [message]="errorMessage() | translate"
+    (retry)="retry.emit()"
+  />
 
 }
 
 <!-- First load only (nothing to show yet) -->
 @else if (isInitialLoading()) {
 
-  <div class="state-card">
-
-    <mat-spinner diameter="42"></mat-spinner>
-
-    <p>
-      {{ 'PARENTS.TABLE.LOADING' | translate }}
-    </p>
-
-  </div>
+  <app-state-card
+    type="loading"
+    [message]="'PARENTS.TABLE.LOADING' | translate"
+  />
 
 }
 
@@ -334,15 +314,12 @@
     } @else {
 
       <!-- Empty state -->
-      <div class="empty-state">
-
-        <mat-icon>person_off</mat-icon>
-
-        <p>
-          {{ 'PARENTS.TABLE.EMPTY' | translate }}
-        </p>
-
-      </div>
+      <app-state-card
+        type="empty"
+        icon="person_off"
+        [message]="'PARENTS.TABLE.EMPTY' | translate"
+        [framed]="false"
+      />
 
     }
 

@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -23,6 +22,7 @@ import { OfficerTeacherSearch } from '../officer-teacher-search/officer-teacher-
 import { TeacherListDto } from '../../../../core/models/teacher';
 import { getTeacherName } from '../teacher-name';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // Number of teachers shown in one page of the list.
@@ -35,7 +35,6 @@ const TEACHERS_PAGE_SIZE = 10;
 
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
 
     OfficerCurrentCard,
@@ -43,6 +42,7 @@ const TEACHERS_PAGE_SIZE = 10;
     OfficerTeacherSearch,
     SaveBar,
     PageHeader,
+    StateCard,
   ],
   templateUrl: './attendance-officer-page.html',
   styleUrl: './attendance-officer-page.css',

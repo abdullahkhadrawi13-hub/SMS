@@ -52,6 +52,7 @@ import {
   TakenRelationships
 } from '../parents';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 // Data passed when the dialog is opened.
@@ -114,6 +115,7 @@ interface ChildRow {
     StudentPicker,
     RelationshipToggle,
     PageHeader,
+    StateCard,
   ],
   templateUrl: './parent-form.html',
   styleUrl: './parent-form.css',

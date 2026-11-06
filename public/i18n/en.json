@@ -224,9 +224,13 @@
 
     "LOADING": "Loading students...",
 
-    "NO_STUDENTS": "No students found",
+    "NO_STUDENTS": "No students match your search",
 
-    "NO_STUDENTS_DESCRIPTION": "There are no students matching the current search or filters.",
+    "NO_STUDENTS_DESCRIPTION": "Try another word or remove some filters.",
+
+    "NO_STUDENTS_YET": "No students added yet",
+
+    "NO_STUDENTS_YET_DESCRIPTION": "Start by adding the first student with “Add Student” above.",
 
     "RETRY": "Retry",
 
@@ -540,6 +544,9 @@
   },
 
   "SHARED": {
+    "STATE_CARD": {
+      "RETRY": "Retry"
+    },
     "ACTION_RESULT": {
       "SUCCESS": "Success",
       "ERROR": "Error",

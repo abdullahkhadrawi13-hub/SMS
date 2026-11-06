@@ -12,41 +12,21 @@
   <!-- Error -->
   @if (errorMessage()) {
 
-    <div class="state-card error-state">
-
-      <mat-icon>error_outline</mat-icon>
-
-      <p>
-        {{ errorMessage() | translate }}
-      </p>
-
-      <button
-        mat-flat-button
-        color="primary"
-        type="button"
-        (click)="retry()"
-      >
-        <mat-icon>refresh</mat-icon>
-
-        {{ 'ATTENDANCE_OFFICER.STATE.RETRY' | translate }}
-      </button>
-
-    </div>
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      (retry)="retry()"
+    />
 
   }
 
   <!-- Loading -->
   @else if (isLoading()) {
 
-    <div class="state-card">
-
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>
-        {{ 'ATTENDANCE_OFFICER.STATE.LOADING' | translate }}
-      </p>
-
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'ATTENDANCE_OFFICER.STATE.LOADING' | translate"
+    />
 
   }
 

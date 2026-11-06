@@ -16,7 +16,6 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -46,6 +45,7 @@ import {
 } from '../grades';
 import { GradeHistory } from '../grade-history/grade-history';
 import { GradeHistorySheet } from '../grade-history-sheet/grade-history-sheet';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 // Who is looking at the sheet (changes the notes above the table).
@@ -94,10 +94,10 @@ const NARROW_SCREEN = '(max-width: 650px)';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatProgressSpinnerModule,
     MatTooltipModule,
     TranslatePipe,
     GradeHistory,
+    StateCard,
   ],
   templateUrl: './grades-sheet.html',
   styleUrl: './grades-sheet.css',

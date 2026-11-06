@@ -12,69 +12,52 @@
   <!-- Error (years and terms) -->
   @if (errorMessage()) {
 
-    <div class="state-card error-state">
-
-      <mat-icon>error_outline</mat-icon>
-
-      <p>{{ errorMessage() | translate }}</p>
-
-      <button
-        mat-flat-button
-        type="button"
-        (click)="retry()"
-      >
-        <mat-icon>refresh</mat-icon>
-        {{ 'ROLLOVER.STATE.RETRY' | translate }}
-      </button>
-
-    </div>
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      (retry)="retry()"
+    />
 
   }
 
   <!-- Loading -->
   @else if (isLoading()) {
 
-    <div class="state-card">
-
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>{{ 'ROLLOVER.STATE.LOADING' | translate }}</p>
-
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'ROLLOVER.STATE.LOADING' | translate"
+    />
 
   }
 
   <!-- No current term: nothing to roll over into -->
   @else if (!source().currentTerm) {
 
-    <div class="state-card">
-
-      <mat-icon class="empty-icon">event_busy</mat-icon>
-
-      <p>{{ 'ROLLOVER.STATE.NO_CURRENT_TERM' | translate }}</p>
-
+    <app-state-card
+      type="empty"
+      icon="event_busy"
+      [message]="'ROLLOVER.STATE.NO_CURRENT_TERM' | translate"
+    >
       <a
+        actions
         mat-stroked-button
         routerLink="/settings/academic-years"
       >
         <mat-icon>calendar_month</mat-icon>
         {{ 'ROLLOVER.STATE.GO_TO_TERMS' | translate }}
       </a>
-
-    </div>
+    </app-state-card>
 
   }
 
   <!-- No term before the current one: nothing to roll over from -->
   @else if (source().options.length === 0) {
 
-    <div class="state-card">
-
-      <mat-icon class="empty-icon">history</mat-icon>
-
-      <p>{{ 'ROLLOVER.STATE.NO_SOURCE' | translate }}</p>
-
-    </div>
+    <app-state-card
+      type="empty"
+      icon="history"
+      [message]="'ROLLOVER.STATE.NO_SOURCE' | translate"
+    />
 
   }
 
@@ -100,35 +83,21 @@
       <!-- Preview error -->
       @if (previewError()) {
 
-        <div class="state-card error-state">
-
-          <mat-icon>error_outline</mat-icon>
-
-          <p>{{ previewError() }}</p>
-
-          <button
-            mat-flat-button
-            type="button"
-            (click)="retryPreview()"
-          >
-            <mat-icon>refresh</mat-icon>
-            {{ 'ROLLOVER.STATE.RETRY' | translate }}
-          </button>
-
-        </div>
+        <app-state-card
+          type="error"
+          [message]="previewError()"
+          (retry)="retryPreview()"
+        />
 
       }
 
       <!-- First preview -->
       @else if (isFirstPreviewLoad()) {
 
-        <div class="state-card">
-
-          <mat-spinner diameter="42"></mat-spinner>
-
-          <p>{{ 'ROLLOVER.STATE.PREVIEW_LOADING' | translate }}</p>
-
-        </div>
+        <app-state-card
+          type="loading"
+          [message]="'ROLLOVER.STATE.PREVIEW_LOADING' | translate"
+        />
 
       }
 

@@ -546,66 +546,6 @@
 
 
 /* ================================
-   State Card (not found / error / loading)
-   ================================ */
-
-.state-card {
-  min-height: 240px;
-
-  padding: 30px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 8px;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  text-align: center;
-}
-
-.state-card > mat-icon {
-  width: 48px;
-  height: 48px;
-
-  font-size: 48px;
-
-  color: #9ca3af;
-}
-
-.state-card h3 {
-  margin: 0;
-
-  font-size: 17px;
-  font-weight: 600;
-
-  color: #111827;
-}
-
-.state-card p {
-  margin: 0;
-
-  font-size: 14px;
-
-  color: #6b7280;
-}
-
-.state-card a,
-.state-card button {
-  margin-top: 12px;
-}
-
-.error-state > mat-icon {
-  color: #dc2626;
-}
-
-
-/* ================================
    Responsive
    ================================ */
 

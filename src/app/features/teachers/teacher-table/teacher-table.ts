@@ -8,12 +8,12 @@ import {
   PageEvent,
 } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { TeacherListDto } from '../../../core/models/teacher';
+import { StateCard } from '../../../shared/components/state-card/state-card';
 
 
 @Component({
@@ -24,9 +24,9 @@ import { TeacherListDto } from '../../../core/models/teacher';
     MatMenuModule,
     MatPaginatorModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './teacher-table.html',
   styleUrl: './teacher-table.css',

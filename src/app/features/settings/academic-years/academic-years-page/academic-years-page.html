@@ -30,40 +30,21 @@
   <!-- Error -->
   @if (errorMessage()) {
 
-    <div class="state-card error-state">
-
-      <mat-icon>error_outline</mat-icon>
-
-      <p>
-        {{ errorMessage() | translate }}
-      </p>
-
-      <button
-        mat-flat-button
-        type="button"
-        (click)="retry()"
-      >
-        <mat-icon>refresh</mat-icon>
-
-        {{ 'ACADEMIC_YEARS.STATE.RETRY' | translate }}
-      </button>
-
-    </div>
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      (retry)="retry()"
+    />
 
   }
 
   <!-- First load only -->
   @else if (isInitialLoading()) {
 
-    <div class="state-card">
-
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>
-        {{ 'ACADEMIC_YEARS.STATE.LOADING' | translate }}
-      </p>
-
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'ACADEMIC_YEARS.STATE.LOADING' | translate"
+    />
 
   }
 
@@ -116,16 +97,14 @@
       } @else {
 
         <!-- No years yet -->
-        <div class="state-card">
-
-          <mat-icon class="empty-icon">calendar_month</mat-icon>
-
-          <p>
-            {{ 'ACADEMIC_YEARS.STATE.EMPTY' | translate }}
-          </p>
-
+        <app-state-card
+          type="empty"
+          icon="calendar_month"
+          [message]="'ACADEMIC_YEARS.STATE.EMPTY' | translate"
+        >
           @if (canManage()) {
             <button
+              actions
               mat-stroked-button
               type="button"
               (click)="openAddYear()"
@@ -135,8 +114,7 @@
               {{ 'ACADEMIC_YEARS.HEADER.ADD_YEAR' | translate }}
             </button>
           }
-
-        </div>
+        </app-state-card>
 
       }
 

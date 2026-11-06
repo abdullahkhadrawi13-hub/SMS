@@ -7,7 +7,6 @@ import { forkJoin, Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatStepperModule } from '@angular/material/stepper';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -45,6 +44,7 @@ import {
 import { RolloverResult } from '../rollover-result/rollover-result';
 import { RolloverThreshold } from '../rollover-threshold/rollover-threshold';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // After 5 wrong passwords (429) the run button waits this long.
@@ -71,7 +71,6 @@ const LOCK_MINUTES = 5;
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatStepperModule,
     TranslatePipe,
 
@@ -82,6 +81,7 @@ const LOCK_MINUTES = 5;
     RolloverResult,
     RolloverThreshold,
     PageHeader,
+    StateCard,
   ],
   templateUrl: './rollover-page.html',
   styleUrl: './rollover-page.css',

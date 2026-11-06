@@ -24,50 +24,37 @@
   <!-- Not found -->
   @if (notFound()) {
 
-    <div class="state-card">
-
-      <mat-icon>search_off</mat-icon>
-
-      <h3>{{ 'SUBJECTS.PLAN_DETAILS.NOT_FOUND_TITLE' | translate }}</h3>
-
-      <p>{{ 'SUBJECTS.PLAN_DETAILS.NOT_FOUND_MESSAGE' | translate }}</p>
-
-      <a mat-flat-button color="primary" routerLink="/subjects" [queryParams]="{ tab: 'plans' }">
+    <app-state-card
+      type="empty"
+      icon="search_off"
+      [title]="'SUBJECTS.PLAN_DETAILS.NOT_FOUND_TITLE' | translate"
+      [message]="'SUBJECTS.PLAN_DETAILS.NOT_FOUND_MESSAGE' | translate"
+    >
+      <a actions mat-flat-button color="primary" routerLink="/subjects" [queryParams]="{ tab: 'plans' }">
         {{ 'SUBJECTS.PLAN_DETAILS.BACK' | translate }}
       </a>
-
-    </div>
+    </app-state-card>
 
   }
 
   <!-- Error -->
   @else if (errorMessage()) {
 
-    <div class="state-card error-state">
-
-      <mat-icon>error_outline</mat-icon>
-
-      <p>{{ errorMessage() | translate }}</p>
-
-      <button mat-flat-button color="primary" type="button" (click)="loadPlan()">
-        <mat-icon>refresh</mat-icon>
-        {{ 'SUBJECTS.PLAN_DETAILS.RETRY' | translate }}
-      </button>
-
-    </div>
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      (retry)="loadPlan()"
+    />
 
   }
 
   <!-- First load -->
   @else if (!plan()) {
 
-    <div class="state-card">
-
-      <mat-spinner diameter="42"></mat-spinner>
-
-      <p>{{ 'SUBJECTS.PLAN_DETAILS.LOADING' | translate }}</p>
-
-    </div>
+    <app-state-card
+      type="loading"
+      [message]="'SUBJECTS.PLAN_DETAILS.LOADING' | translate"
+    />
 
   }
 

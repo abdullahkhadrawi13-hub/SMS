@@ -55,6 +55,7 @@ import {
   PlanConfirmDialog,
 } from '../plan-confirm-dialog/plan-confirm-dialog';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // One component row of the table, with its name and color.
@@ -105,6 +106,7 @@ interface PlanSection {
     PlanWeightBar,
     TranslatePipe,
     PageHeader,
+    StateCard,
   ],
   templateUrl: './plan-details-page.html',
   styleUrl: './plan-details-page.css',

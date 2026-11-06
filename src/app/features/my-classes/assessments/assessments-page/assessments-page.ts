@@ -14,7 +14,6 @@ import { catchError, forkJoin, of, throwError } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -45,6 +44,7 @@ import { AssessmentFormData, ComponentGroup } from '../assessments';
 import { AssessmentsHeader, PlanStatusBadge } from '../assessments-header/assessments-header';
 import { PlanComponentCard } from '../plan-component-card/plan-component-card';
 import { AssessmentForm } from '../assessment-form/assessment-form';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // The assessments of one subject in one section, for the teacher (parent page).
@@ -70,8 +70,8 @@ import { AssessmentForm } from '../assessment-form/assessment-form';
     PlanWeightBar,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
+    StateCard,
   ],
   templateUrl: './assessments-page.html',
   styleUrl: './assessments-page.css',
