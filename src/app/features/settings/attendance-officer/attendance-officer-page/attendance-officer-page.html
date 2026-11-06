@@ -120,15 +120,19 @@
 
       </section>
 
-      <!-- Save Bar: shown only after a teacher is selected. -->
+      <!-- Save Bar (shared): shown only after a teacher is selected. -->
       @if (selectedTeacher(); as teacher) {
 
-        <app-officer-save-bar
-          [teacher]="teacher"
-          [isSaving]="isSaving()"
-          (cancelSelection)="cancelSelection()"
-          (saveSelection)="save()"
-        ></app-officer-save-bar>
+        <app-save-bar
+          [title]="('ATTENDANCE_OFFICER.SAVE_BAR.SELECTED' | translate) + ': ' + getTeacherName(teacher)"
+          [undoLabel]="'ATTENDANCE_OFFICER.SAVE_BAR.CANCEL' | translate"
+          [saveLabel]="'ATTENDANCE_OFFICER.SAVE_BAR.SAVE' | translate"
+          [savingLabel]="'ATTENDANCE_OFFICER.SAVE_BAR.SAVING' | translate"
+          saveIcon="how_to_reg"
+          [saving]="isSaving()"
+          (undo)="cancelSelection()"
+          (save)="save()"
+        ></app-save-bar>
 
       }
 

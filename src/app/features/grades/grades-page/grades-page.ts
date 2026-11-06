@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { forkJoin, map, Observable, of, Subscription } from 'rxjs';
 
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { AcademicTermsService } from '../../../core/services/academic-terms';
 import { AcademicYearsService } from '../../../core/services/academic-years';
@@ -28,6 +28,7 @@ import { SectionsService } from '../../../core/services/sections';
 import { StudentGradesService } from '../../../core/services/student-grades';
 import { TeacherAssignmentsService } from '../../../core/services/teacher-assignments';
 import { ActionResult } from '../../../shared/services/action-result';
+import { SaveBar } from '../../../shared/components/save-bar/save-bar';
 import { LeaveConfirmation } from '../../../core/guards/unsaved-changes-guard';
 
 import { ActiveSectionDto } from '../../../core/models/section';
@@ -63,7 +64,6 @@ import {
   GradesSheet,
   GradesViewer,
 } from '../grades-sheet/grades-sheet';
-import { GradesSaveBar } from '../grades-save-bar/grades-save-bar';
 import { GradeHistoryCache } from '../grade-history-cache';
 
 
@@ -104,7 +104,8 @@ import { GradeHistoryCache } from '../grade-history-cache';
     GradesHeader,
     GradesSelector,
     GradesSheet,
-    GradesSaveBar,
+    SaveBar,
+    TranslatePipe,
   ],
   providers: [
     GradeHistoryCache,

@@ -53,7 +53,7 @@
   --role-parent-main: #f3d9e2;  --role-parent-soft: #faeff3;  --role-parent-dark: #6e2340;
   --role-unknown-main: #e3e7ee; --role-unknown-soft: #f2f3f6; --role-unknown-dark: #535d70;
 
-  /* unsaved-changes bar — warm yellow for now (colour not final yet) */
+  /* unsaved-changes bar (shared save-bar) — warm yellow, final (6 Nov 2026) */
   --save-bg: #fff4d6; --save-line: #ecc76b; --save-ink: #5c3d07; --save-muted: #74500f;
 
   /* elevation: only for things that float above the page */

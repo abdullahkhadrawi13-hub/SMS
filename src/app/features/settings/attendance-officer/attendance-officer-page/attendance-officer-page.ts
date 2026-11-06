@@ -16,12 +16,13 @@ import { SchoolSettingsService } from '../../../../core/services/school-settings
 import { TeachersService } from '../../../../core/services/teachers';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { ActionResult } from '../../../../shared/services/action-result';
+import { SaveBar } from '../../../../shared/components/save-bar/save-bar';
 
 import { OfficerCurrentCard } from '../officer-current-card/officer-current-card';
-import { OfficerSaveBar } from '../officer-save-bar/officer-save-bar';
 import { OfficerTeacherList } from '../officer-teacher-list/officer-teacher-list';
 import { OfficerTeacherSearch } from '../officer-teacher-search/officer-teacher-search';
 import { TeacherListDto } from '../../../../core/models/teacher';
+import { getTeacherName } from '../teacher-name';
 
 
 // Number of teachers shown in one page of the list.
@@ -39,9 +40,9 @@ const TEACHERS_PAGE_SIZE = 10;
     TranslatePipe,
 
     OfficerCurrentCard,
-    OfficerSaveBar,
     OfficerTeacherList,
     OfficerTeacherSearch,
+    SaveBar,
   ],
   templateUrl: './attendance-officer-page.html',
   styleUrl: './attendance-officer-page.css',
@@ -115,6 +116,9 @@ export class AttendanceOfficerPage {
   // The whole teacher is kept, not only his ID, so the selection
   // stays when the Admin searches again or opens another page.
   readonly selectedTeacher = signal<TeacherListDto | null>(null);
+
+  // The selected teacher's full name, shown in the save bar.
+  readonly getTeacherName = getTeacherName;
 
   // Indicates whether the new officer is currently being saved.
   readonly isSaving = signal(false);

@@ -43,14 +43,21 @@
   ></app-grades-sheet>
 
 
-  <!-- Unsaved marks: Undo / Save sheet -->
+  <!-- Unsaved marks: Undo / Save sheet (shared save bar) -->
   @if (editable() && hasChanges()) {
-    <app-grades-save-bar
-      [stats]="draftStats()"
-      [isSaving]="saving()"
-      (reset)="resetChanges()"
+    <app-save-bar
+      [title]="'GRADES.SAVE_BAR.CHANGES' | translate: { count: draftStats().changes }"
+      [hint]="'GRADES.SAVE_BAR.VISIBLE' | translate"
+      [error]="draftStats().invalid > 0
+        ? ('GRADES.SAVE_BAR.INVALID' | translate: { count: draftStats().invalid })
+        : null"
+      [undoLabel]="'GRADES.SAVE_BAR.RESET' | translate"
+      [saveLabel]="'GRADES.SAVE_BAR.SAVE' | translate"
+      [savingLabel]="'GRADES.SAVE_BAR.SAVING' | translate"
+      [saving]="saving()"
+      (undo)="resetChanges()"
       (save)="saveSheet()"
-    ></app-grades-save-bar>
+    ></app-save-bar>
   }
 
 </div>

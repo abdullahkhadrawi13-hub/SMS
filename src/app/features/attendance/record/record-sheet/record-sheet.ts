@@ -21,6 +21,7 @@ import {
   AttendanceSheet as AttendanceSheetData,
   AttendanceStatus
 } from '../../../../core/models/attendance';
+import { SaveBar } from '../../../../shared/components/save-bar/save-bar';
 
 // One row of the sheet table.
 interface AttendanceSheetRow {
@@ -43,7 +44,8 @@ interface AttendanceSheetRow {
     MatIconModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    TranslatePipe
+    TranslatePipe,
+    SaveBar
   ],
   templateUrl: './record-sheet.html',
   styleUrl: './record-sheet.css',
@@ -125,13 +127,5 @@ export class RecordSheet {
       ? formatAttendanceDate(sheet.date, this.isArabic())
       : '';
   });
-
-  // Save is allowed only when every student has a status
-  // and there is something new to save.
-  readonly canSave = computed(() =>
-    !this.saving()
-    && this.stats().unmarked === 0
-    && this.stats().changes > 0
-  );
 
 }

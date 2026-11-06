@@ -1,0 +1,73 @@
+<!-- Unsaved-changes bar: stays at the bottom of the screen while scrolling. -->
+<div
+  class="save-bar"
+  [class.has-reason]="blocked()"
+>
+
+  <!-- Dot: the same colour as the changed cells and rows -->
+  <span class="save-bar-dot" aria-hidden="true"></span>
+
+  <!-- Title + one line -->
+  <div class="save-bar-text">
+
+    <span class="save-bar-title">
+      {{ title() }}
+    </span>
+
+    @if (error()) {
+      <span
+        class="save-bar-error"
+        role="alert"
+        [id]="noteId"
+      >
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        {{ error() }}
+      </span>
+    } @else if (hint()) {
+      <span
+        class="save-bar-hint"
+        [id]="noteId"
+      >
+        {{ hint() }}
+      </span>
+    }
+
+  </div>
+
+  <!-- Undo + Save -->
+  <div class="save-bar-actions">
+
+    <button
+      mat-button
+      type="button"
+      class="undo-button"
+      [disabled]="saving()"
+      (click)="undo.emit()"
+    >
+      {{ undoLabel() }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="button"
+      class="save-button"
+      [disabled]="blocked() && !saving()"
+      [attr.aria-disabled]="saving() || null"
+      [attr.aria-describedby]="blocked() && (error() || hint()) ? noteId : null"
+      (click)="onSave()"
+    >
+      <!-- Icon (or spinner) + label, spaced with gap -->
+      <span class="save-label">
+        @if (saving()) {
+          <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+          {{ savingLabel() }}
+        } @else {
+          <mat-icon aria-hidden="true">{{ saveIcon() }}</mat-icon>
+          {{ saveLabel() }}
+        }
+      </span>
+    </button>
+
+  </div>
+
+</div>

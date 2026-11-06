@@ -1,0 +1,227 @@
+/* The bar is sticky on the host itself. Put <app-save-bar> as the last
+   child of the block that holds the sheet or list it saves: it stays at the
+   bottom of the screen while that block is scrolled, and sits at its end
+   when the block is short. It never covers the sidebar. */
+:host {
+  display: block;
+
+  position: sticky;
+  bottom: var(--sp-4);
+  z-index: 3;
+
+  margin-block-start: var(--sp-4);
+}
+
+
+/* ================================
+   Bar
+   Warm yellow, from the same family as the changed cells (--chg),
+   so the bar and the changes read as one thing.
+   The shadow is only because the bar floats above the content.
+   ================================ */
+
+.save-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+
+  padding: var(--sp-3) var(--sp-4);
+
+  background: var(--save-bg);
+  border: 1px solid var(--save-line);
+  border-radius: var(--r-card);
+
+  box-shadow: var(--shadow-save);
+
+  box-sizing: border-box;
+
+  /* Comes up gently when the first change is made. */
+  animation: save-bar-in 200ms ease-out;
+}
+
+@keyframes save-bar-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+
+/* ================================
+   Dot
+   ================================ */
+
+.save-bar-dot {
+  flex-shrink: 0;
+
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  background: var(--chg);
+}
+
+
+/* ================================
+   Text
+   ================================ */
+
+.save-bar-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.save-bar-title {
+  font-size: var(--fs-14);
+  font-weight: 700;
+  line-height: 1.3;
+
+  color: var(--save-ink);
+}
+
+.save-bar-hint {
+  font-size: var(--fs-13);
+  line-height: 1.5;
+
+  color: var(--save-muted);
+}
+
+.save-bar-error {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+
+  font-size: var(--fs-13);
+  font-weight: 600;
+  line-height: 1.5;
+
+  color: var(--bad-ink);
+}
+
+.save-bar-error mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+
+/* ================================
+   Actions
+   Undo:  a text button in the bar's own colour.
+   Save:  the screen's one primary button (navy, from the theme).
+   ================================ */
+
+.save-bar-actions {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.save-bar-actions button {
+  --mat-button-text-container-height: var(--h-control);
+  --mat-button-filled-container-height: var(--h-control);
+  --mat-button-text-container-shape: var(--r-control);
+  --mat-button-filled-container-shape: var(--r-control);
+
+  font-weight: 600;
+}
+
+.undo-button {
+  --mat-button-text-label-text-color: var(--save-ink);
+  --mat-button-text-state-layer-color: var(--save-ink);
+  --mat-button-text-disabled-label-text-color: var(--save-muted);
+}
+
+.save-button {
+  --mat-button-filled-horizontal-padding: 14px;
+
+  /* Disabled: readable, not faded (the reason is written in the bar). */
+  --mat-button-filled-disabled-container-color: var(--raised);
+  --mat-button-filled-disabled-label-text-color: var(--faint);
+
+  /* The spinner on the navy button while saving. */
+  --mat-progress-spinner-active-indicator-color: var(--on-primary);
+}
+
+.save-button:disabled {
+  outline: 1px solid var(--border);
+  outline-offset: -1px;
+}
+
+.save-button[aria-disabled="true"] {
+  cursor: progress;
+}
+
+.save-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.save-label mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+
+/* ================================
+   Phone (under 720px)
+   Full width, stuck to the bottom of the screen, no corners.
+   The line under the title is hidden, unless it says why Save
+   is disabled.
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  /* The page has 16px padding on the phone (dashboard-layout):
+     the bar steps over it to reach both edges and the bottom. */
+  :host {
+    bottom: 0;
+
+    margin-inline: calc(var(--sp-4) * -1);
+    margin-block-end: calc(var(--sp-4) * -1);
+  }
+
+  .save-bar {
+    padding: var(--sp-2) var(--sp-4);
+
+    border-inline: 0;
+    border-block-end: 0;
+    border-radius: 0;
+  }
+
+  .save-bar:not(.has-reason) .save-bar-hint {
+    display: none;
+  }
+
+  .save-bar-actions button {
+    --mat-button-text-container-height: var(--h-touch);
+    --mat-button-filled-container-height: var(--h-touch);
+  }
+
+}
+
+
+/* ================================
+   Reduced motion
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .save-bar {
+    animation: none;
+  }
+
+}

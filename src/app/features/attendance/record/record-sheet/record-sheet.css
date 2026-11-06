@@ -263,66 +263,6 @@
 
 
 /* ================================
-   Sheet Footer
-   ================================ */
-
-.sheet-footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 12px;
-
-  padding: 14px 20px;
-
-  border-top: 1px solid #e5e7eb;
-
-  background: #f8fafc;
-}
-
-.footer-message {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 8px;
-
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.footer-message mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-
-  flex-shrink: 0;
-}
-
-.footer-message.warning {
-  color: #92400e;
-}
-
-.footer-message.success {
-  color: #166534;
-}
-
-.footer-actions {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-}
-
-.save-button {
-  height: 44px;
-
-  min-width: 150px;
-}
-
-
-/* ================================
    State Card (loading / empty)
    ================================ */
 
@@ -387,14 +327,6 @@
     width: 100%;
 
     margin-inline-start: 0;
-  }
-
-  .footer-actions {
-    width: 100%;
-  }
-
-  .footer-actions button {
-    flex: 1;
   }
 
 }

@@ -203,60 +203,26 @@
       </table>
     </div>
 
-
-    <!-- Sheet Footer: state message + Reset / Save -->
-    <div class="sheet-footer">
-
-      @if (stats().unmarked > 0) {
-        <span class="footer-message warning">
-          <mat-icon>info</mat-icon>
-
-          {{ 'ATTENDANCE.RECORD_SHEET.UNMARKED_HINT' | translate: { count: stats().unmarked } }}
-        </span>
-      } @else if (stats().changes > 0) {
-        <span class="footer-message warning">
-          <mat-icon>info</mat-icon>
-
-          {{ 'ATTENDANCE.RECORD_SHEET.UNSAVED_CHANGES' | translate: { count: stats().changes } }}
-        </span>
-      } @else {
-        <span class="footer-message success">
-          <mat-icon>check_circle</mat-icon>
-
-          {{ 'ATTENDANCE.RECORD_SHEET.SAVED' | translate }}
-        </span>
-      }
-
-      <div class="footer-actions">
-
-        <button
-          mat-button
-          type="button"
-          [disabled]="stats().changes === 0 || saving()"
-          (click)="reset.emit()"
-        >
-          {{ 'ATTENDANCE.RECORD_SHEET.RESET' | translate }}
-        </button>
-
-        <button
-          mat-flat-button
-          type="button"
-          class="save-button"
-          [disabled]="!canSave()"
-          (click)="save.emit()"
-        >
-          <mat-icon>save</mat-icon>
-
-          {{
-            saving()
-              ? ('ATTENDANCE.RECORD_SHEET.SAVING' | translate)
-              : ('ATTENDANCE.RECORD_SHEET.SAVE' | translate)
-          }}
-        </button>
-
-      </div>
-
-    </div>
-
   </div>
+
+
+  <!-- Unsaved changes: Undo / Save (shared save bar).
+       Shown only when something changed; when nothing changed the bar is
+       gone, and the save result is shown by action-result-dialog. -->
+  @if (stats().changes > 0) {
+    <app-save-bar
+      [title]="'ATTENDANCE.RECORD_SHEET.UNSAVED_CHANGES' | translate: { count: stats().changes }"
+      [hint]="stats().unmarked > 0
+        ? ('ATTENDANCE.RECORD_SHEET.UNMARKED_HINT' | translate: { count: stats().unmarked })
+        : null"
+      [canSave]="stats().unmarked === 0"
+      [undoLabel]="'ATTENDANCE.RECORD_SHEET.RESET' | translate"
+      [saveLabel]="'ATTENDANCE.RECORD_SHEET.SAVE' | translate"
+      [savingLabel]="'ATTENDANCE.RECORD_SHEET.SAVING' | translate"
+      [saving]="saving()"
+      (undo)="reset.emit()"
+      (save)="save.emit()"
+    ></app-save-bar>
+  }
+
 }
