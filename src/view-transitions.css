@@ -33,6 +33,11 @@
   animation-timing-function: var(--ease-move);
 }
 
+html[data-vt="lang"]::view-transition-group(side),
+html[data-vt="lang"]::view-transition-group(topbar) {
+  animation-duration: var(--dur-lang);
+}
+
 html[data-vt="logout"]::view-transition-group(side),
 html[data-vt="logout"]::view-transition-group(topbar) {
   animation-duration: var(--dur-exit);
@@ -60,17 +65,31 @@ html[data-vt="logout"]::view-transition-group(topbar) {
 
 
 /* ---------- lang: the sidebar slides to the other side ----------
-   Its text changes language while it moves. */
+   Its text changes language while it moves. The page and the rest of the
+   screen change language on the same timing, so the whole switch reads
+   as one move instead of a quick page fade beside a slower slide. */
 
 html[data-vt="lang"]::view-transition-old(side),
 html[data-vt="lang"]::view-transition-old(topbar) {
   display: block;
-  animation: vt-fade-out var(--dur-frame) var(--ease-move) both;
+  animation: vt-fade-out var(--dur-lang) var(--ease-move) both;
 }
 
 html[data-vt="lang"]::view-transition-new(side),
 html[data-vt="lang"]::view-transition-new(topbar) {
-  animation: vt-fade-in var(--dur-frame) var(--ease-move) both;
+  animation: vt-fade-in var(--dur-lang) var(--ease-move) both;
+}
+
+html[data-vt="lang"]::view-transition-old(page),
+html[data-vt="lang"]::view-transition-old(auth),
+html[data-vt="lang"]::view-transition-old(root) {
+  animation: vt-fade-out var(--dur-lang) var(--ease-move) both;
+}
+
+html[data-vt="lang"]::view-transition-new(page),
+html[data-vt="lang"]::view-transition-new(auth),
+html[data-vt="lang"]::view-transition-new(root) {
+  animation: vt-fade-in var(--dur-lang) var(--ease-move) both;
 }
 
 /* mat-sidenav moves the page beside the sidebar with its own 400ms margin
@@ -81,29 +100,33 @@ html[data-vt="lang"] .mat-drawer-transition .mat-drawer-content {
 }
 
 
-/* ---------- login: the wide navy panel becomes the sidebar ----------
-   Old and new pictures cross over the whole time, so the navy stays
-   solid while the panel shrinks into the sidebar. */
+/* ---------- login and logout: one solid navy block ----------
+   The block itself is painted navy, so it stays solid the whole time.
+   The old content leaves in the first ~30%, the block resizes empty, and
+   the new content arrives in the last ~40%: never two texts on top of
+   each other. Login takes --dur-frame (420ms), logout --dur-exit (300ms). */
+
+html[data-vt="login"]::view-transition-group(side),
+html[data-vt="logout"]::view-transition-group(side) {
+  background-color: var(--side-bg);
+}
 
 html[data-vt="login"]::view-transition-old(side) {
   display: block;
-  animation: vt-fade-out var(--dur-frame) var(--ease-move) both;
+  animation: vt-fade-out calc(var(--dur-frame) * .3) var(--ease-exit) both;
 }
 
 html[data-vt="login"]::view-transition-new(side) {
-  animation: vt-fade-in var(--dur-frame) var(--ease-move) both;
+  animation: vt-fade-in calc(var(--dur-frame) * .4) var(--ease-enter) calc(var(--dur-frame) * .6) both;
 }
-
-
-/* ---------- logout: the sidebar goes back to the panel, faster ---------- */
 
 html[data-vt="logout"]::view-transition-old(side) {
   display: block;
-  animation: vt-fade-out var(--dur-exit) var(--ease-move) both;
+  animation: vt-fade-out calc(var(--dur-exit) * .3) var(--ease-exit) both;
 }
 
 html[data-vt="logout"]::view-transition-new(side) {
-  animation: vt-fade-in var(--dur-exit) var(--ease-move) both;
+  animation: vt-fade-in calc(var(--dur-exit) * .45) var(--ease-enter) calc(var(--dur-exit) * .55) both;
 }
 
 
@@ -202,6 +225,19 @@ html[data-vt="logout"]::view-transition-new(side) {
   ::view-transition-new(page):only-child,
   ::view-transition-new(auth):only-child {
     animation-delay: 0s;
+  }
+
+  /* nothing slides here, so the language switch is the normal page fade */
+  html[data-vt="lang"]::view-transition-old(page),
+  html[data-vt="lang"]::view-transition-old(auth),
+  html[data-vt="lang"]::view-transition-old(root) {
+    animation: vt-fade-out var(--dur-page-out) var(--ease-exit) both;
+  }
+
+  html[data-vt="lang"]::view-transition-new(page),
+  html[data-vt="lang"]::view-transition-new(auth),
+  html[data-vt="lang"]::view-transition-new(root) {
+    animation: vt-fade-in var(--dur-page) var(--ease-enter) both;
   }
 
 }
