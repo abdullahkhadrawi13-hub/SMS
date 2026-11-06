@@ -15,15 +15,21 @@ import { PaginatorIntl } from './core/services/paginator-intl';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { AppDirectionality } from './core/services/app-directionality';
+import { onRouteViewTransition } from './shared/utils/view-transitions';
 
 export const appConfig: ApplicationConfig = {
   providers: [
 
     provideBrowserGlobalErrorListeners(),
 
+    // Page changes fade (src/view-transitions.css). No transition on the
+    // first load, nor when only the query params change.
     provideRouter(
       routes,
-      withViewTransitions()
+      withViewTransitions({
+        skipInitialTransition: true,
+        onViewTransitionCreated: onRouteViewTransition
+      })
     ),
 
     provideHttpClient(withInterceptors([authInterceptor])),

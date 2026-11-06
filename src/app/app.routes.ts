@@ -27,6 +27,9 @@ export const routes: Routes = [
   {
     path: '',
     component: AuthLayout,
+    // layout: tells a login/logout screen change from a normal page change
+    // (shared/utils/view-transitions.ts)
+    data: { layout: 'auth' },
     children: [
 
       {
@@ -53,6 +56,7 @@ export const routes: Routes = [
     path: '',
     component: DashboardLayout,
     canActivate: [authGuard, mustChangePasswordGuard],
+    data: { layout: 'dashboard' },
 
     children: [
 
