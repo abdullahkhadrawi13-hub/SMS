@@ -10,6 +10,7 @@ import { Section } from '../../../../core/models/section';
 import { Language } from '../../../../core/services/language';
 import { CardColor } from '../../../../shared/constants/card-colors';
 import { pluralKey } from '../../../../shared/utils/plural';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 // One section of the class page, as a row:
 // letter · name (Arabic + English) · students with a small bar · status · actions.
@@ -23,6 +24,7 @@ import { pluralKey } from '../../../../shared/utils/plural';
     MatIconModule,
     MatMenuModule,
     TranslatePipe,
+    StatusBadge,
   ],
   templateUrl: './section-row.html',
   styleUrl: './section-row.css',

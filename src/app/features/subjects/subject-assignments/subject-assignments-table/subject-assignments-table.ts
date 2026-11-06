@@ -18,6 +18,7 @@ import {
   PLAN_STATUS_BADGE,
 } from '../../shared/subjects-shared';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 
 // A subject with a plan for the class but no teacher in the section.
@@ -40,6 +41,7 @@ export interface MissingPlanSubject {
     MatTableModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './subject-assignments-table.html',
   styleUrl: './subject-assignments-table.css',

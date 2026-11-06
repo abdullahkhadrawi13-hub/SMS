@@ -334,10 +334,7 @@
               {{ 'STUDENTS_FORM.ACADEMIC_INFORMATION' | translate }}
 
               @if (isGraduated()) {
-                <span class="graduated-badge">
-                  <mat-icon>workspace_premium</mat-icon>
-                  {{ 'STUDENTS_FORM.GRADUATED.BADGE' | translate }}
-                </span>
+                <app-student-status [status]="graduatedStatus" />
               }
             </h2>
 

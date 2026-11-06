@@ -145,81 +145,22 @@
 
 
 /* ================================
-   Status
+   Class and section (one column)
    ================================ */
 
-.status-badge {
+.class-section {
   display: inline-flex;
-  align-items: center;
-
-  gap: 7px;
-
-  padding: 6px 10px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.status-badge.active {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.status-badge.inactive {
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: currentColor;
-}
-
-/* The account status + the "Graduated" badge, side by side. */
-.status-cell {
-  display: inline-flex;
-  flex-wrap: wrap;
   align-items: center;
 
   gap: 6px;
 }
 
-/* Graduated: gold, the same as the "Graduation class" badge of the classes page. */
-.graduated-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  padding: 5px 10px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
-
-  background: linear-gradient(135deg, #fdebb0, #f2c14e);
-  color: #5c3d02;
+/* The dot between the class and the section */
+.class-section .separator {
+  color: var(--faint);
 }
 
-.graduated-badge mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
+/* The badges themselves: app-status-badge and app-student-status (shared). */
 
 
 /* ================================

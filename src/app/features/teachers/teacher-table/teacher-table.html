@@ -143,7 +143,7 @@
               mat-header-cell
               *matHeaderCellDef
             >
-              {{ 'TEACHERS.TABLE.STATUS' | translate }}
+              {{ 'SHARED.ACCOUNT.STATUS' | translate }}
             </th>
 
             <td
@@ -152,21 +152,9 @@
             >
 
               <!-- Active / inactive status badge -->
-              <span
-                class="status-badge"
-                [class.active]="teacher.isActive"
-                [class.inactive]="!teacher.isActive"
-              >
-
-                <span class="status-dot"></span>
-
-                {{
-                  teacher.isActive
-                    ? ('TEACHERS.ACTIVE' | translate)
-                    : ('TEACHERS.INACTIVE' | translate)
-                }}
-
-              </span>
+              <app-status-badge [tone]="teacher.isActive ? 'ok' : 'neutral'">
+                {{ (teacher.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+              </app-status-badge>
 
             </td>
 

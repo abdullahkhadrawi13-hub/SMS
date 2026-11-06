@@ -14,6 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { TeacherListDto } from '../../../core/models/teacher';
 import { StateCard } from '../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 
 
 @Component({
@@ -27,6 +28,7 @@ import { StateCard } from '../../../shared/components/state-card/state-card';
     MatTableModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './teacher-table.html',
   styleUrl: './teacher-table.css',

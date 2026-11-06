@@ -309,29 +309,6 @@
   font-weight: 600;
 }
 
-.absent-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 3px 10px;
-
-  border-radius: 12px;
-
-  background: #fdecea;
-  color: #b3261e;
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.absent-badge mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
 
 .spacer {
   flex: 1;

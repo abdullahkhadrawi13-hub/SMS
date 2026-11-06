@@ -1,0 +1,8 @@
+<!-- The dot (or the icon) in the text colour, then the text -->
+@if (icon(); as name) {
+  <mat-icon aria-hidden="true">{{ name }}</mat-icon>
+} @else {
+  <span class="dot" aria-hidden="true"></span>
+}
+
+<ng-content />

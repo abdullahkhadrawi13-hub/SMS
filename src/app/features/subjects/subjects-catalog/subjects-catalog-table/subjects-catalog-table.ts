@@ -10,6 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { SubjectDto } from '../../../../core/models/subject';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 
 @Component({
@@ -22,6 +23,7 @@ import { StateCard } from '../../../../shared/components/state-card/state-card';
     MatTableModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './subjects-catalog-table.html',
   styleUrl: './subjects-catalog-table.css',

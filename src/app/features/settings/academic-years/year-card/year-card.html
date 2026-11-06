@@ -35,22 +35,21 @@
           @switch (view().status) {
 
             @case ('current') {
-              <span class="year-badge badge-current">
-                <mat-icon>star</mat-icon>
+              <app-status-badge tone="ok" icon="star">
                 {{ 'ACADEMIC_YEARS.YEAR_CARD.CURRENT' | translate }}
-              </span>
+              </app-status-badge>
             }
 
             @case ('upcoming') {
-              <span class="year-badge badge-upcoming">
+              <app-status-badge tone="neutral">
                 {{ 'ACADEMIC_YEARS.YEAR_CARD.UPCOMING' | translate }}
-              </span>
+              </app-status-badge>
             }
 
             @case ('past') {
-              <span class="year-badge badge-past">
+              <app-status-badge tone="neutral">
                 {{ 'ACADEMIC_YEARS.YEAR_CARD.PAST' | translate }}
-              </span>
+              </app-status-badge>
             }
 
           }
@@ -187,19 +186,9 @@
               </th>
 
               <td mat-cell *matCellDef="let term">
-                <span
-                  class="status-badge"
-                  [class.active]="term.isActive"
-                  [class.inactive]="!term.isActive"
-                >
-                  <span class="status-dot"></span>
-
-                  {{
-                    term.isActive
-                      ? ('ACADEMIC_YEARS.STATUS.ACTIVE' | translate)
-                      : ('ACADEMIC_YEARS.STATUS.INACTIVE' | translate)
-                  }}
-                </span>
+                <app-status-badge [tone]="term.isActive ? 'ok' : 'neutral'">
+                  {{ (term.isActive ? 'ACADEMIC_YEARS.STATUS.ACTIVE' : 'ACADEMIC_YEARS.STATUS.INACTIVE') | translate }}
+                </app-status-badge>
               </td>
 
             </ng-container>
@@ -217,18 +206,16 @@
                 @switch (getGradesStatus(term)) {
 
                   @case ('open') {
-                    <span class="grades-chip open">
-                      <mat-icon>lock_open</mat-icon>
+                    <app-status-badge tone="ok" icon="lock_open">
                       {{ 'ACADEMIC_YEARS.GRADES_STATUS.OPEN' | translate }}
-                    </span>
+                    </app-status-badge>
                   }
 
                   @case ('closed') {
                     <div class="two-lines">
-                      <span class="grades-chip closed">
-                        <mat-icon>event_busy</mat-icon>
+                      <app-status-badge tone="neutral" icon="event_busy">
                         {{ 'ACADEMIC_YEARS.GRADES_STATUS.CLOSED' | translate }}
-                      </span>
+                      </app-status-badge>
 
                       <span class="term-days">{{ getGradesClosedDate(term) }}</span>
                     </div>
@@ -236,13 +223,13 @@
 
                   @case ('rollover') {
                     <div class="two-lines">
-                      <span
-                        class="grades-chip closed rollover"
+                      <app-status-badge
+                        tone="neutral"
+                        icon="event_busy"
                         [matTooltip]="'ACADEMIC_YEARS.GRADES_STATUS.ROLLOVER_HINT' | translate"
                       >
-                        <mat-icon>event_busy</mat-icon>
                         {{ 'ACADEMIC_YEARS.GRADES_STATUS.CLOSED_BY_ROLLOVER' | translate }}
-                      </span>
+                      </app-status-badge>
 
                       <span class="term-days">{{ getGradesClosedDate(term) }}</span>
                     </div>
@@ -270,10 +257,9 @@
 
                 } @else if (term.isCurrent) {
 
-                  <span class="current-badge">
-                    <mat-icon>check_circle</mat-icon>
+                  <app-status-badge tone="ok" icon="check_circle">
                     {{ 'ACADEMIC_YEARS.TERMS_TABLE.CURRENT_BADGE' | translate }}
-                  </span>
+                  </app-status-badge>
 
                 } @else if (canSetCurrent(term)) {
 

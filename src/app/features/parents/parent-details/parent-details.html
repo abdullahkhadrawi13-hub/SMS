@@ -84,21 +84,9 @@
 
         </div>
 
-        <span
-          class="status-badge"
-          [class.active]="currentParent.isActive"
-          [class.inactive]="!currentParent.isActive"
-        >
-
-          <span class="status-dot"></span>
-
-          {{
-            currentParent.isActive
-              ? ('PARENTS.ACTIVE' | translate)
-              : ('PARENTS.INACTIVE' | translate)
-          }}
-
-        </span>
+        <app-status-badge [tone]="currentParent.isActive ? 'ok' : 'neutral'">
+          {{ (currentParent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+        </app-status-badge>
 
       </div>
 
@@ -172,25 +160,11 @@
                       {{ getRelationshipTranslationKey(child.relationship) | translate }}
                     </span>
 
-                    <span
-                      class="status-badge small"
-                      [class.active]="child.isActive"
-                      [class.inactive]="!child.isActive"
-                    >
-                      <span class="status-dot"></span>
-                      {{ (child.isActive ? 'PARENTS.ACTIVE' : 'PARENTS.INACTIVE') | translate }}
-                    </span>
+                    <app-status-badge [tone]="child.isActive ? 'ok' : 'neutral'">
+                      {{ (child.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+                    </app-status-badge>
 
-                    @if (child.studentStatus === StudentStatus.Graduated) {
-                      <span class="graduated-badge">
-                        <mat-icon>workspace_premium</mat-icon>
-                        {{ 'PARENTS.DETAILS.GRADUATED' | translate }}
-                      </span>
-                    } @else if (child.studentStatus === StudentStatus.Transferred) {
-                      <span class="transferred-badge">
-                        {{ 'PARENTS.DETAILS.TRANSFERRED' | translate }}
-                      </span>
-                    }
+                    <app-student-status [status]="child.studentStatus" />
 
                   </div>
 

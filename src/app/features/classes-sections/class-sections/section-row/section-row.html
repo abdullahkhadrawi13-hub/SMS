@@ -37,23 +37,14 @@
 
   <!-- Status -->
   <div class="badges">
-    <span
-      class="status-badge"
-      [class.active]="section().isActive"
-      [class.inactive]="!section().isActive"
-    >
-      <span class="status-dot"></span>
-      {{
-        section().isActive
-          ? ('CLASS_SECTIONS.ROW.ACTIVE' | translate)
-          : ('CLASS_SECTIONS.ROW.INACTIVE' | translate)
-      }}
-    </span>
+    <app-status-badge [tone]="section().isActive ? 'ok' : 'neutral'">
+      {{ (section().isActive ? 'CLASS_SECTIONS.ROW.ACTIVE' : 'CLASS_SECTIONS.ROW.INACTIVE') | translate }}
+    </app-status-badge>
 
     @if (isEmpty()) {
-      <span class="empty-badge">
+      <app-status-badge tone="warn">
         {{ 'CLASS_SECTIONS.ROW.EMPTY' | translate }}
-      </span>
+      </app-status-badge>
     }
   </div>
 

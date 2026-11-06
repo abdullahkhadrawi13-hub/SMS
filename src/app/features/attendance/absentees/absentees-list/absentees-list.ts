@@ -25,6 +25,7 @@ import {
   toApiDate
 } from '../../shared/attendance-shared';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 // The value of "All sections" in the section list.
 // (Section ids are always above 0. null is not used, because mat-select
@@ -89,6 +90,7 @@ interface SectionGroup {
     MatSelectModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './absentees-list.html',
   styleUrl: './absentees-list.css',

@@ -302,49 +302,6 @@
 
 
 /* ================================
-   Status
-   ================================ */
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 7px;
-
-  width: fit-content;
-  flex-shrink: 0;
-
-  padding: 5px 12px;
-
-  border-radius: 999px;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-badge.active {
-  background: #ffffff;
-  color: #047857;
-}
-
-.status-badge.inactive {
-  background: #fef2f2;
-  color: #b91c1c;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: currentColor;
-}
-
-
-/* ================================
    Password Status
    green = up to date, orange = must change
    ================================ */
@@ -642,57 +599,6 @@
   color: #b45309;
 }
 
-/* The child's account status, on a white card */
-.status-badge.small {
-  padding: 4px 10px;
-}
-
-.status-badge.small.active {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-/* Same gold badge as the students table */
-.graduated-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  padding: 4px 10px;
-
-  border-radius: 20px;
-
-  background: linear-gradient(135deg, #fdebb0, #f2c14e);
-  color: #5c3d02;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.graduated-badge mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
-
-.transferred-badge {
-  display: inline-flex;
-  align-items: center;
-
-  padding: 4px 10px;
-
-  border-radius: 20px;
-
-  background: #f1f5f9;
-  color: #475569;
-
-  font-size: 12px;
-  font-weight: 600;
-}
 
 .unlink-button {
   flex-shrink: 0;

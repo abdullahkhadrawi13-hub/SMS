@@ -135,21 +135,9 @@
             >
 
               <!-- Active / inactive status badge -->
-              <span
-                class="status-badge"
-                [class.active]="subject.isActive"
-                [class.inactive]="!subject.isActive"
-              >
-
-                <span class="status-dot"></span>
-
-                {{
-                  subject.isActive
-                    ? ('SUBJECTS.ACTIVE' | translate)
-                    : ('SUBJECTS.INACTIVE' | translate)
-                }}
-
-              </span>
+              <app-status-badge [tone]="subject.isActive ? 'ok' : 'neutral'">
+                {{ (subject.isActive ? 'SUBJECTS.ACTIVE' : 'SUBJECTS.INACTIVE') | translate }}
+              </app-status-badge>
 
             </td>
 

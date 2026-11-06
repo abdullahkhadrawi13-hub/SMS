@@ -59,27 +59,12 @@
       </div>
 
       <div class="profile-badges">
-        <span
-          class="status-badge"
-          [class.active]="currentStudent.isActive"
-          [class.inactive]="!currentStudent.isActive"
-        >
-          <span class="status-dot"></span>
+        <app-status-badge [tone]="currentStudent.isActive ? 'ok' : 'neutral'">
+          {{ (currentStudent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+        </app-status-badge>
 
-          {{
-            currentStudent.isActive
-              ? ('STUDENTS.ACTIVE' | translate)
-              : ('STUDENTS.INACTIVE' | translate)
-          }}
-        </span>
-
-        <!-- Graduated (studentStatus): next to the account status, not instead of it -->
-        @if (isGraduated(currentStudent)) {
-          <span class="graduated-badge">
-            <mat-icon>workspace_premium</mat-icon>
-            {{ 'STUDENTS.GRADUATED' | translate }}
-          </span>
-        }
+        <!-- The student's status at the school (studentStatus), next to the account status -->
+        <app-student-status [status]="currentStudent.studentStatus" />
       </div>
     </header>
 

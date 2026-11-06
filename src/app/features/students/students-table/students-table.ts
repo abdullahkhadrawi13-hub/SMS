@@ -9,8 +9,10 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Student, StudentStatus } from '../../../core/models/student';
+import { Student } from '../../../core/models/student';
 import { StateCard } from '../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
+import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
 
 @Component({
   selector: 'app-students-table',
@@ -23,6 +25,8 @@ import { StateCard } from '../../../shared/components/state-card/state-card';
     MatTableModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
+    StudentStatusBadge,
   ],
   templateUrl: './students-table.html',
   styleUrl: './students-table.css',
@@ -79,18 +83,12 @@ export class StudentsTable {
   readonly displayedColumns = [
     'studentNumber',
     'name',
-    'class',
-    'section',
+    'classSection',
     'loginId',
+    'studentStatus',
     'status',
     'actions'
   ];
-
-
-  // studentStatus = Graduated: a gold "Graduated" badge next to the status.
-  isGraduated(student: Student): boolean {
-    return student.studentStatus === StudentStatus.Graduated;
-  }
 
 
   // The class name comes with the student (classNameAr / classNameEn).

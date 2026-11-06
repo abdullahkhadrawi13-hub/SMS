@@ -176,7 +176,6 @@
   },
 
   "STUDENTS": {
-    "GRADUATED": "Graduated",
     "TITLE": "Student Management",
 
     "SUBTITLE": "Manage student information and accounts",
@@ -192,8 +191,6 @@
     "SEARCH_BUTTON": "Search",
 
     "FILTER": "Filter",
-
-    "STATUS": "Status",
 
     "ALL_STATUSES": "All statuses",
 
@@ -212,6 +209,8 @@
     "CLASS": "Class",
 
     "SECTION": "Section",
+
+    "CLASS_SECTION": "Class & section",
 
     "LOGIN_ID": "Login ID",
 
@@ -294,9 +293,7 @@
       "LOADING": "Loading parents...",
       "LOAD_FAILED": "Failed to load parents. Please try again.",
       "RETRY": "Retry",
-      "EMPTY": "No parents are linked to this student.",
-      "ACTIVE": "Active",
-      "INACTIVE": "Inactive"
+      "EMPTY": "No parents are linked to this student."
     }
   },
 
@@ -311,7 +308,6 @@
 
   "STUDENTS_FORM": {
     "GRADUATED": {
-      "BADGE": "Graduated",
       "NOTE": "This student graduated from this class and section, so they cannot be changed. You can edit the personal details only."
     },
     "ADD_TITLE": "Add Student",
@@ -380,7 +376,6 @@
     "TITLE": "Filter Students",
     "CLASS": "Class",
     "SECTION": "Section",
-    "STATUS": "Status",
     "ALL": "All",
     "CLEAR": "Clear",
     "CANCEL": "Cancel",
@@ -544,6 +539,18 @@
   },
 
   "SHARED": {
+    "ACCOUNT": {
+      "STATUS": "Account status",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "STUDENT_STATUS": {
+      "TITLE": "Student status",
+      "ACTIVE": "Regular",
+      "INACTIVE": "Withdrawn",
+      "GRADUATED": "Graduated",
+      "TRANSFERRED": "Transferred"
+    },
     "STATE_CARD": {
       "RETRY": "Retry"
     },
@@ -601,7 +608,6 @@
 
     "FILTER": {
       "TITLE": "Filter Teachers",
-      "STATUS": "Status",
       "ALL": "All statuses",
       "CLEAR": "Reset",
       "CANCEL": "Cancel",
@@ -613,7 +619,6 @@
       "NAME": "Teacher Name",
       "LOGIN_ID": "Login ID",
       "PHONE": "Phone Number",
-      "STATUS": "Status",
       "ACTIONS": "Actions",
       "VIEW": "View",
       "EDIT": "Edit",
@@ -717,7 +722,6 @@
     },
     "FILTER": {
       "TITLE": "Filter Parents",
-      "STATUS": "Status",
       "ALL": "All statuses",
       "CLEAR": "Reset",
       "CANCEL": "Cancel",
@@ -729,7 +733,6 @@
       "PHONE": "Phone Number",
       "CHILDREN": "Children",
       "NO_CHILDREN": "No children",
-      "STATUS": "Status",
       "ACTIONS": "Actions",
       "VIEW": "View",
       "EDIT": "Edit",
@@ -833,8 +836,6 @@
       "NO_CHILDREN": "No children are linked to this account yet.",
       "LINK_CHILD": "Link a child",
       "UNLINK": "Unlink",
-      "GRADUATED": "Graduated",
-      "TRANSFERRED": "Transferred",
       "PERSONAL_INFO": "Personal Information",
       "PERSONAL_INFO_DESCRIPTION": "The parent's name and contact information",
       "NAME_AR": "Name (Arabic)",
@@ -909,7 +910,6 @@
       "LIST": "Children",
       "PICK": "Pick a child to see their grades.",
       "NONE": "No children are linked to your account.",
-      "BADGE_INACTIVE": "Inactive",
       "INACTIVE": "The student's record at the school is not active, so the grades are not shown.",
       "GRADUATED": "Graduated from the school, so there are no grades in the current term.",
       "TRANSFERRED": "The student moved to another school, so there are no grades in the current term."

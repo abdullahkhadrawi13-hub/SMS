@@ -36,6 +36,7 @@ import {
 } from '../../shared/attendance-shared';
 import { AttendanceDailySummary, AttendanceSummarySection } from '../../../../core/models/attendance';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 // Recording state of one section on the selected day.
 type SectionState = 'complete' | 'partial' | 'notStarted';
@@ -67,6 +68,7 @@ interface AttendanceSummaryRow {
     MatTableModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './daily-summary-tab.html',
   styleUrl: './daily-summary-tab.css',

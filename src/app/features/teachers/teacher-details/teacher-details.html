@@ -84,21 +84,9 @@
 
         </div>
 
-        <span
-          class="status-badge"
-          [class.active]="currentTeacher.isActive"
-          [class.inactive]="!currentTeacher.isActive"
-        >
-
-          <span class="status-dot"></span>
-
-          {{
-            currentTeacher.isActive
-              ? ('TEACHERS.ACTIVE' | translate)
-              : ('TEACHERS.INACTIVE' | translate)
-          }}
-
-        </span>
+        <app-status-badge [tone]="currentTeacher.isActive ? 'ok' : 'neutral'">
+          {{ (currentTeacher.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+        </app-status-badge>
 
       </div>
 

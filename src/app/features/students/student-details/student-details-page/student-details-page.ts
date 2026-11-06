@@ -22,7 +22,7 @@ import { StudentAttendanceTab } from '../student-attendance-tab/student-attendan
 import { StudentParentsTab } from '../student-parents-tab/student-parents-tab';
 import { StudentGradesTab } from '../../../grades/student-grades/student-grades-tab/student-grades-tab';
 
-import { Student, StudentStatus } from '../../../../core/models/student';
+import { Student } from '../../../../core/models/student';
 
 import {
   getStudentClassName,
@@ -31,6 +31,8 @@ import {
   getStudentSectionName
 } from '../student-details';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+import { StudentStatusBadge } from '../../../../shared/components/student-status/student-status';
 
 // The tabs of the page. The active one is in the URL: /students/5?tab=grades
 // (no ?tab = the details tab).
@@ -60,6 +62,8 @@ interface StudentDetailsNavigationState {
     StudentParentsTab,
     StudentGradesTab,
     StateCard,
+    StatusBadge,
+    StudentStatusBadge,
   ],
   templateUrl: './student-details-page.html',
   styleUrl: './student-details-page.css'
@@ -229,12 +233,6 @@ export class StudentDetailsPage {
   // The class and section shown in the profile header.
   readonly getClassName = getStudentClassName;
   readonly getSectionName = getStudentSectionName;
-
-  // studentStatus = Graduated: the gold "Graduated" badge
-  // next to the account status (the same as the students table).
-  isGraduated(student: Student): boolean {
-    return student.studentStatus === StudentStatus.Graduated;
-  }
 
   // True when the user sees more than the details tab.
   hasTabs(): boolean {
