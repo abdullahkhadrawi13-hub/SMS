@@ -1,7 +1,7 @@
 {
   "AUTH": {
-    "SYSTEM_NAME": "School Management System",
-    "DESCRIPTION": "A centralized system for managing school administration and academic processes",
+    "HEADLINE": "One system for the whole school",
+    "DESCRIPTION": "Students, attendance, grades and terms in one place, in Arabic and English.",
     "FACT_ACCOUNTS": "Accounts are created by the school administration. There is no self sign-up.",
     "FACT_TEMP_PASSWORD": "You sign in the first time with a temporary password, then choose your own.",
     "FACT_LANGUAGE": "Switch between Arabic and English at any time."

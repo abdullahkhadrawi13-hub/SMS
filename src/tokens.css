@@ -35,10 +35,11 @@
   --nav-ink: #c9d1e2; --nav-icon: #98a5c0; --nav-hover: #1e2d4d;
   --nav-active-bg: #263a63; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
   --nav-group: #93a0bb; --nav-soon-ink: #8f9bb6; --soon-line: #33466e;
+  --side-line: #2b3c62; /* a rule on the navy (the login panel's facts) */
 
   /* meaning: attendance, results, status */
   --ok-bg: #dcf3e5;   --ok-ink: #0f4a2b;   --ok-line: #b9e3c9;
-  --bad-bg: #fdeae7;  --bad-ink: #831c1e;  --bad: #c4242a;
+  --bad-bg: #fdeae7;  --bad-ink: #831c1e;  --bad: #c4242a;  --bad-line: #f3c6c0;
   --warn-bg: #fff6dd; --warn-ink: #7c4508; --warn-line: #f0d189;
   --gold-bg: #f7edd6; --gold-ink: #5c410b;
   --chg: #d69a1c;     --chg-bg: #fff8e6;
