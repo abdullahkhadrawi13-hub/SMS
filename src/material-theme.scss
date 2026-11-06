@@ -53,6 +53,101 @@ html {
       on-error-container: var(--bad-ink),
     )
   );
+
+  // ---------- Buttons ----------
+  // One look for every Material button in the app (spec: "الأزرار").
+  //   mat-flat-button    -> primary (navy)
+  //   mat-stroked-button -> secondary (white with a border)
+  //   mat-button         -> ghost (no background, no border)
+  //   mat-icon-button    -> icon only (36 x 36)
+  // Height 36px (44px on the phone, below), corners 8px, text 14px/600.
+  // Hover darkens the button with a shade layer instead of a fixed colour,
+  // so a button that keeps its own colour (danger, or one not cleaned yet)
+  // still darkens correctly. No grey layer on focus: the blue focus ring
+  // in styles.css shows for keyboard users only.
+  @include mat.button-overrides(
+    (
+      filled-container-height: var(--h-control),
+      filled-container-shape: var(--r-control),
+      filled-horizontal-padding: var(--btn-pad),
+      filled-label-text-font: var(--font),
+      filled-label-text-size: var(--fs-14),
+      filled-label-text-weight: 600,
+      filled-label-text-tracking: 0,
+      filled-icon-spacing: var(--sp-2),
+      filled-icon-offset: var(--btn-icon-offset),
+      filled-state-layer-color: var(--shade),
+      filled-hover-state-layer-opacity: 0.3,
+      filled-focus-state-layer-opacity: 0,
+      filled-pressed-state-layer-opacity: 0.36,
+      filled-disabled-container-color: var(--raised),
+      filled-disabled-label-text-color: var(--faint),
+
+      outlined-container-height: var(--h-control),
+      outlined-container-shape: var(--r-control),
+      outlined-horizontal-padding: var(--btn-pad),
+      outlined-label-text-font: var(--font),
+      outlined-label-text-size: var(--fs-14),
+      outlined-label-text-weight: 600,
+      outlined-label-text-tracking: 0,
+      outlined-label-text-color: var(--text),
+      outlined-outline-color: var(--control),
+      outlined-icon-spacing: var(--sp-2),
+      outlined-icon-offset: var(--btn-icon-offset),
+      outlined-state-layer-color: var(--text),
+      outlined-hover-state-layer-opacity: 0.05,
+      outlined-focus-state-layer-opacity: 0,
+      outlined-pressed-state-layer-opacity: 0.1,
+      outlined-disabled-outline-color: var(--border),
+      outlined-disabled-label-text-color: var(--faint),
+
+      text-container-height: var(--h-control),
+      text-container-shape: var(--r-control),
+      text-horizontal-padding: var(--sp-3),
+      text-label-text-font: var(--font),
+      text-label-text-size: var(--fs-14),
+      text-label-text-weight: 600,
+      text-label-text-tracking: 0,
+      text-label-text-color: var(--muted),
+      text-icon-spacing: var(--sp-2),
+      text-icon-offset: var(--btn-icon-offset),
+      text-state-layer-color: var(--text),
+      text-hover-state-layer-opacity: 0.05,
+      text-focus-state-layer-opacity: 0,
+      text-pressed-state-layer-opacity: 0.1,
+      text-disabled-label-text-color: var(--faint),
+    )
+  );
+
+  @include mat.icon-button-overrides(
+    (
+      state-layer-size: var(--h-control),
+      container-shape: var(--r-control),
+      icon-size: 20px,
+      icon-color: var(--muted),
+      state-layer-color: var(--text),
+      hover-state-layer-opacity: 0.05,
+      focus-state-layer-opacity: 0,
+      pressed-state-layer-opacity: 0.1,
+    )
+  );
+
+  // Phone: every button 44px high, icon buttons 44 x 44 (touch).
+  @media (max-width: 719.98px) {
+    @include mat.button-overrides(
+      (
+        filled-container-height: var(--h-touch),
+        outlined-container-height: var(--h-touch),
+        text-container-height: var(--h-touch),
+      )
+    );
+
+    @include mat.icon-button-overrides(
+      (
+        state-layer-size: var(--h-touch),
+      )
+    );
+  }
 }
 
 body {

@@ -68,6 +68,11 @@
   /* the dark layer behind the sidebar when it opens over the page (phone) */
   --scrim: rgba(12, 21, 40, .5);
 
+  /* buttons (shared look in material-theme.scss and styles.css) */
+  --btn-pad: 14px;          /* side padding of primary and secondary buttons */
+  --btn-icon-offset: -2px;  /* pulls the 18px icon slightly towards the edge */
+  --shade: #000000;         /* the hover layer that darkens a filled button */
+
   /* motion */
   --dur: 150ms;
 }

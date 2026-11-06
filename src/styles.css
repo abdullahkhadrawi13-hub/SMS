@@ -45,6 +45,58 @@ button:focus-visible,
   outline-offset: 2px;
 }
 
+/* ---------- Buttons ----------
+   Sizes and colours are set once in material-theme.scss (mat.button-overrides).
+   These are the few things Material tokens can't set.
+   :where() keeps them weak, so a section's own button style still wins. */
+
+/* Icons: 18px inside text buttons, 20px in icon-only buttons */
+:where(.mat-mdc-button, .mat-mdc-unelevated-button, .mat-mdc-outlined-button) .mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+:where(.mat-mdc-icon-button) .mat-icon {
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+}
+
+/* Icon-only button: centre the icon in the 36px (44px on the phone) square */
+:where(.mat-mdc-icon-button.mat-mdc-button-base) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: calc((var(--mat-icon-button-state-layer-size, var(--h-control)) - 20px) / 2);
+}
+
+/* Secondary: white, not see-through */
+:where(.mat-mdc-outlined-button:not(:disabled)) {
+  background-color: var(--surface);
+}
+
+/* Disabled: still readable, with a light border (the reason goes next to it) */
+:where(.mat-mdc-unelevated-button:disabled) {
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+:where(.mat-mdc-outlined-button:disabled) {
+  background-color: var(--raised);
+}
+
+/* Danger: only for the confirm button of a destructive action
+   (unlink, deactivate). Use it on mat-flat-button:
+   <button mat-flat-button class="btn-danger">. Hover darkens it like any
+   primary button. */
+.mat-mdc-unelevated-button.btn-danger {
+  --mat-button-filled-container-color: var(--bad);
+  --mat-button-filled-label-text-color: var(--on-primary);
+}
+
 /* ---------- Direction ----------
    Add class="flip" to directional arrows (next/back, chevrons).
    They mirror automatically in Arabic. Don't use it on ✓, ✕ or search. */
