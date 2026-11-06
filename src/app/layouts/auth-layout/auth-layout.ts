@@ -15,9 +15,6 @@ import { LanguageSwitcher } from '../../shared/components/language-switcher/lang
     LanguageSwitcher
   ],
   templateUrl: './auth-layout.html',
-  styleUrls: [
-    '../../features/auth/auth-tokens.css',
-    './auth-layout.css'
-  ]
+  styleUrl: './auth-layout.css'
 })
 export class AuthLayout {}

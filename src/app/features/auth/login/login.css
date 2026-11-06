@@ -1,15 +1,19 @@
-/* الحقول والأزرار والأخطاء في ../auth-form.css
-   هنا فقط ما يخص صفحة الدخول */
+/* Fields, buttons and errors are in ../auth-form.css
+   Here only what belongs to the login page. Colours from src/tokens.css */
 
+/* "Forgot your password?" under a thin rule */
 .forgot {
   margin: 20px 0 0;
+  padding-top: var(--sp-4);
 
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--sp-2);
 
-  color: var(--auth-muted);
-  font-size: 13px;
+  border-top: 1px solid var(--rule);
+
+  color: var(--muted);
+  font-size: var(--fs-13);
   line-height: 1.6;
 }
 
@@ -21,5 +25,5 @@
   margin-top: 1px;
 
   font-size: 18px;
-  color: var(--auth-subtle);
+  color: var(--faint);
 }

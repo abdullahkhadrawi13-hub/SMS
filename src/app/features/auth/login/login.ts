@@ -32,7 +32,6 @@ type LoginError = '' | 'invalid' | 'network' | 'server';
   ],
   templateUrl: './login.html',
   styleUrls: [
-    '../auth-tokens.css',
     '../auth-form.css',
     './login.css'
   ]

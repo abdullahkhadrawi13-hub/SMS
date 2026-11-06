@@ -29,7 +29,6 @@ type RuleState = '' | 'ok' | 'no';
   ],
   templateUrl: './change-password.html',
   styleUrls: [
-    '../auth-tokens.css',
     '../auth-form.css',
     './change-password.css'
   ]

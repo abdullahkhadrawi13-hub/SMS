@@ -1,70 +1,107 @@
-/* الألوان من features/auth/auth-tokens.css (مضاف في styleUrls) */
+/* ==========================================================
+   Auth layout: the navy panel + the form (login, first-login password).
+   Colours and sizes come from src/tokens.css only.
+   Spec: "SMS — مواصفات تصميم الكحلي والذهبي" → صفحة الدخول
+   ========================================================== */
 
 .auth-page {
   min-height: 100vh;
   min-height: 100dvh;
 
   display: grid;
-  grid-template-columns: minmax(320px, 42%) 1fr;
+  grid-template-columns: minmax(340px, 40%) 1fr;
 
-  background: var(--auth-bg);
-  color: var(--auth-text);
+  background: var(--surface);
+  color: var(--text);
 }
 
 
 /* ==============================
-   اللوحة الكحلية
+   The navy panel
    ============================== */
 
 .brand-panel {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: var(--sp-8);
 
   padding: 40px 44px;
 
-  background: var(--auth-navy);
-  color: var(--auth-navy-text);
+  background: var(--side-bg);
+  color: var(--nav-ink);
 }
+
+
+/* ---------- logo + name: the same as the top of the sidebar ---------- */
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
-.emblem {
-  width: 52px;
-  height: 52px;
-
+.brand-logo {
   flex-shrink: 0;
 
-  padding: 4px;
+  width: 40px;
+  height: 40px;
+
   box-sizing: border-box;
+  padding: 3px;
+
+  display: grid;
+  place-items: center;
+
+  background: var(--surface);
+  border-radius: var(--r-card);
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
 
   object-fit: contain;
+}
 
-  background: #ffffff;
-  border-radius: 12px;
+.brand-text {
+  display: flex;
+  flex-direction: column;
+
+  /* each line sits at the start, even the line in the other language */
+  align-items: flex-start;
+
+  min-width: 0;
+  line-height: 1.3;
 }
 
 .brand-name {
-  min-width: 0;
-
-  color: #ffffff;
-  font-size: 15px;
+  font-size: var(--fs-14);
   font-weight: 600;
+  color: var(--side-ink);
 }
 
-/* يظهر على الهاتف فقط */
+.brand-sub {
+  max-width: 100%;
+
+  font-size: var(--fs-12);
+  color: var(--side-muted);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the phone only */
 .panel-language {
   display: none;
   margin-inline-start: auto;
 }
 
+
+/* ---------- the middle: headline, description, facts ---------- */
+
 .brand-main {
-  margin-top: auto;
-  margin-bottom: auto;
+  margin-block: auto;
 
   display: flex;
   flex-direction: column;
@@ -74,8 +111,8 @@
 .brand-title {
   margin: 0;
 
-  color: #ffffff;
-  font-size: 30px;
+  color: var(--side-ink);
+  font-size: var(--fs-28);
   font-weight: 700;
   line-height: 1.3;
 
@@ -86,12 +123,12 @@
   margin: 0;
   max-width: 34ch;
 
-  font-size: 16px;
+  font-size: var(--fs-16);
   line-height: 1.6;
 }
 
 .facts {
-  margin: 8px 0 0;
+  margin: var(--sp-2) 0 0;
   padding: 22px 0 0;
 
   list-style: none;
@@ -100,15 +137,15 @@
   flex-direction: column;
   gap: 14px;
 
-  border-top: 1px solid var(--auth-navy-line);
+  border-top: 1px solid var(--side-line);
 }
 
 .facts li {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--sp-3);
 
-  font-size: 14px;
+  font-size: var(--fs-14);
   line-height: 1.6;
 }
 
@@ -120,19 +157,19 @@
   margin-top: 2px;
 
   font-size: 18px;
-  color: var(--auth-gold);
+  color: var(--gold-light);
 }
 
 
 /* ==============================
-   زر اللغة على الخلفية الكحلية
+   The language button on the navy
    ============================== */
 
-/* app-language-switcher زر عادي (ليس mat-button): نلوّنه على الكحلي
-   من متغيّراته (shared/components/language-switcher/language-switcher.css) */
+/* app-language-switcher is a plain button (not mat-button): recoloured on the navy
+   through its variables (shared/components/language-switcher/language-switcher.css) */
 .panel-language {
   --lang-btn-ink: var(--side-ink);
-  --lang-btn-icon: var(--auth-navy-text);
+  --lang-btn-icon: var(--nav-ink);
   --lang-btn-hover-bg: var(--nav-hover);
   --lang-btn-hover-ink: var(--side-ink);
   --lang-btn-focus: var(--gold-light);
@@ -140,7 +177,7 @@
 
 
 /* ==============================
-   جهة النموذج
+   The form side
    ============================== */
 
 .auth-main {
@@ -149,7 +186,7 @@
   display: flex;
   flex-direction: column;
 
-  padding: 20px 28px 32px;
+  padding: 20px 28px var(--sp-8);
 }
 
 .main-language {
@@ -163,21 +200,21 @@
   display: grid;
   place-items: center;
 
-  padding-block: 16px;
+  padding-block: var(--sp-4);
 }
 
 .auth-form {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
 }
 
 
 /* ==============================
-   الهاتف والتابلت الصغير:
-   اللوحة تصبح شريطًا علويًا
+   The phone (under 720px, like the rest of the app):
+   the panel becomes a navy top bar, 52px like the navbar
    ============================== */
 
-@media (max-width: 768px) {
+@media (max-width: 719.98px) {
 
   .auth-page {
     grid-template-columns: 1fr;
@@ -185,13 +222,23 @@
   }
 
   .brand-panel {
-    padding: 12px 16px;
+    min-height: var(--topbar-h-phone);
+    box-sizing: border-box;
+    justify-content: center;
+
+    padding: var(--sp-2) var(--sp-4);
   }
 
-  .emblem {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+    padding: 2px;
+
+    border-radius: var(--r-control);
+  }
+
+  .brand-sub {
+    display: none;
   }
 
   .brand-name {
@@ -210,7 +257,7 @@
   }
 
   .auth-main {
-    padding: 24px 16px 32px;
+    padding: var(--sp-6) var(--sp-4) var(--sp-8);
   }
 
   .auth-content {
