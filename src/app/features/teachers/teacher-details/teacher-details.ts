@@ -18,6 +18,7 @@ import { ApiMessageService } from '../../../core/services/api-message';
 import { getRoleTranslationKey } from '../../../core/models/user-role';
 import { TeacherListDto } from '../../../core/models/teacher';
 import { StateCard } from '../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 
 
 // Data passed when the details dialog is opened.
@@ -34,6 +35,7 @@ export interface TeacherDetailsDialogData {
     MatIconModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './teacher-details.html',
   styleUrl: './teacher-details.css',

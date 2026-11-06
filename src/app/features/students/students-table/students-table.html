@@ -64,25 +64,18 @@
             </td>
           </ng-container>
 
-          <!-- Class -->
-          <ng-container matColumnDef="class">
+          <!-- Class and section: one column, like the merged Classes & sections section -->
+          <ng-container matColumnDef="classSection">
             <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.CLASS' | translate }}
+              {{ 'STUDENTS.CLASS_SECTION' | translate }}
             </th>
 
             <td mat-cell *matCellDef="let student">
-              {{ getClassName(student) }}
-            </td>
-          </ng-container>
-
-          <!-- Section -->
-          <ng-container matColumnDef="section">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.SECTION' | translate }}
-            </th>
-
-            <td mat-cell *matCellDef="let student">
-              {{ getSectionName(student) }}
+              <span class="class-section">
+                {{ getClassName(student) }}
+                <span class="separator" aria-hidden="true">·</span>
+                {{ getSectionName(student) }}
+              </span>
             </td>
           </ng-container>
 
@@ -97,39 +90,27 @@
             </td>
           </ng-container>
 
-          <!-- Status -->
-          <ng-container matColumnDef="status">
+          <!-- Student status (studentStatus): regular / withdrawn / graduated / transferred -->
+          <ng-container matColumnDef="studentStatus">
             <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.STATUS' | translate }}
+              {{ 'SHARED.STUDENT_STATUS.TITLE' | translate }}
             </th>
 
             <td mat-cell *matCellDef="let student">
-              <span class="status-cell">
+              <app-student-status [status]="student.studentStatus" />
+            </td>
+          </ng-container>
 
-                <!-- The login account (isActive) -->
-                <span
-                  class="status-badge"
-                  [class.active]="student.isActive"
-                  [class.inactive]="!student.isActive"
-                >
-                  <span class="status-dot"></span>
+          <!-- Account status (isActive): can the student sign in -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'SHARED.ACCOUNT.STATUS' | translate }}
+            </th>
 
-                  {{
-                    student.isActive
-                      ? ('STUDENTS.ACTIVE' | translate)
-                      : ('STUDENTS.INACTIVE' | translate)
-                  }}
-                </span>
-
-                <!-- Graduated (studentStatus): next to the account status, not instead of it -->
-                @if (isGraduated(student)) {
-                  <span class="graduated-badge">
-                    <mat-icon>workspace_premium</mat-icon>
-                    {{ 'STUDENTS.GRADUATED' | translate }}
-                  </span>
-                }
-
-              </span>
+            <td mat-cell *matCellDef="let student">
+              <app-status-badge [tone]="student.isActive ? 'ok' : 'neutral'">
+                {{ (student.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+              </app-status-badge>
             </td>
           </ng-container>
 

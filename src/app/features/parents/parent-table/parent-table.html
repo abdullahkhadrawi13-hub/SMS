@@ -173,7 +173,7 @@
               mat-header-cell
               *matHeaderCellDef
             >
-              {{ 'PARENTS.TABLE.STATUS' | translate }}
+              {{ 'SHARED.ACCOUNT.STATUS' | translate }}
             </th>
 
             <td
@@ -181,21 +181,9 @@
               *matCellDef="let parent"
             >
 
-              <span
-                class="status-badge"
-                [class.active]="parent.isActive"
-                [class.inactive]="!parent.isActive"
-              >
-
-                <span class="status-dot"></span>
-
-                {{
-                  parent.isActive
-                    ? ('PARENTS.ACTIVE' | translate)
-                    : ('PARENTS.INACTIVE' | translate)
-                }}
-
-              </span>
+              <app-status-badge [tone]="parent.isActive ? 'ok' : 'neutral'">
+                {{ (parent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+              </app-status-badge>
 
             </td>
 

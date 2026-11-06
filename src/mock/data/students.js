@@ -96,4 +96,13 @@ for (const student of students) {
 
 students.find(s => s.studentId === 13).isActive = false;
 
+// Withdrawn and transferred students (studentStatus 1 and 3), for the
+// "Student status" column. Things to try (Students page):
+// - Student 3: withdrawn (منسحب), account still active.
+// - Student 5: transferred (منقول), account deactivated.
+students.find(s => s.studentId === 3).studentStatus = 1;
+
+students.find(s => s.studentId === 5).studentStatus = 3;
+students.find(s => s.studentId === 5).isActive = false;
+
 module.exports = students;

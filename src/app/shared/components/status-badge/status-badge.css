@@ -1,0 +1,77 @@
+/* ==========================================================
+   Status badge (shared) — filled
+   Spec: "SMS — مواصفات تصميم الكحلي والذهبي" → الشارات.
+   Height 24px, padding 0 × 10px, corners 6px, 12px/600,
+   a 6px dot in the text colour at the start (or a 14px icon).
+   No gradient, no shadow.
+   Colours and sizes come from src/tokens.css (no hex here).
+   Logical properties only (works the same in RTL and LTR).
+   ========================================================== */
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+
+  gap: 6px;
+
+  height: 24px;
+
+  box-sizing: border-box;
+  padding-inline: 10px;
+
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+
+  vertical-align: middle;
+}
+
+.dot {
+  flex-shrink: 0;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+mat-icon {
+  flex-shrink: 0;
+
+  width: 14px;
+  height: 14px;
+
+  font-size: 14px;
+}
+
+
+/* ---------- Tones ---------- */
+
+:host([data-tone='ok']) {
+  background: var(--ok-bg);
+  color: var(--ok-ink);
+}
+
+:host([data-tone='bad']) {
+  background: var(--bad-bg);
+  color: var(--bad-ink);
+}
+
+:host([data-tone='warn']) {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+
+/* Grey with a thin border, so it still reads as a badge on white */
+:host([data-tone='neutral']) {
+  background: var(--raised);
+  border-color: var(--border);
+  color: var(--muted);
+}

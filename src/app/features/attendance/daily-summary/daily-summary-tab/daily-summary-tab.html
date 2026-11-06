@@ -218,14 +218,9 @@
               </th>
 
               <td mat-cell *matCellDef="let row">
-                <span
-                  class="status-badge"
-                  [class.complete]="row.state === 'complete'"
-                  [class.partial]="row.state === 'partial'"
-                  [class.not-started]="row.state === 'notStarted'"
+                <app-status-badge
+                  [tone]="row.state === 'complete' ? 'ok' : row.state === 'partial' ? 'warn' : 'neutral'"
                 >
-                  <span class="status-dot"></span>
-
                   @switch (row.state) {
                     @case ('complete') {
                       {{ 'ATTENDANCE.DAILY_SUMMARY.STATE.COMPLETE' | translate }}
@@ -237,7 +232,7 @@
                       {{ 'ATTENDANCE.DAILY_SUMMARY.STATE.NOT_STARTED' | translate }}
                     }
                   }
-                </span>
+                </app-status-badge>
               </td>
             </ng-container>
 

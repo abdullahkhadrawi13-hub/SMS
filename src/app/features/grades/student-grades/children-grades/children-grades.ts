@@ -34,6 +34,7 @@ import {
 } from '../student-grades';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { StudentStatusBadge } from '../../../../shared/components/student-status/student-status';
 
 
 // One child card, ready to show.
@@ -69,6 +70,7 @@ interface ChildCard {
     TermGrades,
     PageHeader,
     StateCard,
+    StudentStatusBadge,
   ],
   templateUrl: './children-grades.html',
   styleUrl: './children-grades.css',
@@ -83,9 +85,7 @@ export class ChildrenGrades implements OnInit {
 
 
   // Status values used in the template.
-  readonly statusInactive = StudentStatus.Inactive;
-  readonly statusGraduated = StudentStatus.Graduated;
-  readonly statusTransferred = StudentStatus.Transferred;
+  readonly statusActive = StudentStatus.Active;
 
 
   // ===== Children (GET /api/parents/me) =====

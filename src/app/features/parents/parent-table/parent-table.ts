@@ -20,6 +20,7 @@ import {
 } from '../../../core/models/parent';
 import { getFirstName, getFullName, isArabicPage } from '../parents';
 import { StateCard } from '../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 
 
 // How many children are shown as chips in the "Children" column.
@@ -39,6 +40,7 @@ const VISIBLE_CHILDREN = 2;
     MatTooltipModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './parent-table.html',
   styleUrl: './parent-table.css',

@@ -145,64 +145,6 @@
 
 
 /* ================================
-   Status badges
-   The same badges as the Parents section (parent-details.css),
-   plus "Inactive" (the same look as an inactive status there).
-   ================================ */
-
-.graduated-badge,
-.transferred-badge,
-.inactive-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  padding: 3px 9px;
-
-  border-radius: 20px;
-
-  font-size: 11.5px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.graduated-badge {
-  background: linear-gradient(135deg, #fdebb0, #f2c14e);
-  color: #5c3d02;
-}
-
-.graduated-badge mat-icon {
-  width: 14px;
-  height: 14px;
-
-  font-size: 14px;
-}
-
-.transferred-badge {
-  background: #f1f5f9;
-  color: #475569;
-}
-
-.inactive-badge {
-  background: #fef2f2;
-  color: #b91c1c;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: currentColor;
-}
-
-
-/* ================================
    Responsive
    ================================ */
 

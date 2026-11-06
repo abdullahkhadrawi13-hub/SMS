@@ -23,6 +23,7 @@ import {
   ParentRelationship
 } from '../../../../core/models/parent';
 import { getFullName } from '../../../parents/parents';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 
 // One parent of the student, with the relationship to this student.
@@ -45,7 +46,8 @@ interface StudentParentRow {
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    TranslatePipe
+    TranslatePipe,
+    StatusBadge,
   ],
   templateUrl: './student-parents-tab.html',
   styleUrl: './student-parents-tab.css',

@@ -301,11 +301,9 @@
               }}
             </h2>
 
-            <span class="absent-badge">
-              <mat-icon>person_off</mat-icon>
-
+            <app-status-badge tone="bad" icon="person_off">
               {{ 'ATTENDANCE.ABSENTEES_LIST.ABSENT_COUNT' | translate: { count: group.rows.length } }}
-            </span>
+            </app-status-badge>
 
             <span class="spacer"></span>
 

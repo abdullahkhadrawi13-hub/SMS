@@ -9,6 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AcademicTerm } from '../../../../core/models/academic-term';
 import { RolloverOpenTerm } from '../../../../core/models/rollover';
 import { Language } from '../../../../core/services/language';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 
 // One term of the old year, open or closed.
@@ -29,7 +30,8 @@ interface TermRow {
 
     MatButtonModule,
     MatIconModule,
-    TranslatePipe
+    TranslatePipe,
+    StatusBadge,
   ],
   templateUrl: './rollover-open-terms.html',
   styleUrl: './rollover-open-terms.css',

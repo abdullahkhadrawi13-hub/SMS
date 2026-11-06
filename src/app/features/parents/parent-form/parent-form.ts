@@ -53,6 +53,7 @@ import {
 } from '../parents';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 
 
 // Data passed when the dialog is opened.
@@ -116,6 +117,7 @@ interface ChildRow {
     RelationshipToggle,
     PageHeader,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './parent-form.html',
   styleUrl: './parent-form.css',

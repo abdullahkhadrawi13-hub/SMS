@@ -35,6 +35,7 @@ import {
   AttendanceStatus
 } from '../../../../core/models/attendance';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 // One academic term in the term list.
 // name = null when the name of the term could not be loaded.
@@ -70,6 +71,7 @@ interface AttendanceHistoryRow {
     MatTableModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './student-attendance-tab.html',
   styleUrl: './student-attendance-tab.css',

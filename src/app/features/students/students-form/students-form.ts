@@ -56,6 +56,7 @@ import {
 } from '../../../core/models/student';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../shared/components/state-card/state-card';
+import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
 
 
 export interface StudentFormDialogData {
@@ -78,6 +79,7 @@ export interface StudentFormDialogData {
     TranslatePipe,
     PageHeader,
     StateCard,
+    StudentStatusBadge,
   ],
   templateUrl: './students-form.html',
   styleUrl: './students-form.css'
@@ -121,6 +123,7 @@ export class StudentsForm {
   // cannot be changed. They are shown read-only (by name, from the student),
   // and sent back unchanged with the personal details.
   readonly isGraduated = signal(false);
+  readonly graduatedStatus = StudentStatus.Graduated;
   readonly graduatedClassName = signal('');
   readonly graduatedSectionName = signal('');
 

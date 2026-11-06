@@ -80,21 +80,9 @@
               <span class="child-name">
                 <span>{{ card.name }}</span>
 
-                <!-- Not active: the same badges as the Parents section -->
-                @if (card.status === statusGraduated) {
-                  <span class="graduated-badge">
-                    <mat-icon>workspace_premium</mat-icon>
-                    {{ 'PARENTS.DETAILS.GRADUATED' | translate }}
-                  </span>
-                } @else if (card.status === statusTransferred) {
-                  <span class="transferred-badge">
-                    {{ 'PARENTS.DETAILS.TRANSFERRED' | translate }}
-                  </span>
-                } @else if (card.status === statusInactive) {
-                  <span class="inactive-badge">
-                    <span class="status-dot"></span>
-                    {{ 'STUDENT_GRADES.CHILDREN.BADGE_INACTIVE' | translate }}
-                  </span>
+                <!-- Not regular (withdrawn / graduated / transferred): the shared student status badge -->
+                @if (card.status !== statusActive) {
+                  <app-student-status [status]="card.status" />
                 }
               </span>
 

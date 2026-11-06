@@ -95,14 +95,9 @@
             <bdi>{{ row.parent.phoneNumber }}</bdi>
           </span>
 
-          <span
-            class="status-badge"
-            [class.active]="row.parent.isActive"
-            [class.inactive]="!row.parent.isActive"
-          >
-            <span class="status-dot"></span>
-            {{ (row.parent.isActive ? 'STUDENT_DETAILS.PARENTS_TAB.ACTIVE' : 'STUDENT_DETAILS.PARENTS_TAB.INACTIVE') | translate }}
-          </span>
+          <app-status-badge [tone]="row.parent.isActive ? 'ok' : 'neutral'">
+            {{ (row.parent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+          </app-status-badge>
 
         </div>
 

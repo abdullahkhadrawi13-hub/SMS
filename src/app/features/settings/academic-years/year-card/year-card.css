@@ -156,49 +156,6 @@
 
 
 /* ================================
-   Year Badges
-   ================================ */
-
-.year-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  padding: 3px 10px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.year-badge mat-icon {
-  width: 14px;
-  height: 14px;
-
-  font-size: 14px;
-}
-
-.badge-current {
-  background: #ccfbf1;
-  color: #115e59;
-}
-
-.badge-upcoming {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-
-.badge-past {
-  background: #f3f4f6;
-  color: #4b5563;
-}
-
-
-/* ================================
    Year Actions
    ================================ */
 
@@ -341,118 +298,9 @@
 
 
 /* ================================
-   Status (same as the classes table)
-   ================================ */
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 7px;
-
-  padding: 6px 10px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.status-badge.active {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.status-badge.inactive {
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: currentColor;
-}
-
-
-/* ================================
-   Grades (open / closed)
-   Its own icon and grey colour, so it is not mixed up with
-   the active / inactive status or the plan's padlock.
-   ================================ */
-
-.grades-chip {
-  align-self: flex-start;
-
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  padding: 5px 11px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.grades-chip mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
-
-.grades-chip.open {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.grades-chip.closed {
-  background: #eef2f7;
-  color: #334155;
-}
-
-/* Closed by the year-end rollover: dashed, because it can never be opened. */
-.grades-chip.rollover {
-  border: 1px dashed #b6c2d3;
-
-  cursor: help;
-}
-
-
-/* ================================
    Current Term
    ================================ */
 
-.current-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 6px;
-
-  padding: 6px 12px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  background: #0f5f5a;
-  color: #ffffff;
-}
-
-.current-badge mat-icon,
 .set-current-button mat-icon {
   width: 15px;
   height: 15px;

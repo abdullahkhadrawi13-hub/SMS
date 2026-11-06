@@ -22,6 +22,7 @@ import {
   getGradesStatus,
   GradesStatus
 } from '../academic-years';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 // One academic year: a header that opens / closes the card,
 // and the table of its terms.
@@ -37,7 +38,8 @@ import {
     MatProgressSpinnerModule,
     MatTableModule,
     MatTooltipModule,
-    TranslatePipe
+    TranslatePipe,
+    StatusBadge,
   ],
   templateUrl: './year-card.html',
   styleUrl: './year-card.css',

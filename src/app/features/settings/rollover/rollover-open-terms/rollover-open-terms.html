@@ -22,15 +22,13 @@
         </span>
 
         @if (row.isOpen) {
-          <span class="grades-chip open">
-            <mat-icon>lock_open</mat-icon>
+          <app-status-badge tone="ok" icon="lock_open">
             {{ 'ROLLOVER.TERMS.OPEN' | translate }}
-          </span>
+          </app-status-badge>
         } @else {
-          <span class="grades-chip closed">
-            <mat-icon>event_busy</mat-icon>
+          <app-status-badge tone="neutral" icon="event_busy">
             {{ 'ROLLOVER.TERMS.CLOSED' | translate }}
-          </span>
+          </app-status-badge>
         }
 
       </div>

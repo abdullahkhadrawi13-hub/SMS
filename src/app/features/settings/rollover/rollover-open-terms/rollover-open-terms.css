@@ -74,38 +74,6 @@
   font-weight: 600;
 }
 
-/* The same chips as the "Grades" column of the terms table. */
-.grades-chip {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 3px 10px;
-
-  font-size: 12px;
-  font-weight: 500;
-
-  border-radius: 999px;
-}
-
-.grades-chip mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
-
-.grades-chip.open {
-  color: #166534;
-  background: #dcfce7;
-}
-
-.grades-chip.closed {
-  color: #334155;
-  background: #eef2f7;
-}
-
 
 /* ================================
    Actions / All closed

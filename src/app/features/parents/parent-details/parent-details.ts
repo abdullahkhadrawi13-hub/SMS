@@ -23,7 +23,6 @@ import { ApiMessageService } from '../../../core/services/api-message';
 import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
 import { getRoleTranslationKey } from '../../../core/models/user-role';
-import { StudentStatus } from '../../../core/models/student';
 import {
   getRelationshipTranslationKey,
   ParentChildDto,
@@ -48,6 +47,8 @@ import {
   getInitials
 } from '../parents';
 import { StateCard } from '../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
+import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
 
 
 // Data passed when the details dialog is opened.
@@ -75,6 +76,8 @@ export interface ParentDetailsResult {
     MatTooltipModule,
     TranslatePipe,
     StateCard,
+    StatusBadge,
+    StudentStatusBadge,
   ],
   templateUrl: './parent-details.html',
   styleUrl: './parent-details.css',
@@ -120,8 +123,6 @@ export class ParentDetails {
   readonly getClassSection = getClassSection;
   readonly getRelationshipTranslationKey = getRelationshipTranslationKey;
   readonly getRoleTranslationKey = getRoleTranslationKey;
-
-  readonly StudentStatus = StudentStatus;
 
 
   constructor() {
