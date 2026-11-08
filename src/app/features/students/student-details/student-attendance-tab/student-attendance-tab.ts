@@ -10,11 +10,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -64,11 +60,7 @@ interface AttendanceHistoryRow {
 @Component({
   selector: 'app-student-attendance-tab',
   imports: [
-    MatButtonModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatSelectModule,
-    MatTableModule,
     TranslatePipe,
     StateCard,
     StatusBadge,
@@ -107,14 +99,6 @@ export class StudentAttendanceTab implements OnInit {
   // Status values used in the template.
   readonly present = ATTENDANCE_PRESENT;
   readonly absent = ATTENDANCE_ABSENT;
-
-  // Columns displayed in the history table.
-  readonly displayedColumns = [
-    'date',
-    'status',
-    'recordedAt',
-    'editedAt'
-  ];
 
   private readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'
@@ -180,6 +164,18 @@ export class StudentAttendanceTab implements OnInit {
       present: records.length - absent,
       absent
     };
+  });
+
+  // Present days ÷ recorded days, as a whole percentage (null = no day).
+  // Only the recorded days count: a day with no record is not "present"
+  // (the note under the counters says so). Counted here, no extra request.
+  readonly rate = computed<number | null>(() => {
+
+    const { recorded, present } = this.stats();
+
+    return recorded > 0
+      ? Math.round((present / recorded) * 100)
+      : null;
   });
 
   // Newest day first (the API sends the oldest first).
@@ -274,8 +270,10 @@ export class StudentAttendanceTab implements OnInit {
       });
   }
 
-  onTermChange(termId: number | null): void {
-    this.termId.set(termId);
+  // The term list is a plain <select>: its value is a string,
+  // '' = all terms.
+  onTermChange(value: string): void {
+    this.termId.set(value === '' ? null : Number(value));
   }
 
 

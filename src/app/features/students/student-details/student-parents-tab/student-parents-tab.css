@@ -1,114 +1,107 @@
-/* The parents component behaves like a block inside the student details. */
+/* ================================
+   Student Parents Tab (/students/:id?tab=parents)
+   One card: a list with columns parent / relationship / phone / account.
+   On the phone each parent is two lines.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
 :host {
   display: block;
 }
 
-/* Same section look as the student details (border, colored icon). */
-.parents-section {
-  padding: 16px;
+.parents-card {
+  min-width: 0;
 
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+
+  overflow: hidden;
 }
 
-.section-header {
+.card-title {
   display: flex;
   align-items: center;
 
-  gap: 12px;
-
-  margin-bottom: 14px;
-}
-
-.section-icon {
-  width: 36px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-sizing: border-box;
-
-  border-radius: 9px;
-
-  background: #e6f4ea;
-  color: #1e6b3a;
-  border: 1px solid #9fd3b0;
-}
-
-.section-icon mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-}
-
-.section-header h3 {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
+  gap: var(--sp-2);
 
   margin: 0;
 
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.4;
+  padding: var(--sp-4) 20px var(--sp-3);
 
-  color: #111827;
-}
+  color: var(--text);
 
-.section-header p {
-  margin: 2px 0 0;
-
-  color: #6b7280;
-
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .count {
-  padding: 1px 8px;
+  color: var(--faint);
 
-  border-radius: 10px;
-
-  background: #f1f5f9;
-  color: #6b7280;
-
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--fs-12);
+  font-weight: 600;
 }
 
 
-/* ================================
-   Parents List
-   ================================ */
+/* ---------- List ---------- */
+
+.list-head,
+.parent-row {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) 120px 180px 120px;
+  align-items: center;
+
+  gap: var(--sp-4);
+
+  padding-inline: 20px;
+}
+
+.list-head {
+  height: 40px;
+
+  border-block-start: 1px solid var(--border);
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+}
 
 .parents-list {
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
 
-  gap: 10px;
+  list-style: none;
 }
 
 .parent-row {
+  min-height: 64px;
+
+  border-block-start: 1px solid var(--rule);
+
+  transition: background-color var(--dur) ease;
+}
+
+.parent-row:hover {
+  background: var(--hover);
+}
+
+.parent-who {
   display: flex;
   align-items: center;
 
-  gap: 14px;
+  gap: 10px;
 
-  padding: 12px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  min-width: 0;
 }
 
+/* 32px, the parent's initials, in the colour of the relationship */
 .parent-avatar {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
 
   flex-shrink: 0;
 
@@ -118,162 +111,130 @@
 
   border-radius: 50%;
 
-  background: #f1f5f9;
-  color: #64748b;
-}
-
-.parent-avatar mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
+  font-size: var(--fs-12);
+  font-weight: 700;
 }
 
 .parent-text {
-  flex: 1;
-  min-width: 0;
-
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
+  min-width: 0;
 }
 
 .parent-name {
-  font-size: 14px;
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
   font-weight: 600;
+  line-height: 1.3;
 
-  color: #111827;
-
-  word-break: break-word;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .parent-login {
-  font-size: 12px;
+  color: var(--faint);
 
-  color: #6b7280;
+  font-size: var(--fs-12);
 }
 
-/* Relationship: the same colors as the Parents page */
+/* Wide screens: the chip and the phone are two columns of the row */
+.parent-details {
+  display: contents;
+}
+
+/* Relationship: father blue, mother pink, guardian gold
+   (the same three colours on the chip and the avatar) */
 .relationship-chip {
-  flex-shrink: 0;
-
-  padding: 4px 10px;
-
-  border-radius: 14px;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.relationship-chip.relationship-0 {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-
-.relationship-chip.relationship-1 {
-  background: #fdf2f8;
-  color: #be185d;
-}
-
-.relationship-chip.relationship-2 {
-  background: #fffbeb;
-  color: #b45309;
-}
-
-.parent-phone {
-  flex-shrink: 0;
+  justify-self: start;
 
   display: inline-flex;
   align-items: center;
 
-  gap: 4px;
+  height: 24px;
 
-  font-size: 13px;
+  padding-inline: 10px;
 
-  color: #374151;
+  border-radius: var(--r-pill);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.relationship-0 { background: var(--avatar-3-bg); color: var(--avatar-3-ink); }
+.relationship-1 { background: var(--avatar-4-bg); color: var(--avatar-4-ink); }
+.relationship-2 { background: var(--avatar-5-bg); color: var(--avatar-5-ink); }
+
+.parent-phone {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
 }
 
 .parent-phone mat-icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 
-  font-size: 16px;
+  color: var(--faint);
 
-  color: #6b7280;
+  font-size: 18px;
 }
 
 
-/* ================================
-   States
-   ================================ */
+/* ---------- Phone (under 720px) ----------
+   Line 1: avatar, name, account badge.
+   Line 2: relationship and phone. */
 
-.state {
-  min-height: 160px;
+@media (max-width: 719.98px) {
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 12px;
-
-  text-align: center;
-
-  color: #6b7280;
-
-  font-size: 14px;
-}
-
-.state p {
-  margin: 0;
-}
-
-.state.error > mat-icon {
-  width: 40px;
-  height: 40px;
-
-  font-size: 40px;
-
-  color: #dc2626;
-}
-
-.empty {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 16px;
-
-  border: 1px dashed #cbd5e1;
-  border-radius: 12px;
-
-  font-size: 13px;
-
-  color: #6b7280;
-}
-
-.empty mat-icon {
-  width: 28px;
-  height: 28px;
-
-  flex-shrink: 0;
-
-  font-size: 28px;
-
-  color: #9ca3af;
-}
-
-
-@media (max-width: 700px) {
-
-  .parent-row {
-    flex-wrap: wrap;
+  .card-title {
+    padding: 14px var(--sp-4) 10px;
   }
 
-  .parent-text {
-    flex-basis: calc(100% - 54px);
+  .list-head {
+    display: none;
+  }
+
+  .parent-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "who     account"
+      "details details";
+
+    gap: var(--sp-2) var(--sp-3);
+
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .parent-who {
+    grid-area: who;
+  }
+
+  .parent-account {
+    grid-area: account;
+  }
+
+  /* relationship + phone: the second line, under the name
+     (32px avatar + 10px gap) */
+  .parent-details {
+    grid-area: details;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    gap: var(--sp-2) var(--sp-3);
+
+    padding-inline-start: 42px;
   }
 
 }

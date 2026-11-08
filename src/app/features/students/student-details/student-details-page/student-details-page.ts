@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 
 import { CommonModule, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -17,6 +17,7 @@ import { Students } from '../../../../core/services/students';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { AttendanceAccessService } from '../../../../core/services/attendance-access';
 import { Permissions } from '../../../../core/services/permissions';
+import { Language } from '../../../../core/services/language';
 
 import { StudentInfoTab } from '../student-info-tab/student-info-tab';
 import { StudentAttendanceTab } from '../student-attendance-tab/student-attendance-tab';
@@ -26,11 +27,12 @@ import { StudentGradesTab } from '../../../grades/student-grades/student-grades-
 import { Student } from '../../../../core/models/student';
 
 import {
+  getStudentAvatarTone,
   getStudentClassName,
-  getStudentNameAr,
-  getStudentNameEn,
   getStudentSectionName
 } from '../student-details';
+import { getFullName, getInitials } from '../../../../shared/utils/person-name';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { StudentStatusBadge } from '../../../../shared/components/student-status/student-status';
@@ -62,6 +64,7 @@ interface StudentDetailsNavigationState {
     StudentAttendanceTab,
     StudentParentsTab,
     StudentGradesTab,
+    PageHeader,
     StateCard,
     StatusBadge,
     StudentStatusBadge,
@@ -74,6 +77,7 @@ export class StudentDetailsPage {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly attendanceAccess = inject(AttendanceAccessService);
   private readonly permissions = inject(Permissions);
+  private readonly language = inject(Language);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly route = inject(ActivatedRoute);
@@ -214,38 +218,25 @@ export class StudentDetailsPage {
       });
   }
 
-  // The name in the language of the page (used in the profile header).
-  getStudentName(student: Student): string {
-    return document.documentElement.lang === 'ar'
-      ? getStudentNameAr(student) || getStudentNameEn(student)
-      : getStudentNameEn(student) || getStudentNameAr(student);
-  }
+  // The page header: name, initials, avatar colour, class and section,
+  // in the language of the page (updates when the language changes).
+  readonly header = computed(() => {
+    const student = this.student();
 
-  // The first letter of the first name and of the family name,
-  // in the language of the page (the avatar of the profile header).
-  // A zero-width non-joiner (‌) keeps two Arabic letters
-  // apart, so they do not join into one word.
-  getInitials(student: Student): string {
-    const isArabic = document.documentElement.lang === 'ar';
+    if (!student) {
+      return null;
+    }
 
-    const first = isArabic
-      ? student.firstNameAr || student.firstNameEn
-      : student.firstNameEn || student.firstNameAr;
+    const isArabic = this.language.currentDirection() === 'rtl';
 
-    const family = isArabic
-      ? student.familyNameAr || student.familyNameEn
-      : student.familyNameEn || student.familyNameAr;
-
-    return [first, family]
-      .map(name => name?.trim().charAt(0) ?? '')
-      .filter(Boolean)
-      .join('‌')
-      .toUpperCase();
-  }
-
-  // The class and section shown in the profile header.
-  readonly getClassName = getStudentClassName;
-  readonly getSectionName = getStudentSectionName;
+    return {
+      name: getFullName(student, isArabic),
+      initials: getInitials(student, isArabic),
+      avatarTone: getStudentAvatarTone(student),
+      className: getStudentClassName(student, isArabic),
+      sectionName: getStudentSectionName(student, isArabic),
+    };
+  });
 
   // True when the user sees more than the details tab.
   hasTabs(): boolean {

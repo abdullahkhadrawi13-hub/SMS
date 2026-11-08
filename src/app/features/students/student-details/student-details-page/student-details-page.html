@@ -2,14 +2,15 @@
 
   <!-- Back to the students list.
        A plain href (not routerLink): goBack() decides where to go,
-       and the link still opens in a new tab with a middle click. -->
+       and the link still opens in a new tab with a middle click.
+       Same look as the back link of app-page-header, which can't be used
+       here because its link is a routerLink. -->
   <a
     class="back-link"
     href="/students"
     (click)="goBack($event)"
   >
-    <mat-icon>arrow_back</mat-icon>
-
+    <mat-icon class="flip" aria-hidden="true">arrow_back</mat-icon>
     {{ 'STUDENT_DETAILS.PAGE.BACK' | translate }}
   </a>
 
@@ -34,39 +35,44 @@
 
   @else if (student(); as currentStudent) {
 
-    <!-- Profile header: name (page language), number, class and section, status -->
-    <header class="student-profile">
-      <div class="student-avatar">
-        {{ getInitials(currentStudent) }}
-      </div>
+    <!-- Page header: avatar, name (page language), the two status badges,
+         and one line: student number · class · section -->
+    @if (header(); as view) {
+      <app-page-header [title]="view.name" class="student-header">
 
-      <div class="student-name">
-        <h1>
-          {{ getStudentName(currentStudent) }}
-        </h1>
+        <span
+          leading
+          class="student-avatar"
+          [attr.data-tone]="view.avatarTone"
+          aria-hidden="true"
+        >
+          {{ view.initials }}
+        </span>
 
-        <div class="profile-meta">
+        <span badge class="header-badges">
+          <app-status-badge [tone]="currentStudent.isActive ? 'ok' : 'neutral'">
+            {{ (currentStudent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+          </app-status-badge>
+
+          <!-- The student's status at the school (studentStatus), next to the account status -->
+          <app-student-status [status]="currentStudent.studentStatus" />
+        </span>
+
+        <span subtitle class="header-line">
+          <bdi class="tabular">{{ currentStudent.studentNumber }}</bdi>
+          <span class="separator" aria-hidden="true">·</span>
           <span>
-            <mat-icon>tag</mat-icon>
-            <bdi>{{ currentStudent.studentNumber }}</bdi>
+            {{
+              'STUDENT_DETAILS.PAGE.CLASS_SECTION' | translate: {
+                class: view.className,
+                section: view.sectionName
+              }
+            }}
           </span>
+        </span>
 
-          <span>
-            <mat-icon>school</mat-icon>
-            {{ getClassName(currentStudent) }} · {{ getSectionName(currentStudent) }}
-          </span>
-        </div>
-      </div>
-
-      <div class="profile-badges">
-        <app-status-badge [tone]="currentStudent.isActive ? 'ok' : 'neutral'">
-          {{ (currentStudent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
-        </app-status-badge>
-
-        <!-- The student's status at the school (studentStatus), next to the account status -->
-        <app-student-status [status]="currentStudent.studentStatus" />
-      </div>
-    </header>
+      </app-page-header>
+    }
 
     <!-- Tabs: Details / Attendance / Grades / Parents (Admin and Assistant Principal only).
          The active tab is in the URL (?tab=...). -->
@@ -74,7 +80,9 @@
       <nav
         mat-tab-nav-bar
         mat-stretch-tabs="false"
+        [disablePagination]="true"
         class="details-tabs"
+        [attr.aria-label]="'STUDENT_DETAILS.PAGE.TABS_LABEL' | translate"
         [tabPanel]="tabPanel"
       >
 
@@ -84,7 +92,7 @@
           (click)="openTab('details')"
         >
           <span class="tab-label">
-            <mat-icon>badge</mat-icon>
+            <mat-icon aria-hidden="true">badge</mat-icon>
 
             <span>
               {{ 'STUDENT_DETAILS.TABS.DETAILS' | translate }}
@@ -99,7 +107,7 @@
             (click)="openTab('attendance')"
           >
             <span class="tab-label">
-              <mat-icon>fact_check</mat-icon>
+              <mat-icon aria-hidden="true">fact_check</mat-icon>
 
               <span>
                 {{ 'STUDENT_DETAILS.TABS.ATTENDANCE' | translate }}
@@ -115,7 +123,7 @@
             (click)="openTab('grades')"
           >
             <span class="tab-label">
-              <mat-icon>bar_chart</mat-icon>
+              <mat-icon aria-hidden="true">bar_chart</mat-icon>
 
               <span>
                 {{ 'STUDENT_DETAILS.TABS.GRADES' | translate }}
@@ -131,7 +139,7 @@
             (click)="openTab('parents')"
           >
             <span class="tab-label">
-              <mat-icon>family_restroom</mat-icon>
+              <mat-icon aria-hidden="true">family_restroom</mat-icon>
 
               <span>
                 {{ 'STUDENT_DETAILS.TABS.PARENTS' | translate }}

@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   DestroyRef,
   inject,
   input,
@@ -9,20 +10,20 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ParentsService } from '../../../../core/services/parents';
 import { ApiMessageService } from '../../../../core/services/api-message';
+import { Language } from '../../../../core/services/language';
 import {
   getRelationshipTranslationKey,
   ParentDto,
   ParentRelationship
 } from '../../../../core/models/parent';
-import { getFullName } from '../../../parents/parents';
+import { getFullName, getInitials } from '../../../../shared/utils/person-name';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 
@@ -30,6 +31,13 @@ import { StatusBadge } from '../../../../shared/components/status-badge/status-b
 interface StudentParentRow {
   parent: ParentDto;
   relationship: ParentRelationship;
+}
+
+// A row as the list shows it: the name and initials
+// in the language of the page.
+interface StudentParentView extends StudentParentRow {
+  name: string;
+  initials: string;
 }
 
 
@@ -43,10 +51,9 @@ interface StudentParentRow {
 @Component({
   selector: 'app-student-parents-tab',
   imports: [
-    MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
+    StateCard,
     StatusBadge,
   ],
   templateUrl: './student-parents-tab.html',
@@ -56,6 +63,7 @@ export class StudentParentsTab implements OnInit {
 
   private readonly parentsService = inject(ParentsService);
   private readonly apiMessageService = inject(ApiMessageService);
+  private readonly language = inject(Language);
   private readonly destroyRef = inject(DestroyRef);
 
 
@@ -66,8 +74,19 @@ export class StudentParentsTab implements OnInit {
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
 
-  readonly getFullName = getFullName;
   readonly getRelationshipTranslationKey = getRelationshipTranslationKey;
+
+  // The rows with the names in the language of the page
+  // (updates when the language changes).
+  readonly parents = computed<StudentParentView[]>(() => {
+    const isArabic = this.language.currentDirection() === 'rtl';
+
+    return this.rows().map(row => ({
+      ...row,
+      name: getFullName(row.parent, isArabic),
+      initials: getInitials(row.parent, isArabic),
+    }));
+  });
 
 
   ngOnInit(): void {

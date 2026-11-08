@@ -1,5 +1,8 @@
 /* ================================
    Student Details Page (/students/:id)
+   Navy & gold: the shared page header (avatar, name, badges, one line),
+   the shared tabs (styles.css), then the open tab.
+   Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
 .student-page {
@@ -9,27 +12,24 @@
 }
 
 
-/* ================================
-   Back link (the same as the settings sub-pages)
-   ================================ */
+/* ---------- Back link (the same look as app-page-header's) ---------- */
 
 .back-link {
   display: inline-flex;
   align-items: center;
 
-  gap: 6px;
+  gap: var(--sp-1);
 
-  margin-bottom: 14px;
+  margin-block-end: var(--sp-3);
 
-  color: #6b7280;
+  color: var(--muted);
 
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--fs-14);
+  font-weight: 600;
 
   text-decoration: none;
-  cursor: pointer;
 
-  transition: color 0.2s ease;
+  transition: color var(--dur) ease;
 }
 
 .back-link mat-icon {
@@ -37,58 +37,20 @@
   height: 18px;
 
   font-size: 18px;
-
-  transition: transform 0.2s ease;
 }
 
-.back-link:hover,
-.back-link:focus-visible {
-  color: #2554a4;
-}
-
-.back-link:focus-visible {
-  outline: 2px solid #2554a4;
-  outline-offset: 4px;
-}
-
-/* On hover the arrow moves a little towards "back". */
-.back-link:hover mat-icon {
-  transform: translateX(-3px);
-}
-
-/* Arabic (RTL): the arrow points to the right
-   and moves to the right on hover. */
-:host-context([dir='rtl']) .back-link mat-icon {
-  transform: scaleX(-1);
-}
-
-:host-context([dir='rtl']) .back-link:hover mat-icon {
-  transform: scaleX(-1) translateX(-3px);
+.back-link:hover {
+  color: var(--text);
 }
 
 
-/* ================================
-   Profile Header (teal card)
-   ================================ */
+/* ---------- Page header ---------- */
 
-.student-profile {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-
-  gap: 16px 20px;
-
-  padding: 20px 22px;
-
-  border-radius: 16px;
-
-  background: #e1f5ee;
-}
-
-/* Initials of the student */
+/* 48px, the first letters of the first and the family name, the same
+   light colour as in the students list (--avatar-1 ... --avatar-6). */
 .student-avatar {
-  width: 68px;
-  height: 68px;
+  width: 48px;
+  height: 48px;
 
   flex-shrink: 0;
 
@@ -98,121 +60,71 @@
 
   border-radius: 50%;
 
-  background: #0f6e56;
+  font-size: var(--fs-16);
+  font-weight: 700;
+}
 
-  color: #ffffff;
+.student-avatar[data-tone='1'] { background: var(--avatar-1-bg); color: var(--avatar-1-ink); }
+.student-avatar[data-tone='2'] { background: var(--avatar-2-bg); color: var(--avatar-2-ink); }
+.student-avatar[data-tone='3'] { background: var(--avatar-3-bg); color: var(--avatar-3-ink); }
+.student-avatar[data-tone='4'] { background: var(--avatar-4-bg); color: var(--avatar-4-ink); }
+.student-avatar[data-tone='5'] { background: var(--avatar-5-bg); color: var(--avatar-5-ink); }
+.student-avatar[data-tone='6'] { background: var(--avatar-6-bg); color: var(--avatar-6-ink); }
 
-  font-size: 22px;
+/* The two badges next to the name: account (filled) and student (outlined) */
+.header-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  font-size: var(--fs-12);
   font-weight: 600;
 }
 
-.student-name {
-  flex: 1;
-  min-width: 200px;
-}
-
-.student-name h1 {
-  margin: 0;
-
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.4;
-
-  color: #04342c;
-
-  word-break: break-word;
-}
-
-.profile-meta {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 6px 18px;
-
-  margin-top: 6px;
-
-  color: #0f6e56;
-
-  font-size: 13.5px;
-  font-weight: 500;
-}
-
-.profile-meta span {
+/* "2026000412 · الثامن · شعبة ج" */
+.header-line {
   display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-}
-
-.profile-meta mat-icon {
-  width: 17px;
-  height: 17px;
-
-  font-size: 17px;
-}
-
-.profile-badges {
-  display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 8px;
+  gap: 0 var(--sp-2);
+}
+
+.header-line .separator {
+  color: var(--control);
 }
 
 
-/* ================================
-   Tabs (Details / Attendance / Grades / Parents)
-   ================================ */
+/* ---------- Tabs ---------- */
 
-.details-tabs {
-  margin-top: 18px;
-
-  border-bottom: 1px solid #e5e7eb;
-}
-
-/* Icon + text of a tab.
-   gap is used (not a margin on the icon) so the space is correct
-   in both Arabic (RTL) and English (LTR). */
-.tab-label {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 8px;
-}
-
+/* The tab look is shared (styles.css + material-theme.scss). */
 .tab-panel {
   display: block;
 
-  padding-top: 20px;
+  padding-block-start: var(--sp-6);
 }
 
-/* No tabs (teacher): a little space under the profile header. */
-.student-profile + .tab-panel {
-  padding-top: 18px;
+/* No tabs (teacher): the page header already leaves 24px under it. */
+.student-header + .tab-panel {
+  padding-block-start: 0;
 }
 
 
-/* ================================
-   Responsive
-   ================================ */
+/* ---------- Phone (under 720px) ---------- */
 
-@media (max-width: 480px) {
-
-  .student-profile {
-    padding: 16px;
-
-    gap: 12px;
-  }
+@media (max-width: 719.98px) {
 
   .student-avatar {
-    width: 54px;
-    height: 54px;
+    width: 44px;
+    height: 44px;
 
-    font-size: 18px;
+    font-size: var(--fs-14);
   }
 
-  .student-name h1 {
-    font-size: 20px;
+  .tab-panel {
+    padding-block-start: var(--sp-4);
   }
 
 }

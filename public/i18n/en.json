@@ -260,7 +260,9 @@
       "LOADING": "Loading student...",
       "ERROR_TITLE": "Unable to load student",
       "INVALID_ID": "Invalid student ID.",
-      "LOAD_FAILED": "Failed to load student. Please try again."
+      "LOAD_FAILED": "Failed to load student. Please try again.",
+      "CLASS_SECTION": "{{class}} · Section {{section}}",
+      "TABS_LABEL": "Student page sections"
     },
     "TABS": {
       "DETAILS": "Details",
@@ -269,28 +271,29 @@
       "PARENTS": "Parents"
     },
     "INFO_TAB": {
-      "PERSONAL_INFORMATION": "Personal Information",
-      "PERSONAL_INFORMATION_DESCRIPTION": "Basic student information",
+      "STUDENT_CARD": "Student details",
+      "ACCOUNT_CARD": "Account",
       "NAME_AR": "Name in Arabic",
       "NAME_EN": "Name in English",
       "PHONE": "Phone Number",
-      "ACADEMIC_INFORMATION": "Academic Information",
-      "ACADEMIC_INFORMATION_DESCRIPTION": "The class and section the student studies in",
-      "ACCOUNT_INFORMATION": "Account Information",
-      "ACCOUNT_INFORMATION_DESCRIPTION": "Student account and access information",
-      "ROLE": "Role",
-      "PASSWORD_STATUS": "Password Status",
-      "MUST_CHANGE_PASSWORD": "Must change password",
-      "PASSWORD_NORMAL": "Password is up to date"
+      "ACCOUNT_STATUS": "Account status",
+      "PASSWORD_STATUS": "Password",
+      "MUST_CHANGE_PASSWORD": "Changed at first login",
+      "PASSWORD_NORMAL": "Changed by the student",
+      "GRADUATED_NOTE": "This student has graduated. Their details and records are kept, read only."
     },
     "ATTENDANCE_TAB": {
+      "TITLE": "Attendance record",
       "RECORDED_DAYS": "Recorded days",
+      "RATE": "Attendance rate",
+      "RATE_HINT": "of recorded days",
       "TERM": "Academic term",
       "ALL_TERMS": "All terms",
       "TERM_NUMBER": "Term #{{id}}",
       "NOTE": "Only recorded days are listed. A day with no record does not mean the student was present.",
       "LOADING": "Loading attendance history...",
-      "RETRY": "Retry",
+      "RECORDED": "Recorded {{time}}",
+      "EDITED": "Edited {{time}}",
       "TABLE": {
         "DATE": "Date",
         "STATUS": "Status",
@@ -304,10 +307,11 @@
     },
     "PARENTS_TAB": {
       "TITLE": "Parents",
-      "DESCRIPTION": "Parents linked to the student and their phone numbers",
+      "PARENT": "Parent",
+      "RELATIONSHIP": "Relationship",
+      "PHONE": "Phone number",
       "LOADING": "Loading parents...",
       "LOAD_FAILED": "Failed to load parents. Please try again.",
-      "RETRY": "Retry",
       "EMPTY": "No parents are linked to this student."
     }
   },
@@ -904,6 +908,7 @@
     "LOADING": "Loading grades...",
     "NOT_FOUND": "Student not found.",
     "TERM": "Academic term",
+    "TERM_TITLE": "Term grades",
     "TERM_LABEL": "{{term}}, {{year}}",
     "CLASS_SECTION": "{{class}}, section {{section}}",
     "GRADES_CLOSED": "Grades closed",

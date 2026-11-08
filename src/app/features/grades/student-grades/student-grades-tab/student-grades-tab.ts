@@ -10,10 +10,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -37,22 +34,19 @@ interface TermOption {
 
 
 // One student's grades in every term (the "Grades" tab of the student
-// details). Admin and AssistantPrincipal, read only.
+// page, /students/:id?tab=grades). Admin and AssistantPrincipal, read only.
 // GET /api/studentgrades/by-student/{studentId} without a query: every term,
 // newest first, in one request. The term field only filters what is shown.
 //
-// Like the parents tab, the dialog creates it the first time the tab is
-// opened and keeps it while the dialog is open (no second request).
+// Like the parents tab, the page creates it the first time the tab is
+// opened and keeps it while the page is open (no second request).
 //
-// GradeHistoryCache: the history of each mark, kept while the dialog is open
+// GradeHistoryCache: the history of each mark, kept while the page is open
 // (opening the same mark twice does not call the API twice).
 @Component({
   selector: 'app-student-grades-tab',
   imports: [
-    MatButtonModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatSelectModule,
     TranslatePipe,
     TermGrades,
     StateCard,
@@ -180,7 +174,8 @@ export class StudentGradesTab implements OnInit {
       });
   }
 
-  onTermChange(termId: number): void {
-    this.termId.set(termId);
+  // The term list is a plain <select>: its value is a string.
+  onTermChange(value: string): void {
+    this.termId.set(Number(value));
   }
 }

@@ -334,6 +334,72 @@ button:focus-visible,
   }
 }
 
+/* ---------- Tabs ----------
+   Colours, sizes and the gold line are set once in material-theme.scss
+   (mat.tabs-overrides). Here: 24px between tabs, the gold line as wide as
+   the text, and the icon + text of a tab:
+
+   <nav mat-tab-nav-bar mat-stretch-tabs="false" [tabPanel]="tabPanel">
+     <a mat-tab-link [active]="…">
+       <span class="tab-label"><mat-icon>badge</mat-icon><span>…</span></span>
+     </a>
+   </nav>
+
+   Used by the attendance page, the subjects page and the student page.
+   They set [disablePagination]="true": no arrows on a narrow screen,
+   the tabs scroll sideways inside their line instead. */
+.mat-mdc-tab-link-container,
+.mat-mdc-tab-label-container {
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+.mat-mdc-tab-link-container::-webkit-scrollbar,
+.mat-mdc-tab-label-container::-webkit-scrollbar {
+  display: none;
+}
+
+.mat-mdc-tab-links,
+.mat-mdc-tab-labels {
+  gap: var(--sp-6);
+}
+
+.mat-mdc-tab-link.mdc-tab,
+.mat-mdc-tab.mdc-tab {
+  min-width: 0;
+
+  padding-inline: 0;
+}
+
+/* gap (not a margin on the icon): the same space in RTL and LTR */
+.tab-label {
+  display: inline-flex;
+  align-items: center;
+
+  gap: var(--sp-2);
+}
+
+.tab-label .mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+@media (max-width: 719.98px) {
+  .mat-mdc-tab-links,
+  .mat-mdc-tab-labels {
+    gap: 20px;
+  }
+}
+
+/* The focus ring sits inside the tab, not cut by the header */
+.mat-mdc-tab-link:focus-visible,
+.mat-mdc-tab:focus-visible {
+  outline-offset: -2px;
+}
+
 /* ---------- Direction ----------
    Add class="flip" to directional arrows (next/back, chevrons).
    They mirror automatically in Arabic. Don't use it on ✓, ✕ or search. */

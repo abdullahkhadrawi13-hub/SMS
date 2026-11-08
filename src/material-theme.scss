@@ -132,6 +132,41 @@ html {
     )
   );
 
+  // ---------- Tabs ----------
+  // One look for every mat-tab-nav-bar / mat-tab-group (spec: "التبويبات"):
+  // text 14px/600 grey, the selected tab dark with a 2px gold line under it,
+  // on a 1px line the width of the page. No grey ripple on hover: the text
+  // turns dark instead. The spacing between tabs is in styles.css.
+  @include mat.tabs-overrides(
+    (
+      container-height: var(--h-touch),
+
+      label-text-font: var(--font),
+      label-text-size: var(--fs-14),
+      label-text-weight: 600,
+      label-text-tracking: 0,
+
+      inactive-label-text-color: var(--muted),
+      inactive-hover-label-text-color: var(--text),
+      inactive-focus-label-text-color: var(--text),
+      active-label-text-color: var(--text),
+      active-hover-label-text-color: var(--text),
+      active-focus-label-text-color: var(--text),
+
+      active-indicator-color: var(--mark),
+      active-hover-indicator-color: var(--mark),
+      active-focus-indicator-color: var(--mark),
+      active-indicator-height: 2px,
+
+      divider-color: var(--border),
+      divider-height: 1px,
+
+      active-ripple-color: transparent,
+      inactive-ripple-color: transparent,
+      pagination-icon-color: var(--muted),
+    )
+  );
+
   // Phone: every button 44px high, icon buttons 44 x 44 (touch).
   @media (max-width: 719.98px) {
     @include mat.button-overrides(

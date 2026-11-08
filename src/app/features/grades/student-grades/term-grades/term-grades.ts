@@ -19,19 +19,20 @@ import {
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
-// The grades of one term: the counters, a note, and one card per subject.
-// The same content for the three screens; only the frame around it differs.
+// The grades of one term: a summary card, then one card per subject.
+// The same content for the three screens; only the summary card differs.
 //
-//   staff (the "Grades" tab of the student details):
-//     toolbar:  counters  ·  the term field (projected: [termSelect])
-//     below:    class and section chip, "grades are closed" chip, note
+//   staff (the "Grades" tab of the student page):
+//     summary card: "Term grades" · the term field (projected: [termSelect]),
+//                   the numbers strip, class and section chip,
+//                   "grades are closed" chip, note
 //   portal (the student's and the parent's pages):
-//     one box:  counters  ·  note
-//     (the class chip and the term are in the page header)
+//     summary card: the numbers strip and the note
+//     (the class and the term are in the page header)
 //
 // A record that is not active (withdrawn, graduated, moved to another
 // school): the backend sends no subjects, so a message replaces the
-// counters and the cards (one per status for the staff, one general
+// numbers and the cards (one per status for the staff, one general
 // message for the student and the parent).
 @Component({
   selector: 'app-term-grades',
