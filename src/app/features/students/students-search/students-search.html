@@ -7,7 +7,11 @@
     {{ 'STUDENTS.SEARCH' | translate }}
   </span>
 
-  <mat-icon class="search-icon" aria-hidden="true">search</mat-icon>
+  <!-- The wrapper takes the page direction; <mat-icon> itself is always
+       direction: ltr (styles.css), so it cannot be placed with inline-start. -->
+  <span class="search-icon" aria-hidden="true">
+    <mat-icon>search</mat-icon>
+  </span>
 
   <input
     type="search"

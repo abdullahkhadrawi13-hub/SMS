@@ -35,14 +35,18 @@
   position: absolute;
   inset-inline-start: 10px;
 
-  width: 18px;
-  height: 18px;
-
-  font-size: 18px;
+  display: flex;
 
   color: var(--faint);
 
   pointer-events: none;
+}
+
+.search-icon mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
 }
 
 input {
