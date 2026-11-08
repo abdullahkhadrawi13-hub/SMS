@@ -1,37 +1,36 @@
-<mat-form-field appearance="outline" class="search-field">
+<!-- Search: 36px field (44px on the phone), the search icon at the start.
+     The list reloads by itself 400ms after the user stops typing;
+     Enter searches straight away. -->
+<label class="search-field">
 
-  <mat-label>
+  <span class="visually-hidden">
     {{ 'STUDENTS.SEARCH' | translate }}
-  </mat-label>
+  </span>
+
+  <!-- The wrapper takes the page direction; <mat-icon> itself is always
+       direction: ltr (styles.css), so it cannot be placed with inline-start. -->
+  <span class="search-icon" aria-hidden="true">
+    <mat-icon>search</mat-icon>
+  </span>
 
   <input
-    matInput
+    type="search"
+    autocomplete="off"
     [value]="search()"
-    (input)="search.set($any($event.target).value)"
     [placeholder]="'STUDENTS.SEARCH_PLACEHOLDER' | translate"
-    (keyup.enter)="searchSubmit.emit()"
+    (input)="onInput($any($event.target).value)"
+    (keydown.enter)="searchSubmit.emit()"
   />
 
   @if (search()) {
     <button
-      mat-icon-button
-      matSuffix
       type="button"
+      class="clear-button"
       (click)="searchClear.emit()"
       [attr.aria-label]="'STUDENTS.CLEAR_SEARCH' | translate"
     >
-      <mat-icon>close</mat-icon>
+      <mat-icon aria-hidden="true">close</mat-icon>
     </button>
   }
 
-  <button
-    mat-icon-button
-    matSuffix
-    type="button"
-    (click)="searchSubmit.emit()"
-    [attr.aria-label]="'STUDENTS.SEARCH_BUTTON' | translate"
-  >
-    <mat-icon>search</mat-icon>
-  </button>
-
-</mat-form-field>
+</label>

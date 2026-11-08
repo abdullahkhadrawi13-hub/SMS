@@ -1,97 +1,63 @@
-<h2 mat-dialog-title>
-  {{ 'STUDENT_FILTER.TITLE' | translate }}
-</h2>
+<!-- Class (active classes; the teacher: only the classes he teaches) -->
+<select
+  class="filter-select"
+  [class.is-active]="classId() !== null"
+  [attr.aria-label]="'STUDENT_FILTER.CLASS' | translate"
+  [disabled]="!classes().length"
+  (change)="onClassChange($any($event.target).value)"
+>
+  <option value="" [selected]="classId() === null">
+    {{ 'STUDENT_FILTER.ALL_CLASSES' | translate }}
+  </option>
 
-<mat-dialog-content>
+  @for (c of classes(); track c.schoolClassId) {
+    <option [value]="c.schoolClassId" [selected]="c.schoolClassId === classId()">
+      {{ getClassName(c) }}
+    </option>
+  }
+</select>
 
-  <div class="filter-form">
+<!-- Section (disabled until a class is chosen; the text says why) -->
+<select
+  class="filter-select section-select"
+  [class.is-active]="sectionId() !== null"
+  [attr.aria-label]="'STUDENT_FILTER.SECTION' | translate"
+  [disabled]="sectionDisabled()"
+  (change)="onSectionChange($any($event.target).value)"
+>
+  <option value="" [selected]="sectionId() === null">
+    {{ (classId() ? 'STUDENT_FILTER.ALL_SECTIONS' : 'STUDENT_FILTER.PICK_CLASS_FIRST') | translate }}
+  </option>
 
-    <!-- Class (Active only) -->
-    <mat-form-field appearance="outline">
-      <mat-label>
-        {{ 'STUDENT_FILTER.CLASS' | translate }}
-      </mat-label>
+  @for (s of sections(); track s.sectionId) {
+    <!-- "الشعبة: أ": a bare letter alone would not say what it is -->
+    <option [value]="s.sectionId" [selected]="s.sectionId === sectionId()">
+      {{ 'STUDENT_FILTER.SECTION_OPTION' | translate: { name: getSectionName(s) } }}
+    </option>
+  }
+</select>
 
-      <mat-select
-        [value]="classId()"
-        [disabled]="isLoadingClasses()"
-        (selectionChange)="onClassChange($event.value)"
-      >
-        <mat-option [value]="null">
-          {{ 'STUDENT_FILTER.ALL' | translate }}
-        </mat-option>
+<!-- Account status (independent of class and section) -->
+<select
+  class="filter-select"
+  [class.is-active]="isActive() !== null"
+  [attr.aria-label]="'SHARED.ACCOUNT.STATUS' | translate"
+  (change)="onStatusChange($any($event.target).value)"
+>
+  <option value="" [selected]="statusValue() === ''">
+    {{ 'STUDENT_FILTER.ALL_ACCOUNTS' | translate }}
+  </option>
+  <option value="true" [selected]="statusValue() === 'true'">
+    {{ 'STUDENT_FILTER.ACCOUNT_OPTION' | translate: { name: ('SHARED.ACCOUNT.ACTIVE' | translate) } }}
+  </option>
+  <option value="false" [selected]="statusValue() === 'false'">
+    {{ 'STUDENT_FILTER.ACCOUNT_OPTION' | translate: { name: ('SHARED.ACCOUNT.INACTIVE' | translate) } }}
+  </option>
+</select>
 
-        @for (c of classes(); track c.schoolClassId) {
-          <mat-option [value]="c.schoolClassId">
-            {{ getClassName(c) }}
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Section (disabled until a class is chosen) -->
-    <mat-form-field appearance="outline">
-      <mat-label>
-        {{ 'STUDENT_FILTER.SECTION' | translate }}
-      </mat-label>
-
-      <mat-select
-        [value]="sectionId()"
-        [disabled]="!classId() || isLoadingSections()"
-        (selectionChange)="sectionId.set($event.value)"
-      >
-        <mat-option [value]="null">
-          {{ 'STUDENT_FILTER.ALL' | translate }}
-        </mat-option>
-
-        @for (s of sections(); track s.sectionId) {
-          <mat-option [value]="s.sectionId">
-            {{ getSectionName(s) }}
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Status (independent) -->
-    <mat-form-field appearance="outline">
-      <mat-label>
-        {{ 'SHARED.ACCOUNT.STATUS' | translate }}
-      </mat-label>
-
-      <mat-select
-        [value]="isActive()"
-        (selectionChange)="isActive.set($event.value)"
-      >
-        <mat-option [value]="null">
-          {{ 'STUDENT_FILTER.ALL' | translate }}
-        </mat-option>
-
-        <mat-option [value]="true">
-          {{ 'STUDENTS.ACTIVE' | translate }}
-        </mat-option>
-
-        <mat-option [value]="false">
-          {{ 'STUDENTS.INACTIVE' | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-  </div>
-
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-
-  <button mat-button type="button" (click)="clear()">
-    {{ 'STUDENT_FILTER.CLEAR' | translate }}
+@if (hasFilters()) {
+  <button type="button" class="clear-button" (click)="clear()">
+    <mat-icon aria-hidden="true">filter_alt_off</mat-icon>
+    {{ 'STUDENT_FILTER.CLEAR_FILTERS' | translate }}
   </button>
-
-  <button mat-button type="button" mat-dialog-close>
-    {{ 'STUDENT_FILTER.CANCEL' | translate }}
-  </button>
-
-  <button mat-flat-button color="primary" type="button" (click)="apply()">
-    {{ 'STUDENT_FILTER.APPLY' | translate }}
-  </button>
-
-</mat-dialog-actions>
+}

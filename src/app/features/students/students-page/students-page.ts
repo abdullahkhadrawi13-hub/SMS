@@ -1,5 +1,6 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +14,10 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { Subject, Subscription, debounceTime } from 'rxjs';
+
+import { PHONE_QUERY } from '../../../layouts/dashboard-layout/dashboard-layout';
 
 import { Students } from '../../../core/services/students';
 import { PagedResult } from '../../../core/models/paged-result';
@@ -29,6 +34,9 @@ import {
   StudentsFilter,
   StudentFilterValues
 } from '../students-filter/students-filter';
+
+// How long the search waits after the last key before reloading the list.
+const SEARCH_DEBOUNCE_MS = 400;
 
 import { StudentsHeader } from '../students-header/students-header';
 import { StudentsSearch } from '../students-search/students-search';
@@ -48,6 +56,7 @@ import {
   imports: [
     StudentsHeader,
     StudentsSearch,
+    StudentsFilter,
     StudentsTable,
 
     MatButtonModule,
@@ -120,6 +129,49 @@ export class StudentsPage {
   readonly hasQuery =
     signal(false);
 
+  // The list has loaded at least once with no error:
+  // the header shows the count only then (not "0 students" while loading).
+  readonly hasLoaded =
+    signal(false);
+
+  // The count under the title (null: nothing to show yet).
+  // No filter: every student. A search or filter: the matching students.
+  readonly headerCount = computed(() =>
+    this.hasLoaded() && !this.errorMessage() ? this.totalCount() : null
+  );
+
+
+  // ===== Phone: the filters open inside the card =====
+
+  private readonly breakpoints = inject(BreakpointObserver);
+
+  // true when the screen is narrower than 720px (same as the layout).
+  readonly isPhone = signal(this.breakpoints.isMatched(PHONE_QUERY));
+
+  // The "Filter" button on the phone opens or closes the three lists.
+  readonly filtersOpen = signal(false);
+
+  // How many filters are on (the number on the phone's "Filter" button).
+  readonly activeFilterCount = computed(() =>
+    (this.classFilter() !== undefined ? 1 : 0) +
+    (this.sectionFilter() !== undefined ? 1 : 0) +
+    (this.statusFilter() !== undefined ? 1 : 0)
+  );
+
+
+  // ===== Search while typing =====
+
+  // Every key typed in the search field.
+  private readonly searchTyping = new Subject<string>();
+
+  // The search text of the last request, so the same text is not sent twice
+  // (Enter, then the 400ms timer for the same text).
+  private lastSearch = '';
+
+  // The request in progress: a newer one cancels it,
+  // so an old answer never replaces a newer list.
+  private loadSubscription?: Subscription;
+
 
   constructor() {
 
@@ -128,6 +180,27 @@ export class StudentsPage {
     this.readStateFromUrl(this.route.snapshot.queryParamMap);
 
     this.loadStudents();
+
+    // Search by itself 400ms after the user stops typing.
+    this.searchTyping
+      .pipe(
+        debounceTime(SEARCH_DEBOUNCE_MS),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        if (this.search().trim() !== this.lastSearch) {
+          this.onSearch();
+        }
+      });
+
+    this.breakpoints
+      .observe(PHONE_QUERY)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(result => this.isPhone.set(result.matches));
+
+    // Opened from a link that already has filters (e.g. "Back" from a
+    // student's page): show them on the phone too.
+    this.filtersOpen.set(this.activeFilterCount() > 0);
 
   }
 
@@ -192,6 +265,10 @@ export class StudentsPage {
 
     this.writeStateToUrl();
 
+    this.lastSearch = this.search().trim();
+
+    this.loadSubscription?.unsubscribe();
+
     this.isLoading.set(true);
 
     this.errorMessage.set('');
@@ -202,7 +279,7 @@ export class StudentsPage {
       this.sectionFilter() !== undefined ||
       this.statusFilter() !== undefined;
 
-    this.studentsService
+    this.loadSubscription = this.studentsService
       .getStudents(
         this.pageNumber(),
         this.pageSize(),
@@ -251,6 +328,8 @@ export class StudentsPage {
           this.totalCount.set(data.totalCount);
 
           this.hasQuery.set(hasQuery);
+
+          this.hasLoaded.set(true);
 
           this.pageNumber.set(data.pageNumber);
 
@@ -305,15 +384,10 @@ export class StudentsPage {
   }
 
 
-  onStatusChange(
-    value: boolean | undefined
-  ): void {
+  // A key was typed: the list reloads 400ms after the last one.
+  onSearchTyping(value: string): void {
 
-    this.statusFilter.set(value);
-
-    this.pageNumber.set(1);
-
-    this.loadStudents();
+    this.searchTyping.next(value);
 
   }
 
@@ -413,36 +487,23 @@ export class StudentsPage {
   }
 
 
-  openFilter(): void {
+  // A filter changed in the search row: applied straight away.
+  onFilterChange(values: StudentFilterValues): void {
 
-    const current: StudentFilterValues = {
-      classId: this.classFilter() ?? null,
-      sectionId: this.sectionFilter() ?? null,
-      isActive: this.statusFilter() ?? null
-    };
+    this.classFilter.set(values.classId ?? undefined);
+    this.sectionFilter.set(values.sectionId ?? undefined);
+    this.statusFilter.set(values.isActive ?? undefined);
 
-    this.dialog
-      .open(StudentsFilter, {
-        width: '420px',
-        data: current
-      })
-      .afterClosed()
-      .subscribe((result?: StudentFilterValues) => {
+    this.pageNumber.set(1);
 
-        // Cancel / إغلاق النافذة بدون تطبيق
-        if (!result) {
-          return;
-        }
+    this.loadStudents();
 
-        this.classFilter.set(result.classId ?? undefined);
-        this.sectionFilter.set(result.sectionId ?? undefined);
-        this.statusFilter.set(result.isActive ?? undefined);
+  }
 
-        this.pageNumber.set(1);
 
-        this.loadStudents();
+  toggleFilters(): void {
 
-      });
+    this.filtersOpen.update(open => !open);
 
   }
 

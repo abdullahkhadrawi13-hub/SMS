@@ -1,22 +1,44 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Student } from '../../../core/models/student';
+import { Student, StudentStatus } from '../../../core/models/student';
+import { Language } from '../../../core/services/language';
+import { RangePaginatorIntl } from '../../../core/services/paginator-intl';
+import { getFullName, getInitials, getShortName } from '../../../shared/utils/person-name';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
 
+// One student as the list shows it: the API data plus the names
+// in the language of the page (computed once, not on every change check).
+export interface StudentRow extends Student {
+  fullName: string;
+  shortName: string;
+  initials: string;
+  classSection: string;
+  avatarTone: number;
+}
+
+
+// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
+const AVATAR_TONES = 6;
+
+
 @Component({
   selector: 'app-students-table',
   imports: [
+    NgTemplateOutlet,
+    RouterLink,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
@@ -30,8 +52,17 @@ import { StudentStatusBadge } from '../../../shared/components/student-status/st
   ],
   templateUrl: './students-table.html',
   styleUrl: './students-table.css',
+  // "1–10 من 531" under this table (the other lists keep "page 1 of 5").
+  providers: [
+    { provide: MatPaginatorIntl, useClass: RangePaginatorIntl }
+  ],
 })
 export class StudentsTable {
+
+  private readonly language = inject(Language);
+
+  // For the template: StudentStatus.Active is "regular".
+  readonly StudentStatus = StudentStatus;
 
   // ===== Inputs (all data is owned and loaded by the parent page) =====
 
@@ -54,6 +85,9 @@ export class StudentsTable {
   // The last list used a search or a filter: the empty state says
   // "no students match" instead of "no students added yet".
   readonly hasQuery = input(false);
+
+  // Under 720px: a two-line list instead of the table.
+  readonly isPhone = input(false);
 
   // ===== Loading modes =====
 
@@ -79,10 +113,10 @@ export class StudentsTable {
   readonly toggleStatus = output<Student>();
   readonly resetPassword = output<Student>();
 
-  // Columns displayed in the students table.
+  // Columns displayed in the students table (the student first).
   readonly displayedColumns = [
-    'studentNumber',
     'name',
+    'studentNumber',
     'classSection',
     'loginId',
     'studentStatus',
@@ -91,55 +125,38 @@ export class StudentsTable {
   ];
 
 
-  // The class name comes with the student (classNameAr / classNameEn).
-  getClassName(student: Student): string {
+  // The students with their names in the language of the page.
+  // Recomputed when the list or the language changes.
+  readonly rows = computed<StudentRow[]>(() => {
 
-    const name = document.documentElement.lang === 'ar'
+    const isArabic = this.language.currentDirection() === 'rtl';
+
+    return this.students().map(student => ({
+      ...student,
+      fullName: getFullName(student, isArabic),
+      shortName: getShortName(student, isArabic),
+      initials: getInitials(student, isArabic),
+      classSection: this.getClassSection(student, isArabic),
+      // The same colour for the same student, everywhere.
+      avatarTone: (student.studentId % AVATAR_TONES) + 1
+    }));
+
+  });
+
+
+  // "الثامن · ج": the names come with the student
+  // (classNameAr / classNameEn, sectionAr / sectionEn).
+  private getClassSection(student: Student, isArabic: boolean): string {
+
+    const className = isArabic
       ? student.classNameAr || student.classNameEn
       : student.classNameEn || student.classNameAr;
 
-    return name || '—';
-
-  }
-
-
-  // The section name comes with the student (sectionAr / sectionEn).
-  getSectionName(student: Student): string {
-
-    const name = document.documentElement.lang === 'ar'
+    const sectionName = isArabic
       ? student.sectionAr || student.sectionEn
       : student.sectionEn || student.sectionAr;
 
-    return name || '—';
-
-  }
-
-
-  getStudentName(student: Student): string {
-
-    const language = document.documentElement.lang;
-
-    if (language === 'ar') {
-
-      return [
-        student.firstNameAr,
-        student.fatherNameAr,
-        student.grandFatherNameAr,
-        student.familyNameAr
-      ]
-        .filter(Boolean)
-        .join(' ');
-
-    }
-
-    return [
-      student.firstNameEn,
-      student.fatherNameEn,
-      student.grandFatherNameEn,
-      student.familyNameEn
-    ]
-      .filter(Boolean)
-      .join(' ');
+    return `${className || '—'} · ${sectionName || '—'}`;
 
   }
 

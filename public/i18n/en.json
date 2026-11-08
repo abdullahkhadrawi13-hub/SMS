@@ -178,7 +178,28 @@
   "STUDENTS": {
     "TITLE": "Student Management",
 
-    "SUBTITLE": "Manage student information and accounts",
+    "STUDENT": "Student",
+
+    "ACTIONS_FOR": "Actions for {{name}}",
+
+    "COUNT": {
+      "ALL": {
+        "ZERO": "No registered students",
+        "ONE": "1 registered student",
+        "TWO": "2 registered students",
+        "FEW": "{{count}} registered students",
+        "MANY": "{{count}} registered students",
+        "OTHER": "{{count}} registered students"
+      },
+      "MATCHING": {
+        "ZERO": "No students match the search",
+        "ONE": "1 student matches the search",
+        "TWO": "2 students match the search",
+        "FEW": "{{count}} students match the search",
+        "MANY": "{{count}} students match the search",
+        "OTHER": "{{count}} students match the search"
+      }
+    },
 
     "ADD_STUDENT": "Add Student",
 
@@ -187,10 +208,6 @@
     "SEARCH_PLACEHOLDER": "Search by student name, ID, or username",
 
     "CLEAR_SEARCH": "Clear search",
-
-    "SEARCH_BUTTON": "Search",
-
-    "FILTER": "Filter",
 
     "ALL_STATUSES": "All statuses",
 
@@ -203,8 +220,6 @@
     "DEACTIVATE": "Deactivate",
 
     "STUDENT_NUMBER": "Student Number",
-
-    "NAME": "Name",
 
     "CLASS": "Class",
 
@@ -373,13 +388,16 @@
   },
 
   "STUDENT_FILTER": {
-    "TITLE": "Filter Students",
     "CLASS": "Class",
     "SECTION": "Section",
-    "ALL": "All",
-    "CLEAR": "Clear",
-    "CANCEL": "Cancel",
-    "APPLY": "Apply"
+    "ALL_CLASSES": "Class: All",
+    "ALL_SECTIONS": "Section: All",
+    "PICK_CLASS_FIRST": "Section: choose a class first",
+    "ALL_ACCOUNTS": "Account: All",
+    "SECTION_OPTION": "Section: {{name}}",
+    "ACCOUNT_OPTION": "Account: {{name}}",
+    "CLEAR_FILTERS": "Clear filters",
+    "TOGGLE": "Filter"
   },
 
   "PAGINATOR": {

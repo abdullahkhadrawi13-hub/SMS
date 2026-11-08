@@ -1,215 +1,288 @@
 <!-- The card keeps its shape in every state; the state is drawn inside it. -->
 <div class="table-card" [class.is-refreshing]="isRefreshing()">
 
-  <!-- Error -->
-  @if (errorMessage()) {
-    <app-state-card
-      type="error"
-      [message]="errorMessage() | translate"
-      [framed]="false"
-      (retry)="retry.emit()"
-    />
-  }
+  <!-- The search row (from the parent page): always at the top of the card -->
+  <ng-content select="[toolbar]" />
 
-  <!-- First load only (nothing to show yet) -->
-  @else if (isInitialLoading()) {
-    <app-state-card
-      type="loading"
-      [message]="'STUDENTS.LOADING' | translate"
-      [framed]="false"
-    />
-  }
+  <div class="card-body">
 
-  <!-- Students Table + Pagination (paginator no longer tied to students().length) -->
-  @else {
-
-    <!-- Reload indicator: sits on top of the card without taking any height -->
-    @if (isRefreshing()) {
-      <mat-progress-bar
-        class="refresh-bar"
-        mode="indeterminate"
-      ></mat-progress-bar>
+    <!-- Error -->
+    @if (errorMessage()) {
+      <app-state-card
+        type="error"
+        [message]="errorMessage() | translate"
+        [framed]="false"
+        (retry)="retry.emit()"
+      />
     }
 
-    @if (students().length > 0) {
-      <div class="table-wrapper">
-        <table mat-table [dataSource]="students()">
-          <!-- Student Number -->
-          <ng-container matColumnDef="studentNumber">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.STUDENT_NUMBER' | translate }}
-            </th>
+    <!-- First load only (nothing to show yet) -->
+    @else if (isInitialLoading()) {
+      <app-state-card
+        type="loading"
+        [message]="'STUDENTS.LOADING' | translate"
+        [framed]="false"
+      />
+    }
 
-            <td mat-cell *matCellDef="let student">
-              {{ student.studentNumber }}
-            </td>
-          </ng-container>
+    <!-- Students + Pagination (paginator no longer tied to students().length) -->
+    @else {
 
-          <!-- Name -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.NAME' | translate }}
-            </th>
+      <!-- Reload indicator: sits on top of the list without taking any height -->
+      @if (isRefreshing()) {
+        <mat-progress-bar
+          class="refresh-bar"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      }
 
-            <td mat-cell *matCellDef="let student">
-              <div class="student-name-cell">
-                <div class="student-avatar">
-                  <mat-icon>person</mat-icon>
+      @if (students().length > 0) {
+
+        <!-- Phone: one item per student, two lines -->
+        @if (isPhone()) {
+          <ul class="student-items">
+            @for (student of rows(); track student.studentId) {
+              <li class="student-item">
+
+                <span class="avatar" [attr.data-tone]="student.avatarTone" aria-hidden="true">
+                  {{ student.initials }}
+                </span>
+
+                <div class="item-text">
+                  <div class="item-first-line">
+                    <a
+                      class="student-link"
+                      [routerLink]="['/students', student.studentId]"
+                      [state]="{ fromStudentsList: true }"
+                    >{{ student.shortName }}</a>
+
+                    <!-- Only what needs attention: not regular, or no sign-in -->
+                    @if (student.studentStatus !== StudentStatus.Active) {
+                      <app-student-status [status]="student.studentStatus" />
+                    }
+
+                    @if (!student.isActive) {
+                      <app-status-badge tone="neutral">
+                        {{ 'SHARED.ACCOUNT.INACTIVE' | translate }}
+                      </app-status-badge>
+                    }
+                  </div>
+
+                  <span class="item-second-line">
+                    <span class="tabular" dir="ltr">{{ student.studentNumber }}</span>
+                    <span aria-hidden="true">·</span>
+                    {{ student.classSection }}
+                  </span>
                 </div>
 
-                <span>
-                  {{ getStudentName(student) }}
-                </span>
-              </div>
-            </td>
-          </ng-container>
+                <ng-container
+                  [ngTemplateOutlet]="actionsMenu"
+                  [ngTemplateOutletContext]="{ $implicit: student }"
+                />
 
-          <!-- Class and section: one column, like the merged Classes & sections section -->
-          <ng-container matColumnDef="classSection">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.CLASS_SECTION' | translate }}
-            </th>
+              </li>
+            }
+          </ul>
+        }
 
-            <td mat-cell *matCellDef="let student">
-              <span class="class-section">
-                {{ getClassName(student) }}
-                <span class="separator" aria-hidden="true">·</span>
-                {{ getSectionName(student) }}
-              </span>
-            </td>
-          </ng-container>
+        <!-- Computer: the table -->
+        @else {
+          <div class="table-wrapper">
+            <table mat-table [dataSource]="rows()">
 
-          <!-- Login ID -->
-          <ng-container matColumnDef="loginId">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.LOGIN_ID' | translate }}
-            </th>
+              <!-- Student: avatar + name (a link to the student's page) -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'STUDENTS.STUDENT' | translate }}
+                </th>
 
-            <td mat-cell *matCellDef="let student">
-              {{ student.loginId }}
-            </td>
-          </ng-container>
+                <td mat-cell *matCellDef="let student">
+                  <div class="student-name-cell">
+                    <span class="avatar" [attr.data-tone]="student.avatarTone" aria-hidden="true">
+                      {{ student.initials }}
+                    </span>
 
-          <!-- Student status (studentStatus): regular / withdrawn / graduated / transferred -->
-          <ng-container matColumnDef="studentStatus">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'SHARED.STUDENT_STATUS.TITLE' | translate }}
-            </th>
+                    <a
+                      class="student-link"
+                      [routerLink]="['/students', student.studentId]"
+                      [state]="{ fromStudentsList: true }"
+                    >{{ student.fullName }}</a>
+                  </div>
+                </td>
+              </ng-container>
 
-            <td mat-cell *matCellDef="let student">
-              <app-student-status [status]="student.studentStatus" />
-            </td>
-          </ng-container>
+              <!-- Student Number -->
+              <ng-container matColumnDef="studentNumber">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'STUDENTS.STUDENT_NUMBER' | translate }}
+                </th>
 
-          <!-- Account status (isActive): can the student sign in -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'SHARED.ACCOUNT.STATUS' | translate }}
-            </th>
+                <td mat-cell *matCellDef="let student" class="muted-cell">
+                  <span dir="ltr">{{ student.studentNumber }}</span>
+                </td>
+              </ng-container>
 
-            <td mat-cell *matCellDef="let student">
-              <app-status-badge [tone]="student.isActive ? 'ok' : 'neutral'">
-                {{ (student.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
-              </app-status-badge>
-            </td>
-          </ng-container>
+              <!-- Class and section: one column, like the merged Classes & sections section -->
+              <ng-container matColumnDef="classSection">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'STUDENTS.CLASS_SECTION' | translate }}
+                </th>
 
-          <!-- Actions -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'STUDENTS.ACTIONS' | translate }}
-            </th>
+                <td mat-cell *matCellDef="let student">
+                  {{ student.classSection }}
+                </td>
+              </ng-container>
 
-            <td mat-cell *matCellDef="let student">
-              <button mat-icon-button [matMenuTriggerFor]="studentMenu" type="button">
-                <mat-icon>more_vert</mat-icon>
-              </button>
+              <!-- Login ID (English inside the Arabic page: isolated) -->
+              <ng-container matColumnDef="loginId">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'STUDENTS.LOGIN_ID' | translate }}
+                </th>
 
-              <mat-menu #studentMenu="matMenu">
-                <!-- View -->
-                <button mat-menu-item type="button" (click)="viewStudent.emit(student.studentId)">
-                  <mat-icon>visibility</mat-icon>
+                <td mat-cell *matCellDef="let student" class="muted-cell">
+                  <span dir="ltr" class="isolate">{{ student.loginId }}</span>
+                </td>
+              </ng-container>
 
-                  {{ 'STUDENTS.VIEW' | translate }}
-                </button>
+              <!-- Student status (studentStatus): regular / withdrawn / graduated / transferred -->
+              <ng-container matColumnDef="studentStatus">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'SHARED.STUDENT_STATUS.TITLE' | translate }}
+                </th>
 
-                <!-- Edit and Activate / Deactivate (Admin only) -->
-                @if (canManage()) {
+                <td mat-cell *matCellDef="let student">
+                  <app-student-status [status]="student.studentStatus" />
+                </td>
+              </ng-container>
 
-                  <!-- Edit -->
-                  <button mat-menu-item type="button" (click)="editStudent.emit(student.studentId)">
-                    <mat-icon>edit</mat-icon>
+              <!-- Account status (isActive): can the student sign in -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'SHARED.ACCOUNT.STATUS' | translate }}
+                </th>
 
-                    {{ 'STUDENTS.EDIT' | translate }}
-                  </button>
+                <td mat-cell *matCellDef="let student">
+                  <app-status-badge [tone]="student.isActive ? 'ok' : 'neutral'">
+                    {{ (student.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+                  </app-status-badge>
+                </td>
+              </ng-container>
 
-                  <!-- Reset password -->
-                  <button mat-menu-item type="button" (click)="resetPassword.emit(student)">
-                    <mat-icon>lock_reset</mat-icon>
+              <!-- Actions: one ⋮ button at the end of the row -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>
+                  <span class="visually-hidden">{{ 'STUDENTS.ACTIONS' | translate }}</span>
+                </th>
 
-                    {{ 'STUDENTS.RESET_PASSWORD' | translate }}
-                  </button>
+                <td mat-cell *matCellDef="let student">
+                  <ng-container
+                    [ngTemplateOutlet]="actionsMenu"
+                    [ngTemplateOutletContext]="{ $implicit: student }"
+                  />
+                </td>
+              </ng-container>
 
-                  <!-- Activate / Deactivate -->
-                  <button mat-menu-item type="button" (click)="toggleStatus.emit(student)">
-                    <mat-icon>
-                      {{ student.isActive ? 'person_off' : 'person' }}
-                    </mat-icon>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
-                    {{
-                      student.isActive
-                        ? ('STUDENTS.DEACTIVATE' | translate)
-                        : ('STUDENTS.ACTIVATE' | translate)
-                    }}
-                  </button>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        }
 
-                }
-              </mat-menu>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
-    } @else {
-      <!-- Empty: "no match" after a search or filter, "no students yet" without them -->
-      @if (hasQuery()) {
-        <app-state-card
-          type="empty"
-          icon="search_off"
-          [title]="'STUDENTS.NO_STUDENTS' | translate"
-          [message]="'STUDENTS.NO_STUDENTS_DESCRIPTION' | translate"
-          [framed]="false"
-        />
       } @else {
-        <app-state-card
-          type="empty"
-          icon="school"
-          [title]="'STUDENTS.NO_STUDENTS_YET' | translate"
-          [message]="canManage() ? ('STUDENTS.NO_STUDENTS_YET_DESCRIPTION' | translate) : ''"
-          [framed]="false"
-        />
+        <!-- Empty: "no match" after a search or filter, "no students yet" without them -->
+        @if (hasQuery()) {
+          <app-state-card
+            type="empty"
+            icon="search_off"
+            [title]="'STUDENTS.NO_STUDENTS' | translate"
+            [message]="'STUDENTS.NO_STUDENTS_DESCRIPTION' | translate"
+            [framed]="false"
+          />
+        } @else {
+          <app-state-card
+            type="empty"
+            icon="school"
+            [title]="'STUDENTS.NO_STUDENTS_YET' | translate"
+            [message]="canManage() ? ('STUDENTS.NO_STUDENTS_YET_DESCRIPTION' | translate) : ''"
+            [framed]="false"
+          />
+        }
       }
+
+      <!-- Pagination: shown whenever there ARE results overall,
+           even if the current page happens to render empty -->
+      @if (totalCount() > 0) {
+        <mat-paginator
+          [length]="totalCount()"
+          [pageIndex]="pageNumber() - 1"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="[10, 20, 50]"
+          [hidePageSize]="isPhone()"
+          [disabled]="isLoading()"
+          (page)="pageChange.emit($event)"
+          [attr.aria-label]="'STUDENTS.PAGINATION' | translate"
+        >
+        </mat-paginator>
+      }
+
     }
 
-    <!-- Pagination: shown whenever there ARE results overall,
-         even if the current page happens to render empty -->
-    @if (totalCount() > 0) {
-      <mat-paginator
-        [length]="totalCount()"
-        [pageIndex]="pageNumber() - 1"
-        [pageSize]="pageSize()"
-        [pageSizeOptions]="[10, 20, 50]"
-        [disabled]="isLoading()"
-        (page)="pageChange.emit($event)"
-        [attr.aria-label]="'STUDENTS.PAGINATION' | translate"
-      >
-      </mat-paginator>
-    }
-
-
-  }
+  </div>
 
 </div>
+
+
+<!-- The ⋮ menu of one student (table row and phone item) -->
+<ng-template #actionsMenu let-student>
+  <button
+    mat-icon-button
+    type="button"
+    class="actions-button"
+    [matMenuTriggerFor]="studentMenu"
+    [attr.aria-label]="'STUDENTS.ACTIONS_FOR' | translate: { name: student.fullName }"
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+  <mat-menu #studentMenu="matMenu">
+    <!-- View -->
+    <button mat-menu-item type="button" (click)="viewStudent.emit(student.studentId)">
+      <mat-icon>visibility</mat-icon>
+
+      {{ 'STUDENTS.VIEW' | translate }}
+    </button>
+
+    <!-- Edit, reset password and Activate / Deactivate (Admin only) -->
+    @if (canManage()) {
+
+      <!-- Edit -->
+      <button mat-menu-item type="button" (click)="editStudent.emit(student.studentId)">
+        <mat-icon>edit</mat-icon>
+
+        {{ 'STUDENTS.EDIT' | translate }}
+      </button>
+
+      <!-- Reset password -->
+      <button mat-menu-item type="button" (click)="resetPassword.emit(student)">
+        <mat-icon>lock_reset</mat-icon>
+
+        {{ 'STUDENTS.RESET_PASSWORD' | translate }}
+      </button>
+
+      <!-- Activate / Deactivate -->
+      <button mat-menu-item type="button" (click)="toggleStatus.emit(student)">
+        <mat-icon>
+          {{ student.isActive ? 'person_off' : 'person' }}
+        </mat-icon>
+
+        {{
+          student.isActive
+            ? ('STUDENTS.DEACTIVATE' | translate)
+            : ('STUDENTS.ACTIVATE' | translate)
+        }}
+      </button>
+
+    }
+  </mat-menu>
+</ng-template>

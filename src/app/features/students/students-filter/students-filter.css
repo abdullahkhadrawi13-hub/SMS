@@ -1,16 +1,144 @@
-.filter-form {
+/* ==========================================================
+   Students filter — three lists in the search row (no dialog)
+   Spec: "الحقول والقوائم المنسدلة" → الفلتر المفعّل، الحقل المعطّل.
+   Colours and sizes from src/tokens.css only.
+   Logical properties only (works the same in RTL and LTR).
+   ========================================================== */
+
+:host {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 360px;
-  padding-top: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  min-width: 0;
 }
 
-mat-form-field {
-  width: 100%;
+.filter-select {
+  height: var(--h-control);
+  min-width: 150px;
+
+  box-sizing: border-box;
+  padding-inline: 10px;
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+
+  background-color: var(--surface);
+  color: var(--text);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+
+  cursor: pointer;
+
+  transition: border-color var(--dur), background-color var(--dur), color var(--dur);
 }
 
-mat-dialog-actions {
-  gap: 8px;
-  padding: 16px 24px;
+.section-select {
+  min-width: 180px;
+}
+
+.filter-select:hover:not(:disabled) {
+  background-color: var(--hover);
+}
+
+.filter-select:focus {
+  outline: none;
+
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* A filter that is on: blue border, light blue fill, dark blue text. */
+.filter-select.is-active,
+.filter-select.is-active:hover {
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
+  color: var(--accent-ink);
+
+  font-weight: 600;
+}
+
+/* Disabled (section before a class): readable, and its text says why. */
+.filter-select:disabled {
+  border-color: var(--border);
+  background-color: var(--raised);
+  color: var(--faint);
+
+  cursor: not-allowed;
+}
+
+/* The options open in the browser's own list: keep them plain. */
+.filter-select option {
+  background: var(--surface);
+  color: var(--text);
+
+  font-weight: 400;
+}
+
+/* "Clear filters": a secondary button (white, grey border) with an icon,
+   the same height as the lists next to it. Not blue: blue means
+   "a filter is on". Shown only while a filter is on. */
+.clear-button {
+  height: var(--h-control);
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding-inline: 10px 12px;
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+
+  background: var(--surface);
+  color: var(--text);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background-color var(--dur);
+}
+
+.clear-button:hover {
+  background: var(--hover);
+}
+
+.clear-button mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  color: var(--muted);
+}
+
+
+/* ---------- Phone: one list per line, 44px ---------- */
+
+@media (max-width: 719.98px) {
+
+  :host {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-select {
+    width: 100%;
+    min-width: 0;
+    height: var(--h-touch);
+  }
+
+  .clear-button {
+    align-self: flex-start;
+
+    height: var(--h-touch);
+  }
+
 }
