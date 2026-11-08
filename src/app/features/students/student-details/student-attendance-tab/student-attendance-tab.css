@@ -1,174 +1,347 @@
-/* The history behaves like a block inside the student page (Attendance tab). */
+/* ================================
+   Student Attendance Tab (/students/:id?tab=attendance)
+   One card: title + term, the numbers strip, the note, then the days
+   (a table on wide screens, two lines per day on the phone).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
 :host {
   display: block;
 }
 
+.history-card {
+  min-width: 0;
 
-/* ================================
-   Toolbar: counters + academic term
-   ================================ */
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
 
-.history-toolbar {
+  background: var(--surface);
+
+  overflow: hidden;
+}
+
+
+/* ---------- Header ---------- */
+
+.card-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
 
-  gap: 16px;
+  gap: var(--sp-3);
 
-  margin-bottom: 14px;
+  padding: var(--sp-4) 20px var(--sp-3);
 }
 
-.history-counters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.card-title {
+  flex: 1;
 
-  gap: 8px;
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-/* Same counters as the attendance sheet. */
-.counter {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 6px;
-
-  padding: 6px 12px;
-
-  border-radius: 20px;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.counter.total {
-  background: #f1f5f9;
-  color: #374151;
-}
-
-.counter.present {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.counter.absent {
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.history-toolbar mat-form-field {
-  width: 300px;
+.term-field {
+  width: 280px;
   max-width: 100%;
 }
 
 
-/* ================================
-   Note
-   ================================ */
+/* ---------- Numbers strip ---------- */
+
+.stats {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  margin: 0;
+
+  border-block: 1px solid var(--rule);
+}
+
+.stat {
+  min-width: 0;
+
+  padding: 14px 20px;
+}
+
+.stat + .stat {
+  border-inline-start: 1px solid var(--rule);
+}
+
+.stat dt {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 600;
+}
+
+.stat dd {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-24);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.stat dd.is-bad {
+  color: var(--bad-ink);
+}
+
+.stat dd small {
+  margin-inline-start: var(--sp-1);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 400;
+}
+
+.missing {
+  color: var(--faint);
+}
+
+/* The rate bar: 8px, round, gold fill on the grey track */
+.rate-bar {
+  height: 8px;
+
+  margin-block-start: 6px;
+
+  border-radius: 999px;
+
+  background: var(--track);
+
+  overflow: hidden;
+}
+
+.rate-fill {
+  display: block;
+
+  height: 100%;
+
+  border-radius: 999px;
+
+  background: var(--mark);
+}
+
+
+/* ---------- Note ---------- */
 
 .history-note {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 
-  gap: 8px;
+  gap: var(--sp-2);
 
-  margin: 0 0 14px;
+  margin: var(--sp-3) 20px;
 
-  color: #6b7280;
+  padding: 10px 14px;
 
-  font-size: 13px;
-  line-height: 1.5;
+  border-radius: var(--r-control);
+
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
 }
 
 .history-note mat-icon {
+  flex-shrink: 0;
+
   width: 18px;
   height: 18px;
 
+  margin-block-start: 2px;
+
   font-size: 18px;
-
-  flex-shrink: 0;
 }
 
 
-/* ================================
-   Table Card
-   ================================ */
+/* ---------- Days ---------- */
 
-.table-card {
-  width: 100%;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  overflow: hidden;
-
-  box-sizing: border-box;
+.records {
+  border-block-start: 1px solid var(--border);
 }
 
-/* A long history scrolls inside the table,
-   so the dialog keeps its header, tabs and Close button on screen. */
+/* Wide screens: the table scrolls inside the card, the header stays */
 .table-wrapper {
-  width: 100%;
-  max-height: 40vh;
+  max-height: 560px;
 
   overflow: auto;
 }
 
-.table-wrapper table {
+.records-table {
   width: 100%;
 
-  min-width: 620px;
+  border-collapse: collapse;
 }
 
-.table-wrapper th {
-  height: 48px;
+.records-table th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
 
-  padding: 0 16px;
+  height: 40px;
 
-  font-size: 13px;
+  padding-inline: var(--sp-4);
+
+  border-block-end: 1px solid var(--border);
+
+  background: var(--surface);
+  color: var(--faint);
+
+  font-size: var(--fs-12);
   font-weight: 600;
-
-  color: #6b7280;
-
-  background: #f8fafc;
-
+  text-align: start;
   white-space: nowrap;
 }
 
-.table-wrapper td {
-  height: 52px;
+.records-table td {
+  height: var(--row);
 
-  padding: 0 16px;
+  padding-inline: var(--sp-4);
 
-  font-size: 14px;
+  border-block-end: 1px solid var(--rule);
 
-  color: #374151;
+  color: var(--text);
 
-  white-space: nowrap;
+  font-size: var(--fs-14);
 }
 
-.table-wrapper tr.mat-mdc-row:hover {
-  background: #f8fafc;
+.records-table tbody tr:last-child td {
+  border-block-end: 0;
 }
 
-.muted {
-  color: #6b7280;
+.records-table tbody tr {
+  transition: background-color var(--dur) ease;
+}
+
+.records-table tbody tr:hover {
+  background: var(--hover);
+}
+
+.records-table .time {
+  color: var(--muted);
+}
+
+/* A record that was changed after it was saved */
+.edited {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.edited mat-icon {
+  width: 16px;
+  height: 16px;
+
+  color: var(--chg);
+
+  font-size: 16px;
+}
+
+/* Phone: two lines per day (hidden on wide screens) */
+.records-list {
+  display: none;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.record {
+  padding: 10px var(--sp-4);
+}
+
+.record + .record {
+  border-block-start: 1px solid var(--rule);
+}
+
+.record-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--sp-2);
+}
+
+.record-line .date {
+  font-weight: 600;
+}
+
+.record-meta {
+  margin-block-start: 2px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
 }
 
 
-/* ================================
-   Responsive
-   ================================ */
+/* ---------- Phone (under 720px) ---------- */
 
-@media (max-width: 650px) {
+@media (max-width: 719.98px) {
 
-  .history-toolbar mat-form-field {
+  .card-head {
+    padding: 14px var(--sp-4) 10px;
+  }
+
+  .card-title {
+    flex-basis: 100%;
+  }
+
+  .term-field {
     width: 100%;
+  }
+
+  /* 2 × 2 numbers */
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .stat + .stat {
+    border-inline-start: 0;
+  }
+
+  .stat:nth-child(even) {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  .stat:nth-child(n + 3) {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .stat dd {
+    font-size: var(--fs-20);
+  }
+
+  .stat dd small {
+    display: none;
+  }
+
+  .history-note {
+    margin-inline: var(--sp-4);
+  }
+
+  .table-wrapper {
+    display: none;
+  }
+
+  .records-list {
+    display: block;
   }
 
 }

@@ -1,3 +1,11 @@
+/* ==========================================================
+   Subject grades card (student page "Grades" tab, «علاماتي», «علامات أبنائي»)
+   Navy & gold: white card with a 1px border and no shadow; the head
+   (subject, teacher · passing mark / total and result) over a rule, then
+   one row per component with a gold bar and the mark chips.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 /* The card behaves like a block inside the cards grid. */
 :host {
   display: block;
@@ -10,12 +18,10 @@
    ================================ */
 
 .subject-card {
-  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
 
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  background: var(--surface);
 
   box-sizing: border-box;
 }
@@ -25,7 +31,9 @@
   align-items: flex-start;
   justify-content: space-between;
 
-  gap: 12px;
+  gap: var(--sp-3);
+
+  padding: var(--sp-4) 20px 14px;
 }
 
 .head-text {
@@ -33,86 +41,106 @@
 }
 
 .subject-name {
-  margin: 0 0 4px;
+  margin: 0;
 
-  font-size: 16px;
+  color: var(--text);
+
+  font-size: var(--fs-16);
   font-weight: 700;
-
-  color: #111827;
+  line-height: 1.3;
 }
 
 .head-sub {
-  margin: 0;
+  margin: 2px 0 0;
 
-  font-size: 12.5px;
+  color: var(--faint);
+
+  font-size: var(--fs-12);
   line-height: 1.5;
-
-  color: #6b7280;
 }
 
+/* "78 من 100" and the result, on one line */
 .head-total {
   flex-shrink: 0;
 
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
 
-  gap: 6px;
+  gap: 10px;
 }
 
 .total {
   display: inline-flex;
   align-items: baseline;
 
-  gap: 4px;
+  gap: var(--sp-1);
 
   white-space: nowrap;
 }
 
 .total strong {
-  font-size: 24px;
+  color: var(--text);
+
+  font-size: var(--fs-24);
   font-weight: 700;
   line-height: 1;
-
-  color: #111827;
 
   font-variant-numeric: tabular-nums;
 }
 
 .total small {
-  font-size: 12px;
+  color: var(--muted);
 
-  color: #6b7280;
+  font-size: var(--fs-13);
 }
 
 
-/* Same colors as the grade sheet. */
+/* The result: the same look as app-status-badge
+   (6px corners, a dot in the text colour). */
 .result-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
 
-  padding: 4px 12px;
+  gap: 6px;
 
-  border-radius: 20px;
+  height: 24px;
 
-  font-size: 12px;
+  padding-inline: 10px;
+
+  border-radius: var(--r-pill);
+
+  font-size: var(--fs-12);
   font-weight: 600;
 
   white-space: nowrap;
 }
 
+.result-badge::before {
+  content: "";
+
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
 .result-badge.passed {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--ok-bg);
+  color: var(--ok-ink);
 }
 
 .result-badge.failed {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--bad-bg);
+  color: var(--bad-ink);
 }
 
 .result-badge.incomplete {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--warn-bg);
+  color: var(--warn-ink);
 }
 
 
@@ -121,19 +149,22 @@
    ================================ */
 
 .components {
-  margin-top: 14px;
-  padding-top: 6px;
+  padding: var(--sp-1) 20px var(--sp-3);
 
-  border-top: 1px solid #e5e7eb;
+  border-block-start: 1px solid var(--rule);
 }
 
 .component {
   display: flex;
   flex-direction: column;
 
-  gap: 6px;
+  gap: var(--sp-1);
 
-  padding: 8px 0;
+  padding-block: 10px;
+}
+
+.component + .component {
+  border-block-start: 1px solid var(--rule);
 }
 
 .component-line {
@@ -143,9 +174,10 @@
 
   gap: 10px;
 
-  font-size: 13.5px;
+  color: var(--muted);
 
-  color: #374151;
+  font-size: var(--fs-13);
+  font-weight: 600;
 }
 
 .component-name {
@@ -155,19 +187,22 @@
 .component-score {
   white-space: nowrap;
 
-  color: #111827;
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 700;
 
   font-variant-numeric: tabular-nums;
 }
 
-/* A thin bar: score ÷ weight. It fills from the start side
-   (the right in Arabic, the left in English). */
+/* A thin bar: score ÷ weight, gold on the grey track. It fills from the
+   start side (the right in Arabic, the left in English). */
 .bar {
-  height: 5px;
+  height: 6px;
 
-  border-radius: 4px;
+  border-radius: 999px;
 
-  background: #e9edf2;
+  background: var(--track);
 
   overflow: hidden;
 }
@@ -177,9 +212,9 @@
 
   height: 100%;
 
-  border-radius: 4px;
+  border-radius: 999px;
 
-  background: #1f6f54;
+  background: var(--mark);
 }
 
 
@@ -192,6 +227,8 @@
   flex-wrap: wrap;
 
   gap: 6px;
+
+  margin-block-start: var(--sp-1);
 }
 
 .mark-chip {
@@ -200,31 +237,39 @@
   display: inline-flex;
   align-items: center;
 
-  gap: 4px;
+  gap: var(--sp-1);
 
-  padding: 3px 10px;
+  height: 26px;
+
+  padding-inline: var(--sp-2);
 
   border: 1px solid transparent;
-  border-radius: 14px;
+  border-radius: var(--r-pill);
 
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--raised);
+  color: var(--muted);
 
-  font-size: 12px;
+  font-size: var(--fs-12);
 
   white-space: nowrap;
+
+  box-sizing: border-box;
 }
 
 .mark-chip strong {
-  color: #111827;
+  color: var(--text);
+
+  font-weight: 600;
 
   font-variant-numeric: tabular-nums;
 }
 
-/* Not entered yet / no assessment yet. */
+/* Not entered yet / no assessment yet: never shown as 0. */
 .mark-chip.missing {
+  border: 1px dashed var(--control);
+
   background: transparent;
-  border: 1px dashed #b8c0cc;
+  color: var(--faint);
 }
 
 /* Room for the history button at the end of the chip. */
@@ -235,8 +280,8 @@
 
 /* ================================
    History button (staff only)
-   The same look as the grade sheet. Hidden until the chip is hovered
-   or focused; edited marks always show, in blue.
+   Hidden until the chip is hovered or focused; an edited mark always
+   shows it, in the "changed" colour.
    ================================ */
 
 .history-button {
@@ -244,8 +289,8 @@
   top: 50%;
   inset-inline-end: 3px;
 
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 
   padding: 0;
 
@@ -253,25 +298,25 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #e5e7eb;
-  border-radius: 50%;
+  border: 0;
+  border-radius: var(--sp-1);
 
-  background: #ffffff;
-  color: #64748b;
+  background: transparent;
+  color: var(--accent-ink);
 
   cursor: pointer;
 
   opacity: 0;
 
   transform: translateY(-50%);
-  transition: opacity 0.15s ease;
+  transition: opacity var(--dur) ease, background-color var(--dur) ease;
 }
 
 .history-button mat-icon {
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
 
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .mark-chip:hover .history-button,
@@ -281,31 +326,25 @@
 }
 
 .history-button:hover {
-  color: #2554a4;
+  background: var(--accent-soft);
 }
 
 .history-button:focus-visible {
   opacity: 1;
-
-  outline: 2px solid #2554a4;
-  outline-offset: 1px;
 }
 
-/* Edited after it was first entered: always visible, in blue. */
+/* Edited after it was first entered: always visible. */
 .history-button.edited {
   opacity: 1;
 
-  color: #2554a4;
-  background: #eef3fc;
-
-  border-color: #bfd0ee;
+  color: var(--chg);
 }
 
-/* Touch screens have no hover: every saved mark shows a faint button. */
+/* Touch screens have no hover: every saved mark shows the button. */
 @media (hover: none) {
 
   .history-button {
-    opacity: 0.75;
+    opacity: 1;
   }
 
 }
@@ -325,22 +364,41 @@
 
 .subject-card.no-teacher {
   border-style: dashed;
-  border-color: #c8cfd9;
+  border-color: var(--control);
 
-  background: #fbfcfd;
-}
-
-.subject-card.no-teacher .subject-name {
-  margin: 0;
+  background: var(--raised);
 }
 
 .no-teacher-text {
-  margin: 10px 0 0;
+  margin: 0;
 
-  font-size: 13px;
+  padding: 0 20px var(--sp-4);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
   line-height: 1.7;
+}
 
-  color: #6b7280;
+
+/* ================================
+   Phone (under 720px)
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .card-head {
+    padding: 14px var(--sp-4) var(--sp-3);
+  }
+
+  .components {
+    padding: 2px var(--sp-4) 10px;
+  }
+
+  .no-teacher-text {
+    padding-inline: var(--sp-4);
+  }
+
 }
 
 

@@ -3,7 +3,6 @@
   <app-state-card
     type="loading"
     [message]="'STUDENT_GRADES.LOADING' | translate"
-    [framed]="false"
     size="compact"
   />
 }
@@ -13,7 +12,6 @@
   <app-state-card
     type="error"
     [message]="errorMessage() | translate"
-    [framed]="false"
     size="compact"
     (retry)="load()"
   />
@@ -25,7 +23,6 @@
     type="empty"
     icon="menu_book"
     [message]="'STUDENT_GRADES.EMPTY.STAFF' | translate"
-    [framed]="false"
     size="compact"
   />
 }
@@ -44,44 +41,31 @@
       <!-- More than one term: a field to choose -->
       @if (termOptions().length > 1) {
 
-        <mat-form-field termSelect appearance="outline" subscriptSizing="dynamic" class="term-field">
-
-          <mat-label>{{ 'STUDENT_GRADES.TERM' | translate }}</mat-label>
-
-          <mat-select
-            [value]="termId()"
-            (selectionChange)="onTermChange($event.value)"
-          >
-
-            <mat-select-trigger>
-              @if (selectedOption(); as option) {
-                {{ 'STUDENT_GRADES.TERM_LABEL' | translate: option.label }}
-
-                @if (option.areGradesClosed) {
-                  <span class="closed-tag">{{ 'GRADES.SELECTOR.CLOSED' | translate }}</span>
-                }
+        <div termSelect class="term-field">
+          <div class="field-box is-select">
+            <select
+              [attr.aria-label]="'STUDENT_GRADES.TERM' | translate"
+              (change)="onTermChange($any($event.target).value)"
+            >
+              @for (option of termOptions(); track option.academicTermId) {
+                <option
+                  [value]="option.academicTermId"
+                  [selected]="option.academicTermId === termId()"
+                >
+                  {{ 'STUDENT_GRADES.TERM_LABEL' | translate: option.label }}@if (option.areGradesClosed) { · {{ 'GRADES.SELECTOR.CLOSED' | translate }}}
+                </option>
               }
-            </mat-select-trigger>
+            </select>
 
-            @for (option of termOptions(); track option.academicTermId) {
-              <mat-option [value]="option.academicTermId">
-                {{ 'STUDENT_GRADES.TERM_LABEL' | translate: option.label }}
-
-                @if (option.areGradesClosed) {
-                  <span class="closed-tag">{{ 'GRADES.SELECTOR.CLOSED' | translate }}</span>
-                }
-              </mat-option>
-            }
-
-          </mat-select>
-
-        </mat-form-field>
+            <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+          </div>
+        </div>
 
       } @else if (selectedOption(); as option) {
 
         <!-- One term only: its name, without a field -->
         <span termSelect class="term-name">
-          <mat-icon>event</mat-icon>
+          <mat-icon aria-hidden="true">event</mat-icon>
           {{ 'STUDENT_GRADES.TERM_LABEL' | translate: option.label }}
         </span>
 

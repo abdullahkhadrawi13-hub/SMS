@@ -1,176 +1,124 @@
-<!-- The "Details" tab: Personal, Academic and Account information -->
-<div class="details-sections">
+<!-- The "Details" tab: the student's details, and the account
+     (Admin and Assistant Principal only) in a side card. -->
+<div class="info-grid" [class.single]="!canViewPrivateInfo()">
 
-  <!-- Personal Information (full width) -->
-  <section class="details-section wide">
-    <div class="section-header">
-      <div class="section-icon personal">
-        <mat-icon>person</mat-icon>
-      </div>
+  <!-- Student details -->
+  <section class="info-card" aria-labelledby="student-info-title">
 
-      <div>
-        <h3>
-          {{ 'STUDENT_DETAILS.INFO_TAB.PERSONAL_INFORMATION' | translate }}
-        </h3>
+    <h2 class="card-title" id="student-info-title">
+      {{ 'STUDENT_DETAILS.INFO_TAB.STUDENT_CARD' | translate }}
+    </h2>
 
-        <p>
-          {{ 'STUDENT_DETAILS.INFO_TAB.PERSONAL_INFORMATION_DESCRIPTION' | translate }}
-        </p>
-      </div>
-    </div>
+    <dl class="details-list">
 
-    <div class="details-grid">
       <div class="detail-item">
-        <span class="detail-label">
-          {{ 'STUDENT_DETAILS.INFO_TAB.NAME_AR' | translate }}
-        </span>
-
-        <span class="detail-value">
-          <bdi>{{ getStudentNameAr(student()) || '-' }}</bdi>
-        </span>
+        <dt>{{ 'STUDENT_DETAILS.INFO_TAB.NAME_AR' | translate }}</dt>
+        <dd><bdi dir="rtl">{{ view().nameAr || '—' }}</bdi></dd>
       </div>
 
       <div class="detail-item">
-        <span class="detail-label">
-          {{ 'STUDENT_DETAILS.INFO_TAB.NAME_EN' | translate }}
-        </span>
-
-        <span class="detail-value">
-          <bdi>{{ getStudentNameEn(student()) || '-' }}</bdi>
-        </span>
+        <dt>{{ 'STUDENT_DETAILS.INFO_TAB.NAME_EN' | translate }}</dt>
+        <dd><bdi dir="ltr">{{ view().nameEn || '—' }}</bdi></dd>
       </div>
 
       <div class="detail-item">
-        <span class="detail-label">
-          {{ 'STUDENTS.STUDENT_NUMBER' | translate }}
-        </span>
-
-        <span class="detail-value">
-          <bdi>{{ student().studentNumber }}</bdi>
-        </span>
+        <dt>{{ 'STUDENTS.STUDENT_NUMBER' | translate }}</dt>
+        <dd><bdi class="tabular">{{ student().studentNumber }}</bdi></dd>
       </div>
 
-      <!-- Phone: Admin and Assistant Principal only -->
       @if (canViewPrivateInfo()) {
+
+        <!-- Phone: Admin and Assistant Principal only -->
         <div class="detail-item">
-          <span class="detail-label">
-            {{ 'STUDENT_DETAILS.INFO_TAB.PHONE' | translate }}
-          </span>
-
-          <span class="detail-value">
-            <bdi>{{ student().phoneNumber || '-' }}</bdi>
-          </span>
-        </div>
-      }
-    </div>
-  </section>
-
-  <!-- Academic Information
-       (full width for a teacher, who has no Account Information) -->
-  <section
-    class="details-section"
-    [class.wide]="!canViewPrivateInfo()"
-  >
-    <div class="section-header">
-      <div class="section-icon academic">
-        <mat-icon>school</mat-icon>
-      </div>
-
-      <div>
-        <h3>
-          {{ 'STUDENT_DETAILS.INFO_TAB.ACADEMIC_INFORMATION' | translate }}
-        </h3>
-
-        <p>
-          {{ 'STUDENT_DETAILS.INFO_TAB.ACADEMIC_INFORMATION_DESCRIPTION' | translate }}
-        </p>
-      </div>
-    </div>
-
-    <div class="details-grid">
-      <div class="detail-item">
-        <span class="detail-label">
-          {{ 'STUDENTS.CLASS' | translate }}
-        </span>
-
-        <span class="detail-value">
-          {{ getClassName(student()) }}
-        </span>
-      </div>
-
-      <div class="detail-item">
-        <span class="detail-label">
-          {{ 'STUDENTS.SECTION' | translate }}
-        </span>
-
-        <span class="detail-value">
-          {{ getSectionName(student()) }}
-        </span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Account Information: Admin and Assistant Principal only -->
-  @if (canViewPrivateInfo()) {
-    <section class="details-section">
-      <div class="section-header">
-        <div class="section-icon account">
-          <mat-icon>manage_accounts</mat-icon>
-        </div>
-
-        <div>
-          <h3>
-            {{ 'STUDENT_DETAILS.INFO_TAB.ACCOUNT_INFORMATION' | translate }}
-          </h3>
-
-          <p>
-            {{ 'STUDENT_DETAILS.INFO_TAB.ACCOUNT_INFORMATION_DESCRIPTION' | translate }}
-          </p>
-        </div>
-      </div>
-
-      <div class="details-grid">
-        <div class="detail-item">
-          <span class="detail-label">
-            {{ 'STUDENTS.LOGIN_ID' | translate }}
-          </span>
-
-          <span class="detail-value">
-            <bdi>{{ student().loginId }}</bdi>
-          </span>
+          <dt>{{ 'STUDENT_DETAILS.INFO_TAB.PHONE' | translate }}</dt>
+          <dd>
+            @if (student().phoneNumber) {
+              <bdi dir="ltr" class="tabular">{{ student().phoneNumber }}</bdi>
+            } @else {
+              <span class="missing">—</span>
+            }
+          </dd>
         </div>
 
         <div class="detail-item">
-          <span class="detail-label">
-            {{ 'STUDENT_DETAILS.INFO_TAB.ROLE' | translate }}
-          </span>
-
-          <span class="detail-value">
-            {{ getRoleTranslationKey(student().role) | translate }}
-          </span>
+          <dt>{{ 'STUDENTS.CLASS' | translate }}</dt>
+          <dd>{{ view().className }}</dd>
         </div>
 
         <div class="detail-item">
-          <span class="detail-label">
-            {{ 'STUDENT_DETAILS.INFO_TAB.PASSWORD_STATUS' | translate }}
-          </span>
+          <dt>{{ 'STUDENTS.SECTION' | translate }}</dt>
+          <dd>{{ view().sectionName }}</dd>
+        </div>
 
-          <span
-            class="password-badge"
-            [class.must-change]="student().mustChangePassword"
-          >
-            <mat-icon>
-              {{ student().mustChangePassword ? 'error_outline' : 'check_circle' }}
-            </mat-icon>
+      } @else {
 
+        <!-- Teacher: no phone, so class and section share one item
+             (four items: two full rows) -->
+        <div class="detail-item">
+          <dt>{{ 'STUDENTS.CLASS_SECTION' | translate }}</dt>
+          <dd>
             {{
-              student().mustChangePassword
-                ? ('STUDENT_DETAILS.INFO_TAB.MUST_CHANGE_PASSWORD' | translate)
-                : ('STUDENT_DETAILS.INFO_TAB.PASSWORD_NORMAL' | translate)
+              'STUDENT_DETAILS.PAGE.CLASS_SECTION' | translate: {
+                class: view().className,
+                section: view().sectionName
+              }
             }}
-          </span>
+          </dd>
         </div>
-      </div>
+
+      }
+
+    </dl>
+
+    <!-- Graduated: a short note that the records are kept, read only -->
+    @if (isGraduated()) {
+      <p class="info-note">
+        <mat-icon aria-hidden="true">workspace_premium</mat-icon>
+        <span>{{ 'STUDENT_DETAILS.INFO_TAB.GRADUATED_NOTE' | translate }}</span>
+      </p>
+    }
+
+  </section>
+
+  <!-- Account: Admin and Assistant Principal only -->
+  @if (canViewPrivateInfo()) {
+    <section class="info-card" aria-labelledby="student-account-title">
+
+      <h2 class="card-title" id="student-account-title">
+        {{ 'STUDENT_DETAILS.INFO_TAB.ACCOUNT_CARD' | translate }}
+      </h2>
+
+      <dl class="details-list one-column">
+
+        <div class="detail-item">
+          <dt>{{ 'STUDENTS.LOGIN_ID' | translate }}</dt>
+          <dd><bdi dir="ltr">{{ student().loginId }}</bdi></dd>
+        </div>
+
+        <div class="detail-item">
+          <dt>{{ 'STUDENT_DETAILS.INFO_TAB.ACCOUNT_STATUS' | translate }}</dt>
+          <dd>
+            <app-status-badge [tone]="student().isActive ? 'ok' : 'neutral'">
+              {{ (student().isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+            </app-status-badge>
+          </dd>
+        </div>
+
+        <div class="detail-item">
+          <dt>{{ 'STUDENT_DETAILS.INFO_TAB.PASSWORD_STATUS' | translate }}</dt>
+          <dd>
+            <app-status-badge [tone]="student().mustChangePassword ? 'warn' : 'ok'">
+              {{
+                (student().mustChangePassword
+                  ? 'STUDENT_DETAILS.INFO_TAB.MUST_CHANGE_PASSWORD'
+                  : 'STUDENT_DETAILS.INFO_TAB.PASSWORD_NORMAL') | translate
+              }}
+            </app-status-badge>
+          </dd>
+        </div>
+
+      </dl>
+
     </section>
   }
 

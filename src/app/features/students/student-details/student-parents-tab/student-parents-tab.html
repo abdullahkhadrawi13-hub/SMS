@@ -1,109 +1,100 @@
-<section class="parents-section">
+<section class="parents-card" aria-labelledby="student-parents-title">
 
-  <div class="section-header">
+  <h2 class="card-title" id="student-parents-title">
+    {{ 'STUDENT_DETAILS.PARENTS_TAB.TITLE' | translate }}
 
-    <div class="section-icon">
-      <mat-icon>family_restroom</mat-icon>
-    </div>
-
-    <div>
-
-      <h3>
-        {{ 'STUDENT_DETAILS.PARENTS_TAB.TITLE' | translate }}
-
-        @if (!isLoading() && !errorMessage()) {
-          <span class="count">{{ rows().length }}</span>
-        }
-      </h3>
-
-      <p>
-        {{ 'STUDENT_DETAILS.PARENTS_TAB.DESCRIPTION' | translate }}
-      </p>
-
-    </div>
-
-  </div>
+    @if (!isLoading() && !errorMessage()) {
+      <span class="count tabular">{{ parents().length }}</span>
+    }
+  </h2>
 
 
   <!-- Loading -->
   @if (isLoading()) {
-
-    <div class="state">
-      <mat-spinner diameter="36"></mat-spinner>
-      <p>{{ 'STUDENT_DETAILS.PARENTS_TAB.LOADING' | translate }}</p>
-    </div>
-
+    <app-state-card
+      type="loading"
+      [message]="'STUDENT_DETAILS.PARENTS_TAB.LOADING' | translate"
+      [framed]="false"
+      size="compact"
+    />
   }
 
   <!-- Error -->
   @else if (errorMessage()) {
-
-    <div class="state error">
-
-      <mat-icon>error_outline</mat-icon>
-
-      <p>{{ errorMessage() | translate }}</p>
-
-      <button
-        mat-flat-button
-        color="primary"
-        type="button"
-        (click)="loadParents()"
-      >
-        <mat-icon>refresh</mat-icon>
-        {{ 'STUDENT_DETAILS.PARENTS_TAB.RETRY' | translate }}
-      </button>
-
-    </div>
-
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      [framed]="false"
+      size="compact"
+      (retry)="loadParents()"
+    />
   }
 
   <!-- No parents -->
-  @else if (rows().length === 0) {
-
-    <div class="empty">
-      <mat-icon>person_off</mat-icon>
-      <span>{{ 'STUDENT_DETAILS.PARENTS_TAB.EMPTY' | translate }}</span>
-    </div>
-
+  @else if (parents().length === 0) {
+    <app-state-card
+      type="empty"
+      icon="person_off"
+      [message]="'STUDENT_DETAILS.PARENTS_TAB.EMPTY' | translate"
+      [framed]="false"
+      size="compact"
+    />
   }
 
-  <!-- Parents list -->
+  <!-- Parents: father, mother, guardian -->
   @else {
 
-    <div class="parents-list">
+    <!-- Column names (wide screens only) -->
+    <div class="list-head" aria-hidden="true">
+      <span>{{ 'STUDENT_DETAILS.PARENTS_TAB.PARENT' | translate }}</span>
+      <span>{{ 'STUDENT_DETAILS.PARENTS_TAB.RELATIONSHIP' | translate }}</span>
+      <span>{{ 'STUDENT_DETAILS.PARENTS_TAB.PHONE' | translate }}</span>
+      <span>{{ 'SHARED.ACCOUNT.STATUS' | translate }}</span>
+    </div>
 
-      @for (row of rows(); track row.parent.parentId) {
+    <ul class="parents-list">
 
-        <div class="parent-row">
+      @for (row of parents(); track row.parent.parentId) {
 
-          <div class="parent-avatar">
-            <mat-icon>person</mat-icon>
+        <li class="parent-row">
+
+          <div class="parent-who">
+            <span
+              class="parent-avatar relationship-{{ row.relationship }}"
+              aria-hidden="true"
+            >
+              {{ row.initials }}
+            </span>
+
+            <div class="parent-text">
+              <span class="parent-name">{{ row.name }}</span>
+              <span class="parent-login"><bdi dir="ltr">{{ row.parent.loginId }}</bdi></span>
+            </div>
           </div>
 
-          <div class="parent-text">
-            <span class="parent-name">{{ getFullName(row.parent) }}</span>
-            <span class="parent-login"><bdi>{{ row.parent.loginId }}</bdi></span>
+          <!-- Two columns on wide screens, one line under the name on the phone -->
+          <div class="parent-details">
+            <span class="relationship-chip relationship-{{ row.relationship }}">
+              {{ getRelationshipTranslationKey(row.relationship) | translate }}
+            </span>
+
+            <span class="parent-phone">
+              <mat-icon aria-hidden="true">call</mat-icon>
+              <bdi dir="ltr" class="tabular">{{ row.parent.phoneNumber || '—' }}</bdi>
+            </span>
           </div>
 
-          <span class="relationship-chip relationship-{{ row.relationship }}">
-            {{ getRelationshipTranslationKey(row.relationship) | translate }}
+          <span class="parent-account">
+            <app-status-badge [tone]="row.parent.isActive ? 'ok' : 'neutral'">
+              {{ (row.parent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+            </app-status-badge>
           </span>
 
-          <span class="parent-phone">
-            <mat-icon>call</mat-icon>
-            <bdi>{{ row.parent.phoneNumber }}</bdi>
-          </span>
-
-          <app-status-badge [tone]="row.parent.isActive ? 'ok' : 'neutral'">
-            {{ (row.parent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
-          </app-status-badge>
-
-        </div>
+        </li>
 
       }
 
-    </div>
+    </ul>
 
   }
 

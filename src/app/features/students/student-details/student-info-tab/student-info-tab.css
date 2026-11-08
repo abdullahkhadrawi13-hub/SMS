@@ -1,221 +1,183 @@
 /* ================================
    Student Info Tab (the "Details" tab of /students/:id)
+   Two cards: the student's details, and the account in a 360px side
+   column (Admin and Assistant Principal). A teacher sees one card.
+   Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
 :host {
   display: block;
 }
 
-
-/* ================================
-   Details Sections
-   Two columns: Personal Information on its own row,
-   Academic and Account side by side.
-   ================================ */
-
-.details-sections {
+.info-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) 360px;
 
-  gap: 16px;
+  gap: var(--sp-6);
 
   align-items: start;
 }
 
-.details-section {
+.info-grid.single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+
+/* ---------- Card ---------- */
+
+.info-card {
   min-width: 0;
 
-  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
 
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-
-  background: #ffffff;
+  background: var(--surface);
 }
 
-.details-section.wide {
-  grid-column: 1 / -1;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  margin-bottom: 14px;
-}
-
-.section-icon {
-  width: 36px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-sizing: border-box;
-
-  border-radius: 9px;
-}
-
-/* Each section has its own color:
-   light background, colored icon and a thin border */
-.section-icon.personal {
-  background: #eeedfe;
-  color: #534ab7;
-  border: 1px solid #afa9ec;
-}
-
-.section-icon.academic {
-  background: #faeeda;
-  color: #854f0b;
-  border: 1px solid #fac775;
-}
-
-.section-icon.account {
-  background: #fbeaf0;
-  color: #993556;
-  border: 1px solid #ed93b1;
-}
-
-.section-icon mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-}
-
-.section-header h3 {
+.card-title {
   margin: 0;
 
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.4;
+  padding: var(--sp-4) 20px var(--sp-3);
 
-  color: #111827;
-}
+  color: var(--text);
 
-.section-header p {
-  margin: 2px 0 0;
-
-  color: #6b7280;
-
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 
-/* ================================
-   Details Grid
-   As many columns as fit (Personal Information shows
-   its four fields on one row on a wide screen).
-   ================================ */
+/* ---------- Label / value list ----------
+   Two columns; a rule above every item and between the columns. */
 
-.details-grid {
+.details-list {
   display: grid;
 
-  grid-template-columns:
-    repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
-  gap: 10px;
+  margin: 0;
+
+  padding: 0 20px var(--sp-2);
+}
+
+.details-list.one-column {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .detail-item {
-  display: flex;
-  flex-direction: column;
-
-  gap: 4px;
-
   min-width: 0;
 
-  padding: 10px 12px;
+  padding-block: var(--sp-3);
 
-  border-radius: 10px;
-
-  background: #f8fafc;
+  border-block-start: 1px solid var(--rule);
 }
 
-.detail-label {
-  color: #6b7280;
-
-  font-size: 12px;
-  line-height: 1.4;
+.details-list:not(.one-column) .detail-item:nth-child(odd) {
+  padding-inline-end: var(--sp-6);
 }
 
-.detail-value {
-  color: #111827;
+.details-list:not(.one-column) .detail-item:nth-child(even) {
+  padding-inline-start: var(--sp-6);
 
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.5;
-
-  word-break: break-word;
+  border-inline-start: 1px solid var(--rule);
 }
 
+.detail-item dt {
+  color: var(--muted);
 
-/* ================================
-   Password Status
-   green = up to date, orange = must change
-   ================================ */
+  font-size: var(--fs-13);
+  font-weight: 600;
+}
 
-.password-badge {
-  display: inline-flex;
+.detail-item dd {
+  display: flex;
   align-items: center;
 
-  gap: 5px;
+  min-height: 24px;
 
-  width: fit-content;
+  margin: 2px 0 0;
 
-  padding: 3px 10px;
+  color: var(--text);
 
-  border-radius: 999px;
+  font-size: var(--fs-14);
 
-  background: #ecfdf5;
-  color: #047857;
-
-  font-size: 12px;
-  font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
-.password-badge.must-change {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.password-badge mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
+.missing {
+  color: var(--faint);
 }
 
 
-/* ================================
-   Responsive
-   ================================ */
+/* ---------- Graduated note (warning colours, like the students form) ---------- */
 
-@media (max-width: 900px) {
+.info-note {
+  display: flex;
+  align-items: flex-start;
 
-  .details-sections {
-    grid-template-columns: 1fr;
+  gap: var(--sp-2);
+
+  margin: var(--sp-1) 20px var(--sp-4);
+
+  padding: 10px 14px;
+
+  border: 1px solid var(--warn-line);
+  border-radius: var(--r-control);
+
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+.info-note mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  margin-block-start: 2px;
+
+  font-size: 18px;
+}
+
+
+/* ---------- Narrow screens ---------- */
+
+/* Not enough room for the side column: the account card goes under. */
+@media (max-width: 1100px) {
+  .info-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Phone: one column of items, 16px card padding */
+@media (max-width: 719.98px) {
+
+  .info-grid {
+    gap: var(--sp-4);
   }
 
-}
-
-
-@media (max-width: 480px) {
-
-  .details-section {
-    padding: 14px;
+  .card-title {
+    padding: 14px var(--sp-4) 10px;
   }
 
-  .details-grid {
-    grid-template-columns: 1fr;
+  .details-list {
+    grid-template-columns: minmax(0, 1fr);
+
+    padding: 0 var(--sp-4) 6px;
+  }
+
+  .details-list:not(.one-column) .detail-item:nth-child(n) {
+    padding-inline: 0;
+
+    border-inline-start: 0;
+  }
+
+  .info-note {
+    margin-inline: var(--sp-4);
   }
 
 }

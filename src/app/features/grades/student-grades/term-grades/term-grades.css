@@ -1,3 +1,11 @@
+/* ==========================================================
+   Term grades (student page "Grades" tab, «علاماتي», «علامات أبنائي»)
+   Navy & gold: one summary card (title and term for the staff, the
+   numbers strip, the chips, the note), then the subject cards in two
+   columns (one on the phone).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 /* The term behaves like a block inside the parent. */
 :host {
   display: block;
@@ -5,212 +13,255 @@
 
 
 /* ================================
-   Staff: toolbar and info row
+   Summary card
    ================================ */
 
-.term-toolbar {
+.summary-card {
+  min-width: 0;
+
+  margin-block-end: var(--sp-6);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+
+  overflow: hidden;
+}
+
+/* Staff: "Term grades" + the term field */
+.summary-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
 
-  gap: 12px 16px;
+  gap: var(--sp-3);
 
-  margin-bottom: 12px;
+  padding: var(--sp-4) 20px var(--sp-3);
 }
 
-.term-info {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.summary-title {
+  flex: 1;
 
-  gap: 10px 14px;
+  margin: 0;
 
-  margin-bottom: 16px;
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
+/* The numbers strip: under the head (staff) or at the top (portal) */
+.stats {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  margin: 0;
+
+  border-block-end: 1px solid var(--rule);
+}
+
+.summary-head + .stats {
+  border-block-start: 1px solid var(--rule);
+}
+
+.stat {
+  min-width: 0;
+
+  padding: 14px 20px;
+}
+
+.stat + .stat {
+  border-inline-start: 1px solid var(--rule);
+}
+
+.stat dt {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 600;
+}
+
+.stat dd {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-24);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.stat dd.is-bad {
+  color: var(--bad-ink);
+}
+
+.stat dd.is-warn {
+  color: var(--warn-ink);
+}
+
+
+/* Staff: class and section, "grades are closed" */
 .chips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 8px;
+  gap: var(--sp-2);
+
+  padding: var(--sp-3) 20px 0;
 }
 
-.class-chip,
-.closed-chip {
+/* Not active (no numbers): the chips sit right under a rule */
+.summary-head + .chips {
+  border-block-start: 1px solid var(--rule);
+}
+
+/* No note under the chips (not active): space at the bottom */
+.chips:last-child {
+  padding-block-end: var(--sp-3);
+}
+
+.info-chip {
   display: inline-flex;
   align-items: center;
 
   gap: 6px;
 
-  padding: 6px 12px;
+  height: 26px;
 
-  border-radius: 20px;
+  padding-inline: 10px;
 
-  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+
+  background: var(--raised);
+  color: var(--muted);
+
+  font-size: var(--fs-12);
   font-weight: 600;
 
   white-space: nowrap;
+
+  box-sizing: border-box;
 }
 
-.class-chip {
-  background: #e7f6ee;
-  color: #166534;
-}
-
-.closed-chip {
-  background: #eef2f7;
-  color: #334155;
-}
-
-.class-chip mat-icon,
-.closed-chip mat-icon {
+.info-chip mat-icon {
   width: 16px;
   height: 16px;
+
+  color: var(--faint);
 
   font-size: 16px;
 }
 
 
 /* ================================
-   Portal: counters and note in one box
-   ================================ */
-
-.summary-box {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 10px 16px;
-
-  margin-bottom: 16px;
-  padding: 12px 14px;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-}
-
-.summary-box .note {
-  flex: 1 1 260px;
-
-  justify-content: flex-end;
-}
-
-
-/* ================================
-   Counters (same colors as the grade sheet)
-   ================================ */
-
-.counters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-
-  gap: 8px;
-}
-
-.counter {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 6px;
-
-  padding: 6px 12px;
-
-  border-radius: 20px;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.counter strong {
-  font-variant-numeric: tabular-nums;
-}
-
-.counter.total {
-  background: #f1f5f9;
-  color: #374151;
-}
-
-.counter.passed {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.counter.failed {
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.counter.incomplete {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-
-/* ================================
-   Note
+   Note (info colours)
    ================================ */
 
 .note {
   display: flex;
   align-items: flex-start;
 
-  gap: 6px;
+  gap: var(--sp-2);
 
-  min-width: 0;
-  margin: 0;
+  margin: var(--sp-3) 20px;
 
-  font-size: 13px;
+  padding: 10px 14px;
+
+  border-radius: var(--r-control);
+
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+
+  font-size: var(--fs-13);
   line-height: 1.6;
-
-  color: #6b7280;
 }
 
 .note mat-icon {
   flex-shrink: 0;
 
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
 
-  margin-top: 2px;
+  margin-block-start: 2px;
 
-  font-size: 17px;
+  font-size: 18px;
 }
 
 
 /* ================================
-   Cards: as many columns as fit
-   (two in the student dialog, one on a phone)
+   Subject cards: two columns (one when there is no room)
    ================================ */
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   align-items: start;
 
-  gap: 16px;
+  gap: var(--sp-6);
 }
 
 
 /* ================================
-   Responsive
+   Phone (under 720px)
    ================================ */
 
-@media (max-width: 650px) {
+@media (max-width: 719.98px) {
 
-  .cards {
-    grid-template-columns: 1fr;
+  .summary-card {
+    margin-block-end: var(--sp-4);
   }
 
-  .summary-box .note {
-    justify-content: flex-start;
+  .summary-head {
+    padding: 14px var(--sp-4) 10px;
+  }
+
+  .summary-title {
+    flex-basis: 100%;
+  }
+
+  /* 2 × 2 numbers */
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .stat + .stat {
+    border-inline-start: 0;
+  }
+
+  .stat:nth-child(even) {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  .stat:nth-child(n + 3) {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .stat dd {
+    font-size: var(--fs-20);
+  }
+
+  .chips {
+    padding-inline: var(--sp-4);
+  }
+
+  .note {
+    margin-inline: var(--sp-4);
+  }
+
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+
+    gap: var(--sp-4);
   }
 
 }

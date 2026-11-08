@@ -259,7 +259,9 @@
       "LOADING": "جاري تحميل بيانات الطالب...",
       "ERROR_TITLE": "تعذر تحميل بيانات الطالب",
       "INVALID_ID": "معرف الطالب غير صالح.",
-      "LOAD_FAILED": "فشل في تحميل بيانات الطالب. يرجى المحاولة مرة أخرى."
+      "LOAD_FAILED": "فشل في تحميل بيانات الطالب. يرجى المحاولة مرة أخرى.",
+      "CLASS_SECTION": "{{class}} · شعبة {{section}}",
+      "TABS_LABEL": "أقسام صفحة الطالب"
     },
     "TABS": {
       "DETAILS": "البيانات",
@@ -268,28 +270,29 @@
       "PARENTS": "أولياء الأمور"
     },
     "INFO_TAB": {
-      "PERSONAL_INFORMATION": "المعلومات الشخصية",
-      "PERSONAL_INFORMATION_DESCRIPTION": "البيانات الأساسية للطالب",
+      "STUDENT_CARD": "بيانات الطالب",
+      "ACCOUNT_CARD": "الحساب",
       "NAME_AR": "الاسم بالعربية",
       "NAME_EN": "الاسم بالإنجليزية",
       "PHONE": "رقم الهاتف",
-      "ACADEMIC_INFORMATION": "المعلومات الأكاديمية",
-      "ACADEMIC_INFORMATION_DESCRIPTION": "الصف والشعبة التي يدرس فيها الطالب",
-      "ACCOUNT_INFORMATION": "معلومات الحساب",
-      "ACCOUNT_INFORMATION_DESCRIPTION": "معلومات حساب الطالب والوصول إلى النظام",
-      "ROLE": "الدور",
-      "PASSWORD_STATUS": "حالة كلمة المرور",
-      "MUST_CHANGE_PASSWORD": "يجب تغيير كلمة المرور",
-      "PASSWORD_NORMAL": "كلمة المرور محدثة"
+      "ACCOUNT_STATUS": "حالة الحساب",
+      "PASSWORD_STATUS": "كلمة المرور",
+      "MUST_CHANGE_PASSWORD": "يغيّرها عند أول دخول",
+      "PASSWORD_NORMAL": "غيّرها الطالب",
+      "GRADUATED_NOTE": "تخرّج هذا الطالب، وبياناته وسجلاته محفوظة للاطلاع فقط."
     },
     "ATTENDANCE_TAB": {
+      "TITLE": "سجل الحضور",
       "RECORDED_DAYS": "الأيام المسجَّلة",
+      "RATE": "نسبة الحضور",
+      "RATE_HINT": "من الأيام المسجَّلة",
       "TERM": "الفصل الدراسي",
       "ALL_TERMS": "جميع الفصول",
       "TERM_NUMBER": "فصل رقم {{id}}",
       "NOTE": "تظهر الأيام المسجَّلة فقط. اليوم الذي لا يوجد له سجل لا يعني أن الطالب كان حاضرًا.",
       "LOADING": "جارٍ تحميل سجل الحضور...",
-      "RETRY": "إعادة المحاولة",
+      "RECORDED": "سُجّل {{time}}",
+      "EDITED": "عُدّل {{time}}",
       "TABLE": {
         "DATE": "التاريخ",
         "STATUS": "الحالة",
@@ -303,10 +306,11 @@
     },
     "PARENTS_TAB": {
       "TITLE": "أولياء الأمور",
-      "DESCRIPTION": "أولياء الأمور المرتبطون بالطالب ورقم هاتف كل منهم",
+      "PARENT": "ولي الأمر",
+      "RELATIONSHIP": "الصلة",
+      "PHONE": "رقم الهاتف",
       "LOADING": "جاري تحميل أولياء الأمور...",
       "LOAD_FAILED": "فشل في تحميل أولياء الأمور. يرجى المحاولة مرة أخرى.",
-      "RETRY": "إعادة المحاولة",
       "EMPTY": "لا يوجد أولياء أمور مرتبطون بهذا الطالب."
     }
   },
@@ -903,6 +907,7 @@
     "LOADING": "جاري تحميل العلامات...",
     "NOT_FOUND": "الطالب غير موجود.",
     "TERM": "الفصل الدراسي",
+    "TERM_TITLE": "علامات الفصل",
     "TERM_LABEL": "{{term}}، {{year}}",
     "CLASS_SECTION": "{{class}}، شعبة {{section}}",
     "GRADES_CLOSED": "العلامات مغلقة",
