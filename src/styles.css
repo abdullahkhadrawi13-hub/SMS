@@ -97,6 +97,243 @@ button:focus-visible,
   --mat-button-filled-label-text-color: var(--on-primary);
 }
 
+/* ---------- Form fields ----------
+   One look for form fields, used instead of mat-form-field
+   (decided 8 Nov 2026; the students form is the first user, the teacher
+   and parent forms take it when they are redesigned). Plain <input> and
+   <select> inside a box; the label above, the help or the error below.
+
+   <div class="field">
+     <label class="field-label" for="x">Label</label>
+     <div class="field-box" [class.is-invalid]="…">
+       <input id="x" formControlName="x" />
+       <button type="button" class="field-action">…</button>   optional
+     </div>
+     <div class="field-help">One short line</div>   or   .field-error
+   </div>
+
+   Variants of .field-box:
+     .is-invalid    red border (the error line goes under it)
+     .is-readonly   grey, for a value that cannot change (lock icon:
+                    <mat-icon class="field-icon">lock</mat-icon> before it)
+     .is-select     a <select>, with <mat-icon class="field-chevron">
+   A disabled input or select greys its box by itself. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.field-label {
+  color: var(--muted);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.field-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  height: var(--h-control);
+  box-sizing: border-box;
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+  background: var(--surface);
+
+  transition: border-color var(--dur), box-shadow var(--dur);
+}
+
+.field-box > input,
+.field-box > select {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding-inline: 10px;
+
+  border: 0;
+  border-radius: inherit;
+  outline: none;
+  background: none;
+
+  color: var(--text);
+  font: 400 var(--fs-14) / 1.6 var(--font);
+  text-align: start;
+}
+
+.field-box > input::placeholder {
+  color: var(--faint);
+  opacity: 1;
+}
+
+.field-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field-box.is-invalid {
+  border-color: var(--bad);
+}
+
+.field-box:has(> :disabled),
+.field-box.is-readonly {
+  border-color: var(--border);
+  background: var(--raised);
+  box-shadow: none;
+}
+
+.field-box > :disabled {
+  color: var(--faint);
+  cursor: not-allowed;
+}
+
+/* select: no browser arrow, our chevron at the end instead.
+   The chevron and the spinner are flex items after the select, pulled
+   over its end with a negative margin. (No inset-inline-end on the icon:
+   .material-icons is direction: ltr, so it would land on the wrong side
+   in Arabic. Their own margins are equal on both sides for the same reason.) */
+.field-box.is-select > select {
+  appearance: none;
+  margin-inline-end: -36px;
+  padding-inline-end: 36px;
+  cursor: pointer;
+}
+
+.field-box .field-chevron,
+.field-box .field-spinner {
+  position: relative;
+  flex: none;
+  margin: 0 var(--sp-2);
+  pointer-events: none;
+}
+
+.field-box .field-chevron {
+  width: 20px;
+  height: 20px;
+
+  color: var(--faint);
+  font-size: 20px;
+}
+
+.field-box .field-spinner {
+  margin: 0 10px;
+}
+
+/* An icon at the start of the box (lock on a read-only value) */
+.field-box:has(> .field-icon) {
+  padding-inline-start: 10px;
+}
+
+.field-box .field-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+
+  color: var(--faint);
+  font-size: 18px;
+}
+
+.field-box .field-icon + input {
+  padding-inline-start: var(--sp-2);
+}
+
+/* A small text button inside the box, at the end ("Generate") */
+.field-action {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: var(--sp-1);
+
+  height: 28px;
+  margin-inline-end: var(--sp-1);
+  padding: 0 var(--sp-2);
+
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  cursor: pointer;
+
+  color: var(--accent-ink);
+  font: 600 var(--fs-13) / 1 var(--font);
+
+  transition: background-color var(--dur);
+}
+
+.field-action:hover {
+  background: var(--accent-soft);
+}
+
+.field-action .mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+.field-help {
+  color: var(--faint);
+  font-size: var(--fs-12);
+  line-height: 1.5;
+}
+
+.field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-1);
+
+  color: var(--bad-ink);
+  font-size: var(--fs-13);
+  line-height: 1.4;
+}
+
+.field-error .mat-icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-block-start: 1px;
+
+  font-size: 16px;
+}
+
+/* Phone: 44px for touch */
+@media (max-width: 719.98px) {
+  .field-box {
+    height: var(--h-touch);
+  }
+
+  .field-action {
+    height: 36px;
+  }
+}
+
+/* ---------- Form dialog panel ----------
+   panelClass: 'form-dialog' on MatDialog.open() of an add/edit form
+   (students form first). 10px corners and the floating shadow; under
+   720px the dialog fills the screen with no corners. !important wins over
+   the width / maxWidth / maxHeight that open() writes on the pane. */
+.form-dialog {
+  --mat-dialog-container-shape: var(--r-card);
+  --mat-dialog-container-color: var(--surface);
+  --mat-dialog-container-elevation-shadow: var(--shadow-pop);
+  --mat-dialog-container-small-max-width: 100vw;
+}
+
+@media (max-width: 719.98px) {
+  .cdk-overlay-pane.form-dialog {
+    --mat-dialog-container-shape: 0;
+
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+}
+
 /* ---------- Direction ----------
    Add class="flip" to directional arrows (next/back, chevrons).
    They mirror automatically in Arabic. Don't use it on ✓, ✕ or search. */

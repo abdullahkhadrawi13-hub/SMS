@@ -2,49 +2,43 @@ import {
   Component,
   computed,
   DestroyRef,
+  ElementRef,
   inject,
   signal
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 
-import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
-import { catchError, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
   MAT_DIALOG_DATA,
+  MatDialog,
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog';
-
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
+
 import {
   LOGIN_ID_MAX_LENGTH,
   USER_NAME_MAX_LENGTH
 } from '../../../shared/constants/field-lengths';
-import { TEMP_PASSWORD_MAX_LENGTH } from '../../../shared/utils/temp-password';
+import {
+  generateTempPassword,
+  TEMP_PASSWORD_MAX_LENGTH
+} from '../../../shared/utils/temp-password';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
-
 import { SectionsService } from '../../../core/services/sections';
-
 import { Students } from '../../../core/services/students';
-
 import { ApiMessageService } from '../../../core/services/api-message';
-import { ActionResult } from '../../../shared/services/action-result';
-
-
-
 import { Language } from '../../../core/services/language';
+import { ActionResult } from '../../../shared/services/action-result';
 
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
 import { ActiveSectionDto } from '../../../core/models/section';
@@ -54,9 +48,13 @@ import {
   StudentRequest,
   StudentStatus
 } from '../../../core/models/student';
-import { PageHeader } from '../../../shared/components/page-header/page-header';
+
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
+import {
+  PlanConfirmData,
+  PlanConfirmDialog
+} from '../../subjects/subject-plans/plan-confirm-dialog/plan-confirm-dialog';
 
 
 export interface StudentFormDialogData {
@@ -64,20 +62,51 @@ export interface StudentFormDialogData {
 }
 
 
+// The name of one of the form's controls.
+type FieldName = keyof StudentsForm['studentForm']['controls'];
+
+
+// Arabic name parts: Arabic letters, spaces, dots and hyphens.
+const ARABIC_NAME = /^[؀-ۿ\s.-]+$/;
+
+// English name parts: English letters, spaces, dots and hyphens.
+const ENGLISH_NAME = /^[A-Za-z\s.-]+$/;
+
+
+// The four parts of a name, in order. Used by the template to draw
+// the Arabic row and the English row with the same labels.
+type NamePart = 'firstName' | 'fatherName' | 'grandFatherName' | 'familyName';
+
+const NAME_PARTS: { part: NamePart; labelKey: string }[] = [
+  { part: 'firstName',       labelKey: 'STUDENTS_FORM.NAME.FIRST' },
+  { part: 'fatherName',      labelKey: 'STUDENTS_FORM.NAME.FATHER' },
+  { part: 'grandFatherName', labelKey: 'STUDENTS_FORM.NAME.GRAND_FATHER' },
+  { part: 'familyName',      labelKey: 'STUDENTS_FORM.NAME.FAMILY' },
+];
+
+
+// Add / edit student dialog (navy & gold, week 3).
+// Plan: claude/SMS-Students-Form-Plan.md (8 Nov 2026).
+//
+//   - fixed header (title, one line, ✕), the body scrolls, fixed footer
+//   - fields use the shared look in styles.css (.field, .field-box…)
+//   - closing with unsaved changes asks "Discard changes?" first
+//     (backdrop click, Esc, ✕ and Cancel)
+//   - saving with errors: every field is marked, the first wrong field
+//     gets the focus, and the footer says how many need fixing
+//   - after saving: the backend message in action-result-dialog, then close
+//
+// The dialog is opened by students-page with panelClass 'form-dialog'
+// (full screen on the phone, see styles.css).
 @Component({
   selector: 'app-student-form',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatSelectModule,
     TranslatePipe,
-    PageHeader,
     StateCard,
     StudentStatusBadge,
   ],
@@ -91,70 +120,140 @@ export class StudentsForm {
   readonly loginIdMaxLength = LOGIN_ID_MAX_LENGTH;
   readonly passwordMaxLength = TEMP_PASSWORD_MAX_LENGTH;
 
+  readonly nameParts = NAME_PARTS;
+  readonly graduatedStatus = StudentStatus.Graduated;
+
   private readonly fb = inject(FormBuilder);
-  private readonly studentsService = inject(Students);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly dialog = inject(MatDialog);
   private readonly dialogRef = inject(MatDialogRef<StudentsForm>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly language = inject(Language);
 
+  private readonly studentsService = inject(Students);
+  private readonly classesService = inject(SchoolClassesService);
+  private readonly sectionsService = inject(SectionsService);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
 
-
-  private readonly classesService = inject(SchoolClassesService);
-  private readonly sectionsService = inject(SectionsService);
   private readonly dialogData =
-    inject<StudentFormDialogData>(MAT_DIALOG_DATA);
+    inject<StudentFormDialogData>(MAT_DIALOG_DATA, { optional: true });
 
-  readonly direction = computed(() => this.language.currentDirection());
+  // The direction is set once on <html> by the Language service;
+  // here we only need to know which name to show (Arabic or English).
+  readonly isArabic = computed(
+    () => this.language.currentDirection() === 'rtl'
+  );
+
+  readonly studentId = signal<number | null>(
+    this.dialogData?.studentId ?? null
+  );
+
+  readonly isEditMode = signal(!!this.dialogData?.studentId);
 
   readonly classes = signal<SchoolClassSimpleDto[]>([]);
   readonly sections = signal<ActiveSectionDto[]>([]);
+
+  // The class chosen in the form (0 = none). Kept as a signal so the
+  // section placeholder can say why the section list is empty.
+  readonly selectedClassId = signal(0);
 
   readonly isLoadingClasses = signal(false);
   readonly isLoadingSections = signal(false);
   readonly isLoading = signal(false);
   readonly isSubmitting = signal(false);
 
+  // Loading the student failed (edit): shown in a state card with Retry.
+  readonly loadError = signal('');
+
+  // A problem found before sending (invalid id): shown above the footer.
   readonly errorMessage = signal('');
 
-  // Edit mode, studentStatus = Graduated (API Reference, section 4):
-  // the class and section are the ones the student graduated from and
-  // cannot be changed. They are shown read-only (by name, from the student),
-  // and sent back unchanged with the personal details.
-  readonly isGraduated = signal(false);
-  readonly graduatedStatus = StudentStatus.Graduated;
-  readonly graduatedClassName = signal('');
-  readonly graduatedSectionName = signal('');
+  // The student as it came from GET (edit mode).
+  readonly student = signal<Student | null>(null);
 
-
-  readonly studentId = signal<number | null>(
-    this.dialogData?.studentId ?? null
+  // Graduated (API Reference, section 4): the class and section are the
+  // ones the student graduated from and cannot be changed.
+  readonly isGraduated = computed(
+    () => this.student()?.studentStatus === StudentStatus.Graduated
   );
 
-  readonly isEditMode = signal(
-    !!this.dialogData?.studentId
-  );
+  // Edit header line: the student's name in the UI language · number.
+  readonly studentName = computed(() => {
+    const s = this.student();
+
+    if (!s) {
+      return '';
+    }
+
+    return this.isArabic()
+      ? `${s.firstNameAr} ${s.fatherNameAr} ${s.grandFatherNameAr} ${s.familyNameAr}`
+      : `${s.firstNameEn} ${s.fatherNameEn} ${s.grandFatherNameEn} ${s.familyNameEn}`;
+  });
+
+  readonly graduatedClassName = computed(() => {
+    const s = this.student();
+
+    return (s && (this.isArabic() ? s.classNameAr : s.classNameEn)) || '—';
+  });
+
+  readonly graduatedSectionName = computed(() => {
+    const s = this.student();
+
+    return (s && (this.isArabic() ? s.sectionAr : s.sectionEn)) || '—';
+  });
+
+  // What the disabled / empty section list says.
+  readonly sectionPlaceholderKey = computed(() => {
+    if (this.selectedClassId() < 1) {
+      return 'STUDENTS_FORM.PLACEMENT.SECTION_FIRST';
+    }
+
+    if (this.isLoadingSections()) {
+      return 'STUDENTS_FORM.PLACEMENT.LOADING_SECTIONS';
+    }
+
+    if (this.sections().length === 0) {
+      return 'STUDENTS_FORM.PLACEMENT.NO_SECTIONS';
+    }
+
+    return 'STUDENTS_FORM.PLACEMENT.SELECT_SECTION';
+  });
+
+  // "N fields need fixing" next to the buttons, after a save with errors.
+  readonly submitAttempted = signal(false);
+  readonly invalidCount = signal(0);
+
+  readonly invalidCountKey = computed(() => {
+    const count = this.invalidCount();
+
+    if (count === 1) return 'STUDENTS_FORM.ERRORS_COUNT.ONE';
+    if (count === 2) return 'STUDENTS_FORM.ERRORS_COUNT.TWO';
+    if (count <= 10) return 'STUDENTS_FORM.ERRORS_COUNT.FEW';
+
+    return 'STUDENTS_FORM.ERRORS_COUNT.MANY';
+  });
+
+  // The discard question is open (so a second Esc does not open another).
+  private isConfirmingClose = false;
+
 
   readonly studentForm = this.fb.nonNullable.group({
-    // Arabic name fields: allow Arabic letters, spaces, dots, and hyphens
-    firstNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s.-]+$/)]],
-    fatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s.-]+$/)]],
-    grandFatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s.-]+$/)]],
-    familyNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\u0600-\u06FF\s.-]+$/)]],
+    firstNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ARABIC_NAME)]],
+    fatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ARABIC_NAME)]],
+    grandFatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ARABIC_NAME)]],
+    familyNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ARABIC_NAME)]],
 
-    // English name fields: allow English letters, spaces, dots, and hyphens
-    firstNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
-    fatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
-    grandFatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
-    familyNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
+    firstNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ENGLISH_NAME)]],
+    fatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ENGLISH_NAME)]],
+    grandFatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ENGLISH_NAME)]],
+    familyNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ENGLISH_NAME)]],
 
     loginId: ['', [Validators.required, Validators.minLength(3)]],
 
     temporaryPassword: ['', [Validators.required, Validators.minLength(8)]],
 
-    phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]
-    ],
+    phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
 
     classId: [0, [Validators.required, Validators.min(1)]],
 
@@ -163,41 +262,107 @@ export class StudentsForm {
 
 
   constructor() {
-    // الشعبة معطّلة حتى يتم اختيار الصف
+    this.setUpClosing();
+
+    // The section stays disabled until a class is chosen.
     this.studentForm.controls.sectionId.disable();
 
     this.loadClasses();
 
-    // عند تغيير الصف: تصفير الشعبة وتحميل شعب الصف الجديد
+    // A new class: clear the section and load that class's sections.
     this.studentForm.controls.classId.valueChanges
       .pipe(
-        tap(() => {
+        tap(classId => {
+          this.selectedClassId.set(classId);
           this.sections.set([]);
-          this.studentForm.controls.sectionId.reset(0, {
-            emitEvent: false
-          });
 
-          this.studentForm.controls.sectionId.disable({
-            emitEvent: false
-          });
+          this.studentForm.controls.sectionId.reset(0, { emitEvent: false });
+          this.studentForm.controls.sectionId.disable({ emitEvent: false });
         }),
         switchMap(classId => this.fetchSections(classId)),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(sections => this.applySections(sections));
 
+    // Keep the error count up to date while the user fixes the fields.
+    this.studentForm.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.invalidCount.set(this.countInvalid()));
+
     if (this.isEditMode()) {
-      const id = this.studentId();
-
-      if (id) {
-        this.loadStudent(id);
-      }
-
       this.studentForm.controls.temporaryPassword.clearValidators();
       this.studentForm.controls.temporaryPassword.updateValueAndValidity();
+
+      this.loadStudent();
     }
   }
 
+
+  // =========================
+  // Closing
+  // =========================
+
+  // Backdrop click and Esc do not close the dialog by themselves:
+  // they go through requestClose(), which asks first when something changed.
+  private setUpClosing(): void {
+    this.dialogRef.disableClose = true;
+
+    this.dialogRef
+      .backdropClick()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.requestClose());
+
+    this.dialogRef
+      .keydownEvents()
+      .pipe(
+        filter(event => event.key === 'Escape'),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(event => {
+        event.preventDefault();
+        this.requestClose();
+      });
+  }
+
+
+  // ✕, Cancel, backdrop click and Esc.
+  requestClose(): void {
+    if (this.isSubmitting() || this.isConfirmingClose) {
+      return;
+    }
+
+    if (!this.studentForm.dirty) {
+      this.dialogRef.close();
+      return;
+    }
+
+    this.isConfirmingClose = true;
+
+    this.dialog
+      .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
+        maxWidth: '95vw',
+        data: {
+          icon: 'edit_note',
+          titleKey: 'STUDENTS_FORM.DISCARD.TITLE',
+          messageKey: 'STUDENTS_FORM.DISCARD.MESSAGE',
+          confirmKey: 'STUDENTS_FORM.DISCARD.CONFIRM',
+          tone: 'danger',
+        },
+      })
+      .afterClosed()
+      .subscribe(confirmed => {
+        this.isConfirmingClose = false;
+
+        if (confirmed === true) {
+          this.dialogRef.close();
+        }
+      });
+  }
+
+
+  // =========================
+  // Classes and sections
+  // =========================
 
   private loadClasses(): void {
     this.isLoadingClasses.set(true);
@@ -220,7 +385,7 @@ export class StudentsForm {
   }
 
 
-  // يرجع الشعب النشطة للصف، أو [] إذا لم يُختر صف
+  // The class's active sections, or [] when no class is chosen.
   private fetchSections(classId: number) {
     if (!classId || classId < 1) {
       return of<ActiveSectionDto[]>([]);
@@ -229,9 +394,7 @@ export class StudentsForm {
     this.isLoadingSections.set(true);
 
     return this.sectionsService.getActiveSectionsByClass(classId).pipe(
-      switchMap(response =>
-        of(response.success ? response.data : [])
-      ),
+      switchMap(response => of(response.success ? response.data : [])),
 
       catchError((error: HttpErrorResponse) => {
         console.error('Failed to load sections:', error);
@@ -246,38 +409,42 @@ export class StudentsForm {
     this.isLoadingSections.set(false);
 
     if (sections.length > 0) {
-      this.studentForm.controls.sectionId.enable({
-        emitEvent: false
-      });
+      this.studentForm.controls.sectionId.enable({ emitEvent: false });
     }
   }
 
 
   getClassName(c: SchoolClassSimpleDto): string {
-    return document.documentElement.lang === 'ar'
-      ? c.classNameAr
-      : c.classNameEn;
+    return this.isArabic() ? c.classNameAr : c.classNameEn;
   }
 
 
   getSectionName(s: ActiveSectionDto): string {
-    return document.documentElement.lang === 'ar'
-      ? s.sectionAr
-      : s.sectionEn;
+    return this.isArabic() ? s.sectionAr : s.sectionEn;
   }
 
 
-  private loadStudent(studentId: number): void {
+  // =========================
+  // Edit: load the student
+  // =========================
+
+  loadStudent(): void {
+    const id = this.studentId();
+
+    if (!id) {
+      return;
+    }
+
     this.isLoading.set(true);
-    this.errorMessage.set('');
+    this.loadError.set('');
 
     this.studentsService
-      .getStudent(studentId)
+      .getStudent(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => {
           if (!response.success || !response.data) {
-            this.errorMessage.set(
+            this.loadError.set(
               this.apiMessageService.getMessage(response) ||
               'STUDENTS_FORM.ERROR.LOAD_FAILED'
             );
@@ -288,7 +455,10 @@ export class StudentsForm {
 
           const student = response.data;
 
-          // لا نشغّل cascading عند تحميل الصف المحفوظ
+          this.student.set(student);
+          this.selectedClassId.set(student.classId);
+
+          // emitEvent: false so the saved class does not clear the section.
           this.studentForm.patchValue({
             firstNameAr: student.firstNameAr,
             fatherNameAr: student.fatherNameAr,
@@ -310,31 +480,28 @@ export class StudentsForm {
 
           this.isLoading.set(false);
 
-          // طالب متخرج: الصف والشعبة مقفلان (يُرسلان كما وصلا)
+          // Graduated: the class and section are locked (sent back as they came).
           if (student.studentStatus === StudentStatus.Graduated) {
             this.lockGraduatedPlacement(student);
             return;
           }
 
-          // تحميل شعب الصف ثم تحديد شعبة الطالب الحالية
+          // Load the class's sections, then select the student's section.
           this.fetchSections(student.classId)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(sections => {
               this.applySections(sections);
 
-              this.studentForm.controls.sectionId.setValue(
-                student.sectionId
-              );
+              this.studentForm.controls.sectionId.setValue(student.sectionId, {
+                emitEvent: false
+              });
             });
         },
 
         error: (error: HttpErrorResponse) => {
           console.error('Failed to load student:', error);
 
-          this.errorMessage.set(
-            'STUDENTS_FORM.ERROR.LOAD_FAILED'
-          );
-
+          this.loadError.set('STUDENTS_FORM.ERROR.LOAD_FAILED');
           this.isLoading.set(false);
         }
       });
@@ -347,19 +514,6 @@ export class StudentsForm {
   // Their names come with the student, so the sections are not loaded
   // (the graduation class or section may not even be active any more).
   private lockGraduatedPlacement(student: Student): void {
-
-    const isArabic = document.documentElement.lang === 'ar';
-
-    this.isGraduated.set(true);
-
-    this.graduatedClassName.set(
-      (isArabic ? student.classNameAr : student.classNameEn) || '—'
-    );
-
-    this.graduatedSectionName.set(
-      (isArabic ? student.sectionAr : student.sectionEn) || '—'
-    );
-
     this.studentForm.controls.sectionId.setValue(student.sectionId, {
       emitEvent: false
     });
@@ -369,12 +523,40 @@ export class StudentsForm {
   }
 
 
+  // =========================
+  // Temporary password (add only)
+  // =========================
+
+  // Fills the field with a password like Abc-4def-g7 (11 characters,
+  // backend: 8 to 100, no other rules). The field stays editable by hand.
+  generatePassword(): void {
+    const control = this.studentForm.controls.temporaryPassword;
+
+    control.setValue(generateTempPassword());
+    control.markAsDirty();
+    control.markAsTouched();
+  }
+
+
+  // =========================
+  // Save
+  // =========================
+
   onSubmit(): void {
+    // The button keeps its colour while saving, so guard here instead.
+    if (this.isSubmitting()) {
+      return;
+    }
+
     this.errorMessage.set('');
-    
 
     if (this.studentForm.invalid) {
       this.studentForm.markAllAsTouched();
+
+      this.submitAttempted.set(true);
+      this.invalidCount.set(this.countInvalid());
+
+      this.focusFirstInvalid();
       return;
     }
 
@@ -416,27 +598,16 @@ export class StudentsForm {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => {
-
           this.isSubmitting.set(false);
 
           if (!response.success) {
-            this.actionResult.show(
-              'error',
-              this.apiMessageService.getMessage(response)
-            );
-
+            this.actionResult.show('error', this.apiMessageService.getMessage(response));
             return;
           }
 
-          this.dialogRef.close({
-            success: true,
-            action: 'created'
-          });
+          this.dialogRef.close({ success: true, action: 'created' });
 
-          this.actionResult.show(
-            'success',
-            this.apiMessageService.getMessage(response)
-          );
+          this.actionResult.show('success', this.apiMessageService.getMessage(response));
         },
 
         error: (error: HttpErrorResponse) => {
@@ -444,10 +615,7 @@ export class StudentsForm {
 
           this.isSubmitting.set(false);
 
-          this.actionResult.show(
-            'error',
-            this.apiMessageService.getErrorMessage(error)
-          );
+          this.actionResult.show('error', this.apiMessageService.getErrorMessage(error));
         }
       });
   }
@@ -457,10 +625,7 @@ export class StudentsForm {
     const id = this.studentId();
 
     if (!id) {
-      this.errorMessage.set(
-        'STUDENTS_FORM.ERROR.INVALID_ID'
-      );
-
+      this.errorMessage.set('STUDENTS_FORM.ERROR.INVALID_ID');
       this.isSubmitting.set(false);
       return;
     }
@@ -493,22 +658,13 @@ export class StudentsForm {
           this.isSubmitting.set(false);
 
           if (!response.success) {
-            this.actionResult.show(
-              'error',
-              this.apiMessageService.getMessage(response)
-            );
+            this.actionResult.show('error', this.apiMessageService.getMessage(response));
             return;
           }
 
-          this.dialogRef.close({
-            success: true,
-            action: 'updated'
-          });
+          this.dialogRef.close({ success: true, action: 'updated' });
 
-          this.actionResult.show(
-            'success',
-            this.apiMessageService.getMessage(response)
-          );
+          this.actionResult.show('success', this.apiMessageService.getMessage(response));
         },
 
         error: (error: HttpErrorResponse) => {
@@ -516,25 +672,54 @@ export class StudentsForm {
 
           this.isSubmitting.set(false);
 
-          this.actionResult.show(
-            'error',
-            this.apiMessageService.getErrorMessage(error)
-          );
+          this.actionResult.show('error', this.apiMessageService.getErrorMessage(error));
         }
       });
   }
 
 
-  cancel(): void {
-    this.dialogRef.close();
+  // =========================
+  // Errors
+  // =========================
+
+  // Enabled fields that are still wrong (a disabled field is never invalid).
+  private countInvalid(): number {
+    return Object.values(this.studentForm.controls)
+      .filter(control => control.invalid)
+      .length;
   }
 
 
-  isFieldInvalid(
-    fieldName: keyof typeof this.studentForm.controls
-  ): boolean {
+  // The first wrong field in the order it is shown, so the user starts there.
+  private focusFirstInvalid(): void {
+    const field = this.host.nativeElement.querySelector<HTMLElement>(
+      'input.ng-invalid, select.ng-invalid'
+    );
+
+    field?.focus();
+    field?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+
+
+  isFieldInvalid(fieldName: FieldName): boolean {
     const control = this.studentForm.controls[fieldName];
 
     return control.invalid && control.touched;
+  }
+
+
+  // The id of a field's error line, for aria-describedby.
+  describedBy(fieldName: string, hasHelp = false): string | null {
+    if (this.isFieldInvalid(fieldName as FieldName)) {
+      return `sf-${fieldName}-error`;
+    }
+
+    return hasHelp ? `sf-${fieldName}-help` : null;
+  }
+
+
+  // Name rows: the form control of a name part in one language.
+  nameControl(part: NamePart, lang: 'Ar' | 'En'): FieldName {
+    return `${part}${lang}` as FieldName;
   }
 }

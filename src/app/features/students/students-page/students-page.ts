@@ -428,11 +428,14 @@ export class StudentsPage {
     const dialogRef =
       this.dialog.open(StudentsForm, {
 
-        width: '900px',
+        width: '880px',
 
         maxWidth: '95vw',
 
-        maxHeight: '90vh'
+        maxHeight: '90vh',
+
+        // Shared form panel (styles.css): full screen on the phone
+        panelClass: 'form-dialog'
 
       });
 
@@ -459,11 +462,14 @@ export class StudentsPage {
     const dialogRef =
       this.dialog.open(StudentsForm, {
 
-        width: '900px',
+        width: '880px',
 
         maxWidth: '95vw',
 
         maxHeight: '90vh',
+
+        // Shared form panel (styles.css): full screen on the phone
+        panelClass: 'form-dialog',
 
         data: {
           studentId
