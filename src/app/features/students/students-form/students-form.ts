@@ -701,10 +701,33 @@ export class StudentsForm {
   }
 
 
+  // When a field shows its error (decided 8 Nov 2026):
+  //   - an empty field says "required" only after pressing Add / Save,
+  //     so just moving through the fields never shows an error
+  //   - a field with something wrong typed in it (English letters in an
+  //     Arabic name, a 7-digit phone) shows it when the user leaves it
+  //   - after pressing the button every error shows, and each one goes
+  //     away as soon as its field is fixed
   isFieldInvalid(fieldName: FieldName): boolean {
     const control = this.studentForm.controls[fieldName];
 
-    return control.invalid && control.touched;
+    if (!control.invalid) {
+      return false;
+    }
+
+    if (this.submitAttempted()) {
+      return true;
+    }
+
+    return control.touched && this.hasValue(control.value);
+  }
+
+
+  // Something was typed or chosen (0 = no class / section chosen yet).
+  private hasValue(value: string | number): boolean {
+    return typeof value === 'number'
+      ? value > 0
+      : value.trim() !== '';
   }
 
 

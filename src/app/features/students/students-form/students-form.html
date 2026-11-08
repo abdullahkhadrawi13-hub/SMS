@@ -88,7 +88,10 @@
 
         <!-- In Arabic -->
         <fieldset class="sf-name-row">
-          <legend>{{ 'STUDENTS_FORM.NAME.IN_ARABIC' | translate }}</legend>
+          <legend>
+            <span>{{ 'STUDENTS_FORM.NAME.IN_ARABIC' | translate }}</span>
+            <span class="sf-lang-tag" lang="ar" aria-hidden="true">ع</span>
+          </legend>
 
           <div class="sf-grid sf-grid-4">
             @for (p of nameParts; track p.part; let first = $first) {
@@ -131,7 +134,10 @@
 
         <!-- In English -->
         <fieldset class="sf-name-row">
-          <legend>{{ 'STUDENTS_FORM.NAME.IN_ENGLISH' | translate }}</legend>
+          <legend>
+            <span>{{ 'STUDENTS_FORM.NAME.IN_ENGLISH' | translate }}</span>
+            <span class="sf-lang-tag" lang="en" aria-hidden="true">EN</span>
+          </legend>
 
           <div class="sf-grid sf-grid-4">
             @for (p of nameParts; track p.part) {

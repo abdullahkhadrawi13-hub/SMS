@@ -120,7 +120,9 @@
   font-size: var(--fs-13);
 }
 
-/* A name row: "In Arabic" / "In English" with its four parts */
+/* A name row: "Name in Arabic" / "Name in English" with its four parts.
+   The legend is a small heading (14px/700, main text colour) with a
+   language tag, so it never reads like one more field label (13px grey). */
 .sf-name-row {
   min-width: 0;
   margin: 0;
@@ -129,16 +131,41 @@
 }
 
 .sf-name-row + .sf-name-row {
-  margin-block-start: var(--sp-4);
+  margin-block-start: var(--sp-6);
 }
 
 .sf-name-row legend {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+
   padding: 0;
-  margin-block-end: 6px;
+  margin-block-end: 10px;
+
+  color: var(--text);
+  font-size: var(--fs-14);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.sf-lang-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 24px;
+  height: 20px;
+  box-sizing: border-box;
+  padding-inline: 6px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--raised);
 
   color: var(--muted);
-  font-size: var(--fs-13);
+  font-size: var(--fs-11);
   font-weight: 600;
+  line-height: 1;
 }
 
 .sf-grid {
@@ -284,6 +311,19 @@ app-state-card {
   .sf-grid-3 {
     grid-template-columns: 1fr;
     gap: var(--sp-3);
+  }
+
+  /* A thin rule between the Arabic and the English group, so the English
+     one reads as its own part. It is the bottom border of the Arabic group:
+     a fieldset draws its legend over its top border, so a top border on the
+     English group would cut through its heading. */
+  .sf-name-row:has(+ .sf-name-row) {
+    padding-block-end: 20px;
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .sf-name-row + .sf-name-row {
+    margin-block-start: 20px;
   }
 
   .sf-foot {

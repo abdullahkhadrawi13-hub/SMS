@@ -329,8 +329,8 @@
     "NAME": {
       "TITLE": "Student name",
       "HINT": "Full four-part name, as in official documents",
-      "IN_ARABIC": "In Arabic",
-      "IN_ENGLISH": "In English",
+      "IN_ARABIC": "Name in Arabic",
+      "IN_ENGLISH": "Name in English",
       "FIRST": "First name",
       "FATHER": "Father's name",
       "GRAND_FATHER": "Grandfather's name",
