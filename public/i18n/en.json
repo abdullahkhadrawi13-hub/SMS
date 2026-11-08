@@ -322,68 +322,76 @@
   },
 
   "STUDENTS_FORM": {
-    "GRADUATED": {
-      "NOTE": "This student graduated from this class and section, so they cannot be changed. You can edit the personal details only."
+    "ADD_TITLE": "Add student",
+    "ADD_SUBTITLE": "A new student account. The student number is generated after saving.",
+    "EDIT_TITLE": "Edit student",
+    "CLOSE": "Close",
+    "NAME": {
+      "TITLE": "Student name",
+      "HINT": "Full four-part name, as in official documents",
+      "IN_ARABIC": "Name in Arabic",
+      "IN_ENGLISH": "Name in English",
+      "FIRST": "First name",
+      "FATHER": "Father's name",
+      "GRAND_FATHER": "Grandfather's name",
+      "FAMILY": "Family name"
     },
-    "ADD_TITLE": "Add Student",
-    "EDIT_TITLE": "Edit Student",
-
-    "ADD_SUBTITLE": "Create a new student account and academic record",
-    "EDIT_SUBTITLE": "Update student information and academic assignment",
-
-    "ARABIC_INFORMATION": "Arabic Information",
-    "ARABIC_INFORMATION_DESCRIPTION": "Enter the student's name in Arabic",
-
-    "ENGLISH_INFORMATION": "English Information",
-    "ENGLISH_INFORMATION_DESCRIPTION": "Enter the student's name in English",
-
-    "ACCOUNT_INFORMATION": "Account Information",
-    "ACCOUNT_INFORMATION_DESCRIPTION": "Enter the student's login information",
-
-    "ACADEMIC_INFORMATION": "Academic Information",
-    "ACADEMIC_INFORMATION_DESCRIPTION": "Assign the student to a class and section",
-
-    "FIRST_NAME_AR": "First Name (Arabic)",
-    "FATHER_NAME_AR": "Father Name (Arabic)",
-    "GRAND_FATHER_NAME_AR": "Grandfather Name (Arabic)",
-    "FAMILY_NAME_AR": "Family Name (Arabic)",
-
-    "FIRST_NAME_EN": "First Name (English)",
-    "FATHER_NAME_EN": "Father Name (English)",
-    "GRAND_FATHER_NAME_EN": "Grandfather Name (English)",
-    "FAMILY_NAME_EN": "Family Name (English)",
-
-    "LOGIN_ID": "Login ID",
-    "TEMPORARY_PASSWORD": "Temporary Password",
-    "PHONE_NUMBER": "Phone Number",
-
-    "CLASS_LABEL": "Class",
-    "SELECT_CLASS": "Select Class",
-    "SECTION_LABEL": "Section",
-    "SELECT_SECTION": "Select Section",
-
+    "ACCOUNT": {
+      "TITLE": "Account",
+      "HINT": "How the student signs in",
+      "LOGIN_ID": "Login ID",
+      "LOGIN_ID_HELP": "At least 3 characters",
+      "TEMPORARY_PASSWORD": "Temporary password",
+      "PASSWORD_HELP": "Changed by the student at first login",
+      "GENERATE": "Generate",
+      "GENERATE_LABEL": "Generate a temporary password",
+      "PHONE_NUMBER": "Phone number",
+      "PHONE_HELP": "10 digits",
+      "RESET_NOTE": "The password isn't changed here. To reset it: ⋮ in the students list → Reset password."
+    },
+    "PLACEMENT": {
+      "TITLE": "Class and section",
+      "HINT": "In the current term",
+      "CLASS": "Class",
+      "SECTION": "Section",
+      "SELECT_CLASS": "Choose a class",
+      "LOADING_CLASSES": "Loading classes…",
+      "SELECT_SECTION": "Choose a section",
+      "SECTION_FIRST": "Section: choose a class first",
+      "LOADING_SECTIONS": "Loading sections…",
+      "NO_SECTIONS": "No active sections in this class",
+      "GRADUATED_NOTE": "This student graduated from this class and section, so they cannot be changed. You can edit the personal details only."
+    },
     "CANCEL": "Cancel",
-    "CREATE": "Create Student",
-    "UPDATE": "Update Student",
-    "SAVING": "Saving...",
-
-    "LOADING": "Loading student information...",
+    "CREATE": "Add student",
+    "UPDATE": "Save changes",
+    "SAVING": "Saving…",
+    "LOADING": "Loading student…",
+    "ERRORS_COUNT": {
+      "ONE": "1 field needs fixing",
+      "TWO": "2 fields need fixing",
+      "FEW": "{{count}} fields need fixing",
+      "MANY": "{{count}} fields need fixing"
+    },
+    "DISCARD": {
+      "TITLE": "Discard changes?",
+      "MESSAGE": "What you entered hasn't been saved. If you close the window now, it will be lost.",
+      "CONFIRM": "Discard changes"
+    },
     "ERROR": {
       "LOAD_FAILED": "Failed to load student. Please try again.",
       "INVALID_ID": "Invalid student ID."
     },
-
     "VALIDATION": {
       "REQUIRED": "This field is required.",
-      "ARABIC_ONLY": "This field allows Arabic letters and spaces only.",
-      "ENGLISH_ONLY": "This field allows English letters and spaces only.",
-      "MIN_LENGTH": "This field must contain at least 2 characters.",
-
+      "ARABIC_ONLY": "Arabic letters and spaces only.",
+      "ENGLISH_ONLY": "English letters and spaces only.",
+      "MIN_LENGTH": "At least 2 characters.",
       "LOGIN_ID": "Login ID must contain at least 3 characters.",
       "PASSWORD": "Password must contain at least 8 characters.",
       "PHONE_NUMBER": "Phone number must contain exactly 10 digits.",
-      "CLASS": "Please enter a valid class.",
-      "SECTION": "Please enter a valid section."
+      "CLASS": "Choose a class.",
+      "SECTION": "Choose a section."
     }
   },
 
