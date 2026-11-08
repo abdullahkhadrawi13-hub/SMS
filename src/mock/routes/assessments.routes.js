@@ -315,9 +315,11 @@ function validateBody(data) {
 }
 
 
+// A teacher and an assignment that is not theirs: 403 (backend #43,
+// before it was 400). Same message as the real backend.
 const NOT_OWNER_ERROR = [
-  'يمكنك فقط عرض أو إدارة تقييمات المواد المسندة إليك.',
-  'You can only view or manage assessments of your own assignments.'
+  'لا يمكنك إدارة تقييمات لا تخص تكليفك.',
+  'You are not authorized to manage assessments for an assignment that is not your own.'
 ];
 
 const FIXED_ERROR = [
@@ -431,7 +433,7 @@ async function handleAssessments(req, res, pathname) {
     }
 
     if (!ownsAssignment(assignment)) {
-      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      sendError(res, 403, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
       return;
     }
 
@@ -461,7 +463,7 @@ async function handleAssessments(req, res, pathname) {
     }
 
     if (!ownsAssignment(findAssignment(assessment.teacherAssignmentId))) {
-      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      sendError(res, 403, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
       return;
     }
 
@@ -484,7 +486,7 @@ async function handleAssessments(req, res, pathname) {
     }
 
     if (!ownsAssignment(assignment)) {
-      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      sendError(res, 403, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
       return;
     }
 
@@ -564,7 +566,7 @@ async function handleAssessments(req, res, pathname) {
     }
 
     if (!ownsAssignment(findAssignment(assessment.teacherAssignmentId))) {
-      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      sendError(res, 403, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
       return;
     }
 
@@ -614,7 +616,7 @@ async function handleAssessments(req, res, pathname) {
     }
 
     if (!ownsAssignment(findAssignment(assessment.teacherAssignmentId))) {
-      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      sendError(res, 403, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
       return;
     }
 

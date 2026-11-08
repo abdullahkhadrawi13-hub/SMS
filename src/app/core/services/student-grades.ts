@@ -19,7 +19,8 @@ import { environment } from '../../../environments/environment';
 // StudentGrades API (SMS API Reference, section 10).
 // Reads: Admin, AssistantPrincipal and the teacher who owns the assignment.
 // Writes: Admin, or the teacher who owns the assignment
-// (AssistantPrincipal gets 403, another teacher gets 400).
+// (AssistantPrincipal gets 403, another teacher gets 403 too).
+// 403 = logged in but not allowed on this record (backend #43, before: 400).
 //
 // One student's grades (read only, see core/models/student-grades-report.ts):
 //   - getByStudent(): Admin, AssistantPrincipal, Parent (own children)
@@ -81,7 +82,9 @@ export class StudentGradesService {
 
   // GET /api/studentgrades/by-student/{studentId}
   // One student's grades. Without a query: every term, newest first.
-  // A parent asking for a student who is not their child gets 400.
+  // A parent asking for a student who is not their child, or for a
+  // student id that does not exist, gets 403 (one answer for both).
+  // Admin and AssistantPrincipal: an unknown student is 404.
   getByStudent(
     studentId: number,
     query: StudentGradesQuery = {}

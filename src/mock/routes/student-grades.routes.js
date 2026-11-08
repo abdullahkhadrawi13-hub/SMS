@@ -36,7 +36,7 @@ const STUDENT_ROLE = 3;
 const PARENT_ROLE = 4;
 
 // One student's grades (by-student): Admin and Assistant Principal read
-// any student, a parent reads their own children only (400 otherwise).
+// any student, a parent reads their own children only (403 otherwise)
 const REPORT_STAFF_ROLES = [0, 1];
 
 const FULL_WEIGHT = 100;
@@ -959,8 +959,10 @@ function buildStudentReport(student, query) {
 const STUDENT_NOT_FOUND = ['الطالب غير موجود.', 'Student not found.'];
 
 
+// A teacher and an assignment that is not theirs: 403 (backend #43,
+// before it was 400). Same message as the real backend.
 const NOT_OWNER_ERROR = [
-  'يمكنك فقط عرض أو تسجيل أو تعديل علامات المواد المسندة إليك.',
+  'لا يمكنك عرض أو تسجيل أو تعديل علامات لا تخص تكليفك.',
   'You can only view, record or edit grades for your own assignments.'
 ];
 
@@ -1035,15 +1037,20 @@ async function handleStudentGrades(req, res, url, pathname) {
       return;
     }
 
-    const student = students.find(s => s.studentId === Number(byStudentMatch[1]));
+    const studentId = Number(byStudentMatch[1]);
+    const student = students.find(s => s.studentId === studentId);
 
-    if (!student) {
-      sendError(res, 404, STUDENT_NOT_FOUND[0], STUDENT_NOT_FOUND[1]);
+    // A parent: 403 both for someone else's child and for a student id
+    // that does not exist (one answer for both, so a parent cannot try
+    // numbers and learn which ids exist). Backend #43, before it was 400.
+    if (isParent && (!student || !isChildOfParent(currentUser, studentId))) {
+      sendError(res, 403, 'لا يمكنك عرض علامات طالب غير مرتبط بحسابك.', 'You can only view the grades of your own children.');
       return;
     }
 
-    if (isParent && !isChildOfParent(currentUser, student.studentId)) {
-      sendError(res, 400, 'يمكنك فقط عرض علامات أبنائك.', 'You can only view the grades of your own children.');
+    // Admin and Assistant Principal: an unknown student is still 404.
+    if (!student) {
+      sendError(res, 404, STUDENT_NOT_FOUND[0], STUDENT_NOT_FOUND[1]);
       return;
     }
 
@@ -1133,7 +1140,7 @@ async function handleStudentGrades(req, res, url, pathname) {
     }
 
     if (!ownsAssignment(assignment)) {
-      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      sendError(res, 403, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
       return;
     }
 
@@ -1171,7 +1178,7 @@ async function handleStudentGrades(req, res, url, pathname) {
     const assignment = assessment ? findAssignment(assessment.teacherAssignmentId) : null;
 
     if (assignment && !ownsAssignment(assignment)) {
-      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      sendError(res, 403, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
       return;
     }
 
@@ -1210,7 +1217,7 @@ async function handleStudentGrades(req, res, url, pathname) {
     }
 
     if (!ownsAssignment(assignment)) {
-      sendError(res, 400, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
+      sendError(res, 403, NOT_OWNER_ERROR[0], NOT_OWNER_ERROR[1]);
       return;
     }
 

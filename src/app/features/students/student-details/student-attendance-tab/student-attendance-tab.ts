@@ -255,9 +255,9 @@ export class StudentAttendanceTab implements OnInit {
       });
   }
 
-  // GET /api/academicterms (Admin only).
-  // The AssistantPrincipal gets 403 here, so a failure is not an error:
-  // the term list then shows "Term #id" instead of the name.
+  // GET /api/academicterms (Admin and AssistantPrincipal, the only
+  // roles that open this tab). The term names are extra: if the list
+  // fails, it is not shown as an error, the list shows "Term #id".
   private loadTerms(): void {
 
     this.termsService

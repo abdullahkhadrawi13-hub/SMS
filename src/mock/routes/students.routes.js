@@ -1,11 +1,51 @@
 const students = require('../data/students');
 const sections = require('../data/sections');
 const schoolClasses = require('../data/school-classes');
+const users = require('../data/users');
+const teachers = require('../data/teachers');
+const teacherAssignments = require('../data/teacher-assignments');
+const academicTerms = require('../data/academic-terms');
+
+const TEACHER_ROLE = 2;
 
 
 function sendJson(res, statusCode, body) {
   res.writeHead(statusCode);
   res.end(JSON.stringify(body));
+}
+
+
+// The user is found by the token sent in the Authorization header.
+function getCurrentUser(req) {
+
+  const header = req.headers.authorization || '';
+
+  const token = header.startsWith('Bearer ')
+    ? header.slice('Bearer '.length)
+    : '';
+
+  return users.find(user => user.token === token) || null;
+}
+
+
+// True when the teacher (login user) has an active assignment in the
+// current term for the student's class and section.
+function teachesStudent(user, student) {
+
+  const teacher = teachers.find(t => t.userId === user.userId);
+  const currentTerm = academicTerms.find(t => t.isCurrent);
+
+  if (!teacher || !currentTerm) {
+    return false;
+  }
+
+  return teacherAssignments.some(a =>
+    a.isActive &&
+    a.teacherId === teacher.teacherId &&
+    a.academicTermId === currentTerm.academicTermId &&
+    a.classId === student.classId &&
+    a.sectionId === student.sectionId
+  );
 }
 
 
@@ -136,6 +176,27 @@ function studentsRoutes(req, res) {
         success: false,
         messageAr: 'الطالب غير موجود',
         messageEn: 'Student not found',
+        data: null
+      });
+
+      return true;
+    }
+
+
+    // A teacher sees only the students they teach: 403 (backend #43,
+    // before it was 400). A student that does not exist is still 404.
+    // Admin and Assistant Principal see every student.
+    const currentUser = getCurrentUser(req);
+
+    if (
+      currentUser?.role === TEACHER_ROLE &&
+      !teachesStudent(currentUser, student)
+    ) {
+
+      sendJson(res, 403, {
+        success: false,
+        messageAr: 'لا يمكنك عرض طالب ليس من طلابك.',
+        messageEn: 'You can only view your own students.',
         data: null
       });
 

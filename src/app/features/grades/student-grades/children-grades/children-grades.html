@@ -124,6 +124,7 @@
       <app-state-card
         type="error"
         [message]="gradesError() | translate"
+        [showRetry]="gradesRetryable()"
         (retry)="retryGrades()"
       />
 

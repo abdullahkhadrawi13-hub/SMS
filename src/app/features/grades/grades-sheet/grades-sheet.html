@@ -14,6 +14,7 @@
   <app-state-card
     type="error"
     [message]="errorMessage() | translate"
+    [showRetry]="canRetry()"
     (retry)="retry.emit()"
   />
 

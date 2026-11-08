@@ -106,6 +106,9 @@ export class ChildrenGrades implements OnInit {
   readonly gradesLoading = signal(false);
   readonly gradesError = signal('');
 
+  // false after a 403: the error card shows no "Retry".
+  readonly gradesRetryable = signal(true);
+
   // The request of the child being loaded (cancelled when another is picked).
   private gradesRequest: Subscription | null = null;
 
@@ -270,6 +273,7 @@ export class ChildrenGrades implements OnInit {
 
     this.gradesLoading.set(true);
     this.gradesError.set('');
+    this.gradesRetryable.set(true);
 
     this.gradesRequest = this.gradesService
       .getByStudent(studentId, { currentOnly: true })
@@ -295,13 +299,16 @@ export class ChildrenGrades implements OnInit {
 
           this.gradesLoading.set(false);
 
-          // 400: not one of this parent's children (the message says so).
-          // 404: the student does not exist.
+          // 403: not one of this parent's children, or a student id that
+          //      does not exist (one answer for both, so a parent cannot
+          //      learn which ids exist). The message says so, no "Retry".
+          // 404: not sent to a parent any more (staff only), kept to be safe.
           this.gradesError.set(
             error.status === 404
               ? 'STUDENT_GRADES.NOT_FOUND'
               : this.apiMessageService.getErrorMessage(error)
           );
+          this.gradesRetryable.set(this.apiMessageService.canRetry(error));
         },
       });
   }

@@ -40,4 +40,16 @@ export class ApiMessageService {
         : 'An unexpected error occurred.'
     );
   }
+
+  // false for 403: the user is logged in but not allowed to do this
+  // to this record (another teacher's grade sheet, a student they do
+  // not teach, someone else's child...). Sending the same request again
+  // gives the same answer, so the error card shows no "Retry" button.
+  // Every other error (network down, 500...) can be retried.
+  //
+  // 400 = the data is wrong, 401 = the session ended (auth-interceptor),
+  // 403 = not allowed on this record, 404 = the record does not exist.
+  canRetry(error: HttpErrorResponse): boolean {
+    return error.status !== 403;
+  }
 }
