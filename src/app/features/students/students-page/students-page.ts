@@ -32,8 +32,11 @@ import { StudentsForm } from '../students-form/students-form';
 
 import {
   StudentsFilter,
-  StudentFilterValues
+  StudentFilterValues,
+  EMPTY_STUDENT_FILTER
 } from '../students-filter/students-filter';
+
+import { pluralKey } from '../../../shared/utils/plural';
 
 // How long the search waits after the last key before reloading the list.
 const SEARCH_DEBOUNCE_MS = 400;
@@ -130,18 +133,29 @@ export class StudentsPage {
     signal(false);
 
   // The list has loaded at least once with no error:
-  // the header shows the count only then (not "0 students" while loading).
+  // the number of results shows only then (not "0 students" while loading).
   readonly hasLoaded =
     signal(false);
 
-  // The count under the title (null: nothing to show yet).
-  // No filter: every student. A search or filter: the matching students.
-  readonly headerCount = computed(() =>
-    this.hasLoaded() && !this.errorMessage() ? this.totalCount() : null
+  // The number under the search: the matching students of the last
+  // loaded list. null without a search or filter (the total is in the
+  // pagination under the table), while loading the first time, or on error.
+  readonly resultCount = computed(() =>
+    this.hasLoaded() && !this.errorMessage() && this.hasQuery()
+      ? this.totalCount()
+      : null
   );
 
+  // Its translation key, with the right Arabic plural form
+  // ("طالب واحد يطابق البحث"، "3 طلاب يطابقون البحث"، ...).
+  readonly resultsKey = computed(() => {
+    const count = this.resultCount();
 
-  // ===== Phone: the filters open inside the card =====
+    return count === null ? null : pluralKey('STUDENTS.COUNT.MATCHING', count);
+  });
+
+
+  // ===== Phone: the filters open under the search =====
 
   private readonly breakpoints = inject(BreakpointObserver);
 
@@ -503,6 +517,15 @@ export class StudentsPage {
     this.pageNumber.set(1);
 
     this.loadStudents();
+
+  }
+
+
+  // "Clear filters" next to the number of results: the three lists back
+  // to "All". The search text stays (it has its own ✕).
+  clearFilters(): void {
+
+    this.onFilterChange({ ...EMPTY_STUDENT_FILTER });
 
   }
 

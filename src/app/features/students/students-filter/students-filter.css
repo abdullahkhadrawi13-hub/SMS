@@ -78,48 +78,6 @@
   font-weight: 400;
 }
 
-/* "Clear filters": a secondary button (white, grey border) with an icon,
-   the same height as the lists next to it. Not blue: blue means
-   "a filter is on". Shown only while a filter is on. */
-.clear-button {
-  height: var(--h-control);
-
-  display: inline-flex;
-  align-items: center;
-
-  gap: 6px;
-
-  padding-inline: 10px 12px;
-
-  border: 1px solid var(--control);
-  border-radius: var(--r-control);
-
-  background: var(--surface);
-  color: var(--text);
-
-  font-family: var(--font);
-  font-size: var(--fs-14);
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: background-color var(--dur);
-}
-
-.clear-button:hover {
-  background: var(--hover);
-}
-
-.clear-button mat-icon {
-  width: 18px;
-  height: 18px;
-
-  font-size: 18px;
-
-  color: var(--muted);
-}
-
-
 /* ---------- Phone: one list per line, 44px ---------- */
 
 @media (max-width: 719.98px) {
@@ -132,12 +90,6 @@
   .filter-select {
     width: 100%;
     min-width: 0;
-    height: var(--h-touch);
-  }
-
-  .clear-button {
-    align-self: flex-start;
-
     height: var(--h-touch);
   }
 

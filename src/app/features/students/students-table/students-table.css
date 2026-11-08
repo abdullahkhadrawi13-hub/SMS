@@ -25,7 +25,7 @@
   box-sizing: border-box;
 }
 
-/* Everything under the search row. The refresh bar sits on its top edge. */
+/* Everything inside the card. The refresh bar sits on its top edge. */
 .card-body {
   position: relative;
 }

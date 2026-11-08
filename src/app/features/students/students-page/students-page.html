@@ -1,79 +1,102 @@
 <div class="student-list">
 
-  <!-- Page Header: the title, the count under it, "Add student" -->
+  <!-- Page Header: the title, one description line, "Add student" -->
   <app-students-header
     [canManage]="canManage()"
-    [count]="headerCount()"
-    [hasQuery]="hasQuery()"
     (addStudent)="openAddStudent()"
   ></app-students-header>
 
-  <!-- Students Table (error / loading / table / empty state / pagination).
-       The search row sits at the top of the same card. -->
-  <app-students-table
-    [students]="students()"
-    [isLoading]="isLoading()"
-    [errorMessage]="errorMessage()"
-    [totalCount]="totalCount()"
-    [pageNumber]="pageNumber()"
-    [pageSize]="pageSize()"
-    [canManage]="canManage()"
-    [hasQuery]="hasQuery()"
-    [isPhone]="isPhone()"
-    (retry)="retry()"
-    (pageChange)="onPageChange($event)"
-    (viewStudent)="openStudentDetails($event)"
-    (editStudent)="openEditStudent($event)"
-    (toggleStatus)="toggleStudentStatus($event)"
-    (resetPassword)="openResetPassword($event)"
-  >
+  <div class="list-area">
 
-    <!-- Search and filters: one row on the computer;
-         on the phone the filters open under the search ("Filter" button). -->
-    <div toolbar class="toolbar" [class.filters-open]="filtersOpen()">
+    <!-- Search and filters: on the page background, outside the table card.
+         One row on the computer; on the phone the filters open under
+         the search ("Filter" button). -->
+    <div class="toolbar-area">
 
-      <div class="search-row">
+      <div class="toolbar" [class.filters-open]="filtersOpen()">
 
-        <app-students-search
-          [(search)]="search"
-          (searchTyping)="onSearchTyping($event)"
-          (searchSubmit)="onSearch()"
-          (searchClear)="clearSearch()"
-        ></app-students-search>
+        <div class="search-row">
 
-        @if (isPhone()) {
-          <button
-            type="button"
-            class="filter-toggle"
-            [class.is-active]="filtersOpen() || activeFilterCount() > 0"
-            [attr.aria-expanded]="filtersOpen()"
-            aria-controls="students-filters"
-            (click)="toggleFilters()"
-          >
-            <mat-icon aria-hidden="true">filter_list</mat-icon>
+          <app-students-search
+            [(search)]="search"
+            (searchTyping)="onSearchTyping($event)"
+            (searchSubmit)="onSearch()"
+            (searchClear)="clearSearch()"
+          ></app-students-search>
 
-            {{ 'STUDENT_FILTER.TOGGLE' | translate }}
+          @if (isPhone()) {
+            <button
+              type="button"
+              class="filter-toggle"
+              [class.is-active]="filtersOpen() || activeFilterCount() > 0"
+              [attr.aria-expanded]="filtersOpen()"
+              aria-controls="students-filters"
+              (click)="toggleFilters()"
+            >
+              <mat-icon aria-hidden="true">filter_list</mat-icon>
 
-            @if (activeFilterCount() > 0) {
-              <span class="filter-count">{{ activeFilterCount() }}</span>
-            }
-          </button>
+              {{ 'STUDENT_FILTER.TOGGLE' | translate }}
+
+              @if (activeFilterCount() > 0) {
+                <span class="filter-count">{{ activeFilterCount() }}</span>
+              }
+            </button>
+          }
+
+        </div>
+
+        @if (!isPhone() || filtersOpen()) {
+          <app-students-filter
+            id="students-filters"
+            [classId]="classFilter() ?? null"
+            [sectionId]="sectionFilter() ?? null"
+            [isActive]="statusFilter() ?? null"
+            (filterChange)="onFilterChange($event)"
+          ></app-students-filter>
         }
 
       </div>
 
-      @if (!isPhone() || filtersOpen()) {
-        <app-students-filter
-          id="students-filters"
-          [classId]="classFilter() ?? null"
-          [sectionId]="sectionFilter() ?? null"
-          [isActive]="statusFilter() ?? null"
-          (filterChange)="onFilterChange($event)"
-        ></app-students-filter>
-      }
+      <!-- The number of results: only after a search or a filter.
+           The live region is always there, so a screen reader reads
+           the new number each time it changes. -->
+      <div role="status" aria-live="polite">
+        @if (resultsKey(); as key) {
+          <p class="results">
+            <span>{{ key | translate: { count: resultCount() } }}</span>
+
+            @if (activeFilterCount() > 0) {
+              <span aria-hidden="true">·</span>
+
+              <button type="button" class="clear-filters" (click)="clearFilters()">
+                {{ 'STUDENT_FILTER.CLEAR_FILTERS' | translate }}
+              </button>
+            }
+          </p>
+        }
+      </div>
 
     </div>
 
-  </app-students-table>
+    <!-- Students Table (error / loading / table / empty state / pagination) -->
+    <app-students-table
+      [students]="students()"
+      [isLoading]="isLoading()"
+      [errorMessage]="errorMessage()"
+      [totalCount]="totalCount()"
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [canManage]="canManage()"
+      [hasQuery]="hasQuery()"
+      [isPhone]="isPhone()"
+      (retry)="retry()"
+      (pageChange)="onPageChange($event)"
+      (viewStudent)="openStudentDetails($event)"
+      (editStudent)="openEditStudent($event)"
+      (toggleStatus)="toggleStudentStatus($event)"
+      (resetPassword)="openResetPassword($event)"
+    ></app-students-table>
+
+  </div>
 
 </div>
