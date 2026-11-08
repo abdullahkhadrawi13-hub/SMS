@@ -78,26 +78,45 @@
   font-weight: 400;
 }
 
-/* "Clear filters": a text link (spec: "رابط نصي"). */
-.clear-link {
+/* "Clear filters": a secondary button (white, grey border) with an icon,
+   the same height as the lists next to it. Not blue: blue means
+   "a filter is on". Shown only while a filter is on. */
+.clear-button {
   height: var(--h-control);
 
-  padding-inline: var(--sp-2);
-  border: 0;
+  display: inline-flex;
+  align-items: center;
 
-  background: transparent;
-  color: var(--accent-ink);
+  gap: 6px;
+
+  padding-inline: 10px 12px;
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+
+  background: var(--surface);
+  color: var(--text);
 
   font-family: var(--font);
   font-size: var(--fs-14);
   font-weight: 600;
 
   cursor: pointer;
+
+  transition: background-color var(--dur);
 }
 
-.clear-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.clear-button:hover {
+  background: var(--hover);
+}
+
+.clear-button mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  color: var(--muted);
 }
 
 
@@ -116,12 +135,10 @@
     height: var(--h-touch);
   }
 
-  .clear-link {
+  .clear-button {
     align-self: flex-start;
 
     height: var(--h-touch);
-
-    padding-inline: var(--sp-1);
   }
 
 }

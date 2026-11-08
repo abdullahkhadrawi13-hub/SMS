@@ -2,6 +2,8 @@ import { Component, DestroyRef, computed, effect, inject, input, output, signal,
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
+import { MatIconModule } from '@angular/material/icon';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../core/services/language';
@@ -37,6 +39,7 @@ export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
 @Component({
   selector: 'app-students-filter',
   imports: [
+    MatIconModule,
     TranslatePipe
   ],
   templateUrl: './students-filter.html',
