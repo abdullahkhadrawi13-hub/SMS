@@ -1,10 +1,10 @@
-<app-page-header [title]="'STUDENTS.TITLE' | translate">
-
-  <!-- The count under the title: every student, or the matching ones
-       after a search or a filter. Shown once the list has loaded. -->
-  @if (countKey(); as key) {
-    <span subtitle>{{ key | translate: { count: count() } }}</span>
-  }
+<!-- Page header: the title, one line describing the page, "Add student".
+     The number of results is under the search (students-page),
+     the total under the table (pagination). -->
+<app-page-header
+  [title]="'STUDENTS.TITLE' | translate"
+  [subtitle]="'STUDENTS.SUBTITLE' | translate"
+>
 
   <!-- Add student (Admin only) -->
   @if (canManage()) {

@@ -2,8 +2,6 @@ import { Component, DestroyRef, computed, effect, inject, input, output, signal,
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
-import { MatIconModule } from '@angular/material/icon';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../core/services/language';
@@ -29,6 +27,7 @@ export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
 
 
 // فلتر الطلاب: ثلاث قوائم في نفس سطر البحث (لم يعد نافذة).
+// "مسح الفلاتر" في الصفحة، بجانب عدد النتائج تحت البحث.
 // كل تغيير يُطبَّق مباشرة: يرسل filterChange والصفحة تعيد التحميل.
 // الصفحة تملك القيم (وتحفظها في الرابط)، وهذا المكوّن يعرضها فقط.
 //
@@ -39,7 +38,6 @@ export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
 @Component({
   selector: 'app-students-filter',
   imports: [
-    MatIconModule,
     TranslatePipe
   ],
   templateUrl: './students-filter.html',
@@ -77,13 +75,6 @@ export class StudentsFilter {
   // The section list waits for a class (spec: "الشعبة: اختر صفًا أولًا").
   readonly sectionDisabled = computed(() =>
     !this.classId() || this.isLoadingSections()
-  );
-
-  // "Clear filters" shows only when a filter is on.
-  readonly hasFilters = computed(() =>
-    this.classId() !== null ||
-    this.sectionId() !== null ||
-    this.isActive() !== null
   );
 
   private readonly isArabic = computed(() =>
@@ -300,12 +291,6 @@ export class StudentsFilter {
     this.emit({
       isActive: value === 'true' ? true : value === 'false' ? false : null
     });
-
-  }
-
-  clear(): void {
-
-    this.filterChange.emit({ ...EMPTY_STUDENT_FILTER });
 
   }
 

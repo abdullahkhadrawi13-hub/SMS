@@ -177,20 +177,13 @@
 
   "STUDENTS": {
     "TITLE": "Student Management",
+    "SUBTITLE": "Student accounts, classes and sections.",
 
     "STUDENT": "Student",
 
     "ACTIONS_FOR": "Actions for {{name}}",
 
     "COUNT": {
-      "ALL": {
-        "ZERO": "No registered students",
-        "ONE": "1 registered student",
-        "TWO": "2 registered students",
-        "FEW": "{{count}} registered students",
-        "MANY": "{{count}} registered students",
-        "OTHER": "{{count}} registered students"
-      },
       "MATCHING": {
         "ZERO": "No students match the search",
         "ONE": "1 student matches the search",

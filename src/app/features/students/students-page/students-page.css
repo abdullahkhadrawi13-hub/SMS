@@ -1,18 +1,29 @@
 /* ==========================================================
    Students page (parent)
-   The search row is the top of the table card (students-table).
+   Header, then the search row on the page background,
+   the number of results under it, then the table card.
    Colours and sizes from src/tokens.css only.
    ========================================================== */
 
+/* No gap here: the page header already keeps 24px under itself
+   (16px on the phone), so the search row is not 48px away. */
 .student-list {
   width: 100%;
 
   display: flex;
   flex-direction: column;
 
-  gap: var(--sp-6);
-
   box-sizing: border-box;
+}
+
+/* The search row and the table card: 16px apart. */
+.list-area {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-4);
+
+  min-width: 0;
 }
 
 
@@ -24,10 +35,6 @@
   align-items: center;
 
   gap: var(--sp-2);
-
-  padding: var(--sp-4) 20px;
-
-  border-bottom: 1px solid var(--rule);
 }
 
 .search-row {
@@ -40,37 +47,64 @@
 }
 
 
+/* ---------- The number of results (after a search or a filter) ---------- */
+
+.results {
+  margin: var(--sp-2) 0 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-variant-numeric: tabular-nums;
+}
+
+/* "Clear filters": a text link (spec: الأزرار → رابط نصي). */
+.clear-filters {
+  padding: 0;
+  border: 0;
+
+  background: none;
+  color: var(--accent-ink);
+
+  font-family: var(--font);
+  font-size: var(--fs-13);
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.clear-filters:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
 /* ---------- Phone ---------- */
 
 @media (max-width: 719.98px) {
 
-  .student-list {
-    gap: var(--sp-4);
-  }
-
   .toolbar {
     flex-direction: column;
     align-items: stretch;
-
-    gap: 0;
-    padding: 0;
-  }
-
-  .search-row {
-    padding: var(--sp-3);
   }
 
   .search-row app-students-search {
     flex: 1;
   }
 
-  /* The open filters: a light panel under the search. */
-  .toolbar app-students-filter {
-    padding: var(--sp-3);
+  /* "Clear filters": 44px high to touch, without moving the line. */
+  .clear-filters {
+    min-height: var(--h-touch);
+  }
 
-    border-top: 1px solid var(--rule);
-
-    background: var(--raised);
+  .results {
+    margin-block-start: 0;
   }
 
   /* "Filter" button: secondary look, blue when open or a filter is on. */

@@ -1,9 +1,6 @@
 <!-- The card keeps its shape in every state; the state is drawn inside it. -->
 <div class="table-card" [class.is-refreshing]="isRefreshing()">
 
-  <!-- The search row (from the parent page): always at the top of the card -->
-  <ng-content select="[toolbar]" />
-
   <div class="card-body">
 
     <!-- Error -->

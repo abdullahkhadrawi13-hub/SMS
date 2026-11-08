@@ -54,10 +54,3 @@
     {{ 'STUDENT_FILTER.ACCOUNT_OPTION' | translate: { name: ('SHARED.ACCOUNT.INACTIVE' | translate) } }}
   </option>
 </select>
-
-@if (hasFilters()) {
-  <button type="button" class="clear-button" (click)="clear()">
-    <mat-icon aria-hidden="true">filter_alt_off</mat-icon>
-    {{ 'STUDENT_FILTER.CLEAR_FILTERS' | translate }}
-  </button>
-}
