@@ -1,7 +1,10 @@
-<app-page-header
-  [title]="'STUDENTS.TITLE' | translate"
-  [subtitle]="'STUDENTS.SUBTITLE' | translate"
->
+<app-page-header [title]="'STUDENTS.TITLE' | translate">
+
+  <!-- The count under the title: every student, or the matching ones
+       after a search or a filter. Shown once the list has loaded. -->
+  @if (countKey(); as key) {
+    <span subtitle>{{ key | translate: { count: count() } }}</span>
+  }
 
   <!-- Add student (Admin only) -->
   @if (canManage()) {

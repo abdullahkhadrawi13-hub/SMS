@@ -57,6 +57,16 @@
   --role-parent-main: #f3d9e2;  --role-parent-soft: #faeff3;  --role-parent-dark: #6e2340;
   --role-unknown-main: #e3e7ee; --role-unknown-soft: #f2f3f6; --role-unknown-dark: #535d70;
 
+  /* person avatars in lists (students table): a light colour and dark initials.
+     Six pairs from the role colours above; a person keeps the same pair
+     everywhere (chosen by id). Every pair reads above 7:1 — chosen 8 Nov 2026 */
+  --avatar-1-bg: #e2dbf4; --avatar-1-ink: #3d2f78;
+  --avatar-2-bg: #cfe9df; --avatar-2-ink: #134e3c;
+  --avatar-3-bg: #d6e2f3; --avatar-3-ink: #1f4478;
+  --avatar-4-bg: #f3d9e2; --avatar-4-ink: #6e2340;
+  --avatar-5-bg: #f7edd6; --avatar-5-ink: #5c410b;
+  --avatar-6-bg: #e3e7ee; --avatar-6-ink: #3b4456;
+
   /* unsaved-changes bar (shared save-bar) — warm yellow, final (6 Nov 2026) */
   --save-bg: #fff4d6; --save-line: #ecc76b; --save-ink: #5c3d07; --save-muted: #74500f;
 

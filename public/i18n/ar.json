@@ -177,7 +177,28 @@
   "STUDENTS": {
     "TITLE": "إدارة الطلاب",
 
-    "SUBTITLE": "إدارة بيانات الطلاب وحساباتهم",
+    "STUDENT": "الطالب",
+
+    "ACTIONS_FOR": "عمليات {{name}}",
+
+    "COUNT": {
+      "ALL": {
+        "ZERO": "لا يوجد طلاب مسجّلون",
+        "ONE": "طالب واحد مسجّل",
+        "TWO": "طالبان مسجّلان",
+        "FEW": "{{count}} طلاب مسجّلين",
+        "MANY": "{{count}} طالبًا مسجّلًا",
+        "OTHER": "{{count}} طالب مسجّل"
+      },
+      "MATCHING": {
+        "ZERO": "لا يوجد طلاب يطابقون البحث",
+        "ONE": "طالب واحد يطابق البحث",
+        "TWO": "طالبان يطابقان البحث",
+        "FEW": "{{count}} طلاب يطابقون البحث",
+        "MANY": "{{count}} طالبًا يطابقون البحث",
+        "OTHER": "{{count}} طالب يطابقون البحث"
+      }
+    },
 
     "ADD_STUDENT": "إضافة طالب",
 
@@ -186,10 +207,6 @@
     "SEARCH_PLACEHOLDER": "ابحث باسم الطالب، الرقم المدرسي، أو اسم المستخدم",
 
     "CLEAR_SEARCH": "مسح البحث",
-
-    "SEARCH_BUTTON": "بحث",
-
-    "FILTER": "فلتر",
 
     "ALL_STATUSES": "جميع الحالات",
 
@@ -202,8 +219,6 @@
     "DEACTIVATE": "تعطيل",
 
     "STUDENT_NUMBER": "الرقم المدرسي",
-
-    "NAME": "الاسم",
 
     "CLASS": "الصف",
 
@@ -372,13 +387,16 @@
   },
 
   "STUDENT_FILTER": {
-    "TITLE": "فلترة الطلاب",
     "CLASS": "الصف",
     "SECTION": "الشعبة",
-    "ALL": "الكل",
-    "CLEAR": "مسح",
-    "CANCEL": "إلغاء",
-    "APPLY": "تطبيق"
+    "ALL_CLASSES": "الصف: الكل",
+    "ALL_SECTIONS": "الشعبة: الكل",
+    "PICK_CLASS_FIRST": "الشعبة: اختر صفًا أولًا",
+    "ALL_ACCOUNTS": "حالة الحساب: الكل",
+    "SECTION_OPTION": "الشعبة: {{name}}",
+    "ACCOUNT_OPTION": "حالة الحساب: {{name}}",
+    "CLEAR_FILTERS": "مسح الفلاتر",
+    "TOGGLE": "تصفية"
   },
 
   "PAGINATOR": {

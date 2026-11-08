@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 // Usage:
 //   <app-page-header
 //     [title]="'STUDENTS.TITLE' | translate"
-//     [subtitle]="'STUDENTS.SUBTITLE' | translate"
+//     [subtitle]="'PAGE.SUBTITLE' | translate"
 //   >
 //     <span badge>…</span>       optional, next to the title
 //     <span subtitle>…</span>    optional, richer line under the title

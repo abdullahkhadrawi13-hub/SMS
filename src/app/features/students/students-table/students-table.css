@@ -1,106 +1,144 @@
-/* The table component behaves like a block inside the parent page. */
+/* ==========================================================
+   Students table (and the phone list)
+   Spec: "البطاقات" + "الجداول" + "الهاتف".
+   Colours and sizes from src/tokens.css only (no hex here).
+   Logical properties only (works the same in RTL and LTR).
+   ========================================================== */
+
 :host {
   display: block;
 }
 
 
-/* ================================
-   Table Card
-   ================================ */
+/* ---------- Card ---------- */
 
 .table-card {
   width: 100%;
 
-  background: #ffffff;
+  background: var(--surface);
 
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
 
   overflow: hidden;
 
   box-sizing: border-box;
+}
 
-  /* So the refresh bar can sit on top of the card. */
+/* Everything under the search row. The refresh bar sits on its top edge. */
+.card-body {
   position: relative;
 }
 
-.table-wrapper {
-  width: 100%;
-
-  overflow-x: auto;
-
-  transition: opacity 0.15s ease;
+.table-wrapper,
+.student-items {
+  transition: opacity var(--dur) ease;
 }
 
 
-/* ================================
-   Refreshing (reload while rows are shown)
-   ================================ */
+/* ---------- Refreshing (reload while rows are shown) ---------- */
 
 /* Thin bar on the top edge; absolute, so the card height never changes. */
 .refresh-bar {
   position: absolute;
 
-  top: 0;
-  left: 0;
-  right: 0;
+  inset-block-start: 0;
+  inset-inline: 0;
 
   z-index: 2;
 }
 
 /* Old rows fade a little and cannot be clicked until the new page arrives. */
-.table-card.is-refreshing .table-wrapper {
+.table-card.is-refreshing .table-wrapper,
+.table-card.is-refreshing .student-items {
   opacity: 0.55;
 
   pointer-events: none;
 }
 
 
-/* ================================
-   Material Table
-   ================================ */
+/* ---------- Table ---------- */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
 
 .table-wrapper table {
   width: 100%;
+  min-width: 960px;
 
-  min-width: 900px;
+  --mat-table-background-color: var(--surface);
+  --mat-table-header-headline-color: var(--faint);
+  --mat-table-row-item-label-text-color: var(--text);
+  --mat-table-row-item-outline-color: var(--rule);
+  --mat-table-header-container-height: 40px;
+  --mat-table-row-item-container-height: var(--row);
 }
 
+/* Header: 40px, 12px/600, no background, a line under it. */
 .table-wrapper th {
-  height: 52px;
+  height: 40px;
 
-  padding: 0 16px;
+  padding-inline: var(--sp-4);
 
-  font-size: 13px;
+  font-size: var(--fs-12);
   font-weight: 600;
 
-  color: #6b7280;
+  color: var(--faint);
 
-  background: #f8fafc;
+  background: transparent;
+
+  border-bottom: 1px solid var(--border);
+
+  text-align: start;
+  white-space: nowrap;
+}
+
+/* Rows: 52px, a light line between them, no zebra. */
+.table-wrapper td {
+  height: var(--row);
+
+  padding-inline: var(--sp-4);
+
+  font-size: var(--fs-14);
+
+  color: var(--text);
 
   white-space: nowrap;
 }
 
-.table-wrapper td {
-  height: 64px;
-
-  padding: 0 16px;
-
-  font-size: 14px;
-
-  color: #374151;
-
-  white-space: nowrap;
+.table-wrapper tr.mat-mdc-row {
+  transition: background-color var(--dur);
 }
 
 .table-wrapper tr.mat-mdc-row:hover {
-  background: #f8fafc;
+  background: var(--hover);
+}
+
+.muted-cell {
+  color: var(--muted);
+}
+
+/* English inside the Arabic page (username) */
+.isolate {
+  unicode-bidi: isolate;
+}
+
+.visually-hidden {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 
-/* ================================
-   Student Name
-   ================================ */
+/* ---------- Student: avatar + name ---------- */
 
 .student-name-cell {
   display: flex;
@@ -108,20 +146,14 @@
 
   gap: 10px;
 
-  min-width: 220px;
+  min-width: 240px;
 }
 
-.student-name-cell span {
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  white-space: nowrap;
-}
-
-.student-avatar {
-  width: 36px;
-  height: 36px;
+/* 32px, the first letters of the first and the family name,
+   one light colour per student (--avatar-1 ... --avatar-6). */
+.avatar {
+  width: 32px;
+  height: 32px;
 
   flex-shrink: 0;
 
@@ -131,72 +163,154 @@
 
   border-radius: 50%;
 
-  background: #f1f5f9;
+  font-size: var(--fs-12);
+  font-weight: 700;
+  line-height: 1;
 }
 
-.student-avatar mat-icon {
-  width: 20px;
-  height: 20px;
+.avatar[data-tone='1'] { background: var(--avatar-1-bg); color: var(--avatar-1-ink); }
+.avatar[data-tone='2'] { background: var(--avatar-2-bg); color: var(--avatar-2-ink); }
+.avatar[data-tone='3'] { background: var(--avatar-3-bg); color: var(--avatar-3-ink); }
+.avatar[data-tone='4'] { background: var(--avatar-4-bg); color: var(--avatar-4-ink); }
+.avatar[data-tone='5'] { background: var(--avatar-5-bg); color: var(--avatar-5-ink); }
+.avatar[data-tone='6'] { background: var(--avatar-6-bg); color: var(--avatar-6-ink); }
 
-  font-size: 20px;
+/* The name: 14px/600, a link to the student's page. */
+.student-link {
+  overflow: hidden;
 
-  color: #64748b;
+  color: var(--text);
+
+  font-weight: 600;
+
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-link:hover {
+  color: var(--accent-ink);
+
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 
-/* ================================
-   Class and section (one column)
-   ================================ */
+/* ---------- Actions ---------- */
 
-.class-section {
-  display: inline-flex;
+.table-wrapper td.mat-column-actions,
+.table-wrapper th.mat-column-actions {
+  width: 52px;
+
+  padding-inline: var(--sp-2);
+
+  text-align: center;
+}
+
+.actions-button {
+  color: var(--muted);
+}
+
+
+/* ---------- Paginator: "1–10 من 531" first, then rows per page and arrows ---------- */
+
+mat-paginator {
+  border-top: 1px solid var(--rule);
+
+  --mat-paginator-container-background-color: var(--surface);
+  --mat-paginator-container-text-color: var(--muted);
+  --mat-paginator-container-text-size: var(--fs-13);
+  --mat-paginator-container-size: var(--row);
+  --mat-paginator-form-field-container-height: var(--h-control);
+  --mat-paginator-form-field-container-vertical-padding: 6px;
+  --mat-paginator-select-trigger-text-size: var(--fs-13);
+}
+
+:host ::ng-deep .mat-mdc-paginator-container {
+  justify-content: flex-start;
+
+  padding-inline: 20px var(--sp-2);
+}
+
+/* The range label leaves its group so it can go first. */
+:host ::ng-deep .mat-mdc-paginator-range-actions {
+  display: contents;
+}
+
+:host ::ng-deep .mat-mdc-paginator-range-label {
+  order: -1;
+
+  margin: 0;
+  margin-inline-end: auto;
+
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ---------- Phone: one item per student, two lines ---------- */
+
+.student-items {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.student-item {
+  min-height: 68px;
+
+  box-sizing: border-box;
+  padding-block: 10px;
+  padding-inline: var(--sp-3) var(--sp-1);
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  border-bottom: 1px solid var(--rule);
+}
+
+.item-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+/* Line 1: the name, then a badge only when it needs attention. */
+.item-first-line {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
 
   gap: 6px;
 }
 
-/* The dot between the class and the section */
-.class-section .separator {
-  color: var(--faint);
+/* Line 2: student number · class · section */
+.item-second-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+
+  font-size: var(--fs-13);
+
+  color: var(--muted);
 }
 
-/* The badges themselves: app-status-badge and app-student-status (shared). */
-
-
-/* ================================
-   Actions
-   ================================ */
-
-.table-wrapper td:last-child {
-  width: 64px;
-
-  text-align: center;
+.student-item .actions-button {
+  flex-shrink: 0;
 }
 
-.table-wrapper td:last-child button {
-  color: #6b7280;
-}
+@media (max-width: 719.98px) {
 
-
-/* ================================
-   Paginator
-   ================================ */
-
-.table-card mat-paginator {
-  border-top: 1px solid #e5e7eb;
-
-  background: #ffffff;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-
-  .table-card {
-    border-radius: 10px;
+  :host ::ng-deep .mat-mdc-paginator-container {
+    padding-inline: var(--sp-3) var(--sp-1);
   }
 
 }

@@ -1,13 +1,10 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Component, DestroyRef, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Language } from '../../../core/services/language';
 import { SchoolClassesService } from '../../../core/services/school-classes';
 import { SectionsService } from '../../../core/services/sections';
 import { TeacherAssignmentsService } from '../../../core/services/teacher-assignments';
@@ -28,19 +25,18 @@ export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
   isActive: null
 };
 
-// فلتر الطلاب.
+
+// فلتر الطلاب: ثلاث قوائم في نفس سطر البحث (لم يعد نافذة).
+// كل تغيير يُطبَّق مباشرة: يرسل filterChange والصفحة تعيد التحميل.
+// الصفحة تملك القيم (وتحفظها في الرابط)، وهذا المكوّن يعرضها فقط.
+//
 // المدير ومساعد المدير: الصفوف والشعب من خدمات الصفوف والشعب.
 // المعلم: يحصل على 403 من قوائم الصفوف والشعب، لذلك تُبنى القوائم
 // من تعييناته في الفصل الحالي (GET /api/teacherassignments/mine)،
 // فيرى فقط الصفوف والشعب التي يدرّسها.
 @Component({
-  selector: 'app-student-filter',
+  selector: 'app-students-filter',
   imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
     TranslatePipe
   ],
   templateUrl: './students-filter.html',
@@ -48,15 +44,20 @@ export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
 })
 export class StudentsFilter {
 
-  private readonly dialogRef = inject(MatDialogRef<StudentsFilter>);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly language = inject(Language);
   private readonly classesService = inject(SchoolClassesService);
   private readonly sectionsService = inject(SectionsService);
   private readonly assignmentsService = inject(TeacherAssignmentsService);
   private readonly permissions = inject(Permissions);
-  private readonly initial =
-    inject<StudentFilterValues | null>(MAT_DIALOG_DATA, { optional: true })
-    ?? EMPTY_STUDENT_FILTER;
+
+  // ===== The current values (owned by the parent page) =====
+  readonly classId = input<number | null>(null);
+  readonly sectionId = input<number | null>(null);
+  readonly isActive = input<boolean | null>(null);
+
+  // A filter changed: the new values of the three lists.
+  readonly filterChange = output<StudentFilterValues>();
 
   // المعلم يأخذ القوائم من تعييناته
   private readonly isTeacher = this.permissions.isTeacher();
@@ -67,30 +68,56 @@ export class StudentsFilter {
   readonly classes = signal<SchoolClassSimpleDto[]>([]);
   readonly sections = signal<SectionSimpleDto[]>([]);
 
-  readonly isLoadingClasses = signal(false);
+  private readonly classesLoaded = signal(false);
   readonly isLoadingSections = signal(false);
 
-  readonly classId = signal<number | null>(this.initial.classId);
-  readonly sectionId = signal<number | null>(this.initial.sectionId);
-  readonly isActive = signal<boolean | null>(this.initial.isActive);
+  // The section list waits for a class (spec: "الشعبة: اختر صفًا أولًا").
+  readonly sectionDisabled = computed(() =>
+    !this.classId() || this.isLoadingSections()
+  );
+
+  // "Clear filters" shows only when a filter is on.
+  readonly hasFilters = computed(() =>
+    this.classId() !== null ||
+    this.sectionId() !== null ||
+    this.isActive() !== null
+  );
+
+  private readonly isArabic = computed(() =>
+    this.language.currentDirection() === 'rtl'
+  );
+
 
   constructor() {
+
     if (this.isTeacher) {
       this.loadTeacherOptions();
-      return;
+    } else {
+      this.loadClasses();
     }
 
-    this.loadClasses();
+    // Load the sections of the chosen class whenever the class changes
+    // (picked here, restored from the URL, or cleared).
+    effect(() => {
+      const classId = this.classId();
 
-    // استعادة الفلتر السابق عند إعادة فتح النافذة
-    if (this.initial.classId) {
-      this.loadSections(this.initial.classId, this.initial.sectionId);
-    }
+      untracked(() => {
+        // The teacher's sections come from the assignments, after they load.
+        if (this.isTeacher && !this.classesLoaded()) {
+          return;
+        }
+
+        this.loadSections(classId);
+      });
+    });
+
   }
+
+
+  // ===== Lists =====
 
   // الصفوف النشطة فقط
   private loadClasses(): void {
-    this.isLoadingClasses.set(true);
 
     this.classesService
       .getActiveSchoolClasses()
@@ -103,16 +130,25 @@ export class StudentsFilter {
       )
       .subscribe(response => {
         this.classes.set(response?.success ? response.data : []);
-        this.isLoadingClasses.set(false);
+        this.classesLoaded.set(true);
       });
+
   }
 
+
   // شعب الصف المختار فقط
-  private loadSections(classId: number, selectedSectionId: number | null = null): void {
+  private loadSections(classId: number | null): void {
+
+    this.sections.set([]);
+
+    if (!classId) {
+      this.isLoadingSections.set(false);
+      return;
+    }
 
     // المعلم: الشعب من تعييناته، بدون طلب للـ backend
     if (this.isTeacher) {
-      this.setTeacherSections(classId, selectedSectionId);
+      this.setTeacherSections(classId);
       return;
     }
 
@@ -128,31 +164,22 @@ export class StudentsFilter {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(response => {
-        // تجاهل الرد إذا غيّر المستخدم الصف أثناء التحميل
+        // تجاهل الرد إذا تغيّر الصف أثناء التحميل
         if (this.classId() !== classId) {
           return;
         }
 
-        const sections = response?.success ? response.data : [];
-        this.sections.set(sections);
+        this.sections.set(response?.success ? response.data : []);
         this.isLoadingSections.set(false);
 
-        this.sectionId.set(
-          sections.some(s => s.sectionId === selectedSectionId)
-            ? selectedSectionId
-            : null
-        );
+        this.dropUnknownSection();
       });
+
   }
 
 
-  // =========================
-  // Teacher
-  // =========================
-
   // تعيينات المعلم في الفصل الحالي، ومنها قائمة الصفوف.
   private loadTeacherOptions(): void {
-    this.isLoadingClasses.set(true);
 
     this.assignmentsService
       .getMyAssignments()
@@ -168,22 +195,25 @@ export class StudentsFilter {
 
         this.myAssignments.set(assignments);
         this.classes.set(this.buildTeacherClasses(assignments));
-        this.isLoadingClasses.set(false);
+        this.classesLoaded.set(true);
 
-        // استعادة الفلتر السابق عند إعادة فتح النافذة
-        const classId = this.initial.classId;
+        // A class from the URL that the teacher does not teach: clear it.
+        const classId = this.classId();
 
-        if (classId && this.classes().some(c => c.schoolClassId === classId)) {
-          this.setTeacherSections(classId, this.initial.sectionId);
-        } else {
-          this.classId.set(null);
-          this.sectionId.set(null);
+        if (classId && !this.classes().some(c => c.schoolClassId === classId)) {
+          this.emit({ classId: null, sectionId: null });
+          return;
         }
+
+        this.loadSections(classId);
       });
+
   }
+
 
   // صف واحد لكل classId، مرتبة حسب classId (مثل صفحة صفوفي)
   private buildTeacherClasses(assignments: TeacherAssignment[]): SchoolClassSimpleDto[] {
+
     const byId = new Map<number, SchoolClassSimpleDto>();
 
     for (const a of assignments) {
@@ -197,10 +227,13 @@ export class StudentsFilter {
     }
 
     return [...byId.values()].sort((a, b) => a.schoolClassId - b.schoolClassId);
+
   }
 
+
   // شعب الصف المختار التي يدرّس فيها المعلم (بدون تكرار)
-  private setTeacherSections(classId: number, selectedSectionId: number | null): void {
+  private setTeacherSections(classId: number): void {
+
     const byId = new Map<number, SectionSimpleDto>();
 
     for (const a of this.myAssignments()) {
@@ -222,55 +255,86 @@ export class StudentsFilter {
     this.sections.set(sections);
     this.isLoadingSections.set(false);
 
-    this.sectionId.set(
-      sections.some(s => s.sectionId === selectedSectionId)
-        ? selectedSectionId
-        : null
-    );
+    this.dropUnknownSection();
+
   }
 
 
-  onClassChange(classId: number | null): void {
-    this.classId.set(classId);
+  // A section from the URL that is not in the class's list: clear it,
+  // so the list never shows "All" while a hidden section filter is on.
+  private dropUnknownSection(): void {
+
+    const sectionId = this.sectionId();
+
+    if (sectionId && !this.sections().some(s => s.sectionId === sectionId)) {
+      this.emit({ sectionId: null });
+    }
+
+  }
+
+
+  // ===== Changes (applied straight away) =====
+
+  // The <select> gives a string: '' means "All".
+  onClassChange(value: string): void {
 
     // تصفير الشعبة دائمًا عند تغيير الصف
-    this.sectionId.set(null);
-    this.sections.set([]);
+    this.emit({
+      classId: value ? Number(value) : null,
+      sectionId: null
+    });
 
-    if (classId) {
-      this.loadSections(classId);
-    } else {
-      this.isLoadingSections.set(false);
-    }
   }
 
+  onSectionChange(value: string): void {
+
+    this.emit({ sectionId: value ? Number(value) : null });
+
+  }
+
+  onStatusChange(value: string): void {
+
+    this.emit({
+      isActive: value === 'true' ? true : value === 'false' ? false : null
+    });
+
+  }
+
+  clear(): void {
+
+    this.filterChange.emit({ ...EMPTY_STUDENT_FILTER });
+
+  }
+
+  private emit(change: Partial<StudentFilterValues>): void {
+
+    this.filterChange.emit({
+      classId: this.classId(),
+      sectionId: this.sectionId(),
+      isActive: this.isActive(),
+      ...change
+    });
+
+  }
+
+
+  // ===== Names =====
+
   getClassName(c: SchoolClassSimpleDto): string {
-    return document.documentElement.lang === 'ar'
-      ? c.classNameAr
-      : c.classNameEn;
+    return this.isArabic()
+      ? c.classNameAr || c.classNameEn
+      : c.classNameEn || c.classNameAr;
   }
 
   getSectionName(s: SectionSimpleDto): string {
-    return document.documentElement.lang === 'ar'
-      ? s.sectionAr
-      : s.sectionEn;
+    return this.isArabic()
+      ? s.sectionAr || s.sectionEn
+      : s.sectionEn || s.sectionAr;
   }
 
-  // إعادة ضبط الفورم فقط، بدون إغلاق النافذة ولا تطبيق
-  clear(): void {
-    this.classId.set(null);
-    this.sectionId.set(null);
-    this.isActive.set(null);
-
-    this.sections.set([]);
-    this.isLoadingSections.set(false);
-  }
-
-  apply(): void {
-    this.dialogRef.close({
-      classId: this.classId(),
-      sectionId: this.sectionId(),
-      isActive: this.isActive()
-    } satisfies StudentFilterValues);
-  }
+  // The <select> value of the account status: '' | 'true' | 'false'.
+  readonly statusValue = computed(() => {
+    const value = this.isActive();
+    return value === null ? '' : String(value);
+  });
 }

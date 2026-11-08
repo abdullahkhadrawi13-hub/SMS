@@ -1,143 +1,134 @@
-/* ================================
-   Student List (parent page)
-   ================================ */
+/* ==========================================================
+   Students page (parent)
+   The search row is the top of the table card (students-table).
+   Colours and sizes from src/tokens.css only.
+   ========================================================== */
 
 .student-list {
   width: 100%;
-  box-sizing: border-box;
-}
 
-
-/* ================================
-   Filters Card
-   ================================ */
-
-.filters-card {
   display: flex;
-  align-items: center;
+  flex-direction: column;
 
-  gap: 16px;
-
-  padding: 20px;
-  margin-bottom: 24px;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  gap: var(--sp-6);
 
   box-sizing: border-box;
 }
 
 
-/* ================================
-   Search + Filter Row
-   ================================ */
+/* ---------- Search row: search, then the filters ---------- */
 
-.search-container {
-  flex: 1;
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 
+  gap: var(--sp-2);
+
+  padding: var(--sp-4) 20px;
+
+  border-bottom: 1px solid var(--rule);
+}
+
+.search-row {
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: var(--sp-2);
 
   min-width: 0;
 }
 
-/* The search component fills the row next to the filter button. */
-.search-container app-students-search {
-  flex: 1;
 
-  min-width: 0;
-}
+/* ---------- Phone ---------- */
 
+@media (max-width: 719.98px) {
 
-/* ================================
-   Filter Button
-   ================================ */
-
-.search-container > button {
-  height: 56px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  padding: 0 20px;
-
-  flex-shrink: 0;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 900px) {
-
-  .filters-card {
-    flex-wrap: wrap;
+  .student-list {
+    gap: var(--sp-4);
   }
 
-  .search-container {
-    width: 100%;
-
-    flex-basis: 100%;
-  }
-
-}
-
-
-@media (max-width: 650px) {
-
-  /* Filters */
-
-  .filters-card {
+  .toolbar {
     flex-direction: column;
-
     align-items: stretch;
 
-    padding: 16px;
+    gap: 0;
+    padding: 0;
   }
 
-  .search-container {
-    flex-direction: row;
+  .search-row {
+    padding: var(--sp-3);
+  }
 
+  .search-row app-students-search {
+    flex: 1;
+  }
+
+  /* The open filters: a light panel under the search. */
+  .toolbar app-students-filter {
+    padding: var(--sp-3);
+
+    border-top: 1px solid var(--rule);
+
+    background: var(--raised);
+  }
+
+  /* "Filter" button: secondary look, blue when open or a filter is on. */
+  .filter-toggle {
+    height: var(--h-touch);
+    flex-shrink: 0;
+
+    display: flex;
     align-items: center;
 
-    width: 100%;
+    gap: 6px;
 
-    gap: 8px;
+    padding-inline: var(--sp-3);
+
+    border: 1px solid var(--control);
+    border-radius: var(--r-control);
+
+    background: var(--surface);
+    color: var(--text);
+
+    font-family: var(--font);
+    font-size: var(--fs-14);
+    font-weight: 600;
+
+    cursor: pointer;
   }
 
-  .search-container app-students-search {
-    flex: 1;
-
-    width: auto;
-    min-width: 0;
+  .filter-toggle.is-active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
   }
 
-  .search-container > button {
-    width: auto;
+  .filter-toggle mat-icon {
+    width: 18px;
+    height: 18px;
 
+    font-size: 18px;
+  }
+
+  .filter-count {
+    min-width: 20px;
+    height: 20px;
+
+    box-sizing: border-box;
+    padding-inline: 6px;
+
+    display: flex;
+    align-items: center;
     justify-content: center;
 
-    padding: 0 14px;
-  }
+    border-radius: 999px;
 
-}
+    background: var(--accent);
+    color: var(--on-primary);
 
-
-/* ================================
-   Small Mobile
-   ================================ */
-
-@media (max-width: 450px) {
-
-  .filters-card {
-    padding: 12px;
+    font-size: var(--fs-12);
+    font-weight: 700;
   }
 
 }

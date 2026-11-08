@@ -1,13 +1,138 @@
-/* Allows the search component to fit inside the parent row. */
+/* ==========================================================
+   Students search
+   340px field, 36px high (44px on the phone), search icon at the start.
+   Spec: "الحقول والقوائم المنسدلة" → البحث.
+   Colours and sizes from src/tokens.css only.
+   ========================================================== */
+
 :host {
   display: block;
 
+  width: 340px;
+  max-width: 100%;
   min-width: 0;
 }
 
-/* Makes the input fill the students-search component width. */
-mat-form-field {
-  width: 100%;
+.search-field {
+  position: relative;
 
-  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.visually-hidden {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.search-icon {
+  position: absolute;
+  inset-inline-start: 10px;
+
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+
+  color: var(--faint);
+
+  pointer-events: none;
+}
+
+input {
+  width: 100%;
+  height: var(--h-control);
+
+  box-sizing: border-box;
+  padding-inline: 36px 36px;
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+
+  background: var(--surface);
+  color: var(--text);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+
+  transition: border-color var(--dur), box-shadow var(--dur);
+}
+
+/* The browser's own ✕ in type="search": we have our own button. */
+input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+input::placeholder {
+  color: var(--faint);
+}
+
+input:focus {
+  outline: none;
+
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.clear-button {
+  position: absolute;
+  inset-inline-end: 4px;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-control);
+
+  background: transparent;
+  color: var(--muted);
+
+  cursor: pointer;
+}
+
+.clear-button:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.clear-button mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+
+/* ---------- Phone ---------- */
+
+@media (max-width: 719.98px) {
+
+  :host {
+    width: auto;
+  }
+
+  input {
+    height: var(--h-touch);
+  }
+
+  .search-icon {
+    inset-inline-start: 12px;
+  }
+
+  .clear-button {
+    width: 36px;
+    height: 36px;
+  }
+
 }
