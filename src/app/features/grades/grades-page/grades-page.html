@@ -37,6 +37,7 @@
     [loading]="sheetLoading()"
     [saving]="saving()"
     [errorMessage]="errorMessage()"
+    [canRetry]="errorRetryable()"
     [emptyState]="emptyState()"
     (markChange)="onMarkChange($event)"
     (retry)="retry()"

@@ -140,6 +140,9 @@ export class GradesSheet {
   readonly saving = input(false);
   readonly errorMessage = input('');
 
+  // false after a 403: the error card shows no "Try again".
+  readonly canRetry = input(true);
+
   readonly emptyState = input<GradesEmptyState>('select');
 
 

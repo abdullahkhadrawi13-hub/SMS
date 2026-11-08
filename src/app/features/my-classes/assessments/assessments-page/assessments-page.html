@@ -37,6 +37,7 @@
     <app-state-card
       type="error"
       [message]="errorMessage() | translate"
+      [showRetry]="errorRetryable()"
       (retry)="loadPage()"
     />
 

@@ -46,7 +46,8 @@ const STATUS_ABSENT = 1;
 //      The attendance officer      -> canRecord: true,  todayOnly: true
 //      Any other teacher           -> canRecord: false, todayOnly: false
 // 2. sheet / POST / PUT: Admin, Assistant Principal, the attendance officer.
-//    A teacher who is not the officer gets 400.
+//    A teacher who is not the officer gets 403 (backend #43, before: 400),
+//    checked BEFORE the date: a future date from them is 403 too.
 //    The officer gets 400 for any day other than today.
 // 3. by-student / by-date: Admin and Assistant Principal only.
 //    A teacher (the officer included) gets 403.
@@ -62,7 +63,7 @@ const STATUS_ABSENT = 1;
 // 8. recordedAt / editedAt are UTC without a trailing "Z".
 // 9. absentees: Admin and Assistant Principal any day up to today,
 //    the attendance officer today only (another day: 400).
-//    A teacher who is not the officer gets 400.
+//    A teacher who is not the officer gets 403 (backend #43, before: 400).
 //    The date is optional (without it, today is used).
 //
 // ASSUMPTIONS (not taken from the real backend):
@@ -319,23 +320,33 @@ function getAccess(user) {
 }
 
 
-// Used by sheet / POST / PUT.
-// Sends 400 and returns false when the user cannot work on that day.
-function checkCanRecord(res, user, date) {
+// Used by sheet / POST / PUT / absentees, BEFORE the date is checked.
+// Sends 403 and returns false when the user is not allowed at all
+// (a teacher who is not the attendance officer). Backend #43: "who are
+// you" comes first, so a future date from them is 403, not 400.
+function checkIsRecorder(res, user) {
 
-  const access = getAccess(user);
-
-  if (!access.canRecord) {
+  if (!getAccess(user).canRecord) {
 
     sendError(
       res,
-      400,
-      'المعلم ليس مسؤول الحضور',
-      'The teacher is not the attendance officer'
+      403,
+      'أنت لست مسؤول الحضور والغياب الحالي.',
+      'You are not the currently assigned attendance officer.'
     );
 
     return false;
   }
+
+  return true;
+}
+
+
+// Used by sheet / POST / PUT, after checkIsRecorder.
+// Sends 400 and returns false when the officer works on another day.
+function checkCanRecord(res, user, date) {
+
+  const access = getAccess(user);
 
   if (access.todayOnly && date !== getToday()) {
 
@@ -596,6 +607,11 @@ function handleAttendance(req, res, url, pathname) {
     );
 
 
+    if (!checkIsRecorder(res, currentUser)) {
+      return;
+    }
+
+
     const term = validateDate(res, date);
 
     if (!term) {
@@ -816,16 +832,8 @@ function handleAttendance(req, res, url, pathname) {
 
     const access = getAccess(currentUser);
 
-    // A teacher who is not the attendance officer.
-    if (!access.canRecord) {
-
-      sendError(
-        res,
-        400,
-        'أنت لست مسؤول الحضور الحالي.',
-        'You are not the currently assigned attendance officer.'
-      );
-
+    // A teacher who is not the attendance officer: 403, before the date.
+    if (!checkIsRecorder(res, currentUser)) {
       return;
     }
 
@@ -970,6 +978,11 @@ function handleAttendance(req, res, url, pathname) {
     req.method === 'POST' &&
     pathname === '/api/attendance'
   ) {
+
+    if (!checkIsRecorder(res, currentUser)) {
+      return;
+    }
+
 
     getRequestBody(req)
       .then(body => {
@@ -1171,6 +1184,11 @@ function handleAttendance(req, res, url, pathname) {
 
     const attendanceId =
       Number(attendanceIdMatch[1]);
+
+
+    if (!checkIsRecorder(res, currentUser)) {
+      return;
+    }
 
 
     getRequestBody(req)

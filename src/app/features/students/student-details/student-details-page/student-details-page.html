@@ -27,7 +27,7 @@
       type="error"
       [title]="'STUDENT_DETAILS.PAGE.ERROR_TITLE' | translate"
       [message]="errorMessage() | translate"
-      [showRetry]="!!studentId()"
+      [showRetry]="!!studentId() && errorRetryable()"
       (retry)="retry()"
     />
   }

@@ -100,6 +100,7 @@ export class AssessmentsPage implements OnInit {
 
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
+  readonly errorRetryable = signal(true);
 
   // The assignment is not one of the teacher's (current term), or the id is wrong.
   readonly notFound = signal(false);
@@ -249,7 +250,10 @@ export class AssessmentsPage implements OnInit {
 
         error: (error: HttpErrorResponse) => {
           console.error('Failed to load the assignment:', error);
-          this.showLoadError(this.apiMessageService.getErrorMessage(error));
+          this.showLoadError(
+            this.apiMessageService.getErrorMessage(error),
+            this.apiMessageService.canRetry(error)
+          );
         },
       });
   }
@@ -299,7 +303,10 @@ export class AssessmentsPage implements OnInit {
 
         error: (error: HttpErrorResponse) => {
           console.error('Failed to load the plan or the assessments:', error);
-          this.showLoadError(this.apiMessageService.getErrorMessage(error));
+          this.showLoadError(
+            this.apiMessageService.getErrorMessage(error),
+            this.apiMessageService.canRetry(error)
+          );
         },
       });
   }
@@ -326,8 +333,11 @@ export class AssessmentsPage implements OnInit {
   }
 
 
-  private showLoadError(message: string): void {
+  // retryable = false (a 403) hides "Try again": sending again
+  // gives the same answer (see ApiMessageService.canRetry).
+  private showLoadError(message: string, retryable = true): void {
     this.errorMessage.set(message);
+    this.errorRetryable.set(retryable);
     this.isLoading.set(false);
   }
 

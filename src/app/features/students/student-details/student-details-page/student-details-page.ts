@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 
 import { CommonModule, Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -86,6 +87,9 @@ export class StudentDetailsPage {
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
 
+  // false after a 403 (see loadStudent).
+  readonly errorRetryable = signal(true);
+
   // The "Attendance" tab (GET /api/attendance/by-student/{studentId})
   // is for Admin and AssistantPrincipal only. For the other roles
   // the tabs are not shown at all.
@@ -157,6 +161,7 @@ export class StudentDetailsPage {
 
     this.isLoading.set(true);
     this.errorMessage.set('');
+    this.errorRetryable.set(true);
     this.student.set(null);
 
     this.studentsService
@@ -183,7 +188,7 @@ export class StudentDetailsPage {
           this.isLoading.set(false);
         },
 
-        error: error => {
+        error: (error: HttpErrorResponse) => {
 
           console.error(
             'Failed to load student:',
@@ -192,9 +197,17 @@ export class StudentDetailsPage {
 
           this.student.set(null);
 
+          // 403: a teacher opening a student they do not teach.
+          // The backend message says so ("You can only view your own
+          // students."), and "Retry" is hidden: it would get 403 again.
+          const retryable = this.apiMessageService.canRetry(error);
+
           this.errorMessage.set(
-            'STUDENT_DETAILS.PAGE.LOAD_FAILED'
+            retryable
+              ? 'STUDENT_DETAILS.PAGE.LOAD_FAILED'
+              : this.apiMessageService.getErrorMessage(error)
           );
+          this.errorRetryable.set(retryable);
 
           this.isLoading.set(false);
         }

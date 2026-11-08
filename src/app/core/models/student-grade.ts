@@ -170,7 +170,7 @@ export const BULK_GRADES_LIMIT = 2000;
 // =====================================================
 //
 // Readers: Admin, AssistantPrincipal and the teacher who owns the assignment
-// (another teacher gets 400, an unknown mark 404).
+// (another teacher gets 403, an unknown mark 404).
 // It can always be read, also when the term's grades are closed.
 // Every time field is UTC without a trailing "Z" (read it with fromApiDateTime).
 // A name is first name + family name.

@@ -273,6 +273,10 @@ export class GradesPage implements OnInit, LeaveConfirmation {
   // A loading error (lists or sheet). Shown in place of the sheet.
   readonly errorMessage = signal('');
 
+  // false after a 403 (another teacher's sheet): the error card
+  // shows no "Try again", sending again gives the same answer.
+  readonly errorRetryable = signal(true);
+
   // What "Try again" loads again after an error.
   private retryAction: () => void = () => this.loadSheet();
 
@@ -442,7 +446,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
           this.assignmentsLoading.set(false);
 
           if (!response.success) {
-            this.errorMessage.set(this.apiMessageService.getMessage(response));
+            this.showError(this.apiMessageService.getMessage(response));
             return;
           }
 
@@ -465,7 +469,10 @@ export class GradesPage implements OnInit, LeaveConfirmation {
         error: (error: HttpErrorResponse) => {
           console.error('Failed to load my subjects:', error);
           this.assignmentsLoading.set(false);
-          this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
+          this.showError(
+            this.apiMessageService.getErrorMessage(error),
+            this.apiMessageService.canRetry(error)
+          );
         },
       });
   }
@@ -542,7 +549,10 @@ export class GradesPage implements OnInit, LeaveConfirmation {
         error: (error: HttpErrorResponse) => {
           console.error('Failed to load terms and classes:', error);
           this.termsLoading.set(false);
-          this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
+          this.showError(
+            this.apiMessageService.getErrorMessage(error),
+            this.apiMessageService.canRetry(error)
+          );
         },
       });
   }
@@ -598,7 +608,10 @@ export class GradesPage implements OnInit, LeaveConfirmation {
           this.sectionsLoading.set(false);
           this.assignmentsLoading.set(false);
           this.urlReady.set(true);
-          this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
+          this.showError(
+            this.apiMessageService.getErrorMessage(error),
+            this.apiMessageService.canRetry(error)
+          );
           this.retryAction = () => this.restoreStaffChoice(sectionId, assignmentId);
         },
       });
@@ -664,7 +677,10 @@ export class GradesPage implements OnInit, LeaveConfirmation {
           console.error('Failed to load sections:', error);
           this.sections.set([]);
           this.sectionsLoading.set(false);
-          this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
+          this.showError(
+            this.apiMessageService.getErrorMessage(error),
+            this.apiMessageService.canRetry(error)
+          );
           this.retryAction = () => {
             this.errorMessage.set('');
             this.loadSections(classId);
@@ -689,7 +705,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
           this.assignmentsLoading.set(false);
 
           if (!response.success) {
-            this.errorMessage.set(this.apiMessageService.getMessage(response));
+            this.showError(this.apiMessageService.getMessage(response));
             this.retryAction = () => this.loadTermAssignments(termId);
             return;
           }
@@ -700,7 +716,10 @@ export class GradesPage implements OnInit, LeaveConfirmation {
         error: (error: HttpErrorResponse) => {
           console.error('Failed to load the term subjects:', error);
           this.assignmentsLoading.set(false);
-          this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
+          this.showError(
+            this.apiMessageService.getErrorMessage(error),
+            this.apiMessageService.canRetry(error)
+          );
           this.retryAction = () => {
             this.errorMessage.set('');
             this.loadTermAssignments(termId);
@@ -742,7 +761,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
           this.sheetLoading.set(false);
 
           if (!response.success || !response.data) {
-            this.errorMessage.set(this.apiMessageService.getMessage(response));
+            this.showError(this.apiMessageService.getMessage(response));
             return;
           }
 
@@ -752,7 +771,10 @@ export class GradesPage implements OnInit, LeaveConfirmation {
         error: (error: HttpErrorResponse) => {
           console.error('Failed to load the grade sheet:', error);
           this.sheetLoading.set(false);
-          this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
+          this.showError(
+            this.apiMessageService.getErrorMessage(error),
+            this.apiMessageService.canRetry(error)
+          );
         },
       });
   }
@@ -768,6 +790,13 @@ export class GradesPage implements OnInit, LeaveConfirmation {
   retry(): void {
     this.errorMessage.set('');
     this.retryAction();
+  }
+
+  // Shows a loading error in place of the sheet.
+  // retryable = false hides "Try again" (see ApiMessageService.canRetry).
+  private showError(message: string, retryable = true): void {
+    this.errorMessage.set(message);
+    this.errorRetryable.set(retryable);
   }
 
 
