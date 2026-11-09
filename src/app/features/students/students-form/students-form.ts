@@ -15,7 +15,7 @@ import {
   Validators
 } from '@angular/forms';
 
-import { catchError, filter, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, map, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
@@ -66,6 +66,16 @@ import {
 
 export interface StudentFormDialogData {
   studentId?: number;
+}
+
+
+// What the dialog closes with after a successful save
+// (✕ and Cancel close it with nothing).
+export interface StudentFormResult {
+  success: true;
+  action: 'created' | 'updated';
+  // The backend message, shown by students-page in action-result-dialog.
+  message: string;
 }
 
 
@@ -132,10 +142,14 @@ const NAME_PARTS: { part: NamePart; labelKey: string }[] = [
 //   - fixed header (title, one line, ✕), the body scrolls, fixed footer
 //   - fields use the shared look in styles.css (.field, .field-box…)
 //   - closing with unsaved changes asks "Discard changes?" first
-//     (backdrop click, Esc, ✕ and Cancel)
+//     (backdrop click, Esc, ✕ and Cancel, and the browser's Back:
+//     students-page calls confirmDiscard() when ?form / ?edit leaves the URL)
+//   - a refresh or closing the tab with unsaved changes: the browser asks
+//     first (its own "Leave site?" message, see onBeforeUnload)
 //   - saving with errors: every field is marked, the first wrong field
 //     gets the focus, and the footer says how many need fixing
-//   - after saving: the backend message in action-result-dialog, then close
+//   - after saving: closes with the backend message, which students-page
+//     shows in action-result-dialog
 //
 // The dialog is opened by students-page with panelClass 'form-dialog'
 // (full screen on the phone, see styles.css).
@@ -152,7 +166,10 @@ const NAME_PARTS: { part: NamePart; labelKey: string }[] = [
     StudentStatusBadge,
   ],
   templateUrl: './students-form.html',
-  styleUrl: './students-form.css'
+  styleUrl: './students-form.css',
+  host: {
+    '(window:beforeunload)': 'onBeforeUnload($event)'
+  }
 })
 export class StudentsForm {
 
@@ -375,18 +392,32 @@ export class StudentsForm {
 
   // ✕, Cancel, backdrop click and Esc.
   requestClose(): void {
+    this.confirmDiscard().subscribe(canClose => {
+      if (canClose) {
+        this.dialogRef.close();
+      }
+    });
+  }
+
+
+  // May the form close now?
+  //   - true straight away when nothing was changed
+  //   - otherwise asks "Discard changes?": true on "Discard changes"
+  //   - false while saving, or while the question is already open
+  // It does not close the dialog itself: requestClose() does, and
+  // students-page does after "Back" took ?form / ?edit out of the URL.
+  confirmDiscard(): Observable<boolean> {
     if (this.isSubmitting() || this.isConfirmingClose) {
-      return;
+      return of(false);
     }
 
     if (!this.studentForm.dirty) {
-      this.dialogRef.close();
-      return;
+      return of(true);
     }
 
     this.isConfirmingClose = true;
 
-    this.dialog
+    return this.dialog
       .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
         maxWidth: '95vw',
         data: {
@@ -398,13 +429,23 @@ export class StudentsForm {
         },
       })
       .afterClosed()
-      .subscribe(confirmed => {
-        this.isConfirmingClose = false;
+      .pipe(
+        tap(() => (this.isConfirmingClose = false)),
+        map(confirmed => confirmed === true)
+      );
+  }
 
-        if (confirmed === true) {
-          this.dialogRef.close();
-        }
-      });
+
+  // Refresh, closing the tab, or typing another address while something
+  // was changed: the browser asks "Leave site?" first. The text is the
+  // browser's own, in its language; a page cannot change it.
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.studentForm.dirty) {
+      event.preventDefault();
+
+      // Older browsers ask only when returnValue is set.
+      event.returnValue = '';
+    }
   }
 
 
@@ -679,9 +720,14 @@ export class StudentsForm {
             return;
           }
 
-          this.dialogRef.close({ success: true, action: 'created' });
-
-          this.actionResult.show('success', this.apiMessageService.getMessage(response));
+          // students-page shows the backend message once ?form / ?edit
+          // is out of the URL: going "Back" over that step would close
+          // a message opened now.
+          this.dialogRef.close({
+            success: true,
+            action: 'created',
+            message: this.apiMessageService.getMessage(response)
+          } satisfies StudentFormResult);
         },
 
         error: (error: HttpErrorResponse) => {
@@ -737,9 +783,14 @@ export class StudentsForm {
             return;
           }
 
-          this.dialogRef.close({ success: true, action: 'updated' });
-
-          this.actionResult.show('success', this.apiMessageService.getMessage(response));
+          // students-page shows the backend message once ?form / ?edit
+          // is out of the URL: going "Back" over that step would close
+          // a message opened now.
+          this.dialogRef.close({
+            success: true,
+            action: 'updated',
+            message: this.apiMessageService.getMessage(response)
+          } satisfies StudentFormResult);
         },
 
         error: (error: HttpErrorResponse) => {

@@ -7,15 +7,17 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { PageEvent } from '@angular/material/paginator';
 
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Location } from '@angular/common';
 
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+
+import { ActivatedRoute, NavigationEnd, ParamMap, Router } from '@angular/router';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Subject, Subscription, debounceTime } from 'rxjs';
+import { Subject, Subscription, debounceTime, filter, take } from 'rxjs';
 
 import { PHONE_QUERY } from '../../../layouts/dashboard-layout/dashboard-layout';
 
@@ -28,7 +30,7 @@ import { ActionResult } from '../../../shared/services/action-result';
 
 import { Student } from '../../../core/models/student';
 
-import { StudentsForm } from '../students-form/students-form';
+import { StudentsForm, StudentFormResult } from '../students-form/students-form';
 
 import {
   StudentsFilter,
@@ -40,6 +42,9 @@ import { pluralKey } from '../../../shared/utils/plural';
 
 // How long the search waits after the last key before reloading the list.
 const SEARCH_DEBOUNCE_MS = 400;
+
+// The history state key of the step that opened the add / edit form.
+const FORM_STEP = 'studentForm';
 
 import { StudentsHeader } from '../students-header/students-header';
 import { StudentsSearch } from '../students-search/students-search';
@@ -187,6 +192,18 @@ export class StudentsPage {
   private loadSubscription?: Subscription;
 
 
+  // ===== Add / edit form (see "Add / edit form in the URL") =====
+
+  private readonly location = inject(Location);
+
+  // The open form, and which one: 'new' or the student id as text.
+  private formDialog?: MatDialogRef<StudentsForm>;
+  private formKey: string | null = null;
+
+  // Forms closed because the URL changed: nothing to fix in the URL after.
+  private readonly closedByUrl = new WeakSet<MatDialogRef<StudentsForm>>();
+
+
   constructor() {
 
     // Restore the search, filter and page from the URL
@@ -216,12 +233,27 @@ export class StudentsPage {
     // student's page): show them on the phone too.
     this.filtersOpen.set(this.activeFilterCount() > 0);
 
+    // The add / edit form follows ?form=new and ?edit=12 in the URL.
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => this.syncFormWithUrl(params));
+
+    // Leaving the page (e.g. a second "Back" while "Discard changes?"
+    // is open): the form does not stay open over the next page.
+    this.destroyRef.onDestroy(() => {
+      if (this.formDialog) {
+        this.closedByUrl.add(this.formDialog);
+        this.formDialog.close();
+      }
+    });
+
   }
 
 
   // ===== List state in the URL =====
   // /students?search=..&classId=..&sectionId=..&isActive=..&page=..&pageSize=..
   // Empty values are left out, so the plain list stays /students.
+  // ?form / ?edit (the open form) are kept as they are: 'merge'.
 
   private readStateFromUrl(params: ParamMap): void {
 
@@ -252,7 +284,8 @@ export class StudentsPage {
         isActive: this.statusFilter() ?? null,
         page: this.pageNumber() > 1 ? this.pageNumber() : null,
         pageSize: this.pageSize() !== 10 ? this.pageSize() : null
-      }
+      },
+      queryParamsHandling: 'merge'
     });
 
     // Nothing changed (e.g. the first load): no navigation.
@@ -437,34 +470,21 @@ export class StudentsPage {
   }
 
 
+  // ===== Add / edit form in the URL =====
+  // /students?form=new   the add form
+  // /students?edit=12    the edit form of student 12
+  // (the search, filter and page stay in the URL next to them)
+  //
+  // The buttons only put the form in the URL, as a new step in the
+  // browser history; syncFormWithUrl() opens it. So:
+  //   - "Back" takes it out of the URL: the form closes (after
+  //     "Discard changes?" when something was typed) and the list stays
+  //   - a refresh or a direct link opens the form again
+  //   - ✕, Cancel and saving close the form and take the step back out
+
   openAddStudent(): void {
 
-    const dialogRef =
-      this.dialog.open(StudentsForm, {
-
-        width: '880px',
-
-        maxWidth: '95vw',
-
-        maxHeight: '90vh',
-
-        // Shared form panel (styles.css): full screen on the phone
-        panelClass: 'form-dialog'
-
-      });
-
-
-    dialogRef
-      .afterClosed()
-      .subscribe(result => {
-
-        if (result?.success) {
-
-          this.loadStudents();
-
-        }
-
-      });
+    this.putFormInUrl('new');
 
   }
 
@@ -472,6 +492,81 @@ export class StudentsPage {
   openEditStudent(
     studentId: number
   ): void {
+
+    this.putFormInUrl(String(studentId));
+
+  }
+
+
+  // 'new', the edited student's id as text, or null for no form.
+  private formKeyFromUrl(params: ParamMap): string | null {
+
+    if (params.get('form') === 'new') {
+      return 'new';
+    }
+
+    const studentId = this.toPositiveNumber(params.get('edit'));
+
+    return studentId !== undefined ? String(studentId) : null;
+
+  }
+
+
+  // Runs on every change of the query params (and once at the start).
+  private syncFormWithUrl(params: ParamMap): void {
+
+    const key = this.formKeyFromUrl(params);
+
+    if (key === this.formKey) {
+      return;
+    }
+
+    // Only the Admin adds and edits: a link with ?form / ?edit
+    // opened by anyone else just shows the list.
+    if (key !== null && !this.canManage()) {
+      this.takeFormOutOfUrl();
+      return;
+    }
+
+    const openDialog = this.formDialog;
+
+    if (!openDialog) {
+      if (key !== null) {
+        this.openForm(key);
+      }
+      return;
+    }
+
+    // "Back" (or "Forward") changed the form in the URL while it is open.
+    openDialog.componentInstance
+      .confirmDiscard()
+      .subscribe(canClose => {
+
+        if (!canClose) {
+          // "Cancel" on "Discard changes?" (or still saving):
+          // the form stays, so it goes back in the URL too.
+          this.putFormInUrl(this.formKey!);
+          return;
+        }
+
+        this.closedByUrl.add(openDialog);
+        openDialog.close();
+
+        this.formDialog = undefined;
+        this.formKey = null;
+
+        if (key !== null) {
+          this.openForm(key);
+        }
+
+      });
+
+  }
+
+
+  private openForm(key: string): void {
+
+    const studentId = key === 'new' ? undefined : Number(key);
 
     const dialogRef =
       this.dialog.open(StudentsForm, {
@@ -485,24 +580,96 @@ export class StudentsPage {
         // Shared form panel (styles.css): full screen on the phone
         panelClass: 'form-dialog',
 
-        data: {
-          studentId
-        }
+        // "Back" must not close it by itself: syncFormWithUrl() decides,
+        // so "Discard changes?" can still be asked.
+        closeOnNavigation: false,
+
+        data: studentId !== undefined ? { studentId } : undefined
 
       });
+
+    this.formDialog = dialogRef;
+    this.formKey = key;
 
 
     dialogRef
       .afterClosed()
-      .subscribe(result => {
+      .subscribe((result?: StudentFormResult) => {
 
-        if (result?.success) {
+        // Saved: reload the list and show the backend message, after the
+        // URL is right (a "Back" step closes any dialog open during it).
+        const afterSave = () => {
+          if (result?.success) {
+            this.loadStudents();
+            this.actionResult.show('success', result.message);
+          }
+        };
 
-          this.loadStudents();
-
+        // Closed because the URL changed: the URL is already right.
+        if (this.closedByUrl.has(dialogRef)) {
+          this.closedByUrl.delete(dialogRef);
+          afterSave();
+          return;
         }
 
+        // Closed from the form (✕, Cancel, saved): take it out of the URL.
+        this.formDialog = undefined;
+        this.formKey = null;
+
+        this.takeFormOutOfUrl(afterSave);
+
       });
+
+  }
+
+
+  // Adds the form to the URL as a new step of the history.
+  private putFormInUrl(key: string): void {
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: key === 'new'
+        ? { form: 'new', edit: null }
+        : { form: null, edit: key },
+      queryParamsHandling: 'merge',
+      // Marks this history step as ours: takeFormOutOfUrl() goes back
+      // over it instead of adding another step.
+      state: { [FORM_STEP]: true }
+    });
+
+  }
+
+
+  // done: runs once the URL has no form any more.
+  private takeFormOutOfUrl(done: () => void = () => {}): void {
+
+    // The form was opened by our button (also after a refresh: the browser
+    // keeps the step's state): "Back" over that step, so the next "Back"
+    // does not land on the same list again.
+    const state = this.location.getState() as Record<string, unknown> | null;
+
+    if (state?.[FORM_STEP] === true) {
+      this.router.events
+        .pipe(
+          filter(event => event instanceof NavigationEnd),
+          take(1),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(() => done());
+
+      this.location.back();
+      return;
+    }
+
+    // Opened from a direct link: there is no list step before it.
+    this.router
+      .navigate([], {
+        relativeTo: this.route,
+        queryParams: { form: null, edit: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      })
+      .then(() => done());
 
   }
 
