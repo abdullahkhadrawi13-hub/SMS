@@ -387,6 +387,7 @@
       "LOGIN_ID": "Login ID must contain at least 3 characters.",
       "PASSWORD": "Password must contain at least 8 characters.",
       "PHONE_NUMBER": "Phone number must contain exactly 10 digits.",
+      "DIGITS_ONLY": "Digits only.",
       "CLASS": "Choose a class.",
       "SECTION": "Choose a section."
     }

@@ -7,9 +7,15 @@ import {
   signal
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 
-import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
@@ -32,6 +38,7 @@ import {
   generateTempPassword,
   TEMP_PASSWORD_MAX_LENGTH
 } from '../../../shared/utils/temp-password';
+import { toEnglishDigits } from '../../../shared/utils/english-digits';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
 import { SectionsService } from '../../../core/services/sections';
@@ -66,11 +73,45 @@ export interface StudentFormDialogData {
 type FieldName = keyof StudentsForm['studentForm']['controls'];
 
 
-// Arabic name parts: Arabic letters, spaces, dots and hyphens.
-const ARABIC_NAME = /^[؀-ۿ\s.-]+$/;
+// Arabic name parts: the Arabic letters ء to ي (U+0621–U+064A), the
+// harakat so "محمّد" is accepted (U+064B–U+0652), spaces, dots and hyphens.
+// Not accepted: Arabic digits ٠–٩ and marks like ، ؛ ؟ (9 Nov 2026).
+const ARABIC_NAME = /^[\u0621-\u0652\s.-]+$/;
 
 // English name parts: English letters, spaces, dots and hyphens.
 const ENGLISH_NAME = /^[A-Za-z\s.-]+$/;
+
+// The shortest name part, counted without the spaces at the start and end.
+const NAME_MIN_LENGTH = 2;
+
+// The phone number: exactly 10 digits (the input stops at 10).
+const PHONE_LENGTH = 10;
+
+
+// A name part (9 Nov 2026):
+//   - only spaces counts as empty, so it says "required"
+//   - "at least 2 letters" is counted after trimming, so "أ " is too short
+// The letters themselves are checked by the pattern next to it.
+function nameValidator(control: AbstractControl<string>): ValidationErrors | null {
+  const value = control.value.trim();
+
+  if (value === '') {
+    return { required: true };
+  }
+
+  if (value.length < NAME_MIN_LENGTH) {
+    return { minlength: { requiredLength: NAME_MIN_LENGTH, actualLength: value.length } };
+  }
+
+  return null;
+}
+
+
+// The phone number has something that is not a digit (a letter, a space…).
+// Arabic digits never get here: they are turned into English ones while typing.
+function digitsOnlyValidator(control: AbstractControl<string>): ValidationErrors | null {
+  return /^[0-9]*$/.test(control.value) ? null : { digitsOnly: true };
+}
 
 
 // The four parts of a name, in order. Used by the template to draw
@@ -239,21 +280,26 @@ export class StudentsForm {
 
 
   readonly studentForm = this.fb.nonNullable.group({
-    firstNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ARABIC_NAME)]],
-    fatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ARABIC_NAME)]],
-    grandFatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ARABIC_NAME)]],
-    familyNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ARABIC_NAME)]],
+    firstNameAr: ['', [nameValidator, Validators.pattern(ARABIC_NAME)]],
+    fatherNameAr: ['', [nameValidator, Validators.pattern(ARABIC_NAME)]],
+    grandFatherNameAr: ['', [nameValidator, Validators.pattern(ARABIC_NAME)]],
+    familyNameAr: ['', [nameValidator, Validators.pattern(ARABIC_NAME)]],
 
-    firstNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ENGLISH_NAME)]],
-    fatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ENGLISH_NAME)]],
-    grandFatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ENGLISH_NAME)]],
-    familyNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(ENGLISH_NAME)]],
+    firstNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
+    fatherNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
+    grandFatherNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
+    familyNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
 
     loginId: ['', [Validators.required, Validators.minLength(3)]],
 
     temporaryPassword: ['', [Validators.required, Validators.minLength(8)]],
 
-    phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+    phoneNumber: ['', [
+      Validators.required,
+      digitsOnlyValidator,
+      Validators.minLength(PHONE_LENGTH),
+      Validators.maxLength(PHONE_LENGTH)
+    ]],
 
     classId: [0, [Validators.required, Validators.min(1)]],
 
@@ -288,6 +334,8 @@ export class StudentsForm {
     this.studentForm.statusChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.invalidCount.set(this.countInvalid()));
+
+    this.restartClearedFields();
 
     if (this.isEditMode()) {
       this.studentForm.controls.temporaryPassword.clearValidators();
@@ -539,6 +587,31 @@ export class StudentsForm {
 
 
   // =========================
+  // Phone number
+  // =========================
+
+  // Arabic digits become English ones while typing or pasting
+  // (٠٧٩ → 079), so the user never sees an error for typing them,
+  // and the backend still gets English digits only (9 Nov 2026).
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const converted = toEnglishDigits(input.value);
+
+    if (converted === input.value) {
+      return;
+    }
+
+    // Same length, so the cursor stays where the user is typing.
+    const cursor = input.selectionStart;
+
+    input.value = converted;
+    input.setSelectionRange(cursor, cursor);
+
+    this.studentForm.controls.phoneNumber.setValue(converted);
+  }
+
+
+  // =========================
   // Save
   // =========================
 
@@ -574,15 +647,16 @@ export class StudentsForm {
     const formValue = this.studentForm.getRawValue();
 
     const data: CreateStudentRequest = {
-      firstNameAr: formValue.firstNameAr,
-      fatherNameAr: formValue.fatherNameAr,
-      grandFatherNameAr: formValue.grandFatherNameAr,
-      familyNameAr: formValue.familyNameAr,
+      // Names are sent without spaces at the start and end.
+      firstNameAr: formValue.firstNameAr.trim(),
+      fatherNameAr: formValue.fatherNameAr.trim(),
+      grandFatherNameAr: formValue.grandFatherNameAr.trim(),
+      familyNameAr: formValue.familyNameAr.trim(),
 
-      firstNameEn: formValue.firstNameEn,
-      fatherNameEn: formValue.fatherNameEn,
-      grandFatherNameEn: formValue.grandFatherNameEn,
-      familyNameEn: formValue.familyNameEn,
+      firstNameEn: formValue.firstNameEn.trim(),
+      fatherNameEn: formValue.fatherNameEn.trim(),
+      grandFatherNameEn: formValue.grandFatherNameEn.trim(),
+      familyNameEn: formValue.familyNameEn.trim(),
 
       loginId: formValue.loginId,
       temporaryPassword: formValue.temporaryPassword,
@@ -633,15 +707,16 @@ export class StudentsForm {
     const formValue = this.studentForm.getRawValue();
 
     const data: StudentRequest = {
-      firstNameAr: formValue.firstNameAr,
-      fatherNameAr: formValue.fatherNameAr,
-      grandFatherNameAr: formValue.grandFatherNameAr,
-      familyNameAr: formValue.familyNameAr,
+      // Names are sent without spaces at the start and end.
+      firstNameAr: formValue.firstNameAr.trim(),
+      fatherNameAr: formValue.fatherNameAr.trim(),
+      grandFatherNameAr: formValue.grandFatherNameAr.trim(),
+      familyNameAr: formValue.familyNameAr.trim(),
 
-      firstNameEn: formValue.firstNameEn,
-      fatherNameEn: formValue.fatherNameEn,
-      grandFatherNameEn: formValue.grandFatherNameEn,
-      familyNameEn: formValue.familyNameEn,
+      firstNameEn: formValue.firstNameEn.trim(),
+      fatherNameEn: formValue.fatherNameEn.trim(),
+      grandFatherNameEn: formValue.grandFatherNameEn.trim(),
+      familyNameEn: formValue.familyNameEn.trim(),
 
       loginId: formValue.loginId,
       phoneNumber: formValue.phoneNumber,
@@ -701,11 +776,14 @@ export class StudentsForm {
   }
 
 
-  // When a field shows its error (decided 8 Nov 2026):
+  // When a field shows its error (8 Nov 2026, changed 9 Nov 2026):
+  //   - a wrong kind of character (English letters in an Arabic name,
+  //     Arabic letters in an English one, a letter in the phone number)
+  //     shows at once, while typing
+  //   - a length error (2 letters in a name, 3 in the login ID, 8 in the
+  //     password, 10 digits in the phone) shows when the user leaves the field
   //   - an empty field says "required" only after pressing Add / Save,
   //     so just moving through the fields never shows an error
-  //   - a field with something wrong typed in it (English letters in an
-  //     Arabic name, a 7-digit phone) shows it when the user leaves it
   //   - after pressing the button every error shows, and each one goes
   //     away as soon as its field is fixed
   isFieldInvalid(fieldName: FieldName): boolean {
@@ -719,7 +797,32 @@ export class StudentsForm {
       return true;
     }
 
+    if (control.hasError('pattern') || control.hasError('digitsOnly')) {
+      return true;
+    }
+
     return control.touched && this.hasValue(control.value);
+  }
+
+
+  // Clearing a text field starts it over (9 Nov 2026): it goes back to
+  // "not touched", so typing again ("أ") shows the length error only when
+  // the user leaves the field, like the first time.
+  // After pressing Add / Save this does not matter: submitAttempted shows
+  // every error until it is fixed.
+  private restartClearedFields(): void {
+    for (const control of Object.values(this.studentForm.controls)) {
+      // The controls hold text or ids, so the values are typed as either.
+      const changes = control.valueChanges as Observable<string | number>;
+
+      changes
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((value: string | number) => {
+          if (typeof value === 'string' && !this.hasValue(value)) {
+            control.markAsUntouched();
+          }
+        });
+    }
   }
 
 
