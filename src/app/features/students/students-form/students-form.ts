@@ -15,7 +15,7 @@ import {
   Validators
 } from '@angular/forms';
 
-import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
@@ -334,6 +334,8 @@ export class StudentsForm {
     this.studentForm.statusChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.invalidCount.set(this.countInvalid()));
+
+    this.restartClearedFields();
 
     if (this.isEditMode()) {
       this.studentForm.controls.temporaryPassword.clearValidators();
@@ -800,6 +802,27 @@ export class StudentsForm {
     }
 
     return control.touched && this.hasValue(control.value);
+  }
+
+
+  // Clearing a text field starts it over (9 Nov 2026): it goes back to
+  // "not touched", so typing again ("أ") shows the length error only when
+  // the user leaves the field, like the first time.
+  // After pressing Add / Save this does not matter: submitAttempted shows
+  // every error until it is fixed.
+  private restartClearedFields(): void {
+    for (const control of Object.values(this.studentForm.controls)) {
+      // The controls hold text or ids, so the values are typed as either.
+      const changes = control.valueChanges as Observable<string | number>;
+
+      changes
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((value: string | number) => {
+          if (typeof value === 'string' && !this.hasValue(value)) {
+            control.markAsUntouched();
+          }
+        });
+    }
   }
 
 
