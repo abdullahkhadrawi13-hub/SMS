@@ -209,7 +209,13 @@
             @if (isFieldInvalid('loginId')) {
               <div class="field-error" id="sf-loginId-error">
                 <mat-icon aria-hidden="true">error</mat-icon>
-                <span>{{ 'STUDENTS_FORM.VALIDATION.LOGIN_ID' | translate }}</span>
+                <span>
+                  @if (studentForm.controls.loginId.hasError('required')) {
+                    {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+                  } @else {
+                    {{ 'STUDENTS_FORM.VALIDATION.LOGIN_ID' | translate }}
+                  }
+                </span>
               </div>
             } @else {
               <div class="field-help" id="sf-loginId-help">{{ 'STUDENTS_FORM.ACCOUNT.LOGIN_ID_HELP' | translate }}</div>
@@ -248,7 +254,13 @@
               @if (isFieldInvalid('temporaryPassword')) {
                 <div class="field-error" id="sf-temporaryPassword-error">
                   <mat-icon aria-hidden="true">error</mat-icon>
-                  <span>{{ 'STUDENTS_FORM.VALIDATION.PASSWORD' | translate }}</span>
+                  <span>
+                    @if (studentForm.controls.temporaryPassword.hasError('required')) {
+                      {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+                    } @else {
+                      {{ 'STUDENTS_FORM.VALIDATION.PASSWORD' | translate }}
+                    }
+                  </span>
                 </div>
               } @else {
                 <div class="field-help" id="sf-temporaryPassword-help">{{ 'STUDENTS_FORM.ACCOUNT.PASSWORD_HELP' | translate }}</div>
@@ -267,6 +279,7 @@
                 inputmode="numeric"
                 maxlength="10"
                 formControlName="phoneNumber"
+                (input)="onPhoneInput($event)"
                 [attr.aria-invalid]="isFieldInvalid('phoneNumber')"
                 [attr.aria-describedby]="describedBy('phoneNumber', true)"
                 dir="ltr"
@@ -281,6 +294,8 @@
                 <span>
                   @if (studentForm.controls.phoneNumber.hasError('required')) {
                     {{ 'STUDENTS_FORM.VALIDATION.REQUIRED' | translate }}
+                  } @else if (studentForm.controls.phoneNumber.hasError('digitsOnly')) {
+                    {{ 'STUDENTS_FORM.VALIDATION.DIGITS_ONLY' | translate }}
                   } @else {
                     {{ 'STUDENTS_FORM.VALIDATION.PHONE_NUMBER' | translate }}
                   }
