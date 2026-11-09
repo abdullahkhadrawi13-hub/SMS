@@ -311,6 +311,32 @@ button:focus-visible,
   }
 }
 
+/* ---------- Dialogs: title and content ----------
+   Title: Material puts an empty inline-block ::before in front of the
+   text (it sets the baseline). In our templates the text starts on a new
+   line, so the space after ::before showed and pushed the title ~5px in
+   from the text under it. As a flex row the space goes away, and
+   align-items: baseline keeps the title at the same height.
+
+   Content: mat-dialog-content scrolls (overflow: auto). Cairo is taller
+   than our line-height (about 1.87 vs 1.6–1.7), so the last line sticks
+   out of the box by a fraction of a pixel. At some zoom levels (80%,
+   125%, 133%…) that rounds up to 1px and an empty scrollbar shows.
+   4px at the bottom holds it.
+
+   Material adds its dialog styles after this file, so the title rule
+   names the container too (wins over Material's .mat-mdc-dialog-title),
+   and the content uses Material's own padding variable (the default is
+   20px 24px 0 when the dialog has buttons; only the 0 changes). */
+.mat-mdc-dialog-container .mat-mdc-dialog-title {
+  display: flex;
+  align-items: baseline;
+}
+
+html {
+  --mat-dialog-with-actions-content-padding: 20px 24px 4px;
+}
+
 /* ---------- Form dialog panel ----------
    panelClass: 'form-dialog' on MatDialog.open() of an add/edit form
    (students form first). 10px corners and the floating shadow; under
