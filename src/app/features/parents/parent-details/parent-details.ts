@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -20,9 +20,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ParentsService } from '../../../core/services/parents';
 import { ApiMessageService } from '../../../core/services/api-message';
+import { Language } from '../../../core/services/language';
 import { Permissions } from '../../../core/services/permissions';
 import { ActionResult } from '../../../shared/services/action-result';
-import { getRoleTranslationKey } from '../../../core/models/user-role';
 import {
   getRelationshipTranslationKey,
   ParentChildDto,
@@ -40,12 +40,13 @@ import {
 } from '../parent-unlink-confirm/parent-unlink-confirm';
 import {
   getArabicName,
-  getClassSection,
   getEnglishName,
   getFirstName,
   getFullName,
   getInitials
-} from '../parents';
+} from '../../../shared/utils/person-name';
+import { pluralKey } from '../../../shared/utils/plural';
+import { getAvatarTone, getClassSection } from '../parents';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
@@ -62,10 +63,28 @@ export interface ParentDetailsResult {
 }
 
 
-// Parent details: the account, the personal information and the children.
-// Same layout as the teacher details; the children come first because
-// they are the most important part of a parent.
+// One child as the dialog shows it: the names in the language of the page.
+interface ChildView extends ParentChildDto {
+  fullName: string;
+  initials: string;
+  avatarTone: number;
+  classSection: string;
+  relationshipKey: string;
+}
+
+
+// The parent details dialog (navy & gold, 11 Nov 2026).
+// Header: the avatar, the name in the language of the page, the account
+// badge and the phone number. Body: "Children" first (they are the most
+// important part of a parent), then "Parent details" and "Account", two
+// label / value lists, with a rule between the sections (no inner cards).
 // Admin links and unlinks children here; AssistantPrincipal only reads.
+// Editing the parent is from ⋮ in the parents list.
+//
+// The look is shared, in styles.css: the dialog layout (.fd, .fd-head,
+// .fd-body, .fd-foot) and the "Details dialog" (.dd-head, .dd-list…),
+// like the teacher details; only the children list is in parent-details.css.
+// Opened by parents-page with panelClass 'form-dialog' (full screen on the phone).
 @Component({
   selector: 'app-parent-details',
   imports: [
@@ -81,12 +100,14 @@ export interface ParentDetailsResult {
   ],
   templateUrl: './parent-details.html',
   styleUrl: './parent-details.css',
+  host: { class: 'fd' }
 })
 export class ParentDetails {
 
   private readonly parentsService = inject(ParentsService);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
+  private readonly language = inject(Language);
   private readonly permissions = inject(Permissions);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
@@ -116,13 +137,43 @@ export class ParentDetails {
   private changed = false;
 
 
-  readonly getFullName = getFullName;
-  readonly getArabicName = getArabicName;
-  readonly getEnglishName = getEnglishName;
-  readonly getInitials = getInitials;
-  readonly getClassSection = getClassSection;
-  readonly getRelationshipTranslationKey = getRelationshipTranslationKey;
-  readonly getRoleTranslationKey = getRoleTranslationKey;
+  private readonly isArabic = computed(
+    () => this.language.currentDirection() === 'rtl'
+  );
+
+  // What the dialog shows: the names in the language of the page.
+  // Recomputed when the parent or the language changes.
+  readonly view = computed(() => {
+    const parent = this.parent();
+
+    if (!parent) {
+      return null;
+    }
+
+    const isArabic = this.isArabic();
+
+    return {
+      name: getFullName(parent, isArabic),
+      nameAr: getArabicName(parent),
+      nameEn: getEnglishName(parent),
+      initials: getInitials(parent, isArabic),
+      // The same colour as in the parents list.
+      avatarTone: getAvatarTone(parent.parentId),
+
+      // "3 أبناء" next to the title of the children section.
+      childrenCountKey: pluralKey('PARENTS.COUNT.CHILDREN', parent.children.length),
+
+      children: parent.children.map<ChildView>(child => ({
+        ...child,
+        fullName: getFullName(child, isArabic),
+        initials: getInitials(child, isArabic),
+        // The same colour as in the students list.
+        avatarTone: getAvatarTone(child.studentId),
+        classSection: getClassSection(child, isArabic),
+        relationshipKey: getRelationshipTranslationKey(child.relationship)
+      }))
+    };
+  });
 
 
   constructor() {
@@ -216,6 +267,9 @@ export class ParentDetails {
         {
           width: '520px',
           maxWidth: '95vw',
+          maxHeight: '90vh',
+          // Shared dialog panel (styles.css): full screen on the phone
+          panelClass: 'form-dialog',
           data: { parent },
         }
       )
@@ -246,9 +300,9 @@ export class ParentDetails {
           width: '480px',
           maxWidth: '95vw',
           data: {
-            parentName: getFullName(parent),
-            childName: getFullName(child),
-            childFirstName: getFirstName(child),
+            parentName: getFullName(parent, this.isArabic()),
+            childName: getFullName(child, this.isArabic()),
+            childFirstName: getFirstName(child, this.isArabic()),
           },
         }
       )

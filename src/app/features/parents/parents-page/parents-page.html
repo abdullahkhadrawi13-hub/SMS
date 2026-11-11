@@ -1,52 +1,104 @@
-<div class="parents-page">
+<div>
 
-  <!-- Page Header -->
+  <!-- Page Header: the title, one description line, "Add parent" -->
   <app-parent-header
     [canManage]="canManage()"
     (addParent)="openAddParent()"
   ></app-parent-header>
 
-  <!-- Search and Filter -->
-  <div class="filters-card">
+  <div class="list-area">
 
-    <div class="search-container">
+    <!-- Search and the filter: on the page background, outside the table card.
+         One row on the computer; on the phone the filter opens under
+         the search ("Filter" button). -->
+    <div>
 
-      <!-- Parent Search -->
-      <app-parent-search
-        (searchChange)="search.set($event)"
-        (searchSubmit)="onSearch($event)"
-      ></app-parent-search>
+      <div class="list-toolbar">
 
-      <!-- Parent Filter -->
-      <button
-        mat-stroked-button
-        type="button"
-        (click)="openFilter()"
-      >
-        <mat-icon>filter_list</mat-icon>
-        {{ 'PARENTS.FILTER_BUTTON' | translate }}
-      </button>
+        <div class="list-search-row">
+
+          <app-search-field
+            [(search)]="search"
+            [label]="'PARENTS.SEARCH.LABEL' | translate"
+            [placeholder]="'PARENTS.SEARCH.PLACEHOLDER' | translate"
+            [clearLabel]="'PARENTS.SEARCH.CLEAR' | translate"
+            (searchTyping)="onSearchTyping($event)"
+            (searchSubmit)="onSearch()"
+            (searchClear)="clearSearch()"
+          ></app-search-field>
+
+          @if (isPhone()) {
+            <button
+              type="button"
+              class="list-filter-toggle"
+              [class.is-active]="filtersOpen() || activeFilterCount() > 0"
+              [attr.aria-expanded]="filtersOpen()"
+              aria-controls="parents-filters"
+              (click)="toggleFilters()"
+            >
+              <mat-icon aria-hidden="true">filter_list</mat-icon>
+
+              {{ 'PARENTS.FILTER.TOGGLE' | translate }}
+
+              @if (activeFilterCount() > 0) {
+                <span class="list-filter-count">{{ activeFilterCount() }}</span>
+              }
+            </button>
+          }
+
+        </div>
+
+        @if (!isPhone() || filtersOpen()) {
+          <app-parent-filter
+            id="parents-filters"
+            [isActive]="statusFilter() ?? null"
+            (filterChange)="onFilterChange($event)"
+          ></app-parent-filter>
+        }
+
+      </div>
+
+      <!-- The number of results: only after a search or a filter.
+           The live region is always there, so a screen reader reads
+           the new number each time it changes. -->
+      <div role="status" aria-live="polite">
+        @if (resultsKey(); as key) {
+          <p class="list-results">
+            <span>{{ key | translate: { count: resultCount() } }}</span>
+
+            @if (activeFilterCount() > 0) {
+              <span aria-hidden="true">·</span>
+
+              <button type="button" class="list-clear-filters" (click)="clearFilters()">
+                {{ 'PARENTS.FILTER.CLEAR_FILTERS' | translate }}
+              </button>
+            }
+          </p>
+        }
+      </div>
 
     </div>
 
-  </div>
+    <!-- Parents table (error / loading / table / empty state / pagination) -->
+    <app-parent-table
+      [parents]="parents()"
+      [isLoading]="isLoading()"
+      [errorMessage]="errorMessage()"
+      [totalCount]="totalCount()"
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [canManage]="canManage()"
+      [hasQuery]="hasQuery()"
+      [isPhone]="isPhone()"
+      (retry)="retry()"
+      (pageChange)="onPageChange($event)"
+      (viewParent)="openParentDetails($event)"
+      (editParent)="openEditParent($event)"
+      (linkChild)="openLinkChild($event)"
+      (toggleStatus)="toggleParentStatus($event)"
+      (resetPassword)="openResetPassword($event)"
+    ></app-parent-table>
 
-  <!-- Parent Table (error / loading / table / empty state / pagination) -->
-  <app-parent-table
-    [parents]="parents()"
-    [isLoading]="isLoading()"
-    [errorMessage]="errorMessage()"
-    [totalCount]="totalCount()"
-    [pageNumber]="pageNumber()"
-    [pageSize]="pageSize()"
-    [canManage]="canManage()"
-    (retry)="retry()"
-    (pageChange)="onPageChange($event)"
-    (viewParent)="openParentDetails($event)"
-    (editParent)="openEditParent($event)"
-    (linkChild)="openLinkChild($event)"
-    (toggleStatus)="toggleParentStatus($event)"
-    (resetPassword)="openResetPassword($event)"
-  ></app-parent-table>
+  </div>
 
 </div>

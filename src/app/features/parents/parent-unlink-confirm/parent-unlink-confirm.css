@@ -1,17 +1,21 @@
-/* Same layout as grades-status-dialog (Settings → Academic years).
-   Red: the link between the parent and the child is removed. */
+/* ==========================================================
+   "Unlink this child?" — navy & gold
+   Red: the link between the parent and the child is removed.
+   The confirm button is the shared .btn-danger (src/styles.css).
+   Colours and sizes: src/tokens.css only (no hex here).
+   ========================================================== */
 
 .confirm {
   max-width: 480px;
 
-  padding-top: 20px;
+  padding-block-start: 20px;
 }
 
 .confirm-icon {
   width: 48px;
   height: 48px;
 
-  margin: 0 24px;
+  margin: 0 var(--sp-6);
 
   display: flex;
   align-items: center;
@@ -19,8 +23,8 @@
 
   border-radius: 50%;
 
-  background: #fef2f2;
-  color: #b91c1c;
+  background: var(--bad-bg);
+  color: var(--bad-ink);
 }
 
 .confirm-icon mat-icon {
@@ -31,59 +35,51 @@
 }
 
 mat-dialog-content p {
-  margin: 0 0 12px;
+  margin: 0 0 var(--sp-3);
 
-  font-size: 14px;
-  line-height: 1.8;
+  color: var(--text);
 
-  color: #374151;
+  font-size: var(--fs-14);
+  line-height: 1.6;
 }
 
 
-/* =========================
-   Info Box
-   ========================= */
+/* ---------- Info note: nothing else is lost ---------- */
 
 .info-box {
   display: flex;
   align-items: flex-start;
 
-  gap: 10px;
+  gap: var(--sp-2);
 
-  padding: 10px 12px;
+  padding: 10px 14px;
 
-  border-radius: 10px;
+  border-radius: var(--r-control);
 
-  background: #e6f1fb;
-  color: #0c447c;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
 }
 
 .info-box mat-icon {
-  width: 20px;
-  height: 20px;
+  flex: none;
 
-  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-block-start: 2px;
 
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .info-box span {
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: var(--fs-13);
+  line-height: 1.6;
 }
 
 
-/* =========================
-   Actions
-   ========================= */
-
-.confirm-button {
-  --mat-button-filled-container-color: #b91c1c;
-  --mat-button-filled-label-text-color: #ffffff;
-}
+/* ---------- Actions ---------- */
 
 mat-dialog-actions {
-  gap: 8px;
+  gap: var(--sp-2);
 
-  padding: 16px 24px 20px;
+  padding: var(--sp-4) var(--sp-6) 20px;
 }

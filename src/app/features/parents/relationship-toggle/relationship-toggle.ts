@@ -1,6 +1,5 @@
 import { Component, input, output } from '@angular/core';
 
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -23,15 +22,21 @@ import {
 // A father or mother the student already has is disabled, with the
 // name of that parent under the buttons, so the backend error
 // ("already has a father") does not happen at all.
+//
+// Navy & gold (11 Nov 2026): three real radio buttons drawn as one
+// segmented control (no mat-button-toggle). The chosen one takes the
+// colour of its relationship, the same as the shared chip.
 @Component({
   selector: 'app-relationship-toggle',
   imports: [
-    MatButtonToggleModule,
     MatIconModule,
     TranslatePipe,
   ],
   templateUrl: './relationship-toggle.html',
   styleUrl: './relationship-toggle.css',
+  host: {
+    '[class.is-large]': 'large()'
+  }
 })
 export class RelationshipToggle {
 
@@ -51,6 +56,13 @@ export class RelationshipToggle {
   readonly large = input(false);
 
   readonly valueChange = output<ParentRelationship>();
+
+
+  // Radio buttons with the same name are one group, so every toggle
+  // on the screen needs its own name (one per child row in the add form).
+  private static nextId = 0;
+
+  readonly groupName = `relationship-${RelationshipToggle.nextId++}`;
 
 
   readonly relationships = PARENT_RELATIONSHIPS;

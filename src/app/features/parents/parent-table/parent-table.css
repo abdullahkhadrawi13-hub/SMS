@@ -1,225 +1,40 @@
-/* The table component behaves like a block inside the parent page. */
-:host {
-  display: block;
-}
+/* ==========================================================
+   Parents table — navy & gold
+   The card, the table, the avatar, the phone list and the paginator are
+   the shared "Data table" in src/styles.css (.data-card, .data-table…).
+   Only the "Children" column is here.
+   Colours and sizes: src/tokens.css only (no hex here).
+   ========================================================== */
 
-/* ================================
-   Table Card
-   ================================ */
-
-.table-card {
-  width: 100%;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-/* ================================
-   Table Wrapper
-   ================================ */
-
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
-/* ================================
-   Material Table
-   ================================ */
-
-.table-wrapper table {
-  width: 100%;
-  min-width: 900px;
-}
-
-.table-wrapper th {
-  height: 52px;
-  padding: 0 16px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #6b7280;
-  background: #f8fafc;
-  white-space: nowrap;
-}
-
-.table-wrapper td {
-  height: 64px;
-  padding: 0 16px;
-  font-size: 14px;
-  color: #374151;
-  white-space: nowrap;
-}
-
-/* Row hover */
-.table-wrapper tr.mat-mdc-row:hover {
-  background: #f8fafc;
-}
-
-/* ================================
-   Parent Name
-   ================================ */
-
-.parent-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 220px;
-}
-
-.parent-name-cell span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Parent avatar */
-.parent-avatar {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-  background: #f1f5f9;
-}
-
-.parent-avatar mat-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-  color: #64748b;
-}
-
-/* ================================
-   Actions
-   ================================ */
-
-.table-wrapper td:last-child {
-  width: 64px;
-  text-align: center;
-}
-
-.table-wrapper td:last-child button {
-  color: #6b7280;
-}
-
-/* ================================
-   Paginator
-   ================================ */
-
-.table-card mat-paginator {
-  border-top: 1px solid #e5e7eb;
-  background: #ffffff;
-}
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-  .table-card {
-    border-radius: 10px;
-  }
-}
-
-
-/* ================================
-   Refreshing (reload while data is shown)
-   ================================ */
-
-/* So the refresh bar can sit on top of the card. */
-.table-card {
-  position: relative;
-}
-
-/* Thin bar on the top edge; absolute, so the card height never changes. */
-.refresh-bar {
-  position: absolute;
-
-  top: 0;
-  left: 0;
-  right: 0;
-
-  z-index: 2;
-}
-
-.table-wrapper {
-  transition: opacity 0.15s ease;
-}
-
-/* Old data fades a little and cannot be clicked until the new data arrives. */
-.table-card.is-refreshing .table-wrapper {
-  opacity: 0.55;
-
-  pointer-events: none;
-}
-
-
-/* ================================
-   Children Chips
-   first name + relationship, one color per relationship
-   ================================ */
-
+/* The children chips: the shared .relationship-chip (styles.css),
+   one colour per relationship: "سارة · أب". */
 .children-chips {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
 
   gap: 6px;
 }
 
-.child-chip {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 4px 10px;
-
-  border-radius: 14px;
-
-  font-size: 12px;
-  font-weight: 500;
-
-  white-space: nowrap;
-}
-
+/* The first name is the chip's text (600); the relationship after it is lighter. */
 .chip-relationship {
-  opacity: 0.75;
+  margin-inline-start: var(--sp-1);
+
+  font-weight: 400;
 }
 
-/* Father */
-.child-chip.relationship-0 {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
+/* "+2": the children that did not fit (their names in the tooltip). */
+.chip-more {
+  border: 1px solid var(--border);
 
-/* Mother */
-.child-chip.relationship-1 {
-  background: #fdf2f8;
-  color: #be185d;
-}
+  background: var(--raised);
+  color: var(--muted);
 
-/* Guardian */
-.child-chip.relationship-2 {
-  background: #fffbeb;
-  color: #b45309;
-}
-
-/* "+N": the children that are not shown */
-.child-chip.more {
-  background: #f1f5f9;
-  color: #6b7280;
+  font-variant-numeric: tabular-nums;
 
   cursor: default;
 }
 
+/* A parent with no linked child yet */
 .no-children {
-  font-size: 13px;
-  color: #9ca3af;
+  color: var(--faint);
 }

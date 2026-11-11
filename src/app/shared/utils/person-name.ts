@@ -10,9 +10,10 @@
 //     getShortName(user, this.language.currentDirection() === 'rtl')
 //   );
 //
-// Used by: the navbar, the profile dialog and the welcome of the dashboards.
-// (parents.ts, teacher-details and absentees-list still have their own
-// copies of these functions; they can move here in a later cleanup.)
+// Used by: the navbar, the profile dialog, the welcome of the dashboards,
+// and the students, teachers and parents sections.
+// (absentees-list still has its own copies of these functions; they can
+// move here in a later cleanup.)
 
 
 // Anything that has the four-part name in Arabic and English.
@@ -65,6 +66,18 @@ export function getFullName(
   return isArabic
     ? getArabicName(person) || getEnglishName(person)
     : getEnglishName(person) || getArabicName(person);
+}
+
+
+// First name in the language of the page: "سارة" / "Sara"
+// (the children chips of the parents table).
+export function getFirstName(
+  person: FourPartName,
+  isArabic: boolean
+): string {
+  return isArabic
+    ? person.firstNameAr || person.firstNameEn
+    : person.firstNameEn || person.firstNameAr;
 }
 
 

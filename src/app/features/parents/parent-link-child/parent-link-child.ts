@@ -15,16 +15,18 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ParentsService } from '../../../core/services/parents';
 import { ApiMessageService } from '../../../core/services/api-message';
+import { Language } from '../../../core/services/language';
 import { ActionResult } from '../../../shared/services/action-result';
 import { ParentDto, ParentRelationship } from '../../../core/models/parent';
 import { Student } from '../../../core/models/student';
 
 import { StudentPicker } from '../student-picker/student-picker';
 import { RelationshipToggle } from '../relationship-toggle/relationship-toggle';
+import { getFullName, getInitials } from '../../../shared/utils/person-name';
 import {
   findTakenRelationships,
+  getAvatarTone,
   getClassSection,
-  getFullName,
   isRelationshipTaken,
   NO_TAKEN_RELATIONSHIPS,
   TakenRelationships
@@ -45,6 +47,10 @@ export interface ParentLinkChildResult {
 // "Link a child" (POST /api/parents/{parentId}/students).
 // Opened from the table menu, the parent details,
 // and the add form (when the phone number belongs to this parent).
+//
+// Navy & gold (11 Nov 2026): the shared dialog layout in styles.css
+// (.fd, .fd-head, .fd-body, .fd-foot), opened with panelClass
+// 'form-dialog' (full screen on the phone).
 @Component({
   selector: 'app-parent-link-child',
   imports: [
@@ -58,12 +64,14 @@ export interface ParentLinkChildResult {
   ],
   templateUrl: './parent-link-child.html',
   styleUrl: './parent-link-child.css',
+  host: { class: 'fd' }
 })
 export class ParentLinkChild {
 
   private readonly parentsService = inject(ParentsService);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
+  private readonly language = inject(Language);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly dialogRef =
@@ -97,10 +105,34 @@ export class ParentLinkChild {
     !this.isSubmitting()
   );
 
-  readonly parentName = getFullName(this.data.parent);
+  private readonly isArabic = computed(
+    () => this.language.currentDirection() === 'rtl'
+  );
 
-  readonly getFullName = getFullName;
-  readonly getClassSection = getClassSection;
+  // The parent's name in the language of the page (under the title).
+  readonly parentName = computed(
+    () => getFullName(this.data.parent, this.isArabic())
+  );
+
+  // The chosen student as the dialog shows it.
+  readonly studentView = computed(() => {
+    const student = this.student();
+
+    if (!student) {
+      return null;
+    }
+
+    const isArabic = this.isArabic();
+
+    return {
+      student,
+      fullName: getFullName(student, isArabic),
+      initials: getInitials(student, isArabic),
+      // The same colour as in the students list.
+      avatarTone: getAvatarTone(student.studentId),
+      classSection: getClassSection(student, isArabic)
+    };
+  });
 
 
   // A student was chosen: load their parents to know the taken father / mother.
@@ -123,7 +155,11 @@ export class ParentLinkChild {
 
           if (response.success) {
             this.taken.set(
-              findTakenRelationships(response.data.items, student.studentId)
+              findTakenRelationships(
+                response.data.items,
+                student.studentId,
+                this.isArabic()
+              )
             );
           }
 

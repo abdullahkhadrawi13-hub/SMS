@@ -1,8 +1,8 @@
 <!-- ================= Header (fixed) ================= -->
-<header class="fd-head td-head">
+<header class="fd-head dd-head">
 
   @if (view(); as v) {
-    <span class="data-avatar td-avatar" [attr.data-tone]="v.avatarTone" aria-hidden="true">
+    <span class="data-avatar dd-avatar" [attr.data-tone]="v.avatarTone" aria-hidden="true">
       {{ v.initials }}
     </span>
   }
@@ -10,7 +10,7 @@
   <div class="fd-head-text">
 
     @if (teacher(); as t) {
-      <h2 mat-dialog-title class="td-title">
+      <h2 mat-dialog-title class="dd-title">
         <span>{{ view()?.name }}</span>
 
         <app-status-badge [tone]="t.isActive ? 'ok' : 'neutral'">
@@ -70,30 +70,30 @@
         <h3 id="td-teacher-title">{{ 'TEACHERS.DETAILS.TEACHER_CARD' | translate }}</h3>
       </div>
 
-      <dl class="td-list">
+      <dl class="dd-list">
 
-        <div class="td-item">
+        <div class="dd-item">
           <dt>{{ 'TEACHERS.DETAILS.NAME_AR' | translate }}</dt>
           <dd><bdi dir="rtl">{{ view()?.nameAr || '—' }}</bdi></dd>
         </div>
 
-        <div class="td-item">
+        <div class="dd-item">
           <dt>{{ 'TEACHERS.DETAILS.NAME_EN' | translate }}</dt>
           <dd><bdi dir="ltr">{{ view()?.nameEn || '—' }}</bdi></dd>
         </div>
 
-        <div class="td-item">
+        <div class="dd-item">
           <dt>{{ 'TEACHERS.TABLE.TEACHER_NUMBER' | translate }}</dt>
           <dd><bdi class="tabular">{{ t.teacherNumber }}</bdi></dd>
         </div>
 
-        <div class="td-item">
+        <div class="dd-item">
           <dt>{{ 'TEACHERS.TABLE.PHONE' | translate }}</dt>
           <dd>
             @if (t.phoneNumber) {
               <bdi dir="ltr" class="tabular">{{ t.phoneNumber }}</bdi>
             } @else {
-              <span class="td-missing">—</span>
+              <span class="dd-missing">—</span>
             }
           </dd>
         </div>
@@ -110,19 +110,19 @@
         <h3 id="td-account-title">{{ 'TEACHERS.DETAILS.ACCOUNT_CARD' | translate }}</h3>
       </div>
 
-      <dl class="td-list">
+      <dl class="dd-list">
 
-        <div class="td-item">
+        <div class="dd-item">
           <dt>{{ 'TEACHERS.TABLE.LOGIN_ID' | translate }}</dt>
           <dd><bdi dir="ltr">{{ t.loginId }}</bdi></dd>
         </div>
 
-        <div class="td-item">
+        <div class="dd-item">
           <dt>{{ 'SHARED.ACCOUNT.STATUS' | translate }}</dt>
           <dd>{{ (t.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}</dd>
         </div>
 
-        <div class="td-item">
+        <div class="dd-item">
           <dt>{{ 'TEACHERS.DETAILS.PASSWORD' | translate }}</dt>
           <dd>
             {{
@@ -143,7 +143,7 @@
 
 
 <!-- ================= Footer (fixed) ================= -->
-<footer class="fd-foot td-foot">
+<footer class="fd-foot dd-foot">
   <button mat-stroked-button type="button" (click)="close()">
     {{ 'TEACHERS.DETAILS.CLOSE' | translate }}
   </button>

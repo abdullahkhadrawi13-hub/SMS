@@ -1,371 +1,259 @@
-<div class="parent-dialog">
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head dd-head">
 
-  <!-- Dialog Header -->
-  <div class="dialog-header">
+  @if (view(); as v) {
+    <span class="data-avatar dd-avatar" [attr.data-tone]="v.avatarTone" aria-hidden="true">
+      {{ v.initials }}
+    </span>
+  }
 
-    <div class="header-content">
+  <div class="fd-head-text">
 
-      <div class="header-icon">
-        <mat-icon>family_restroom</mat-icon>
-      </div>
+    @if (parent(); as p) {
+      <h2 mat-dialog-title class="dd-title">
+        <span>{{ view()?.name }}</span>
 
-      <div>
+        <app-status-badge [tone]="p.isActive ? 'ok' : 'neutral'">
+          {{ (p.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
+        </app-status-badge>
+      </h2>
 
-        <h2>
-          {{ 'PARENTS.DETAILS.TITLE' | translate }}
-        </h2>
+      <p class="fd-head-sub">
+        {{ 'PARENTS.TABLE.PHONE' | translate }}
 
-        <p>
-          {{ 'PARENTS.DETAILS.SUBTITLE' | translate }}
-        </p>
-
-      </div>
-
-    </div>
-
-    <button
-      mat-icon-button
-      type="button"
-      (click)="close()"
-      [attr.aria-label]="'PARENTS.DETAILS.CLOSE' | translate"
-    >
-      <mat-icon>close</mat-icon>
-    </button>
+        @if (p.phoneNumber) {
+          <bdi class="tabular" dir="ltr">{{ p.phoneNumber }}</bdi>
+        } @else {
+          —
+        }
+      </p>
+    } @else {
+      <h2 mat-dialog-title>{{ 'PARENTS.DETAILS.TITLE' | translate }}</h2>
+    }
 
   </div>
 
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'PARENTS.DETAILS.CLOSE' | translate"
+    (click)="close()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
 
-  <!-- Loading -->
+</header>
+
+
+<!-- ================= Body (scrolls) ================= -->
+<div class="fd-body">
+
   @if (isLoading()) {
 
     <app-state-card
       type="loading"
-      [message]="'PARENTS.DETAILS.LOADING' | translate"
       [framed]="false"
+      [message]="'PARENTS.DETAILS.LOADING' | translate"
     />
 
-  }
-
-  <!-- Error -->
-  @else if (errorMessage()) {
+  } @else if (errorMessage()) {
 
     <app-state-card
       type="error"
+      [framed]="false"
       [title]="'PARENTS.DETAILS.ERROR_TITLE' | translate"
       [message]="errorMessage() | translate"
-      [framed]="false"
       (retry)="retry()"
     />
 
-  }
+  } @else if (parent(); as p) {
 
-  <!-- Parent Information -->
-  @else if (parent(); as currentParent) {
+    @let v = view()!;
 
-    <div class="dialog-content">
+    <!-- ---------- Children (first: the most important part of a parent) ---------- -->
+    <section class="fd-section" aria-labelledby="pd-children-title">
 
-      <!-- Parent Profile: name (page language), login ID and status -->
-      <div class="parent-profile">
+      <div class="fd-section-head">
+        <h3 id="pd-children-title">{{ 'PARENTS.DETAILS.CHILDREN' | translate }}</h3>
 
-        <div class="parent-avatar">
-          {{ getInitials(currentParent) }}
-        </div>
-
-        <div class="parent-name">
-
-          <h2>
-            {{ getFullName(currentParent) }}
-          </h2>
-
-          <span class="parent-login">
-            <mat-icon>alternate_email</mat-icon>
-            <bdi>{{ currentParent.loginId }}</bdi>
+        @if (p.children.length > 0) {
+          <span class="fd-section-hint pd-count">
+            · {{ v.childrenCountKey | translate: { count: p.children.length } }}
           </span>
+        }
 
-        </div>
-
-        <app-status-badge [tone]="currentParent.isActive ? 'ok' : 'neutral'">
-          {{ (currentParent.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
-        </app-status-badge>
-
+        <!-- Link a child (Admin only) -->
+        @if (canManage()) {
+          <button
+            mat-stroked-button
+            type="button"
+            class="pd-link"
+            (click)="openLinkChild()"
+          >
+            <mat-icon aria-hidden="true">link</mat-icon>
+            {{ 'PARENTS.DETAILS.LINK_CHILD' | translate }}
+          </button>
+        }
       </div>
 
+      @if (v.children.length > 0) {
 
-      <!-- ================================
-           Children
-           ================================ -->
+        <ul class="pd-children">
+          @for (child of v.children; track child.studentId) {
 
-      <section class="details-section">
+            <li class="pd-child">
 
-        <div class="section-header">
+              <span class="data-avatar" [attr.data-tone]="child.avatarTone" aria-hidden="true">
+                {{ child.initials }}
+              </span>
 
-          <div class="section-icon family">
-            <mat-icon>family_restroom</mat-icon>
-          </div>
+              <div class="pd-child-text">
+                <span class="pd-child-name">{{ child.fullName }}</span>
+                <span class="pd-child-meta">
+                  <bdi class="tabular">{{ child.studentNumber }}</bdi>
+                  · {{ child.classSection }}
+                </span>
+              </div>
 
-          <div class="section-title">
+              <!-- The relationship, the student's status, and the account
+                   only when it needs attention (the child cannot sign in) -->
+              <div class="pd-child-tags">
+                <span class="relationship-chip relationship-{{ child.relationship }}">
+                  {{ child.relationshipKey | translate }}
+                </span>
 
-            <h3>
-              {{ 'PARENTS.DETAILS.CHILDREN' | translate }}
-              <span class="count">{{ currentParent.children.length }}</span>
-            </h3>
+                <app-student-status [status]="child.studentStatus" />
 
-            <p>
-              {{ 'PARENTS.DETAILS.CHILDREN_DESCRIPTION' | translate }}
-            </p>
+                @if (!child.isActive) {
+                  <app-status-badge tone="neutral">
+                    {{ 'SHARED.ACCOUNT.INACTIVE' | translate }}
+                  </app-status-badge>
+                }
+              </div>
 
-          </div>
-
-          <!-- Link a child (Admin only) -->
-          @if (canManage()) {
-            <button
-              mat-stroked-button
-              type="button"
-              class="link-button"
-              (click)="openLinkChild()"
-            >
-              <mat-icon>link</mat-icon>
-              {{ 'PARENTS.DETAILS.LINK_CHILD' | translate }}
-            </button>
-          }
-
-        </div>
-
-        @if (currentParent.children.length > 0) {
-
-          <div class="children-grid">
-
-            @for (child of currentParent.children; track child.studentId) {
-
-              <div class="child-card">
-
-                <div class="child-avatar">
-                  {{ getInitials(child) }}
-                </div>
-
-                <div class="child-body">
-
-                  <span class="child-name">
-                    {{ getFullName(child) }}
-                  </span>
-
-                  <span class="child-meta">
-                    <bdi>{{ child.studentNumber }}</bdi>
-                    · {{ getClassSection(child) }}
-                  </span>
-
-                  <div class="child-tags">
-
-                    <span class="relationship-chip relationship-{{ child.relationship }}">
-                      {{ getRelationshipTranslationKey(child.relationship) | translate }}
-                    </span>
-
-                    <app-status-badge [tone]="child.isActive ? 'ok' : 'neutral'">
-                      {{ (child.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}
-                    </app-status-badge>
-
-                    <app-student-status [status]="child.studentStatus" />
-
-                  </div>
-
-                </div>
-
-                <!-- Unlink (Admin only) -->
-                @if (canManage()) {
+              <!-- Unlink (Admin only) -->
+              @if (canManage()) {
+                <span class="pd-child-unlink">
                   @if (unlinkingId() === child.studentId) {
-                    <mat-spinner diameter="22" class="unlink-spinner"></mat-spinner>
+                    <mat-spinner diameter="20" aria-hidden="true" />
                   } @else {
                     <button
                       mat-icon-button
                       type="button"
-                      class="unlink-button"
                       [disabled]="unlinkingId() !== null"
                       [matTooltip]="'PARENTS.DETAILS.UNLINK' | translate"
-                      [attr.aria-label]="'PARENTS.DETAILS.UNLINK' | translate"
+                      [attr.aria-label]="'PARENTS.DETAILS.UNLINK_NAME' | translate: { name: child.fullName }"
                       (click)="confirmUnlink(child)"
                     >
-                      <mat-icon>link_off</mat-icon>
+                      <mat-icon aria-hidden="true">link_off</mat-icon>
                     </button>
                   }
-                }
+                </span>
+              }
 
-              </div>
+            </li>
 
+          }
+        </ul>
+
+      } @else {
+
+        <app-state-card
+          type="empty"
+          size="compact"
+          icon="family_restroom"
+          [framed]="false"
+          [title]="'PARENTS.DETAILS.NO_CHILDREN' | translate"
+          [message]="canManage() ? ('PARENTS.DETAILS.NO_CHILDREN_DESCRIPTION' | translate) : ''"
+        />
+
+      }
+
+    </section>
+
+
+    <!-- ---------- Parent details ---------- -->
+    <section class="fd-section" aria-labelledby="pd-parent-title">
+
+      <div class="fd-section-head">
+        <h3 id="pd-parent-title">{{ 'PARENTS.DETAILS.PARENT_CARD' | translate }}</h3>
+      </div>
+
+      <dl class="dd-list">
+
+        <div class="dd-item">
+          <dt>{{ 'PARENTS.DETAILS.NAME_AR' | translate }}</dt>
+          <dd><bdi dir="rtl">{{ v.nameAr || '—' }}</bdi></dd>
+        </div>
+
+        <div class="dd-item">
+          <dt>{{ 'PARENTS.DETAILS.NAME_EN' | translate }}</dt>
+          <dd><bdi dir="ltr">{{ v.nameEn || '—' }}</bdi></dd>
+        </div>
+
+        <div class="dd-item">
+          <dt>{{ 'PARENTS.TABLE.PHONE' | translate }}</dt>
+          <dd>
+            @if (p.phoneNumber) {
+              <bdi dir="ltr" class="tabular">{{ p.phoneNumber }}</bdi>
+            } @else {
+              <span class="dd-missing">—</span>
             }
-
-          </div>
-
-        } @else {
-
-          <div class="empty-children">
-            <mat-icon>family_restroom</mat-icon>
-            <span>{{ 'PARENTS.DETAILS.NO_CHILDREN' | translate }}</span>
-          </div>
-
-        }
-
-      </section>
-
-
-      <!-- ================================
-           Personal Information
-           ================================ -->
-
-      <section class="details-section">
-
-        <div class="section-header">
-
-          <div class="section-icon personal">
-            <mat-icon>badge</mat-icon>
-          </div>
-
-          <div>
-
-            <h3>
-              {{ 'PARENTS.DETAILS.PERSONAL_INFO' | translate }}
-            </h3>
-
-            <p>
-              {{ 'PARENTS.DETAILS.PERSONAL_INFO_DESCRIPTION' | translate }}
-            </p>
-
-          </div>
-
+          </dd>
         </div>
 
-        <div class="details-grid">
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'PARENTS.DETAILS.NAME_AR' | translate }}
-            </span>
-            <span class="detail-value">
-              <bdi>{{ getArabicName(currentParent) || '-' }}</bdi>
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'PARENTS.DETAILS.NAME_EN' | translate }}
-            </span>
-            <span class="detail-value">
-              <bdi>{{ getEnglishName(currentParent) || '-' }}</bdi>
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'PARENTS.TABLE.PHONE' | translate }}
-            </span>
-            <span class="detail-value">
-              <bdi>{{ currentParent.phoneNumber || '-' }}</bdi>
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'PARENTS.DETAILS.CHILDREN_COUNT' | translate }}
-            </span>
-            <span class="detail-value">
-              {{ currentParent.children.length }}
-            </span>
-          </div>
-
+        <div class="dd-item">
+          <dt>{{ 'PARENTS.DETAILS.CHILDREN_COUNT' | translate }}</dt>
+          <dd class="tabular">{{ p.children.length }}</dd>
         </div>
 
-      </section>
+      </dl>
+
+    </section>
 
 
-      <!-- ================================
-           Account Information
-           (the account status is shown in the profile header)
-           ================================ -->
+    <!-- ---------- Account ---------- -->
+    <section class="fd-section" aria-labelledby="pd-account-title">
 
-      <section class="details-section">
+      <div class="fd-section-head">
+        <h3 id="pd-account-title">{{ 'PARENTS.DETAILS.ACCOUNT_CARD' | translate }}</h3>
+      </div>
 
-        <div class="section-header">
+      <dl class="dd-list">
 
-          <div class="section-icon account">
-            <mat-icon>manage_accounts</mat-icon>
-          </div>
-
-          <div>
-
-            <h3>
-              {{ 'PARENTS.DETAILS.ACCOUNT_INFO' | translate }}
-            </h3>
-
-            <p>
-              {{ 'PARENTS.DETAILS.ACCOUNT_INFO_DESCRIPTION' | translate }}
-            </p>
-
-          </div>
-
+        <div class="dd-item">
+          <dt>{{ 'PARENTS.TABLE.LOGIN_ID' | translate }}</dt>
+          <dd><bdi dir="ltr">{{ p.loginId }}</bdi></dd>
         </div>
 
-        <div class="details-grid">
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'PARENTS.TABLE.LOGIN_ID' | translate }}
-            </span>
-            <span class="detail-value">
-              <bdi>{{ currentParent.loginId }}</bdi>
-            </span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">
-              {{ 'PARENTS.DETAILS.ROLE' | translate }}
-            </span>
-            <span class="detail-value">
-              {{ getRoleTranslationKey(currentParent.role) | translate }}
-            </span>
-          </div>
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              {{ 'PARENTS.DETAILS.PASSWORD_STATUS' | translate }}
-            </span>
-
-            <span
-              class="password-badge"
-              [class.must-change]="currentParent.mustChangePassword"
-            >
-              <mat-icon>
-                {{ currentParent.mustChangePassword ? 'error_outline' : 'check_circle' }}
-              </mat-icon>
-
-              {{
-                currentParent.mustChangePassword
-                  ? ('PARENTS.DETAILS.MUST_CHANGE_PASSWORD' | translate)
-                  : ('PARENTS.DETAILS.PASSWORD_NORMAL' | translate)
-              }}
-            </span>
-
-          </div>
-
+        <div class="dd-item">
+          <dt>{{ 'SHARED.ACCOUNT.STATUS' | translate }}</dt>
+          <dd>{{ (p.isActive ? 'SHARED.ACCOUNT.ACTIVE' : 'SHARED.ACCOUNT.INACTIVE') | translate }}</dd>
         </div>
 
-      </section>
+        <div class="dd-item">
+          <dt>{{ 'PARENTS.DETAILS.PASSWORD' | translate }}</dt>
+          <dd>
+            {{
+              (p.mustChangePassword
+                ? 'PARENTS.DETAILS.MUST_CHANGE_PASSWORD'
+                : 'PARENTS.DETAILS.PASSWORD_NORMAL') | translate
+            }}
+          </dd>
+        </div>
 
-    </div>
+      </dl>
 
-
-    <!-- Dialog Footer -->
-    <div class="dialog-actions">
-
-      <button
-        mat-button
-        type="button"
-        (click)="close()"
-      >
-        {{ 'PARENTS.DETAILS.CLOSE' | translate }}
-      </button>
-
-    </div>
+    </section>
 
   }
 
 </div>
+
+
+<!-- ================= Footer (fixed) ================= -->
+<footer class="fd-foot dd-foot">
+  <button mat-stroked-button type="button" (click)="close()">
+    {{ 'PARENTS.DETAILS.CLOSE' | translate }}
+  </button>
+</footer>

@@ -1,4 +1,10 @@
 // Shared helpers of the Parents section (used by several components).
+// The names themselves (full name, short name, initials…) come from
+// shared/utils/person-name.ts, like the students and teachers sections.
+//
+// Every function receives isArabic (the language of the page) instead of
+// reading it by itself, so a computed() that calls it updates as soon as
+// the language changes.
 
 import {
   ParentChildDto,
@@ -6,108 +12,30 @@ import {
   ParentRelationship
 } from '../../core/models/parent';
 import { Student } from '../../core/models/student';
+import { getShortName } from '../../shared/utils/person-name';
 
 
-// Anything that has the four-part name in Arabic and English
-// (a parent, a child, a student).
-interface FourPartName {
-  firstNameAr: string;
-  fatherNameAr: string;
-  grandFatherNameAr: string;
-  familyNameAr: string;
+// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
+const AVATAR_TONES = 6;
 
-  firstNameEn: string;
-  fatherNameEn: string;
-  grandFatherNameEn: string;
-  familyNameEn: string;
+// The same colour for the same person, everywhere
+// (a parent by parentId, a child or a student by studentId).
+export function getAvatarTone(id: number): number {
+  return (id % AVATAR_TONES) + 1;
 }
 
 
-// True when the page is in Arabic.
-export function isArabicPage(): boolean {
-  return document.documentElement.lang === 'ar';
-}
-
-
-// Full four-part name in Arabic.
-export function getArabicName(person: FourPartName): string {
-  return [
-    person.firstNameAr,
-    person.fatherNameAr,
-    person.grandFatherNameAr,
-    person.familyNameAr,
-  ]
-    .filter(Boolean)
-    .join(' ');
-}
-
-
-// Full four-part name in English.
-export function getEnglishName(person: FourPartName): string {
-  return [
-    person.firstNameEn,
-    person.fatherNameEn,
-    person.grandFatherNameEn,
-    person.familyNameEn,
-  ]
-    .filter(Boolean)
-    .join(' ');
-}
-
-
-// Full name in the language of the page (falls back to the other language).
-export function getFullName(person: FourPartName): string {
-  return isArabicPage()
-    ? getArabicName(person) || getEnglishName(person)
-    : getEnglishName(person) || getArabicName(person);
-}
-
-
-// First name in the language of the page (the chips of the table).
-export function getFirstName(person: FourPartName): string {
-  return isArabicPage()
-    ? person.firstNameAr || person.firstNameEn
-    : person.firstNameEn || person.firstNameAr;
-}
-
-
-// First name + family name in the language of the page ("خالد الخطيب").
-export function getShortName(person: FourPartName): string {
-  return isArabicPage()
-    ? `${person.firstNameAr} ${person.familyNameAr}`.trim()
-    : `${person.firstNameEn} ${person.familyNameEn}`.trim();
-}
-
-
-// The first letter of the first name and of the family name
-// (the avatar of a profile card). A zero-width non-joiner (‌)
-// keeps two Arabic letters apart, as in the teacher details.
-export function getInitials(person: FourPartName): string {
-
-  const isArabic = isArabicPage();
-
-  const first = isArabic
-    ? person.firstNameAr || person.firstNameEn
-    : person.firstNameEn || person.firstNameAr;
-
-  const family = isArabic
-    ? person.familyNameAr || person.familyNameEn
-    : person.familyNameEn || person.familyNameAr;
-
-  return [first, family]
-    .map(name => name?.trim().charAt(0) ?? '')
-    .filter(Boolean)
-    .join('‌')
-    .toUpperCase();
+// The separator of a list written in one line: "سارة، عمر" / "Sara, Omar".
+export function getListSeparator(isArabic: boolean): string {
+  return isArabic ? '، ' : ', ';
 }
 
 
 // "الصف الأول / أ" for a child or a student, in the language of the page.
 export function getClassSection(
-  item: Pick<ParentChildDto | Student, 'classNameAr' | 'classNameEn' | 'sectionAr' | 'sectionEn'>
+  item: Pick<ParentChildDto | Student, 'classNameAr' | 'classNameEn' | 'sectionAr' | 'sectionEn'>,
+  isArabic: boolean
 ): string {
-
-  const isArabic = isArabicPage();
 
   const className = isArabic
     ? item.classNameAr || item.classNameEn
@@ -143,7 +71,8 @@ export const NO_TAKEN_RELATIONSHIPS: TakenRelationships = {
 // children, so the link to this student is found by studentId.
 export function findTakenRelationships(
   parents: ParentDto[],
-  studentId: number
+  studentId: number,
+  isArabic: boolean
 ): TakenRelationships {
 
   const taken: TakenRelationships = { father: null, mother: null };
@@ -153,11 +82,11 @@ export function findTakenRelationships(
     const child = parent.children.find(c => c.studentId === studentId);
 
     if (child?.relationship === ParentRelationship.Father) {
-      taken.father = getShortName(parent);
+      taken.father = getShortName(parent, isArabic);
     }
 
     if (child?.relationship === ParentRelationship.Mother) {
-      taken.mother = getShortName(parent);
+      taken.mother = getShortName(parent, isArabic);
     }
   }
 

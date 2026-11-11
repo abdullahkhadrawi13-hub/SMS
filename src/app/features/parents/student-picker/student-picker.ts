@@ -1,13 +1,10 @@
-import { Component, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { catchError, debounceTime, filter, map, of, switchMap, tap } from 'rxjs';
@@ -15,8 +12,10 @@ import { catchError, debounceTime, filter, map, of, switchMap, tap } from 'rxjs'
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Students } from '../../../core/services/students';
+import { Language } from '../../../core/services/language';
 import { Student } from '../../../core/models/student';
-import { getClassSection, getFullName } from '../parents';
+import { getFullName, getInitials } from '../../../shared/utils/person-name';
+import { getAvatarTone, getClassSection } from '../parents';
 
 
 // Student search (combobox): the same numbers as the teacher combobox
@@ -28,21 +27,35 @@ const STUDENT_SEARCH_DEBOUNCE_MS = 300;
 const STUDENT_SEARCH_PAGE_SIZE = 20;
 
 
+// One student of the results as the list shows it: the names in the
+// language of the page (computed once, not on every change check).
+interface StudentRow {
+  student: Student;
+  fullName: string;
+  initials: string;
+  avatarTone: number;
+  classSection: string;
+
+  // Already added / already linked: shown, but cannot be chosen.
+  isExcluded: boolean;
+}
+
+
 // Searches students in the backend while the admin types
 // (GET /api/students?search=...) and emits the chosen student.
 //
 // After a choice the field is cleared, so the container decides what
 // to show (a row in the add form, a card in the link dialog).
 // isActive is not sent: a deactivated student can be linked too.
+//
+// Navy & gold (11 Nov 2026): the field is the shared look in styles.css
+// (.field, .field-box) around a plain <input>, no mat-form-field.
 @Component({
   selector: 'app-student-picker',
   imports: [
     ReactiveFormsModule,
     MatAutocompleteModule,
-    MatButtonModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatProgressSpinnerModule,
     TranslatePipe,
   ],
@@ -52,7 +65,13 @@ const STUDENT_SEARCH_PAGE_SIZE = 20;
 export class StudentPicker implements OnInit {
 
   private readonly studentsService = inject(Students);
+  private readonly language = inject(Language);
   private readonly destroyRef = inject(DestroyRef);
+
+  // Each picker on the screen needs its own id for <label for>.
+  private static nextId = 0;
+
+  readonly inputId = `student-picker-${StudentPicker.nextId++}`;
 
 
   // Students that cannot be chosen (already added or already linked).
@@ -81,8 +100,24 @@ export class StudentPicker implements OnInit {
   // The text of the last finished search ('' = no search yet).
   readonly searchedText = signal('');
 
-  readonly getFullName = getFullName;
-  readonly getClassSection = getClassSection;
+  // The results with their names in the language of the page.
+  // Recomputed when the results, the excluded students or the language change.
+  readonly rows = computed<StudentRow[]>(() => {
+
+    const isArabic = this.language.currentDirection() === 'rtl';
+    const excludedIds = this.excludedIds();
+
+    return this.results().map(student => ({
+      student,
+      fullName: getFullName(student, isArabic),
+      initials: getInitials(student, isArabic),
+      // The same colour as in the students list.
+      avatarTone: getAvatarTone(student.studentId),
+      classSection: getClassSection(student, isArabic),
+      isExcluded: excludedIds.includes(student.studentId)
+    }));
+
+  });
 
 
   ngOnInit(): void {
@@ -143,12 +178,6 @@ export class StudentPicker implements OnInit {
         this.results.set(result.response.data.items);
         this.searchedText.set(result.text);
       });
-  }
-
-
-  // True when the student is already added / linked.
-  isExcluded(student: Student): boolean {
-    return this.excludedIds().includes(student.studentId);
   }
 
 

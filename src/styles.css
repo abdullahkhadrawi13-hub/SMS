@@ -99,8 +99,8 @@ button:focus-visible,
 
 /* ---------- Form fields ----------
    One look for form fields, used instead of mat-form-field
-   (decided 8 Nov 2026; the students form is the first user, the teacher
-   and parent forms take it when they are redesigned). Plain <input> and
+   (decided 8 Nov 2026; used by the student, teacher and parent forms).
+   Plain <input> and
    <select> inside a box; the label above, the help or the error below.
 
    <div class="field">
@@ -339,7 +339,8 @@ html {
 
 /* ---------- Form dialog panel ----------
    panelClass: 'form-dialog' on MatDialog.open() of an add/edit form
-   (students form, teachers form) and of the teacher details dialog. 10px corners and the floating shadow; under
+   (students, teachers, parents), of the teacher and parent details
+   dialogs and of "Link a child". 10px corners and the floating shadow; under
    720px the dialog fills the screen with no corners. !important wins over
    the width / maxWidth / maxHeight that open() writes on the pane. */
 .form-dialog {
@@ -363,7 +364,7 @@ html {
 /* ---------- Form dialog layout ----------
    The inside of an add / edit form dialog (and of a details dialog):
    a fixed header, a body that scrolls by itself, a fixed footer.
-   The students form and the teachers form use it (moved here from
+   The student, teacher and parent forms use it (moved here from
    students-form.css on 11 Nov 2026); the panel around it is .form-dialog
    above, and the fields are .field / .field-box.
 
@@ -717,8 +718,8 @@ html {
 }
 
 /* ---------- List page ----------
-   A page that lists people (students, teachers; moved here from the
-   students files on 11 Nov 2026): the page header, then the search row on
+   A page that lists people (students, teachers, parents; moved here from
+   the students files on 11 Nov 2026): the page header, then the search row on
    the page background, the number of results under it, then the table card.
 
    <app-…-header />
@@ -980,8 +981,8 @@ html {
 }
 
 /* ---------- Data table ----------
-   The table card of a list page (students, teachers; moved here from
-   students-table.css on 11 Nov 2026), and the two-line list it becomes
+   The table card of a list page (students, teachers, parents; moved here
+   from students-table.css on 11 Nov 2026), and the two-line list it becomes
    on the phone. Spec: "البطاقات" + "الجداول" + "الهاتف".
 
    <div class="data-card" [class.is-refreshing]="…">
@@ -1154,7 +1155,7 @@ html {
 .data-avatar[data-tone='6'] { background: var(--avatar-6-bg); color: var(--avatar-6-ink); }
 
 /* The name: 14px/600. An <a> to the person's page (students),
-   or a <button> that opens the details dialog (teachers). */
+   or a <button> that opens the details dialog (teachers, parents). */
 .data-link {
   overflow: hidden;
 
@@ -1301,6 +1302,161 @@ button.data-link {
   }
 
 }
+
+/* ---------- Details dialog ----------
+   A read-only dialog about one person (teacher details, parent details).
+   It uses the form dialog layout above (.fd, .fd-head, .fd-body, .fd-foot)
+   and adds the avatar header and the label / value list. (Moved here from
+   teacher-details.css on 11 Nov 2026, when the parent details took it.)
+
+   <header class="fd-head dd-head">
+     <span class="data-avatar dd-avatar" data-tone="1…6">مع</span>
+     <div class="fd-head-text">
+       <h2 mat-dialog-title class="dd-title"><span>Name</span> <app-status-badge /></h2>
+       <p class="fd-head-sub">Teacher number T-260001</p>
+     </div>
+     <button mat-icon-button>✕</button>
+   </header>
+
+   <div class="fd-body">
+     <section class="fd-section">
+       <div class="fd-section-head"><h3>…</h3></div>
+       <dl class="dd-list">
+         <div class="dd-item"><dt>Label</dt><dd>Value</dd></div>
+       </dl>
+     </section>
+   </div>
+
+   <footer class="fd-foot dd-foot"><button mat-stroked-button>Close</button></footer> */
+
+/* Header: avatar, name + account badge, one line under them */
+.dd-head {
+  align-items: center;
+}
+
+.dd-avatar {
+  width: 40px;
+  height: 40px;
+
+  font-size: var(--fs-14);
+}
+
+/* The name and the badge on one line; the badge goes under on a narrow screen.
+   (Two classes, to win over the shared title rule of .fd-head.) */
+.dd-head .dd-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-1) 10px;
+}
+
+.dd-head .fd-head-sub {
+  margin-block-start: 2px;
+}
+
+/* Label / value list: two columns; a rule above every item and between
+   the columns (the same as the "Details" tab of the student page). */
+.dd-list {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  margin: 0;
+}
+
+.dd-item {
+  min-width: 0;
+
+  padding-block: var(--sp-3);
+
+  border-block-start: 1px solid var(--rule);
+}
+
+.dd-item:nth-child(odd) {
+  padding-inline-end: var(--sp-6);
+}
+
+.dd-item:nth-child(even) {
+  padding-inline-start: var(--sp-6);
+
+  border-inline-start: 1px solid var(--rule);
+}
+
+.dd-item dt {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 600;
+}
+
+.dd-item dd {
+  display: flex;
+  align-items: center;
+
+  min-height: 24px;
+
+  margin: 2px 0 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
+
+  overflow-wrap: anywhere;
+}
+
+.dd-missing {
+  color: var(--faint);
+}
+
+/* Footer: "Close" at the end */
+.dd-foot {
+  justify-content: flex-end;
+}
+
+/* Phone (under 720px): one column */
+@media (max-width: 719.98px) {
+
+  .dd-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dd-item:nth-child(odd),
+  .dd-item:nth-child(even) {
+    padding-inline: 0;
+
+    border-inline-start: 0;
+  }
+
+}
+
+/* ---------- Relationship chip ----------
+   How a parent is related to a child: father blue, mother pink,
+   guardian gold. The number is ParentRelationship (0, 1, 2).
+   Used by the parents section and the "Parents" tab of the student page.
+
+   <span class="relationship-chip relationship-0">أب</span>
+
+   .relationship-0 / -1 / -2 alone give only the two colours
+   (an avatar in the colour of the relationship). */
+.relationship-chip {
+  display: inline-flex;
+  align-items: center;
+
+  height: 24px;
+
+  padding-inline: 10px;
+
+  border-radius: var(--r-pill);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.relationship-0 { background: var(--avatar-3-bg); color: var(--avatar-3-ink); }
+.relationship-1 { background: var(--avatar-4-bg); color: var(--avatar-4-ink); }
+.relationship-2 { background: var(--avatar-5-bg); color: var(--avatar-5-ink); }
 
 /* ---------- Text for screen readers only ---------- */
 .visually-hidden {

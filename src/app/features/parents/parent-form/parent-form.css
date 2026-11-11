@@ -1,549 +1,261 @@
-/* ================================
-   Parent Form
-   ================================ */
+/* ==========================================================
+   Parent form (add / edit dialog) — navy & gold
+   The layout (header, body, footer, sections, grids, notes) is the shared
+   form dialog layout in src/styles.css (.fd, .fd-head, .fd-body…), and
+   the fields are the shared .field / .field-box. Only what is special to
+   this form is here: the phone check and the children.
+   Colours and sizes: src/tokens.css only (no hex here).
+   Logical properties only (works the same in RTL and LTR).
+   ========================================================== */
 
-.parent-form {
-  width: 100%;
-  padding: 24px;
+/* ---------- Phone check ---------- */
 
-  background: #ffffff;
+/* The result at the end of the phone box: ✓ new number, ! known number */
+.pf-phone-state {
+  flex: none;
 
-  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  margin: 0 10px;
 
-  text-align: start;
+  font-size: 18px;
 }
 
+.pf-phone-state.is-ok {
+  color: var(--ok-ink);
+}
 
-/* ================================
-   Messages
-   ================================ */
+.pf-phone-state.is-warn {
+  color: var(--warn-ink);
+}
 
-.message-card {
+/* "No parent has this number": the green of "fine, go on" */
+.fd-note.pf-note-ok {
+  border: 1px solid var(--ok-line);
+
+  background: var(--ok-bg);
+  color: var(--ok-ink);
+}
+
+/* A parent already has this number: the text, the parent, the two choices */
+.pf-match {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.pf-match-card {
   display: flex;
   align-items: center;
 
   gap: 10px;
 
-  padding: 12px 14px;
+  padding: 10px var(--sp-3);
 
-  margin-bottom: 20px;
+  border: 1px solid var(--warn-line);
+  border-radius: var(--r-control);
 
-  border-radius: 10px;
-
-  font-size: 14px;
-  line-height: 1.5;
+  background: var(--surface);
+  color: var(--text);
 }
 
-.message-card mat-icon {
-  flex-shrink: 0;
-}
-
-.error-message {
-  border: 1px solid #fecaca;
-  background: #fef2f2;
-  color: #b91c1c;
-}
-
-
-/* ================================
-   Form Cards
-   ================================ */
-
-.form-card {
-  margin-bottom: 20px;
-
-  padding: 20px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  background: #ffffff;
-}
-
-
-/* ================================
-   Card Header
-   ================================ */
-
-.card-header {
-  display: flex;
-  align-items: flex-start;
-
-  gap: 12px;
-
-  margin-bottom: 20px;
-}
-
-.card-icon {
-  width: 40px;
-  height: 40px;
-
-  flex-shrink: 0;
+.pf-match-text {
+  flex: 1;
+  min-width: 0;
 
   display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 10px;
-
-  background: #eff6ff;
+  flex-direction: column;
 }
 
-.card-icon mat-icon {
-  width: 22px;
-  height: 22px;
+.pf-match-name {
+  overflow: hidden;
 
-  font-size: 22px;
-
-  color: #2563eb;
-}
-
-.card-header h2 {
-  margin: 0 0 4px;
-
-  font-size: 17px;
+  font-size: var(--fs-14);
   font-weight: 600;
-
   line-height: 1.4;
 
-  color: #111827;
-}
-
-.card-header p {
-  margin: 0;
-
-  font-size: 13px;
-
-  line-height: 1.5;
-
-  color: #6b7280;
-}
-
-
-/* ================================
-   Form Grid
-   ================================ */
-
-.form-grid {
-  display: grid;
-
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-
-  gap: 16px;
-
-  /* Each field keeps its own height: when one field in a row shows a
-     two-line error, the field next to it is not stretched. */
-  align-items: start;
-}
-
-
-/* ================================
-   Material Form Fields
-   ================================ */
-
-mat-form-field {
-  width: 100%;
-}
-
-
-/*
-  The fields use subscriptSizing="dynamic" (see parent-form.html), so the
-  error message is part of the field's height instead of floating over the
-  field below it.
-
-  This rule keeps one empty line reserved under every field:
-  - a normal one-line message appears without moving anything;
-  - a long message that wraps to two lines makes its own row taller,
-    so it never overlaps the next field.
-
-  ::ng-deep is needed because this element lives inside mat-form-field.
-*/
-.parent-form ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  min-height: 20px;
-}
-
-
-/* ================================
-   Field Direction
-   ================================ */
-
-input[dir='rtl'] {
-  text-align: right;
-}
-
-input[dir='ltr'] {
-  text-align: left;
-}
-
-
-/* ================================
-   Actions
-   ================================ */
-
-.form-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  gap: 12px;
-
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-.form-actions button {
-  min-width: 110px;
-}
-
-.form-actions mat-icon {
-  margin-inline-end: 6px;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 700px) {
-
-  .parent-form {
-    padding: 18px;
-  }
-
-  
-
-  
-
-  .form-card {
-    padding: 16px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-actions {
-    justify-content: stretch;
-  }
-
-  .form-actions button {
-    flex: 1;
-  }
-
-}
-
-
-@media (max-width: 450px) {
-
-  .parent-form {
-    padding: 14px;
-  }
-
-  .form-card {
-    padding: 14px;
-  }
-
-  .card-header {
-    gap: 10px;
-  }
-
-  .card-icon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .card-header h2 {
-    font-size: 16px;
-  }
-
-  .card-header p {
-    font-size: 12px;
-  }
-
-  .form-actions {
-    flex-direction: column-reverse;
-  }
-
-  .form-actions button {
-    width: 100%;
-  }
-
-}
-
-
-/* "(optional)" next to the children title */
-.optional {
-  margin-inline-start: 6px;
-
-  font-size: 13px;
-  font-weight: 400;
-
-  color: #6b7280;
-}
-
-
-/* ================================
-   Phone Number (add mode)
-   ================================ */
-
-.phone-field {
-  max-width: 420px;
-}
-
-.phone-suffix {
-  margin-inline: 8px 12px;
-}
-
-.phone-suffix.ok {
-  color: #16a34a;
-}
-
-.phone-suffix.warn {
-  color: #b45309;
-}
-
-
-/* ================================
-   Check Boxes (phone check, edit note)
-   Same colors as the info / warning boxes of the grades dialog.
-   ================================ */
-
-.check-box {
-  display: flex;
-  align-items: flex-start;
-
-  gap: 10px;
-
-  margin-top: 12px;
-  padding: 10px 12px;
-
-  border-radius: 10px;
-
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.check-box > mat-icon {
-  width: 20px;
-  height: 20px;
-
-  flex-shrink: 0;
-
-  margin-top: 2px;
-
-  font-size: 20px;
-}
-
-.check-box.info {
-  background: #e6f1fb;
-  color: #0c447c;
-}
-
-.check-box.ok {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.check-box.warn {
-  border: 1px solid #fde68a;
-  background: #fffbeb;
-  color: #78350f;
-}
-
-.check-box.warn > mat-icon {
-  color: #b45309;
-}
-
-.check-box strong {
-  font-weight: 600;
-}
-
-.check-content {
-  flex: 1;
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 10px;
-}
-
-/* Edit mode: the note above the buttons */
-.edit-note {
-  margin: 0 0 20px;
-}
-
-
-/* The parent who already has the typed number */
-.match-card {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  padding: 10px 12px;
-
-  border: 1px solid #fde68a;
-  border-radius: 10px;
-
-  background: #ffffff;
-}
-
-.match-avatar,
-.child-avatar {
-  width: 34px;
-  height: 34px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #f1f5f9;
-  color: #64748b;
-}
-
-.match-avatar mat-icon,
-.child-avatar mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-}
-
-.match-text,
-.child-text {
-  flex: 1;
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-}
-
-.match-name,
-.child-name {
-  font-size: 14px;
-  font-weight: 600;
-
-  color: #111827;
-
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.match-meta,
-.child-meta {
-  font-size: 12px;
+.pf-match-meta {
+  color: var(--muted);
 
-  color: #6b7280;
+  font-size: var(--fs-12);
+  line-height: 1.5;
 }
 
-.match-actions {
+.pf-match-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
 
-  gap: 8px;
+  gap: var(--sp-2);
+}
+
+/* White on the yellow note, like the card above it */
+.pf-match-actions .mat-mdc-outlined-button {
+  background-color: var(--surface);
 }
 
 
-/* ================================
-   Children (add mode)
-   ================================ */
+/* ---------- Children ---------- */
 
-.children-list {
+/* A note that is the first thing of its section (edit mode) */
+.fd-note.pf-first-note {
+  margin-block-start: 0;
+}
+
+/* The search is as wide as two of the three columns above it */
+.pf-picker {
+  max-width: 520px;
+}
+
+.pf-children-empty {
+  margin: var(--sp-3) 0 0;
+
+  color: var(--faint);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+/* One row per child, a light rule between them (no inner cards) */
+.pf-children {
+  margin: var(--sp-3) 0 0;
+  padding: 0;
+
+  list-style: none;
+
+  border-block-start: 1px solid var(--rule);
+}
+
+.pf-child {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
+
+  gap: var(--sp-3);
+
+  padding-block: 10px;
+
+  border-block-end: 1px solid var(--rule);
+
+  outline: none;
+}
+
+/* Who: avatar, name, number · class */
+.pf-child-who {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
 
   gap: 10px;
 
-  margin-top: 14px;
+  min-height: var(--h-control);
 }
 
-.child-row {
+.pf-child-text {
+  min-width: 0;
+
   display: flex;
+  flex-direction: column;
+}
+
+.pf-child-name {
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+  line-height: 1.4;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pf-child-meta {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  line-height: 1.5;
+}
+
+.pf-child-relationship {
+  flex: none;
+
+  display: flex;
+
+  max-width: 50%;
+}
+
+/* While the student's parents load (is there a father / mother already?) */
+.pf-child-checking {
+  display: inline-flex;
   align-items: center;
 
-  gap: 12px;
+  gap: var(--sp-2);
 
-  padding: 12px;
+  min-height: var(--h-control);
 
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  color: var(--muted);
 
-  background: #ffffff;
+  font-size: var(--fs-13);
 }
 
-/* No relationship chosen after a save attempt */
-.child-row.invalid {
-  border-color: #f4b4b4;
-  background: #fffafa;
-}
+.pf-child-remove {
+  flex: none;
 
-.child-avatar {
-  background: #eaf2ff;
-  color: #2554a4;
-}
-
-.child-relationship {
-  flex-shrink: 0;
-}
-
-.remove-child {
-  flex-shrink: 0;
-
-  color: #9ca3af;
-}
-
-.empty-children {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  margin-top: 14px;
-  padding: 16px;
-
-  border: 1px dashed #cbd5e1;
-  border-radius: 12px;
-
-  font-size: 13px;
-  line-height: 1.6;
-
-  color: #6b7280;
-}
-
-.empty-children mat-icon {
-  width: 28px;
-  height: 28px;
-
-  flex-shrink: 0;
-
-  font-size: 28px;
-
-  color: #9ca3af;
+  color: var(--muted);
 }
 
 
-@media (max-width: 700px) {
+/* ---------- Phone (under 720px) ----------
+   The child, then the relationship under it as wide as the row. */
 
-  .phone-field {
+@media (max-width: 719.98px) {
+
+  .pf-picker {
     max-width: none;
   }
 
-  .child-row {
+  .pf-match-card {
     flex-wrap: wrap;
   }
 
-  .child-relationship {
+  .pf-match-actions .mat-mdc-button-base {
+    flex: 1 1 100%;
+  }
+
+  .pf-child {
+    flex-wrap: wrap;
+
+    gap: var(--sp-2) var(--sp-1);
+  }
+
+  .pf-child-who {
+    flex: 1 1 calc(100% - 48px);
+
+    min-height: var(--h-touch);
+  }
+
+  /* ✕ stays on the first line, after the name */
+  .pf-child-remove {
+    order: 2;
+  }
+
+  .pf-child-relationship {
     order: 3;
 
-    width: 100%;
+    flex: 1 1 100%;
+
+    max-width: none;
   }
 
 }

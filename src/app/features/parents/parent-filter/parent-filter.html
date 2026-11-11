@@ -1,77 +1,17 @@
-<!-- Dialog title -->
-<h2 mat-dialog-title>
-  {{ 'PARENTS.FILTER.TITLE' | translate }}
-</h2>
-
-<!-- Filter content -->
-<mat-dialog-content>
-
-  <div class="filter-form">
-
-    <!-- Parent account status filter -->
-    <mat-form-field appearance="outline">
-
-      <mat-label>
-        {{ 'SHARED.ACCOUNT.STATUS' | translate }}
-      </mat-label>
-
-      <mat-select
-        [value]="isActive()"
-        (selectionChange)="isActive.set($event.value)"
-      >
-
-        <!-- Show all parents -->
-        <mat-option [value]="null">
-          {{ 'PARENTS.FILTER.ALL' | translate }}
-        </mat-option>
-
-        <!-- Show active parents -->
-        <mat-option [value]="true">
-          {{ 'PARENTS.ACTIVE' | translate }}
-        </mat-option>
-
-        <!-- Show inactive parents -->
-        <mat-option [value]="false">
-          {{ 'PARENTS.INACTIVE' | translate }}
-        </mat-option>
-
-      </mat-select>
-
-    </mat-form-field>
-
-  </div>
-
-</mat-dialog-content>
-
-<!-- Dialog actions -->
-<mat-dialog-actions align="end">
-
-  <!-- Reset filter values -->
-  <button
-    mat-button
-    type="button"
-    (click)="clear()"
-  >
-    {{ 'PARENTS.FILTER.CLEAR' | translate }}
-  </button>
-
-  <!-- Close dialog without applying changes -->
-  <button
-    mat-stroked-button
-    type="button"
-    mat-dialog-close
-  >
-    {{ 'PARENTS.FILTER.CANCEL' | translate }}
-  </button>
-
-  <!-- Apply selected filter -->
-  <button
-    mat-flat-button
-    color="primary"
-    type="button"
-    (click)="apply()"
-  >
-    {{ 'PARENTS.FILTER.APPLY' | translate }}
-  </button>
-
-</mat-dialog-actions>
+<!-- Account status: can the parent sign in -->
+<select
+  class="filter-select is-wide"
+  [class.is-active]="isActive() !== null"
+  [attr.aria-label]="'SHARED.ACCOUNT.STATUS' | translate"
+  (change)="onStatusChange($any($event.target).value)"
+>
+  <option value="" [selected]="statusValue() === ''">
+    {{ 'PARENTS.FILTER.ALL' | translate }}
+  </option>
+  <option value="true" [selected]="statusValue() === 'true'">
+    {{ 'PARENTS.FILTER.OPTION' | translate: { name: ('SHARED.ACCOUNT.ACTIVE' | translate) } }}
+  </option>
+  <option value="false" [selected]="statusValue() === 'false'">
+    {{ 'PARENTS.FILTER.OPTION' | translate: { name: ('SHARED.ACCOUNT.INACTIVE' | translate) } }}
+  </option>
+</select>

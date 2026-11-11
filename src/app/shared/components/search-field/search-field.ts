@@ -2,8 +2,8 @@ import { Component, input, model, output } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
 
-// The shared search field of the list pages (students, teachers; parents
-// when that list is redesigned): 340px wide, 36px high (44px on the
+// The shared search field of the list pages (students, teachers,
+// parents): 340px wide, 36px high (44px on the
 // phone), the search icon at the start and a ✕ button once something is typed.
 // Spec: "الحقول والقوائم المنسدلة" → البحث.
 //

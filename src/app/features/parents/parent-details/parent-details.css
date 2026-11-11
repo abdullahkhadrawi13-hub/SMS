@@ -1,674 +1,158 @@
-/* ================================
-   Parent Details Dialog
-   ================================ */
+/* ==========================================================
+   Parent details dialog — navy & gold
+   The layout (header, body, footer), the avatar header and the
+   label / value lists are shared, in src/styles.css (.fd…, .dd-head,
+   .dd-list…), like the teacher details. The avatar is the shared
+   .data-avatar and the relationship is the shared .relationship-chip.
+   Only the children list is here.
+   Colours and sizes: src/tokens.css only (no hex here).
+   Logical properties only (works the same in RTL and LTR).
+   ========================================================== */
 
-.parent-dialog {
-  width: 100%;
-  box-sizing: border-box;
-  background: #ffffff;
-  text-align: start;
+/* ---------- "Children" head: title · count, "Link a child" at the end ---------- */
+
+.pd-link {
+  margin-inline-start: auto;
+}
+
+/* The count stays on the phone too (the shared hint hides there) */
+.fd-section-hint.pd-count {
+  display: inline;
+
+  font-variant-numeric: tabular-nums;
 }
 
 
-/* ================================
-   Dialog Header
-   ================================ */
+/* ---------- Children: one row per child, a light rule between them ---------- */
 
-.dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 16px;
-
-  padding: 20px 24px;
-
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-
-  gap: 14px;
-
-  min-width: 0;
-}
-
-.header-icon {
-  width: 44px;
-  height: 44px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 10px;
-
-  background: #e1f5ee;
-
-  color: #085041;
-}
-
-.header-icon mat-icon {
-  width: 22px;
-  height: 22px;
-
-  font-size: 22px;
-}
-
-.header-content h2 {
+.pd-children {
   margin: 0;
+  padding: 0;
 
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.4;
+  list-style: none;
 
-  color: #111827;
+  border-block-start: 1px solid var(--rule);
 }
 
-.header-content p {
-  margin: 4px 0 0;
-
-  color: #6b7280;
-
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-
-/* ================================
-   Dialog Content
-   ================================ */
-
-.dialog-content {
-  padding: 24px;
-
-  box-sizing: border-box;
-}
-
-
-/* ================================
-   Parent Profile (teal card)
-   ================================ */
-
-.parent-profile {
+.pd-child {
   display: flex;
   align-items: center;
-
-  gap: 16px;
-
-  padding: 16px;
-  margin-bottom: 18px;
-
-  border-radius: 14px;
-
-  background: #e1f5ee;
-}
-
-/* Initials of the parent */
-.parent-avatar {
-  width: 60px;
-  height: 60px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #0f6e56;
-
-  color: #ffffff;
-
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.parent-name {
-  flex: 1;
-  min-width: 0;
-}
-
-.parent-name h2 {
-  margin: 0;
-
-  font-size: 19px;
-  font-weight: 600;
-  line-height: 1.4;
-
-  color: #04342c;
-
-  word-break: break-word;
-}
-
-.parent-login {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  margin-top: 4px;
-
-  color: #0f6e56;
-
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.parent-login mat-icon {
-  width: 16px;
-  height: 16px;
-
-  font-size: 16px;
-}
-
-
-/* ================================
-   Details Sections
-   ================================ */
-
-.details-section {
-  margin-bottom: 14px;
-  padding: 16px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-}
-
-.details-section:last-child {
-  margin-bottom: 0;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  margin-bottom: 14px;
-}
-
-.section-icon {
-  width: 36px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-sizing: border-box;
-
-  border-radius: 9px;
-}
-
-/* Each section has its own color:
-   light background, colored icon and a thin border */
-.section-icon.personal {
-  background: #eeedfe;
-  color: #534ab7;
-  border: 1px solid #afa9ec;
-}
-
-.section-icon.academic {
-  background: #faeeda;
-  color: #854f0b;
-  border: 1px solid #fac775;
-}
-
-.section-icon.account {
-  background: #fbeaf0;
-  color: #993556;
-  border: 1px solid #ed93b1;
-}
-
-.section-icon mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-}
-
-.section-header h3 {
-  margin: 0;
-
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.4;
-
-  color: #111827;
-}
-
-.section-header p {
-  margin: 2px 0 0;
-
-  color: #6b7280;
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-
-/* ================================
-   Details Grid (two columns)
-   ================================ */
-
-.details-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-
-  gap: 10px;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-
-  gap: 4px;
-
-  min-width: 0;
-
-  padding: 10px 12px;
-
-  border-radius: 10px;
-
-  background: #f8fafc;
-}
-
-.detail-label {
-  color: #6b7280;
-
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.detail-value {
-  color: #111827;
-
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.5;
-
-  word-break: break-word;
-}
-
-
-/* ================================
-   Password Status
-   green = up to date, orange = must change
-   ================================ */
-
-.password-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  width: fit-content;
-
-  padding: 3px 10px;
-
-  border-radius: 999px;
-
-  background: #ecfdf5;
-  color: #047857;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.password-badge.must-change {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.password-badge mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
-
-
-/* ================================
-   Dialog Actions
-   ================================ */
-
-.dialog-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
 
   gap: 10px;
 
-  padding: 14px 24px;
+  min-height: var(--row);
 
-  border-top: 1px solid #e5e7eb;
+  box-sizing: border-box;
+  padding-block: var(--sp-2);
+
+  border-block-end: 1px solid var(--rule);
 }
 
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 700px) {
-
-  .dialog-header {
-    padding: 16px;
-  }
-
-  .dialog-content {
-    padding: 18px;
-  }
-
-  .parent-profile {
-    align-items: flex-start;
-  }
-
+/* The rule of the next section comes right after the last child */
+.pd-child:last-child {
+  border-block-end: 0;
 }
 
-
-/* ================================
-   Small Mobile
-   ================================ */
-
-@media (max-width: 480px) {
-
-  .dialog-header {
-    padding: 14px;
-  }
-
-  .header-content {
-    gap: 10px;
-  }
-
-  .header-icon {
-    width: 38px;
-    height: 38px;
-  }
-
-  .header-content h2 {
-    font-size: 18px;
-  }
-
-  .header-content p {
-    font-size: 12px;
-  }
-
-  .dialog-content {
-    padding: 16px;
-  }
-
-  .parent-profile {
-    gap: 12px;
-  }
-
-  .parent-avatar {
-    width: 50px;
-    height: 50px;
-
-    font-size: 17px;
-  }
-
-  .details-section {
-    padding: 14px;
-  }
-
-  .parent-name h2 {
-    font-size: 18px;
-  }
-
-  .details-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dialog-actions {
-    padding: 12px 16px;
-  }
-
-}
-
-/* =====================================================
-   Parents only
-   ===================================================== */
-
-/* Children section: green icon, the title takes the free space
-   so the "Link a child" button sits at the end of the header. */
-.section-icon.family {
-  background: #e6f4ea;
-  color: #1e6b3a;
-  border: 1px solid #9fd3b0;
-}
-
-.section-title {
-  flex: 1;
-  min-width: 0;
-}
-
-.section-title h3 {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-}
-
-.count {
-  padding: 1px 8px;
-
-  border-radius: 10px;
-
-  background: #f1f5f9;
-  color: #6b7280;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.link-button {
-  flex-shrink: 0;
-}
-
-
-/* ================================
-   Children Cards
-   ================================ */
-
-.children-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-
-  gap: 10px;
-}
-
-.child-card {
-  display: flex;
-  align-items: flex-start;
-
-  gap: 12px;
-
-  min-width: 0;
-
-  padding: 12px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  background: #ffffff;
-
-  transition:
-    box-shadow 0.15s ease,
-    transform 0.15s ease;
-}
-
-.child-card:hover {
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
-
-  transform: translateY(-1px);
-}
-
-.child-avatar {
-  width: 40px;
-  height: 40px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #eef4ff;
-  color: #1d4ed8;
-
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.child-body {
+.pd-child-text {
   flex: 1;
   min-width: 0;
 
   display: flex;
   flex-direction: column;
-
-  gap: 3px;
 }
 
-.child-name {
-  font-size: 14px;
+.pd-child-name {
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
   font-weight: 600;
+  line-height: 1.4;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pd-child-meta {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
   line-height: 1.5;
-
-  color: #111827;
-
-  word-break: break-word;
 }
 
-.child-meta {
-  font-size: 12px;
+.pd-child-tags {
+  flex: none;
 
-  color: #6b7280;
-}
-
-.child-tags {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
 
   gap: 6px;
-
-  margin-top: 6px;
 }
 
-/* Relationship: the same colors as the chips of the table */
-.relationship-chip {
-  display: inline-flex;
-  align-items: center;
+/* The unlink button and its spinner share one 36px square,
+   so the row does not move while the link is being removed. */
+.pd-child-unlink {
+  flex: none;
 
-  padding: 4px 10px;
-
-  border-radius: 14px;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.relationship-chip.relationship-0 {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-
-.relationship-chip.relationship-1 {
-  background: #fdf2f8;
-  color: #be185d;
-}
-
-.relationship-chip.relationship-2 {
-  background: #fffbeb;
-  color: #b45309;
-}
-
-
-.unlink-button {
-  flex-shrink: 0;
-
-  color: #9ca3af;
-}
-
-.unlink-button:hover:not(:disabled) {
-  color: #b91c1c;
-}
-
-.unlink-spinner {
-  flex-shrink: 0;
-
-  margin: 9px;
-}
-
-.empty-children {
   display: flex;
   align-items: center;
+  justify-content: center;
 
-  gap: 12px;
+  width: var(--h-control);
+  height: var(--h-control);
 
-  padding: 16px;
-
-  border: 1px dashed #cbd5e1;
-  border-radius: 12px;
-
-  font-size: 13px;
-  line-height: 1.6;
-
-  color: #6b7280;
+  color: var(--muted);
 }
 
-.empty-children mat-icon {
-  width: 28px;
-  height: 28px;
+.pd-child-unlink .mat-mdc-icon-button {
+  color: var(--muted);
+}
 
-  flex-shrink: 0;
+.pd-child-unlink .mat-mdc-icon-button:hover:not(:disabled) {
+  color: var(--bad-ink);
+}
 
-  font-size: 28px;
-
-  color: #9ca3af;
+/* No children yet: the shared empty state, without its margins */
+.fd-section app-state-card {
+  margin-block: 0;
 }
 
 
-@media (max-width: 700px) {
+/* ---------- Phone (under 720px) ----------
+   Line 1: avatar, name, unlink. Line 2: the chips, under the name. */
 
-  .children-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 719.98px) {
 
-  .section-header {
+  .pd-child {
     flex-wrap: wrap;
+
+    gap: var(--sp-1) 10px;
+
+    padding-block: 10px;
   }
 
-  .link-button {
-    width: 100%;
+  .pd-child-text {
+    flex: 1 1 0;
   }
 
-}
+  .pd-child-unlink {
+    order: 2;
 
-@media (prefers-reduced-motion: reduce) {
-
-  .child-card {
-    transition: none;
+    width: var(--h-touch);
+    height: var(--h-touch);
   }
 
-  .child-card:hover {
-    transform: none;
+  .pd-child-tags {
+    order: 3;
+
+    flex: 1 1 100%;
+    justify-content: flex-start;
+
+    /* under the name: the avatar (32px) + the gap (10px) */
+    padding-inline-start: 42px;
   }
 
 }

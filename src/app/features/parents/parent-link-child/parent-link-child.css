@@ -1,138 +1,90 @@
-/* ================================
-   Link a Child Dialog
-   ================================ */
+/* ==========================================================
+   "Link a child" dialog — navy & gold
+   The layout (header, body, footer) is the shared dialog layout in
+   src/styles.css (.fd, .fd-head, .fd-body, .fd-foot); the search is
+   app-student-picker and the avatar is the shared .data-avatar.
+   Only the chosen student is here.
+   Colours and sizes: src/tokens.css only (no hex here).
+   ========================================================== */
 
-mat-dialog-content {
+.pl-body {
   display: flex;
   flex-direction: column;
 
-  gap: 16px;
+  gap: var(--sp-4);
 
-  min-width: 0;
+  padding-block-start: 20px;
+
+  /* Room for the hint under the search, so the dialog does not
+     change height between the search and the chosen student. */
+  min-height: 132px;
 }
 
-.link-for {
-  margin: 0;
+/* The parent's name in the line under the title */
+.fd-head-sub strong {
+  color: var(--text);
 
-  font-size: 13px;
-  line-height: 1.6;
-
-  color: #6b7280;
-}
-
-.link-for strong {
-  font-weight: 500;
-
-  color: #111827;
-}
-
-
-/* ================================
-   Chosen Student
-   ================================ */
-
-.picked-student {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 12px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  background: #f8fafc;
-}
-
-.picked-avatar {
-  width: 34px;
-  height: 34px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #eaf2ff;
-  color: #2554a4;
-}
-
-.picked-avatar mat-icon {
-  width: 18px;
-  height: 18px;
-
-  font-size: 18px;
-}
-
-.picked-text {
-  flex: 1;
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-}
-
-.picked-name {
-  font-size: 14px;
   font-weight: 600;
-
-  color: #111827;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.picked-meta {
-  font-size: 12px;
-
-  color: #6b7280;
 }
 
 
-/* ================================
-   Relationship
-   ================================ */
+/* ---------- The chosen student ---------- */
 
-.relationship-section {
-  display: flex;
-  flex-direction: column;
-
-  gap: 8px;
-}
-
-.relationship-label {
-  font-size: 13px;
-
-  color: #6b7280;
-}
-
-.checking {
+.pl-picked {
   display: flex;
   align-items: center;
 
   gap: 10px;
 
-  min-height: 44px;
+  padding-block: var(--sp-2);
+  padding-inline: var(--sp-3) var(--sp-2);
 
-  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-control);
 
-  color: #6b7280;
+  background: var(--raised);
+}
+
+.pl-picked-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.pl-picked-name {
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+  line-height: 1.4;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pl-picked-meta {
+  color: var(--muted);
+
+  font-size: var(--fs-12);
+  line-height: 1.5;
 }
 
 
-/* ================================
-   Actions
-   ================================ */
+/* ---------- While the student's parents load ---------- */
 
-mat-dialog-actions {
-  gap: 8px;
+.pl-checking {
+  display: flex;
+  align-items: center;
 
-  padding: 16px 24px 20px;
+  gap: var(--sp-2);
+
+  min-height: var(--h-touch);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
 }

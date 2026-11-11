@@ -1,12 +1,10 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import {
-  MatPaginatorModule,
-  PageEvent,
-} from '@angular/material/paginator';
+import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -15,12 +13,21 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import {
   getRelationshipTranslationKey,
-  ParentChildDto,
-  ParentDto
+  ParentDto,
+  ParentRelationship
 } from '../../../core/models/parent';
-import { getFirstName, getFullName, isArabicPage } from '../parents';
+import { Language } from '../../../core/services/language';
+import { RangePaginatorIntl } from '../../../core/services/paginator-intl';
+import {
+  getFirstName,
+  getFullName,
+  getInitials,
+  getShortName
+} from '../../../shared/utils/person-name';
+import { pluralKey } from '../../../shared/utils/plural';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
+import { getAvatarTone, getListSeparator } from '../parents';
 
 
 // How many children are shown as chips in the "Children" column.
@@ -28,9 +35,40 @@ import { StatusBadge } from '../../../shared/components/status-badge/status-badg
 const VISIBLE_CHILDREN = 2;
 
 
+// One child chip of the "Children" column: "سارة · أب".
+export interface ChildChip {
+  studentId: number;
+  firstName: string;
+  relationship: ParentRelationship;
+  relationshipKey: string;
+}
+
+
+// One parent as the list shows it: the API data plus the names
+// in the language of the page (computed once, not on every change check).
+export interface ParentRow extends ParentDto {
+  fullName: string;
+  shortName: string;
+  initials: string;
+  avatarTone: number;
+
+  // The first children, shown as chips.
+  chips: ChildChip[];
+
+  // The children not shown as chips: how many, and their first names
+  // (the tooltip of "+N").
+  hiddenCount: number;
+  hiddenNames: string;
+
+  // "3 أبناء" (the second line of a parent on the phone).
+  childrenCountKey: string;
+}
+
+
 @Component({
   selector: 'app-parent-table',
   imports: [
+    NgTemplateOutlet,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
@@ -42,10 +80,18 @@ const VISIBLE_CHILDREN = 2;
     StateCard,
     StatusBadge,
   ],
+  // The look is the shared "Data table" in styles.css (.data-card, .data-table…);
+  // only the children chips are in parent-table.css.
   templateUrl: './parent-table.html',
   styleUrl: './parent-table.css',
+  // "1–10 من 42" under this table, like the students and teachers tables.
+  providers: [
+    { provide: MatPaginatorIntl, useClass: RangePaginatorIntl }
+  ],
 })
 export class ParentTable {
+
+  private readonly language = inject(Language);
 
   // ===== Inputs (all data is owned and loaded by the parent page) =====
 
@@ -61,19 +107,31 @@ export class ParentTable {
   readonly pageNumber = input(1);
   readonly pageSize = input(10);
 
-  // Shows the edit, link and activate / deactivate actions (Admin only).
+  // Shows "Edit", "Link a child", "Reset password" and
+  // "Activate / Deactivate" (Admin only). "View" is shown for everyone.
   readonly canManage = input(false);
 
-  // ===== Loading modes (same as the teachers table) =====
+  // The last list used a search or a filter: the empty state says
+  // "no parents match" instead of "no parents added yet".
+  readonly hasQuery = input(false);
 
+  // Under 720px: a two-line list instead of the table.
+  readonly isPhone = input(false);
+
+  // ===== Loading modes =====
+
+  // First load: there is nothing on the screen yet,
+  // so the big spinner replaces the table.
   readonly isInitialLoading = computed(() =>
     this.isLoading() && this.parents().length === 0
   );
 
+  // Reload (page change, search, filter, after an edit):
+  // the old rows stay on the screen with a thin progress bar on top,
+  // so the table and the paginator do not disappear and jump.
   readonly isRefreshing = computed(() =>
     this.isLoading() && this.parents().length > 0
   );
-
 
   // ===== Outputs (the parent page performs the actual actions) =====
 
@@ -85,37 +143,54 @@ export class ParentTable {
   readonly toggleStatus = output<ParentDto>();
   readonly resetPassword = output<ParentDto>();
 
-
-  // Columns displayed in the parents table.
+  // Columns displayed in the parents table (the parent first).
   readonly displayedColumns = [
     'name',
     'loginId',
     'phoneNumber',
     'children',
     'status',
-    'actions',
+    'actions'
   ];
 
-  readonly getFullName = getFullName;
-  readonly getFirstName = getFirstName;
-  readonly getRelationshipTranslationKey = getRelationshipTranslationKey;
 
+  // The parents with their names in the language of the page.
+  // Recomputed when the list or the language changes.
+  readonly rows = computed<ParentRow[]>(() => {
 
-  // The children shown as chips.
-  visibleChildren(parent: ParentDto): ParentChildDto[] {
-    return parent.children.slice(0, VISIBLE_CHILDREN);
-  }
+    const isArabic = this.language.currentDirection() === 'rtl';
 
-  // How many children are not shown as chips (0 = none).
-  hiddenCount(parent: ParentDto): number {
-    return Math.max(parent.children.length - VISIBLE_CHILDREN, 0);
-  }
+    return this.parents().map(parent => {
 
-  // The first names of the hidden children, for the tooltip of "+N".
-  hiddenNames(parent: ParentDto): string {
-    return parent.children
-      .slice(VISIBLE_CHILDREN)
-      .map(child => getFirstName(child))
-      .join(isArabicPage() ? '، ' : ', ');
-  }
+      const hidden = parent.children.slice(VISIBLE_CHILDREN);
+
+      return {
+        ...parent,
+        fullName: getFullName(parent, isArabic),
+        shortName: getShortName(parent, isArabic),
+        initials: getInitials(parent, isArabic),
+        // The same colour for the same parent, everywhere.
+        avatarTone: getAvatarTone(parent.parentId),
+
+        chips: parent.children
+          .slice(0, VISIBLE_CHILDREN)
+          .map(child => ({
+            studentId: child.studentId,
+            firstName: getFirstName(child, isArabic),
+            relationship: child.relationship,
+            relationshipKey: getRelationshipTranslationKey(child.relationship)
+          })),
+
+        hiddenCount: hidden.length,
+        hiddenNames: hidden
+          .map(child => getFirstName(child, isArabic))
+          .join(getListSeparator(isArabic)),
+
+        childrenCountKey: pluralKey('PARENTS.COUNT.CHILDREN', parent.children.length)
+      };
+
+    });
+
+  });
+
 }

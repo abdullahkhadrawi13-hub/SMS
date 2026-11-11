@@ -1,29 +1,46 @@
-<h2 mat-dialog-title>
-  {{ 'PARENTS.LINK.TITLE' | translate }}
-</h2>
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-<mat-dialog-content>
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>{{ 'PARENTS.LINK.TITLE' | translate }}</h2>
 
-  <!-- The parent the child is linked to -->
-  <p class="link-for">
-    {{ 'PARENTS.LINK.FOR' | translate }}:
-    <strong>{{ parentName }}</strong>
-  </p>
+    <!-- The parent the child is linked to -->
+    <p class="fd-head-sub">
+      {{ 'PARENTS.LINK.FOR' | translate }}
+      <strong>{{ parentName() }}</strong>
+    </p>
+  </div>
 
-  @if (student(); as current) {
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'PARENTS.LINK.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="cancel()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
+
+
+<!-- ================= Body ================= -->
+<div class="fd-body pl-body">
+
+  @if (studentView(); as current) {
 
     <!-- The chosen student -->
-    <div class="picked-student">
+    <div class="pl-picked">
 
-      <div class="picked-avatar">
-        <mat-icon>school</mat-icon>
-      </div>
+      <span class="data-avatar" [attr.data-tone]="current.avatarTone" aria-hidden="true">
+        {{ current.initials }}
+      </span>
 
-      <div class="picked-text">
-        <span class="picked-name">{{ getFullName(current) }}</span>
-        <span class="picked-meta">
-          <bdi>{{ current.studentNumber }}</bdi>
-          · {{ getClassSection(current) }}
+      <div class="pl-picked-text">
+        <span class="pl-picked-name">{{ current.fullName }}</span>
+        <span class="pl-picked-meta">
+          <bdi class="tabular">{{ current.student.studentNumber }}</bdi>
+          · {{ current.classSection }}
         </span>
       </div>
 
@@ -39,15 +56,15 @@
     </div>
 
     <!-- Relationship -->
-    <div class="relationship-section">
+    <div class="field">
 
-      <span class="relationship-label">
+      <span class="field-label">
         {{ 'PARENTS.RELATIONSHIP.LABEL' | translate }}
       </span>
 
       @if (isChecking()) {
-        <div class="checking">
-          <mat-spinner diameter="20"></mat-spinner>
+        <div class="pl-checking" role="status">
+          <mat-spinner diameter="18" aria-hidden="true" />
           <span>{{ 'PARENTS.LINK.CHECKING' | translate }}</span>
         </div>
       } @else {
@@ -73,9 +90,11 @@
 
   }
 
-</mat-dialog-content>
+</div>
 
-<mat-dialog-actions align="end">
+
+<!-- ================= Footer (fixed) ================= -->
+<footer class="fd-foot dd-foot">
 
   <button
     mat-stroked-button
@@ -88,18 +107,22 @@
 
   <button
     mat-flat-button
-    color="primary"
     type="button"
-    [disabled]="!canLink()"
+    class="fd-submit"
+    [class.is-busy]="isSubmitting()"
+    [disabled]="!canLink() && !isSubmitting()"
+    [attr.aria-disabled]="isSubmitting() ? 'true' : null"
     (click)="link()"
   >
-    <mat-icon>link</mat-icon>
+    <!-- The icon stays outside @if so mat-button can place it;
+         while linking it is hidden and the spinner shows instead. -->
+    <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">link</mat-icon>
 
-    {{
-      isSubmitting()
-        ? ('PARENTS.LINK.LINKING' | translate)
-        : ('PARENTS.LINK.CONFIRM' | translate)
-    }}
+    @if (isSubmitting()) {
+      <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+    }
+
+    {{ (isSubmitting() ? 'PARENTS.LINK.LINKING' : 'PARENTS.LINK.CONFIRM') | translate }}
   </button>
 
-</mat-dialog-actions>
+</footer>
