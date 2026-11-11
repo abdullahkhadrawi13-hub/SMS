@@ -1,51 +1,103 @@
-<div class="teachers-page">
+<div>
 
-  <!-- Page Header -->
+  <!-- Page Header: the title, one description line, "Add teacher" -->
   <app-teacher-header
     [canManage]="canManage()"
     (addTeacher)="openAddTeacher()"
   ></app-teacher-header>
 
-  <!-- Search and Filter -->
-  <div class="filters-card">
+  <div class="list-area">
 
-    <div class="search-container">
+    <!-- Search and the filter: on the page background, outside the table card.
+         One row on the computer; on the phone the filter opens under
+         the search ("Filter" button). -->
+    <div>
 
-      <!-- Teacher Search -->
-      <app-teacher-search
-        (searchChange)="search.set($event)"
-        (searchSubmit)="onSearch($event)"
-      ></app-teacher-search>
+      <div class="list-toolbar">
 
-      <!-- Teacher Filter -->
-      <button
-        mat-stroked-button
-        type="button"
-        (click)="openFilter()"
-      >
-        <mat-icon>filter_list</mat-icon>
-        {{ 'TEACHERS.FILTER_BUTTON' | translate }}
-      </button>
+        <div class="list-search-row">
+
+          <app-search-field
+            [(search)]="search"
+            [label]="'TEACHERS.SEARCH.LABEL' | translate"
+            [placeholder]="'TEACHERS.SEARCH.PLACEHOLDER' | translate"
+            [clearLabel]="'TEACHERS.SEARCH.CLEAR' | translate"
+            (searchTyping)="onSearchTyping($event)"
+            (searchSubmit)="onSearch()"
+            (searchClear)="clearSearch()"
+          ></app-search-field>
+
+          @if (isPhone()) {
+            <button
+              type="button"
+              class="list-filter-toggle"
+              [class.is-active]="filtersOpen() || activeFilterCount() > 0"
+              [attr.aria-expanded]="filtersOpen()"
+              aria-controls="teachers-filters"
+              (click)="toggleFilters()"
+            >
+              <mat-icon aria-hidden="true">filter_list</mat-icon>
+
+              {{ 'TEACHERS.FILTER.TOGGLE' | translate }}
+
+              @if (activeFilterCount() > 0) {
+                <span class="list-filter-count">{{ activeFilterCount() }}</span>
+              }
+            </button>
+          }
+
+        </div>
+
+        @if (!isPhone() || filtersOpen()) {
+          <app-teacher-filter
+            id="teachers-filters"
+            [isActive]="statusFilter() ?? null"
+            (filterChange)="onFilterChange($event)"
+          ></app-teacher-filter>
+        }
+
+      </div>
+
+      <!-- The number of results: only after a search or a filter.
+           The live region is always there, so a screen reader reads
+           the new number each time it changes. -->
+      <div role="status" aria-live="polite">
+        @if (resultsKey(); as key) {
+          <p class="list-results">
+            <span>{{ key | translate: { count: resultCount() } }}</span>
+
+            @if (activeFilterCount() > 0) {
+              <span aria-hidden="true">·</span>
+
+              <button type="button" class="list-clear-filters" (click)="clearFilters()">
+                {{ 'TEACHERS.FILTER.CLEAR_FILTERS' | translate }}
+              </button>
+            }
+          </p>
+        }
+      </div>
 
     </div>
 
-  </div>
+    <!-- Teachers table (error / loading / table / empty state / pagination) -->
+    <app-teacher-table
+      [teachers]="teachers()"
+      [isLoading]="isLoading()"
+      [errorMessage]="errorMessage()"
+      [totalCount]="totalCount()"
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [canManage]="canManage()"
+      [hasQuery]="hasQuery()"
+      [isPhone]="isPhone()"
+      (retry)="retry()"
+      (pageChange)="onPageChange($event)"
+      (viewTeacher)="openTeacherDetails($event)"
+      (editTeacher)="openEditTeacher($event)"
+      (toggleStatus)="toggleTeacherStatus($event)"
+      (resetPassword)="openResetPassword($event)"
+    ></app-teacher-table>
 
-  <!-- Teacher Table (error / loading / table / empty state / pagination) -->
-  <app-teacher-table
-    [teachers]="teachers()"
-    [isLoading]="isLoading()"
-    [errorMessage]="errorMessage()"
-    [totalCount]="totalCount()"
-    [pageNumber]="pageNumber()"
-    [pageSize]="pageSize()"
-    [canManage]="canManage()"
-    (retry)="retry()"
-    (pageChange)="onPageChange($event)"
-    (viewTeacher)="openTeacherDetails($event)"
-    (editTeacher)="openEditTeacher($event)"
-    (toggleStatus)="toggleTeacherStatus($event)"
-    (resetPassword)="openResetPassword($event)"
-  ></app-teacher-table>
+  </div>
 
 </div>

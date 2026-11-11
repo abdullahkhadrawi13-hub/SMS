@@ -1,5 +1,6 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import {
   MAT_DIALOG_DATA,
@@ -13,10 +14,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { TeachersService } from '../../../core/services/teachers';
-
 import { ApiMessageService } from '../../../core/services/api-message';
-import { getRoleTranslationKey } from '../../../core/models/user-role';
+import { Language } from '../../../core/services/language';
 import { TeacherListDto } from '../../../core/models/teacher';
+import {
+  getArabicName,
+  getEnglishName,
+  getFullName,
+  getInitials
+} from '../../../shared/utils/person-name';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 
@@ -27,6 +33,19 @@ export interface TeacherDetailsDialogData {
 }
 
 
+// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
+const AVATAR_TONES = 6;
+
+
+// The teacher details dialog (navy & gold, 11 Nov 2026).
+// Header: the avatar, the name in the language of the page, the account
+// badge and the teacher number. Body: "Teacher details" and "Account",
+// two label / value lists with a rule between them (no inner cards).
+// Read-only: editing is from ⋮ in the teachers list.
+//
+// The layout is the shared dialog layout in styles.css (.fd, .fd-head,
+// .fd-body, .fd-foot); only the label / value list is in teacher-details.css.
+// Opened by teachers-page with panelClass 'form-dialog' (full screen on the phone).
 @Component({
   selector: 'app-teacher-details',
   imports: [
@@ -39,6 +58,7 @@ export interface TeacherDetailsDialogData {
   ],
   templateUrl: './teacher-details.html',
   styleUrl: './teacher-details.css',
+  host: { class: 'fd' }
 })
 export class TeacherDetails {
 
@@ -47,6 +67,8 @@ export class TeacherDetails {
 
   // Picks the Arabic or English message from an API response.
   private readonly apiMessageService = inject(ApiMessageService);
+
+  private readonly language = inject(Language);
 
   // Used to stop pending requests when the dialog is closed.
   private readonly destroyRef = inject(DestroyRef);
@@ -68,6 +90,28 @@ export class TeacherDetails {
 
   // Error message (API message or translation key).
   readonly errorMessage = signal('');
+
+
+  // What the dialog shows: the names in the language of the page.
+  // Recomputed when the teacher or the language changes.
+  readonly view = computed(() => {
+    const teacher = this.teacher();
+
+    if (!teacher) {
+      return null;
+    }
+
+    const isArabic = this.language.currentDirection() === 'rtl';
+
+    return {
+      name: getFullName(teacher, isArabic),
+      nameAr: getArabicName(teacher),
+      nameEn: getEnglishName(teacher),
+      initials: getInitials(teacher, isArabic),
+      // The same colour as in the teachers list.
+      avatarTone: (teacher.teacherId % AVATAR_TONES) + 1
+    };
+  });
 
 
   constructor() {
@@ -111,7 +155,7 @@ export class TeacherDetails {
           this.isLoading.set(false);
         },
 
-        error: (error) => {
+        error: (error: HttpErrorResponse) => {
 
           console.error('Failed to load teacher:', error);
 
@@ -128,70 +172,6 @@ export class TeacherDetails {
         },
       });
   }
-
-
-  // Returns the teacher name according to the current language.
-  getTeacherName(teacher: TeacherListDto): string {
-
-    return document.documentElement.lang === 'ar'
-      ? this.getArabicName(teacher) || this.getEnglishName(teacher)
-      : this.getEnglishName(teacher) || this.getArabicName(teacher);
-  }
-
-
-  // Full four-part name in Arabic.
-  getArabicName(teacher: TeacherListDto): string {
-
-    return [
-      teacher.firstNameAr,
-      teacher.fatherNameAr,
-      teacher.grandFatherNameAr,
-      teacher.familyNameAr,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
-
-
-  // Full four-part name in English.
-  getEnglishName(teacher: TeacherListDto): string {
-
-    return [
-      teacher.firstNameEn,
-      teacher.fatherNameEn,
-      teacher.grandFatherNameEn,
-      teacher.familyNameEn,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
-
-
-  // The first letter of the first name and of the family name,
-  // in the language of the page (the avatar of the profile header).
-  // A zero-width non-joiner (\u200C) keeps two Arabic letters
-  // apart, so they do not join into one word.
-  getInitials(teacher: TeacherListDto): string {
-    const isArabic = document.documentElement.lang === 'ar';
-
-    const first = isArabic
-      ? teacher.firstNameAr || teacher.firstNameEn
-      : teacher.firstNameEn || teacher.firstNameAr;
-
-    const family = isArabic
-      ? teacher.familyNameAr || teacher.familyNameEn
-      : teacher.familyNameEn || teacher.familyNameAr;
-
-    return [first, family]
-      .map(name => name?.trim().charAt(0) ?? '')
-      .filter(Boolean)
-      .join('\u200C')
-      .toUpperCase();
-  }
-
-  // The shared function from user-role.ts, kept here under the same
-  // name so the template can call it.
-  readonly getRoleTranslationKey = getRoleTranslationKey;
 
 
   // Closes the dialog.

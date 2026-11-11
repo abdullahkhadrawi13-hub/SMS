@@ -1,17 +1,17 @@
 <!-- ================= Header (fixed) ================= -->
-<header class="sf-head">
+<header class="fd-head">
 
-  <div class="sf-head-text">
+  <div class="fd-head-text">
     <h2 mat-dialog-title>
       {{ (isEditMode() ? 'STUDENTS_FORM.EDIT_TITLE' : 'STUDENTS_FORM.ADD_TITLE') | translate }}
     </h2>
 
     @if (!isEditMode()) {
-      <p class="sf-head-sub explain">
+      <p class="fd-head-sub explain">
         {{ 'STUDENTS_FORM.ADD_SUBTITLE' | translate }}
       </p>
     } @else if (student(); as s) {
-      <p class="sf-head-sub">
+      <p class="fd-head-sub">
         <span>{{ studentName() }}</span>
         ·
         <bdi class="tabular">{{ s.studentNumber }}</bdi>
@@ -35,7 +35,7 @@
 @if (isLoading()) {
 
   <!-- ================= Edit: loading ================= -->
-  <div class="sf-body">
+  <div class="fd-body">
     <app-state-card
       type="loading"
       [framed]="false"
@@ -43,8 +43,8 @@
     />
   </div>
 
-  <footer class="sf-foot">
-    <span class="sf-foot-note"></span>
+  <footer class="fd-foot">
+    <span class="fd-foot-note"></span>
 
     <button mat-stroked-button type="button" (click)="requestClose()">
       {{ 'STUDENTS_FORM.CANCEL' | translate }}
@@ -54,7 +54,7 @@
 } @else if (loadError()) {
 
   <!-- ================= Edit: loading failed ================= -->
-  <div class="sf-body">
+  <div class="fd-body">
     <app-state-card
       type="error"
       [framed]="false"
@@ -63,8 +63,8 @@
     />
   </div>
 
-  <footer class="sf-foot">
-    <span class="sf-foot-note"></span>
+  <footer class="fd-foot">
+    <span class="fd-foot-note"></span>
 
     <button mat-stroked-button type="button" (click)="requestClose()">
       {{ 'STUDENTS_FORM.CANCEL' | translate }}
@@ -73,27 +73,27 @@
 
 } @else {
 
-  <form class="sf-form" [formGroup]="studentForm" (ngSubmit)="onSubmit()" novalidate>
+  <form class="fd-form" [formGroup]="studentForm" (ngSubmit)="onSubmit()" novalidate>
 
     <!-- ================= Body (scrolls) ================= -->
-    <div class="sf-body">
+    <div class="fd-body">
 
       <!-- ---------- Student name ---------- -->
-      <section class="sf-section" aria-labelledby="sf-name-title">
+      <section class="fd-section" aria-labelledby="sf-name-title">
 
-        <div class="sf-section-head">
+        <div class="fd-section-head">
           <h3 id="sf-name-title">{{ 'STUDENTS_FORM.NAME.TITLE' | translate }}</h3>
-          <span class="sf-section-hint">· {{ 'STUDENTS_FORM.NAME.HINT' | translate }}</span>
+          <span class="fd-section-hint">· {{ 'STUDENTS_FORM.NAME.HINT' | translate }}</span>
         </div>
 
         <!-- In Arabic -->
-        <fieldset class="sf-name-row">
+        <fieldset class="fd-name-row">
           <legend>
             <span>{{ 'STUDENTS_FORM.NAME.IN_ARABIC' | translate }}</span>
-            <span class="sf-lang-tag" lang="ar" aria-hidden="true">ع</span>
+            <span class="fd-lang-tag" lang="ar" aria-hidden="true">ع</span>
           </legend>
 
-          <div class="sf-grid sf-grid-4">
+          <div class="fd-grid fd-grid-4">
             @for (p of nameParts; track p.part; let first = $first) {
               @let name = nameControl(p.part, 'Ar');
 
@@ -133,13 +133,13 @@
         </fieldset>
 
         <!-- In English -->
-        <fieldset class="sf-name-row">
+        <fieldset class="fd-name-row">
           <legend>
             <span>{{ 'STUDENTS_FORM.NAME.IN_ENGLISH' | translate }}</span>
-            <span class="sf-lang-tag" lang="en" aria-hidden="true">EN</span>
+            <span class="fd-lang-tag" lang="en" aria-hidden="true">EN</span>
           </legend>
 
-          <div class="sf-grid sf-grid-4">
+          <div class="fd-grid fd-grid-4">
             @for (p of nameParts; track p.part) {
               @let name = nameControl(p.part, 'En');
 
@@ -181,14 +181,14 @@
 
 
       <!-- ---------- Account ---------- -->
-      <section class="sf-section" aria-labelledby="sf-account-title">
+      <section class="fd-section" aria-labelledby="sf-account-title">
 
-        <div class="sf-section-head">
+        <div class="fd-section-head">
           <h3 id="sf-account-title">{{ 'STUDENTS_FORM.ACCOUNT.TITLE' | translate }}</h3>
-          <span class="sf-section-hint">· {{ 'STUDENTS_FORM.ACCOUNT.HINT' | translate }}</span>
+          <span class="fd-section-hint">· {{ 'STUDENTS_FORM.ACCOUNT.HINT' | translate }}</span>
         </div>
 
-        <div class="sf-grid sf-grid-3">
+        <div class="fd-grid fd-grid-3">
 
           <!-- Login ID -->
           <div class="field">
@@ -309,7 +309,7 @@
         </div>
 
         @if (isEditMode()) {
-          <div class="note info">
+          <div class="fd-note info">
             <mat-icon aria-hidden="true">info</mat-icon>
             <span>{{ 'STUDENTS_FORM.ACCOUNT.RESET_NOTE' | translate }}</span>
           </div>
@@ -319,22 +319,22 @@
 
 
       <!-- ---------- Class and section ---------- -->
-      <section class="sf-section" aria-labelledby="sf-placement-title">
+      <section class="fd-section" aria-labelledby="sf-placement-title">
 
-        <div class="sf-section-head">
+        <div class="fd-section-head">
           <h3 id="sf-placement-title">{{ 'STUDENTS_FORM.PLACEMENT.TITLE' | translate }}</h3>
 
           @if (isGraduated()) {
             <app-student-status [status]="graduatedStatus" />
           } @else {
-            <span class="sf-section-hint">· {{ 'STUDENTS_FORM.PLACEMENT.HINT' | translate }}</span>
+            <span class="fd-section-hint">· {{ 'STUDENTS_FORM.PLACEMENT.HINT' | translate }}</span>
           }
         </div>
 
         @if (isGraduated()) {
 
           <!-- Graduated: the class and section it graduated from, read-only -->
-          <div class="sf-grid sf-grid-3">
+          <div class="fd-grid fd-grid-3">
             <div class="field">
               <label class="field-label" for="sf-graduated-class">{{ 'STUDENTS_FORM.PLACEMENT.CLASS' | translate }}</label>
 
@@ -354,14 +354,14 @@
             </div>
           </div>
 
-          <div class="note warn">
+          <div class="fd-note warn">
             <mat-icon aria-hidden="true">info</mat-icon>
             <span>{{ 'STUDENTS_FORM.PLACEMENT.GRADUATED_NOTE' | translate }}</span>
           </div>
 
         } @else {
 
-          <div class="sf-grid sf-grid-3">
+          <div class="fd-grid fd-grid-3">
 
             <!-- Class -->
             <div class="field">
@@ -433,7 +433,7 @@
       </section>
 
       @if (errorMessage()) {
-        <div class="note bad" role="alert">
+        <div class="fd-note bad" role="alert">
           <mat-icon aria-hidden="true">error</mat-icon>
           <span>{{ errorMessage() | translate }}</span>
         </div>
@@ -443,9 +443,9 @@
 
 
     <!-- ================= Footer (fixed) ================= -->
-    <footer class="sf-foot">
+    <footer class="fd-foot">
 
-      <span class="sf-foot-note" aria-live="polite">
+      <span class="fd-foot-note" aria-live="polite">
         @if (submitAttempted() && invalidCount() > 0) {
           <mat-icon aria-hidden="true">error</mat-icon>
           {{ invalidCountKey() | translate: { count: invalidCount() } }}
@@ -464,18 +464,18 @@
       <button
         mat-flat-button
         type="submit"
-        class="sf-submit"
+        class="fd-submit"
         [class.is-busy]="isSubmitting()"
         [attr.aria-disabled]="isSubmitting() ? 'true' : null"
       >
         <!-- The icon stays outside @if so mat-button can place it;
              while saving it is hidden and the spinner shows instead. -->
-        <mat-icon aria-hidden="true" [class.sf-hidden]="isSubmitting()">
+        <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
           {{ isEditMode() ? 'save' : 'person_add' }}
         </mat-icon>
 
         @if (isSubmitting()) {
-          <mat-spinner class="sf-submit-spinner" diameter="18" aria-hidden="true" />
+          <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
         }
 
         {{

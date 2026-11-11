@@ -47,7 +47,7 @@ const SEARCH_DEBOUNCE_MS = 400;
 const FORM_STEP = 'studentForm';
 
 import { StudentsHeader } from '../students-header/students-header';
-import { StudentsSearch } from '../students-search/students-search';
+import { SearchField } from '../../../shared/components/search-field/search-field';
 import { StudentsTable } from '../students-table/students-table';
 
 import {
@@ -63,7 +63,7 @@ import {
 
   imports: [
     StudentsHeader,
-    StudentsSearch,
+    SearchField,
     StudentsFilter,
     StudentsTable,
 
@@ -73,8 +73,8 @@ import {
     TranslatePipe
   ],
 
-  templateUrl: './students-page.html',
-styleUrl: './students-page.css'
+  // The look is the shared "List page" in styles.css (.list-area, .list-toolbar…).
+  templateUrl: './students-page.html'
 })
 export class StudentsPage {
 

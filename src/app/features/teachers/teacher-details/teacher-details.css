@@ -1,437 +1,117 @@
-/* ================================
-   Teacher Details Dialog
-   ================================ */
+/* ==========================================================
+   Teacher details dialog — navy & gold
+   The layout (header, body, footer) is the shared dialog layout in
+   src/styles.css (.fd, .fd-head, .fd-body, .fd-foot); the avatar is the
+   shared .data-avatar. Only what is special to this dialog is here.
+   Colours and sizes: src/tokens.css only (no hex here).
+   Logical properties only (works the same in RTL and LTR).
+   ========================================================== */
 
-.teacher-dialog {
-  width: 100%;
-  box-sizing: border-box;
-  background: #ffffff;
-  text-align: start;
+/* ---------- Header: avatar, name + account badge, teacher number ---------- */
+
+.td-head {
+  align-items: center;
 }
 
+.td-avatar {
+  width: 40px;
+  height: 40px;
 
-/* ================================
-   Dialog Header
-   ================================ */
+  font-size: var(--fs-14);
+}
 
-.dialog-header {
+/* The name and the badge on one line; the badge goes under on a narrow screen.
+   (Two classes, to win over the shared title rule in styles.css.) */
+.td-head .td-title {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 16px;
-
-  padding: 20px 24px;
-
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.header-content {
-  display: flex;
+  flex-wrap: wrap;
   align-items: center;
 
-  gap: 14px;
-
-  min-width: 0;
+  gap: var(--sp-1) 10px;
 }
 
-.header-icon {
-  width: 44px;
-  height: 44px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 10px;
-
-  background: #e1f5ee;
-
-  color: #085041;
-}
-
-.header-icon mat-icon {
-  width: 22px;
-  height: 22px;
-
-  font-size: 22px;
-}
-
-.header-content h2 {
-  margin: 0;
-
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.4;
-
-  color: #111827;
-}
-
-.header-content p {
-  margin: 4px 0 0;
-
-  color: #6b7280;
-
-  font-size: 13px;
-  line-height: 1.5;
+.td-head .fd-head-sub {
+  margin-block-start: 2px;
 }
 
 
-/* ================================
-   Dialog Content
-   ================================ */
+/* ---------- Label / value list ----------
+   Two columns; a rule above every item and between the columns
+   (the same as the "Details" tab of the student page). */
 
-.dialog-content {
-  padding: 24px;
-
-  box-sizing: border-box;
-}
-
-
-/* ================================
-   Teacher Profile (teal card)
-   ================================ */
-
-.teacher-profile {
-  display: flex;
-  align-items: center;
-
-  gap: 16px;
-
-  padding: 16px;
-  margin-bottom: 18px;
-
-  border-radius: 14px;
-
-  background: #e1f5ee;
-}
-
-/* Initials of the teacher */
-.teacher-avatar {
-  width: 60px;
-  height: 60px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #0f6e56;
-
-  color: #ffffff;
-
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.teacher-name {
-  flex: 1;
-  min-width: 0;
-}
-
-.teacher-name h2 {
-  margin: 0;
-
-  font-size: 19px;
-  font-weight: 600;
-  line-height: 1.4;
-
-  color: #04342c;
-
-  word-break: break-word;
-}
-
-.teacher-number {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  margin-top: 4px;
-
-  color: #0f6e56;
-
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.teacher-number mat-icon {
-  width: 16px;
-  height: 16px;
-
-  font-size: 16px;
-}
-
-
-/* ================================
-   Details Sections
-   ================================ */
-
-.details-section {
-  margin-bottom: 14px;
-  padding: 16px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-}
-
-.details-section:last-child {
-  margin-bottom: 0;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  margin-bottom: 14px;
-}
-
-.section-icon {
-  width: 36px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-sizing: border-box;
-
-  border-radius: 9px;
-}
-
-/* Each section has its own color:
-   light background, colored icon and a thin border */
-.section-icon.personal {
-  background: #eeedfe;
-  color: #534ab7;
-  border: 1px solid #afa9ec;
-}
-
-.section-icon.academic {
-  background: #faeeda;
-  color: #854f0b;
-  border: 1px solid #fac775;
-}
-
-.section-icon.account {
-  background: #fbeaf0;
-  color: #993556;
-  border: 1px solid #ed93b1;
-}
-
-.section-icon mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-}
-
-.section-header h3 {
-  margin: 0;
-
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.4;
-
-  color: #111827;
-}
-
-.section-header p {
-  margin: 2px 0 0;
-
-  color: #6b7280;
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-
-/* ================================
-   Details Grid (two columns)
-   ================================ */
-
-.details-grid {
+.td-list {
   display: grid;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
-  gap: 10px;
+  margin: 0;
 }
 
-.detail-item {
-  display: flex;
-  flex-direction: column;
-
-  gap: 4px;
-
+.td-item {
   min-width: 0;
 
-  padding: 10px 12px;
+  padding-block: var(--sp-3);
 
-  border-radius: 10px;
-
-  background: #f8fafc;
+  border-block-start: 1px solid var(--rule);
 }
 
-.detail-label {
-  color: #6b7280;
-
-  font-size: 12px;
-  line-height: 1.4;
+.td-item:nth-child(odd) {
+  padding-inline-end: var(--sp-6);
 }
 
-.detail-value {
-  color: #111827;
+.td-item:nth-child(even) {
+  padding-inline-start: var(--sp-6);
 
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.5;
-
-  word-break: break-word;
+  border-inline-start: 1px solid var(--rule);
 }
 
+.td-item dt {
+  color: var(--muted);
 
-/* ================================
-   Password Status
-   green = up to date, orange = must change
-   ================================ */
-
-.password-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  width: fit-content;
-
-  padding: 3px 10px;
-
-  border-radius: 999px;
-
-  background: #ecfdf5;
-  color: #047857;
-
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--fs-13);
+  font-weight: 600;
 }
 
-.password-badge.must-change {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.password-badge mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
-
-
-/* ================================
-   Dialog Actions
-   ================================ */
-
-.dialog-actions {
+.td-item dd {
   display: flex;
   align-items: center;
+
+  min-height: 24px;
+
+  margin: 2px 0 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
+
+  overflow-wrap: anywhere;
+}
+
+.td-missing {
+  color: var(--faint);
+}
+
+
+/* ---------- Footer: "Close" at the end ---------- */
+
+.td-foot {
   justify-content: flex-end;
-
-  gap: 10px;
-
-  padding: 14px 24px;
-
-  border-top: 1px solid #e5e7eb;
 }
 
 
-/* ================================
-   Responsive
-   ================================ */
+/* ---------- Phone (under 720px): one column ---------- */
 
-@media (max-width: 700px) {
+@media (max-width: 719.98px) {
 
-  .dialog-header {
-    padding: 16px;
+  .td-list {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .dialog-content {
-    padding: 18px;
-  }
+  .td-item:nth-child(odd),
+  .td-item:nth-child(even) {
+    padding-inline: 0;
 
-  .teacher-profile {
-    align-items: flex-start;
-  }
-
-}
-
-
-/* ================================
-   Small Mobile
-   ================================ */
-
-@media (max-width: 480px) {
-
-  .dialog-header {
-    padding: 14px;
-  }
-
-  .header-content {
-    gap: 10px;
-  }
-
-  .header-icon {
-    width: 38px;
-    height: 38px;
-  }
-
-  .header-content h2 {
-    font-size: 18px;
-  }
-
-  .header-content p {
-    font-size: 12px;
-  }
-
-  .dialog-content {
-    padding: 16px;
-  }
-
-  .teacher-profile {
-    gap: 12px;
-  }
-
-  .teacher-avatar {
-    width: 50px;
-    height: 50px;
-
-    font-size: 17px;
-  }
-
-  .details-section {
-    padding: 14px;
-  }
-
-  .teacher-name h2 {
-    font-size: 18px;
-  }
-
-  .details-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dialog-actions {
-    padding: 12px 16px;
+    border-inline-start: 0;
   }
 
 }

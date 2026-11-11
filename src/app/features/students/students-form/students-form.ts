@@ -8,10 +8,8 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
-  AbstractControl,
   FormBuilder,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators
 } from '@angular/forms';
 
@@ -39,6 +37,15 @@ import {
   TEMP_PASSWORD_MAX_LENGTH
 } from '../../../shared/utils/temp-password';
 import { toEnglishDigits } from '../../../shared/utils/english-digits';
+import {
+  ARABIC_NAME,
+  ENGLISH_NAME,
+  LOGIN_ID_MIN_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  PHONE_LENGTH,
+  digitsOnlyValidator,
+  nameValidator
+} from '../../../shared/utils/form-validators';
 
 import { SchoolClassesService } from '../../../core/services/school-classes';
 import { SectionsService } from '../../../core/services/sections';
@@ -83,47 +90,6 @@ export interface StudentFormResult {
 type FieldName = keyof StudentsForm['studentForm']['controls'];
 
 
-// Arabic name parts: the Arabic letters ء to ي (U+0621–U+064A), the
-// harakat so "محمّد" is accepted (U+064B–U+0652), spaces, dots and hyphens.
-// Not accepted: Arabic digits ٠–٩ and marks like ، ؛ ؟ (9 Nov 2026).
-const ARABIC_NAME = /^[\u0621-\u0652\s.-]+$/;
-
-// English name parts: English letters, spaces, dots and hyphens.
-const ENGLISH_NAME = /^[A-Za-z\s.-]+$/;
-
-// The shortest name part, counted without the spaces at the start and end.
-const NAME_MIN_LENGTH = 2;
-
-// The phone number: exactly 10 digits (the input stops at 10).
-const PHONE_LENGTH = 10;
-
-
-// A name part (9 Nov 2026):
-//   - only spaces counts as empty, so it says "required"
-//   - "at least 2 letters" is counted after trimming, so "أ " is too short
-// The letters themselves are checked by the pattern next to it.
-function nameValidator(control: AbstractControl<string>): ValidationErrors | null {
-  const value = control.value.trim();
-
-  if (value === '') {
-    return { required: true };
-  }
-
-  if (value.length < NAME_MIN_LENGTH) {
-    return { minlength: { requiredLength: NAME_MIN_LENGTH, actualLength: value.length } };
-  }
-
-  return null;
-}
-
-
-// The phone number has something that is not a digit (a letter, a space…).
-// Arabic digits never get here: they are turned into English ones while typing.
-function digitsOnlyValidator(control: AbstractControl<string>): ValidationErrors | null {
-  return /^[0-9]*$/.test(control.value) ? null : { digitsOnly: true };
-}
-
-
 // The four parts of a name, in order. Used by the template to draw
 // the Arabic row and the English row with the same labels.
 type NamePart = 'firstName' | 'fatherName' | 'grandFatherName' | 'familyName';
@@ -140,7 +106,8 @@ const NAME_PARTS: { part: NamePart; labelKey: string }[] = [
 // Plan: claude/SMS-Students-Form-Plan.md (8 Nov 2026).
 //
 //   - fixed header (title, one line, ✕), the body scrolls, fixed footer
-//   - fields use the shared look in styles.css (.field, .field-box…)
+//   - the layout and the fields use the shared look in styles.css
+//     (.fd, .fd-head, .fd-body… and .field, .field-box…)
 //   - closing with unsaved changes asks "Discard changes?" first
 //     (backdrop click, Esc, ✕ and Cancel, and the browser's Back:
 //     students-page calls confirmDiscard() when ?form / ?edit leaves the URL)
@@ -166,8 +133,9 @@ const NAME_PARTS: { part: NamePart; labelKey: string }[] = [
     StudentStatusBadge,
   ],
   templateUrl: './students-form.html',
-  styleUrl: './students-form.css',
   host: {
+    // The shared form dialog layout in styles.css (.fd, .fd-head, .fd-body…)
+    class: 'fd',
     '(window:beforeunload)': 'onBeforeUnload($event)'
   }
 })
@@ -307,9 +275,9 @@ export class StudentsForm {
     grandFatherNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
     familyNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
 
-    loginId: ['', [Validators.required, Validators.minLength(3)]],
+    loginId: ['', [Validators.required, Validators.minLength(LOGIN_ID_MIN_LENGTH)]],
 
-    temporaryPassword: ['', [Validators.required, Validators.minLength(8)]],
+    temporaryPassword: ['', [Validators.required, Validators.minLength(PASSWORD_MIN_LENGTH)]],
 
     phoneNumber: ['', [
       Validators.required,

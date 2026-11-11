@@ -50,8 +50,8 @@ const AVATAR_TONES = 6;
     StatusBadge,
     StudentStatusBadge,
   ],
+  // The look is the shared "Data table" in styles.css (.data-card, .data-table…).
   templateUrl: './students-table.html',
-  styleUrl: './students-table.css',
   // "1–10 من 531" under this table (the other lists keep "page 1 of 5").
   providers: [
     { provide: MatPaginatorIntl, useClass: RangePaginatorIntl }
