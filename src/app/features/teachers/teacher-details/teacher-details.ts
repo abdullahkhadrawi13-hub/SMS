@@ -43,8 +43,9 @@ const AVATAR_TONES = 6;
 // two label / value lists with a rule between them (no inner cards).
 // Read-only: editing is from ⋮ in the teachers list.
 //
-// The layout is the shared dialog layout in styles.css (.fd, .fd-head,
-// .fd-body, .fd-foot); only the label / value list is in teacher-details.css.
+// The look is shared, in styles.css: the dialog layout (.fd, .fd-head,
+// .fd-body, .fd-foot) and the "Details dialog" (.dd-head, .dd-list…),
+// which the parent details use too.
 // Opened by teachers-page with panelClass 'form-dialog' (full screen on the phone).
 @Component({
   selector: 'app-teacher-details',
@@ -57,7 +58,6 @@ const AVATAR_TONES = 6;
     StatusBadge,
   ],
   templateUrl: './teacher-details.html',
-  styleUrl: './teacher-details.css',
   host: { class: 'fd' }
 })
 export class TeacherDetails {

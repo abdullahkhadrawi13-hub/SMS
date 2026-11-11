@@ -1,4 +1,12 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal
+} from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -7,28 +15,47 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { filter, map, Observable, of, Subscription, tap } from 'rxjs';
+
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
+  MatDialog,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { Subscription } from 'rxjs';
-
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import {
   LOGIN_ID_MAX_LENGTH,
   USER_NAME_MAX_LENGTH
 } from '../../../shared/constants/field-lengths';
-import { TEMP_PASSWORD_MAX_LENGTH } from '../../../shared/utils/temp-password';
+import {
+  generateTempPassword,
+  TEMP_PASSWORD_MAX_LENGTH
+} from '../../../shared/utils/temp-password';
+import { toEnglishDigits } from '../../../shared/utils/english-digits';
+import {
+  ARABIC_NAME,
+  ENGLISH_NAME,
+  LOGIN_ID_MIN_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  PHONE_LENGTH,
+  digitsOnlyValidator,
+  nameValidator
+} from '../../../shared/utils/form-validators';
+import {
+  getFirstName,
+  getFullName,
+  getInitials
+} from '../../../shared/utils/person-name';
 
 import { ParentsService } from '../../../core/services/parents';
 import { ApiMessageService } from '../../../core/services/api-message';
+import { Language } from '../../../core/services/language';
 import { ActionResult } from '../../../shared/services/action-result';
 import {
   CreateParentRequest,
@@ -39,21 +66,24 @@ import {
 } from '../../../core/models/parent';
 import { Student } from '../../../core/models/student';
 
+import { StateCard } from '../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
+import {
+  PlanConfirmData,
+  PlanConfirmDialog
+} from '../../subjects/subject-plans/plan-confirm-dialog/plan-confirm-dialog';
+
 import { StudentPicker } from '../student-picker/student-picker';
 import { RelationshipToggle } from '../relationship-toggle/relationship-toggle';
 import {
   findTakenRelationships,
+  getAvatarTone,
   getClassSection,
-  getFirstName,
-  getFullName,
-  isArabicPage,
+  getListSeparator,
   isRelationshipTaken,
   NO_TAKEN_RELATIONSHIPS,
   TakenRelationships
 } from '../parents';
-import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { StateCard } from '../../../shared/components/state-card/state-card';
-import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 
 
 // Data passed when the dialog is opened.
@@ -63,12 +93,17 @@ export interface ParentFormDialogData {
 }
 
 
-// What the dialog returns to the page.
-// success: a parent was added or edited (reload the list).
+// What the dialog closes with (✕ and Cancel close it with nothing).
+//
+// success:      a parent was added or edited. message is the backend
+//               message, shown by parents-page in action-result-dialog.
 // linkToParent: the phone number belongs to this parent and the admin
 //               chose to link a student to them instead of adding a new one.
 export interface ParentFormResult {
-  success?: boolean;
+  success?: true;
+  action?: 'created' | 'updated';
+  message?: string;
+
   linkToParent?: ParentDto;
 }
 
@@ -102,25 +137,79 @@ interface ChildRow {
 }
 
 
+// A child row as the form shows it: the names in the language of the page.
+interface ChildRowView extends ChildRow {
+  fullName: string;
+  initials: string;
+  avatarTone: number;
+  classSection: string;
+}
+
+
+// The name of one of the form's controls.
+type FieldName = keyof ParentForm['parentForm']['controls'];
+
+
+// The four parts of a name, in order. Used by the template to draw
+// the Arabic row and the English row with the same labels.
+type NamePart = 'firstName' | 'fatherName' | 'grandFatherName' | 'familyName';
+
+const NAME_PARTS: { part: NamePart; labelKey: string }[] = [
+  { part: 'firstName',       labelKey: 'PARENTS.FORM.NAME.FIRST' },
+  { part: 'fatherName',      labelKey: 'PARENTS.FORM.NAME.FATHER' },
+  { part: 'grandFatherName', labelKey: 'PARENTS.FORM.NAME.GRAND_FATHER' },
+  { part: 'familyName',      labelKey: 'PARENTS.FORM.NAME.FAMILY' },
+];
+
+
+// Add / edit parent dialog (navy & gold, 11 Nov 2026).
+// It works like the student and teacher forms:
+//
+//   - fixed header (title, one line, ✕), the body scrolls, fixed footer
+//   - the layout and the fields use the shared look in styles.css
+//     (.fd, .fd-head, .fd-body… and .field, .field-box…)
+//   - the rules of the names and the phone come from
+//     shared/utils/form-validators.ts (the same as the other two forms)
+//   - closing with unsaved changes asks "Discard changes?" first
+//     (backdrop click, Esc, ✕ and Cancel, and the browser's Back:
+//     parents-page calls confirmDiscard() when ?form / ?edit leaves the URL)
+//   - a refresh or closing the tab with unsaved changes: the browser asks
+//     first (its own "Leave site?" message, see onBeforeUnload)
+//   - saving with errors: every field is marked, the first wrong field
+//     gets the focus, and the footer says how many need fixing
+//   - after saving: closes with the backend message, which parents-page
+//     shows in action-result-dialog
+//
+// What only this form has (add mode), unchanged in its logic:
+//   - the phone number comes first and is checked when the admin leaves
+//     the field: a parent who already has it is shown, with "Link a
+//     student to this account" and "Create a new account anyway"
+//   - "Children": students can be linked while adding (optional)
+//
+// The dialog is opened by parents-page with panelClass 'form-dialog'
+// (full screen on the phone, see styles.css).
 @Component({
   selector: 'app-parent-form',
   imports: [
+    NgTemplateOutlet,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatProgressSpinnerModule,
     TranslatePipe,
     StudentPicker,
     RelationshipToggle,
-    PageHeader,
     StateCard,
     StatusBadge,
   ],
   templateUrl: './parent-form.html',
   styleUrl: './parent-form.css',
+  host: {
+    // The shared form dialog layout in styles.css (.fd, .fd-head, .fd-body…)
+    class: 'fd',
+    '(window:beforeunload)': 'onBeforeUnload($event)'
+  }
 })
 export class ParentForm {
 
@@ -129,27 +218,38 @@ export class ParentForm {
   readonly loginIdMaxLength = LOGIN_ID_MAX_LENGTH;
   readonly passwordMaxLength = TEMP_PASSWORD_MAX_LENGTH;
 
+  readonly nameParts = NAME_PARTS;
+
   private readonly fb = inject(FormBuilder);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly dialog = inject(MatDialog);
   private readonly dialogRef =
     inject(MatDialogRef<ParentForm, ParentFormResult>);
-  private readonly parentsService = inject(ParentsService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly apiMessageService = inject(ApiMessageService);
-  private readonly actionResult = inject(ActionResult);
+  private readonly language = inject(Language);
   private readonly translate = inject(TranslateService);
 
-  private readonly dialogData =
-    inject<ParentFormDialogData | null>(
-      MAT_DIALOG_DATA,
-      { optional: true }
-    );
+  private readonly parentsService = inject(ParentsService);
+  private readonly apiMessageService = inject(ApiMessageService);
+  private readonly actionResult = inject(ActionResult);
 
+  // Optional data passed by the page (parentId in edit mode).
+  private readonly dialogData =
+    inject<ParentFormDialogData | null>(MAT_DIALOG_DATA, { optional: true });
+
+  // The direction is set once on <html> by the Language service;
+  // here we only need to know which name to show (Arabic or English).
+  readonly isArabic = computed(
+    () => this.language.currentDirection() === 'rtl'
+  );
 
   // Id of the parent being edited, or null when adding a new parent.
-  readonly parentId = this.dialogData?.parentId ?? null;
+  readonly parentId = signal<number | null>(
+    this.dialogData?.parentId ?? null
+  );
 
   // True when the form edits an existing parent.
-  readonly isEditMode = !!this.parentId;
+  readonly isEditMode = signal(!!this.dialogData?.parentId);
 
   // True while the parent is being loaded in edit mode.
   readonly isLoading = signal(false);
@@ -157,40 +257,51 @@ export class ParentForm {
   // True while the form is being saved.
   readonly isSubmitting = signal(false);
 
-  // Error message (translation key or API message) shown above the form
-  // when the parent cannot be loaded (edit mode).
+  // Loading the parent failed (edit): shown in a state card with Retry.
+  readonly loadError = signal('');
+
+  // A problem found before sending (invalid id): shown above the footer.
   readonly errorMessage = signal('');
 
+  // The parent as it came from GET (edit mode).
+  readonly parent = signal<ParentDto | null>(null);
 
-  // Same fields and rules as the teacher form.
+  // Edit header line: the parent's name in the UI language · phone number.
+  readonly parentName = computed(() => {
+    const p = this.parent();
+
+    return p ? getFullName(p, this.isArabic()) : '';
+  });
+
+  // The discard question is open (so a second Esc does not open another).
+  private isConfirmingClose = false;
+
+
+  // Same fields and rules as the student and teacher forms.
   readonly parentForm = this.fb.nonNullable.group({
 
-    // Phone number (add mode: the first field, checked when leaving it).
-    phoneNumber: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(/^[0-9]{10}$/),
-      ],
-    ],
+    // Add mode: the first field, checked when the admin leaves it.
+    phoneNumber: ['', [
+      Validators.required,
+      digitsOnlyValidator,
+      Validators.minLength(PHONE_LENGTH),
+      Validators.maxLength(PHONE_LENGTH)
+    ]],
 
-    // Arabic name fields: allow Arabic letters, spaces, dots, and hyphens.
-    firstNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[؀-ۿ\s.-]+$/)]],
-    fatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[؀-ۿ\s.-]+$/)]],
-    grandFatherNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[؀-ۿ\s.-]+$/)]],
-    familyNameAr: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[؀-ۿ\s.-]+$/)]],
+    firstNameAr: ['', [nameValidator, Validators.pattern(ARABIC_NAME)]],
+    fatherNameAr: ['', [nameValidator, Validators.pattern(ARABIC_NAME)]],
+    grandFatherNameAr: ['', [nameValidator, Validators.pattern(ARABIC_NAME)]],
+    familyNameAr: ['', [nameValidator, Validators.pattern(ARABIC_NAME)]],
 
-    // English name fields: allow English letters, spaces, dots, and hyphens.
-    firstNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
-    fatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
-    grandFatherNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
-    familyNameEn: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z\s.-]+$/)]],
+    firstNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
+    fatherNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
+    grandFatherNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
+    familyNameEn: ['', [nameValidator, Validators.pattern(ENGLISH_NAME)]],
 
-    // Login ID must be provided and contain at least 3 characters.
-    loginId: ['', [Validators.required, Validators.minLength(3)]],
+    loginId: ['', [Validators.required, Validators.minLength(LOGIN_ID_MIN_LENGTH)]],
 
-    // Temporary password: only used when adding a parent (8+ characters).
-    temporaryPassword: ['', [Validators.required, Validators.minLength(8)]],
+    // Only used when adding a parent.
+    temporaryPassword: ['', [Validators.required, Validators.minLength(PASSWORD_MIN_LENGTH)]],
   });
 
 
@@ -201,43 +312,117 @@ export class ParentForm {
   // The parent who already has the typed number (state "match").
   readonly matchedParent = signal<ParentDto | null>(null);
 
+  // The matched parent as the notice shows it (names in the page language):
+  // "khaled.k · سارة (أب)، عمر (أب)".
+  readonly matchView = computed(() => {
+
+    const parent = this.matchedParent();
+
+    if (!parent) {
+      return null;
+    }
+
+    const isArabic = this.isArabic();
+
+    return {
+      parent,
+      name: getFullName(parent, isArabic),
+      initials: getInitials(parent, isArabic),
+      avatarTone: getAvatarTone(parent.parentId),
+      children: parent.children
+        .map(child =>
+          `${getFirstName(child, isArabic)} (${this.translate.instant(
+            getRelationshipTranslationKey(child.relationship)
+          )})`
+        )
+        .join(getListSeparator(isArabic))
+    };
+  });
+
   // The number of the last finished check (no second request for it).
   private checkedPhone = '';
 
   private phoneCheckRequest: Subscription | null = null;
 
   // True when "Save" was pressed before the phone check answered:
-  // the save continues by itself once the check finishes.
-  private submitAfterPhoneCheck = false;
+  // the save continues by itself once the check finishes
+  // (the button shows its spinner meanwhile).
+  readonly isWaitingForPhoneCheck = signal(false);
+
+  // The save button is busy: saving, or waiting for the phone check.
+  readonly isBusy = computed(() =>
+    this.isSubmitting() || this.isWaitingForPhoneCheck()
+  );
 
 
   // ===== Children (add mode) =====
 
   readonly children = signal<ChildRow[]>([]);
 
-  // True after a save attempt: shows "Choose the relationship" on rows without one.
-  readonly childrenTouched = signal(false);
-
   // The students already added (disabled in the search results).
   readonly addedStudentIds = computed(
     () => this.children().map(row => row.student.studentId)
   );
 
+  // The child rows with their names in the language of the page.
+  readonly childRows = computed<ChildRowView[]>(() => {
 
-  readonly getFullName = getFullName;
-  readonly getClassSection = getClassSection;
-  readonly getRelationshipTranslationKey = getRelationshipTranslationKey;
+    const isArabic = this.isArabic();
+
+    return this.children().map(row => ({
+      ...row,
+      fullName: getFullName(row.student, isArabic),
+      initials: getInitials(row.student, isArabic),
+      avatarTone: getAvatarTone(row.student.studentId),
+      classSection: getClassSection(row.student, isArabic)
+    }));
+  });
+
+
+  // ===== "N fields need fixing" =====
+
+  // True after a save with errors: every error shows until it is fixed.
+  readonly submitAttempted = signal(false);
+
+  // The form fields that are still wrong.
+  private readonly invalidFields = signal(0);
+
+  // The child rows with no relationship chosen yet.
+  private readonly childrenWithoutRelationship = computed(
+    () => this.children().filter(row => row.relationship === null).length
+  );
+
+  readonly invalidCount = computed(
+    () => this.invalidFields() + this.childrenWithoutRelationship()
+  );
+
+  readonly invalidCountKey = computed(() => {
+    const count = this.invalidCount();
+
+    if (count === 1) return 'PARENTS.FORM.ERRORS_COUNT.ONE';
+    if (count === 2) return 'PARENTS.FORM.ERRORS_COUNT.TWO';
+    if (count <= 10) return 'PARENTS.FORM.ERRORS_COUNT.FEW';
+
+    return 'PARENTS.FORM.ERRORS_COUNT.MANY';
+  });
 
 
   constructor() {
+    this.setUpClosing();
 
-    if (this.isEditMode) {
+    // Keep the error count up to date while the user fixes the fields.
+    this.parentForm.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.invalidFields.set(this.countInvalid()));
 
+    this.restartClearedFields();
+
+    if (this.isEditMode()) {
       // The password is not edited here, so it is not required in edit mode.
       this.parentForm.controls.temporaryPassword.clearValidators();
       this.parentForm.controls.temporaryPassword.updateValueAndValidity();
 
-      this.loadParent(this.parentId!);
+      this.loadParent();
       return;
     }
 
@@ -256,29 +441,125 @@ export class ParentForm {
           this.checkedPhone = '';
 
           // The admin is editing the number again: cancel a waiting save.
-          this.submitAfterPhoneCheck = false;
+          this.isWaitingForPhoneCheck.set(false);
         }
       });
   }
 
 
-  // ===== Edit mode =====
+  // =========================
+  // Closing
+  // =========================
 
-  // Loads the parent and fills the form.
-  private loadParent(parentId: number): void {
+  // Backdrop click and Esc do not close the dialog by themselves:
+  // they go through requestClose(), which asks first when something changed.
+  private setUpClosing(): void {
+    this.dialogRef.disableClose = true;
+
+    this.dialogRef
+      .backdropClick()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.requestClose());
+
+    this.dialogRef
+      .keydownEvents()
+      .pipe(
+        filter(event => event.key === 'Escape'),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(event => {
+        event.preventDefault();
+        this.requestClose();
+      });
+  }
+
+
+  // ✕, Cancel, backdrop click and Esc.
+  requestClose(): void {
+    this.confirmDiscard().subscribe(canClose => {
+      if (canClose) {
+        this.dialogRef.close();
+      }
+    });
+  }
+
+
+  // Something was typed, or a child was added.
+  private hasChanges(): boolean {
+    return this.parentForm.dirty || this.children().length > 0;
+  }
+
+
+  // May the form close now?
+  //   - true straight away when nothing was changed
+  //   - otherwise asks "Discard changes?": true on "Discard changes"
+  //   - false while saving, or while the question is already open
+  // It does not close the dialog itself: requestClose() does, and
+  // parents-page does after "Back" took ?form / ?edit out of the URL.
+  confirmDiscard(): Observable<boolean> {
+    if (this.isSubmitting() || this.isConfirmingClose) {
+      return of(false);
+    }
+
+    if (!this.hasChanges()) {
+      return of(true);
+    }
+
+    this.isConfirmingClose = true;
+
+    return this.dialog
+      .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
+        maxWidth: '95vw',
+        data: {
+          icon: 'edit_note',
+          titleKey: 'PARENTS.FORM.DISCARD.TITLE',
+          messageKey: 'PARENTS.FORM.DISCARD.MESSAGE',
+          confirmKey: 'PARENTS.FORM.DISCARD.CONFIRM',
+          tone: 'danger',
+        },
+      })
+      .afterClosed()
+      .pipe(
+        tap(() => (this.isConfirmingClose = false)),
+        map(confirmed => confirmed === true)
+      );
+  }
+
+
+  // Refresh, closing the tab, or typing another address while something
+  // was changed: the browser asks "Leave site?" first. The text is the
+  // browser's own, in its language; a page cannot change it.
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.hasChanges()) {
+      event.preventDefault();
+
+      // Older browsers ask only when returnValue is set.
+      event.returnValue = '';
+    }
+  }
+
+
+  // =========================
+  // Edit: load the parent
+  // =========================
+
+  loadParent(): void {
+    const id = this.parentId();
+
+    if (!id) {
+      return;
+    }
 
     this.isLoading.set(true);
-    this.errorMessage.set('');
+    this.loadError.set('');
 
     this.parentsService
-      .getParent(parentId)
+      .getParent(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {
-
+        next: response => {
           if (!response.success || !response.data) {
-
-            this.errorMessage.set(
+            this.loadError.set(
               this.apiMessageService.getMessage(response) ||
               'PARENTS.FORM.ERROR.LOAD_FAILED'
             );
@@ -288,6 +569,8 @@ export class ParentForm {
           }
 
           const parent = response.data;
+
+          this.parent.set(parent);
 
           this.parentForm.patchValue({
             firstNameAr: parent.firstNameAr,
@@ -301,29 +584,70 @@ export class ParentForm {
             familyNameEn: parent.familyNameEn,
 
             loginId: parent.loginId,
-            phoneNumber: parent.phoneNumber,
+            phoneNumber: parent.phoneNumber
           });
 
           this.isLoading.set(false);
         },
 
         error: (error: HttpErrorResponse) => {
-
           console.error('Failed to load parent:', error);
 
-          this.errorMessage.set('PARENTS.FORM.ERROR.LOAD_FAILED');
+          this.loadError.set('PARENTS.FORM.ERROR.LOAD_FAILED');
           this.isLoading.set(false);
-        },
+        }
       });
   }
 
 
-  // ===== Phone check =====
+  // =========================
+  // Temporary password (add only)
+  // =========================
 
-  // Runs when the admin leaves the phone field (add mode).
+  // Fills the field with a password like Abc-4def-g7 (11 characters,
+  // backend: 8 to 100, no other rules). The field stays editable by hand.
+  generatePassword(): void {
+    const control = this.parentForm.controls.temporaryPassword;
+
+    control.setValue(generateTempPassword());
+    control.markAsDirty();
+    control.markAsTouched();
+  }
+
+
+  // =========================
+  // Phone number
+  // =========================
+
+  // Arabic digits become English ones while typing or pasting
+  // (٠٧٩ → 079), so the user never sees an error for typing them,
+  // and the backend still gets English digits only.
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const converted = toEnglishDigits(input.value);
+
+    if (converted === input.value) {
+      return;
+    }
+
+    // Same length, so the cursor stays where the user is typing.
+    const cursor = input.selectionStart;
+
+    input.value = converted;
+    input.setSelectionRange(cursor, cursor);
+
+    this.parentForm.controls.phoneNumber.setValue(converted);
+  }
+
+
+  // Runs when the admin leaves the phone field (add mode only).
   // Searches parents by the number and keeps only an exact match
   // (the search also matches part of a number or a name).
   checkPhone(): void {
+
+    if (this.isEditMode()) {
+      return;
+    }
 
     const control = this.parentForm.controls.phoneNumber;
     const phone = control.value.trim();
@@ -377,17 +701,18 @@ export class ParentForm {
   // stops the save and asks the admin to decide first.
   private continuePendingSubmit(): void {
 
-    if (!this.submitAfterPhoneCheck) {
+    if (!this.isWaitingForPhoneCheck()) {
       return;
     }
 
-    this.submitAfterPhoneCheck = false;
+    this.isWaitingForPhoneCheck.set(false);
     this.onSubmit();
   }
 
 
   // "Link a student to this account": closes the form; the page opens
   // the "Link a child" dialog for the parent who has this number.
+  // (The admin chose it, so there is no "Discard changes?" question.)
   linkToMatchedParent(): void {
 
     const parent = this.matchedParent();
@@ -405,20 +730,9 @@ export class ParentForm {
   }
 
 
-  // The matched parent's children: "سارة (أب)، عمر (أب)".
-  matchedChildrenText(parent: ParentDto): string {
-
-    return parent.children
-      .map(child =>
-        `${getFirstName(child)} (${this.translate.instant(
-          getRelationshipTranslationKey(child.relationship)
-        )})`
-      )
-      .join(isArabicPage() ? '، ' : ', ');
-  }
-
-
-  // ===== Children =====
+  // =========================
+  // Children (add only)
+  // =========================
 
   // Adds the chosen student, then loads their parents to know
   // whether a father / mother is already linked.
@@ -445,7 +759,11 @@ export class ParentForm {
         next: (response) => {
 
           const taken = response.success
-            ? findTakenRelationships(response.data.items, student.studentId)
+            ? findTakenRelationships(
+                response.data.items,
+                student.studentId,
+                this.isArabic()
+              )
             : NO_TAKEN_RELATIONSHIPS;
 
           this.updateChild(student.studentId, row => ({
@@ -499,34 +817,32 @@ export class ParentForm {
   }
 
 
-  // ===== Save =====
+  // =========================
+  // Save
+  // =========================
 
   onSubmit(): void {
-
-    if (this.isSubmitting()) {
+    // The button keeps its colour while saving, so guard here instead.
+    if (this.isBusy()) {
       return;
     }
 
-    if (this.isEditMode) {
+    this.errorMessage.set('');
 
-      if (this.parentForm.invalid) {
-        this.parentForm.markAllAsTouched();
-        return;
-      }
+    // A child still being checked has no relationship yet, so it counts too.
+    if (this.parentForm.invalid || this.childrenWithoutRelationship() > 0) {
+      this.parentForm.markAllAsTouched();
 
+      this.submitAttempted.set(true);
+      this.invalidFields.set(this.countInvalid());
+
+      this.focusFirstInvalid();
+      return;
+    }
+
+    if (this.isEditMode()) {
       this.isSubmitting.set(true);
       this.updateParent();
-      return;
-    }
-
-    this.childrenTouched.set(true);
-
-    const childrenInvalid = this.children().some(
-      row => row.relationship === null || row.isChecking
-    );
-
-    if (this.parentForm.invalid || childrenInvalid) {
-      this.parentForm.markAllAsTouched();
       return;
     }
 
@@ -534,12 +850,12 @@ export class ParentForm {
     // inside the phone field, so it never lost focus): wait for it,
     // then the save continues by itself (continuePendingSubmit).
     if (this.phoneCheck() === 'checking') {
-      this.submitAfterPhoneCheck = true;
+      this.isWaitingForPhoneCheck.set(true);
       return;
     }
 
     if (this.phoneCheck() === 'idle') {
-      this.submitAfterPhoneCheck = true;
+      this.isWaitingForPhoneCheck.set(true);
       this.checkPhone();
       return;
     }
@@ -547,9 +863,13 @@ export class ParentForm {
     // The number belongs to another parent: the admin decides first.
     if (this.phoneCheck() === 'match') {
 
+      this.host.nativeElement
+        .querySelector<HTMLElement>('#pf-phone-title')
+        ?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+
       this.actionResult.show(
         'warning',
-        this.translate.instant('PARENTS.FORM.PHONE_DECIDE_FIRST')
+        this.translate.instant('PARENTS.FORM.PHONE.DECIDE_FIRST')
       );
       return;
     }
@@ -559,13 +879,34 @@ export class ParentForm {
   }
 
 
+  // The body shared by POST and PUT.
+  // Names are sent without spaces at the start and end.
+  private buildRequest(): UpdateParentRequest {
+    const formValue = this.parentForm.getRawValue();
+
+    return {
+      firstNameAr: formValue.firstNameAr.trim(),
+      fatherNameAr: formValue.fatherNameAr.trim(),
+      grandFatherNameAr: formValue.grandFatherNameAr.trim(),
+      familyNameAr: formValue.familyNameAr.trim(),
+
+      firstNameEn: formValue.firstNameEn.trim(),
+      fatherNameEn: formValue.fatherNameEn.trim(),
+      grandFatherNameEn: formValue.grandFatherNameEn.trim(),
+      familyNameEn: formValue.familyNameEn.trim(),
+
+      loginId: formValue.loginId,
+      phoneNumber: formValue.phoneNumber
+    };
+  }
+
+
   // POST /api/parents (the account and the children in one request).
   private createParent(): void {
 
-    const value = this.parentForm.getRawValue();
-
     const data: CreateParentRequest = {
-      ...value,
+      ...this.buildRequest(),
+      temporaryPassword: this.parentForm.getRawValue().temporaryPassword,
       children: this.children().map(row => ({
         studentId: row.student.studentId,
         relationship: row.relationship as ParentRelationship,
@@ -576,113 +917,163 @@ export class ParentForm {
       .createParent(data)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {
-
+        next: response => {
           this.isSubmitting.set(false);
 
           if (!response.success) {
-            this.actionResult.show(
-              'error',
-              this.apiMessageService.getMessage(response)
-            );
+            this.actionResult.show('error', this.apiMessageService.getMessage(response));
             return;
           }
 
-          this.dialogRef.close({ success: true });
-
-          this.actionResult.show(
-            'success',
-            this.apiMessageService.getMessage(response)
-          );
+          // parents-page shows the backend message once ?form / ?edit
+          // is out of the URL: going "Back" over that step would close
+          // a message opened now.
+          this.dialogRef.close({
+            success: true,
+            action: 'created',
+            message: this.apiMessageService.getMessage(response)
+          });
         },
 
         error: (error: HttpErrorResponse) => {
-
           console.error('Failed to create parent:', error);
 
           this.isSubmitting.set(false);
 
-          this.actionResult.show(
-            'error',
-            this.apiMessageService.getErrorMessage(error)
-          );
-        },
+          this.actionResult.show('error', this.apiMessageService.getErrorMessage(error));
+        }
       });
   }
 
 
   // PUT /api/parents/{parentId} (names, login ID and phone number).
+  // Children are linked and unlinked from the parent details.
   private updateParent(): void {
+    const id = this.parentId();
 
-    const value = this.parentForm.getRawValue();
-
-    const data: UpdateParentRequest = {
-      firstNameAr: value.firstNameAr,
-      fatherNameAr: value.fatherNameAr,
-      grandFatherNameAr: value.grandFatherNameAr,
-      familyNameAr: value.familyNameAr,
-
-      firstNameEn: value.firstNameEn,
-      fatherNameEn: value.fatherNameEn,
-      grandFatherNameEn: value.grandFatherNameEn,
-      familyNameEn: value.familyNameEn,
-
-      loginId: value.loginId,
-      phoneNumber: value.phoneNumber,
-    };
+    if (!id) {
+      this.errorMessage.set('PARENTS.FORM.ERROR.INVALID_ID');
+      this.isSubmitting.set(false);
+      return;
+    }
 
     this.parentsService
-      .updateParent(this.parentId!, data)
+      .updateParent(id, this.buildRequest())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {
-
+        next: response => {
           this.isSubmitting.set(false);
 
           if (!response.success) {
-            this.actionResult.show(
-              'error',
-              this.apiMessageService.getMessage(response)
-            );
+            this.actionResult.show('error', this.apiMessageService.getMessage(response));
             return;
           }
 
-          this.dialogRef.close({ success: true });
-
-          this.actionResult.show(
-            'success',
-            this.apiMessageService.getMessage(response)
-          );
+          this.dialogRef.close({
+            success: true,
+            action: 'updated',
+            message: this.apiMessageService.getMessage(response)
+          });
         },
 
         error: (error: HttpErrorResponse) => {
-
           console.error('Failed to update parent:', error);
 
           this.isSubmitting.set(false);
 
-          this.actionResult.show(
-            'error',
-            this.apiMessageService.getErrorMessage(error)
-          );
-        },
+          this.actionResult.show('error', this.apiMessageService.getErrorMessage(error));
+        }
       });
   }
 
 
-  // Closes the form without saving.
-  cancel(): void {
-    this.dialogRef.close();
+  // =========================
+  // Errors
+  // =========================
+
+  // Fields that are still wrong.
+  private countInvalid(): number {
+    return Object.values(this.parentForm.controls)
+      .filter(control => control.invalid)
+      .length;
   }
 
 
-  // Checks whether a field is invalid and has been touched.
-  isFieldInvalid(
-    fieldName: keyof typeof this.parentForm.controls
-  ): boolean {
+  // The first wrong field in the order it is shown, so the user starts
+  // there; when every field is right, the first child row with no
+  // relationship chosen.
+  private focusFirstInvalid(): void {
+    const element = this.host.nativeElement;
 
+    const field =
+      element.querySelector<HTMLElement>('input.ng-invalid') ??
+      element.querySelector<HTMLElement>('.pf-child.is-invalid input:not(:disabled)') ??
+      element.querySelector<HTMLElement>('.pf-child.is-invalid');
+
+    field?.focus();
+    field?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+
+
+  // When a field shows its error (the same as the student and teacher forms):
+  //   - a wrong kind of character (English letters in an Arabic name,
+  //     Arabic letters in an English one, a letter in the phone number)
+  //     shows at once, while typing
+  //   - a length error (2 letters in a name, 3 in the login ID, 8 in the
+  //     password, 10 digits in the phone) shows when the user leaves the field
+  //   - an empty field says "required" only after pressing Add / Save,
+  //     so just moving through the fields never shows an error
+  //   - after pressing the button every error shows, and each one goes
+  //     away as soon as its field is fixed
+  isFieldInvalid(fieldName: FieldName): boolean {
     const control = this.parentForm.controls[fieldName];
 
-    return control.invalid && control.touched;
+    if (!control.invalid) {
+      return false;
+    }
+
+    if (this.submitAttempted()) {
+      return true;
+    }
+
+    if (control.hasError('pattern') || control.hasError('digitsOnly')) {
+      return true;
+    }
+
+    return control.touched && control.value.trim() !== '';
+  }
+
+
+  // Clearing a field starts it over: it goes back to "not touched", so
+  // typing again ("أ") shows the length error only when the user leaves
+  // the field, like the first time.
+  // After pressing Add / Save this does not matter: submitAttempted shows
+  // every error until it is fixed.
+  private restartClearedFields(): void {
+    for (const control of Object.values(this.parentForm.controls)) {
+      control.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(value => {
+          if (value.trim() === '') {
+            control.markAsUntouched();
+          }
+        });
+    }
+  }
+
+
+  // The id of a field's error line, for aria-describedby.
+  describedBy(fieldName: string, hasHelp = false): string | null {
+    if (this.isFieldInvalid(fieldName as FieldName)) {
+      return `pf-${fieldName}-error`;
+    }
+
+    return hasHelp ? `pf-${fieldName}-help` : null;
+  }
+
+
+  // Name rows: the form control of a name part in one language.
+  nameControl(part: NamePart, lang: 'Ar' | 'En'): FieldName {
+    return `${part}${lang}` as FieldName;
   }
 }

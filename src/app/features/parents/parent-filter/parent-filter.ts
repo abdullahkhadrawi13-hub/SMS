@@ -1,74 +1,52 @@
-import { Component, inject, signal } from '@angular/core';
-
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
-
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { Component, computed, input, output } from '@angular/core';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-
-// Values returned by the parent filter dialog.
 export interface ParentFilterValues {
   isActive: boolean | null;
 }
 
-
-// Default filter values when no previous filter is provided.
 export const EMPTY_PARENT_FILTER: ParentFilterValues = {
-  isActive: null,
+  isActive: null
 };
 
 
+// The parents filter: one list (account status) in the search row,
+// no dialog any more (11 Nov 2026, like the students and teachers filters).
+// A change is applied straight away: it emits filterChange and the page
+// reloads the list. The page owns the value (and keeps it in the URL);
+// this component only shows it.
+// "Clear filters" is on the page, next to the number of results.
 @Component({
   selector: 'app-parent-filter',
-
   imports: [
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    TranslatePipe,
+    TranslatePipe
   ],
-
   templateUrl: './parent-filter.html',
-  styleUrl: './parent-filter.css',
+  // The shared look in styles.css ("List page": .list-filters, .filter-select).
+  host: { class: 'list-filters' }
 })
 export class ParentFilter {
 
-  // Reference to the current filter dialog.
-  private readonly dialogRef =
-    inject(MatDialogRef<ParentFilter>);
+  // The current value (owned by the parent page): null = all.
+  readonly isActive = input<boolean | null>(null);
 
-  // Previous filter values passed when the dialog is opened.
-  private readonly initial =
-    inject<ParentFilterValues | null>(
-      MAT_DIALOG_DATA,
-      { optional: true }
-    ) ?? EMPTY_PARENT_FILTER;
+  // The filter changed: the new value.
+  readonly filterChange = output<ParentFilterValues>();
 
-
-  // Stores the currently selected account status.
-  readonly isActive = signal<boolean | null>(
-    this.initial.isActive
-  );
+  // The <select> value of the account status: '' | 'true' | 'false'.
+  readonly statusValue = computed(() => {
+    const value = this.isActive();
+    return value === null ? '' : String(value);
+  });
 
 
-  // Clears all filter values without closing the dialog.
-  clear(): void {
-    this.isActive.set(null);
-  }
+  // The <select> gives a string: '' means "All".
+  onStatusChange(value: string): void {
 
+    this.filterChange.emit({
+      isActive: value === 'true' ? true : value === 'false' ? false : null
+    });
 
-  // Closes the dialog and returns the selected filter values.
-  apply(): void {
-    this.dialogRef.close({
-      isActive: this.isActive(),
-    } satisfies ParentFilterValues);
   }
 }

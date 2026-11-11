@@ -146,28 +146,12 @@
   display: contents;
 }
 
-/* Relationship: father blue, mother pink, guardian gold
-   (the same three colours on the chip and the avatar) */
+/* Relationship: the shared chip in styles.css (.relationship-chip,
+   .relationship-0 / -1 / -2: father blue, mother pink, guardian gold,
+   the same three colours on the chip and the avatar) */
 .relationship-chip {
   justify-self: start;
-
-  display: inline-flex;
-  align-items: center;
-
-  height: 24px;
-
-  padding-inline: 10px;
-
-  border-radius: var(--r-pill);
-
-  font-size: var(--fs-12);
-  font-weight: 600;
-  white-space: nowrap;
 }
-
-.relationship-0 { background: var(--avatar-3-bg); color: var(--avatar-3-ink); }
-.relationship-1 { background: var(--avatar-4-bg); color: var(--avatar-4-ink); }
-.relationship-2 { background: var(--avatar-5-bg); color: var(--avatar-5-ink); }
 
 .parent-phone {
   display: inline-flex;

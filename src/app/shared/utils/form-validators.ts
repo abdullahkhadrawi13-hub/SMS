@@ -1,5 +1,5 @@
-// Shared validation rules of the person forms: the student form and the
-// teacher form now, the parent form when it is redesigned.
+// Shared validation rules of the person forms: the student, teacher
+// and parent forms.
 // (Moved here from students-form.ts on 11 Nov 2026, with no change in
 // the rules themselves.)
 //

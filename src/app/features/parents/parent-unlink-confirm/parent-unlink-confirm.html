@@ -1,7 +1,7 @@
 <div class="confirm">
 
   <div class="confirm-icon">
-    <mat-icon>link_off</mat-icon>
+    <mat-icon aria-hidden="true">link_off</mat-icon>
   </div>
 
   <h2 mat-dialog-title>
@@ -18,13 +18,10 @@
     </p>
 
     <div class="info-box">
-
-      <mat-icon>info</mat-icon>
-
+      <mat-icon aria-hidden="true">info</mat-icon>
       <span>
         {{ 'PARENTS.UNLINK.INFO' | translate }}
       </span>
-
     </div>
 
   </mat-dialog-content>
@@ -39,14 +36,14 @@
       {{ 'PARENTS.UNLINK.CANCEL' | translate }}
     </button>
 
+    <!-- Red: the shared danger button (styles.css) -->
     <button
       mat-flat-button
       type="button"
-      class="confirm-button"
+      class="btn-danger"
       (click)="confirm()"
     >
-      <mat-icon>link_off</mat-icon>
-
+      <mat-icon aria-hidden="true">link_off</mat-icon>
       {{ 'PARENTS.UNLINK.CONFIRM' | translate }}
     </button>
 

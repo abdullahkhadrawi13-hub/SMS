@@ -23,7 +23,7 @@ import { Language } from '../../../../core/services/language';
 import { ParentsService } from '../../../../core/services/parents';
 import { StudentGradesService } from '../../../../core/services/student-grades';
 import { getCardColor } from '../../../../shared/constants/card-colors';
-import { getArabicName, getEnglishName } from '../../../parents/parents';
+import { getArabicName, getEnglishName } from '../../../../shared/utils/person-name';
 
 import { TermGrades } from '../term-grades/term-grades';
 import {
