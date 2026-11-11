@@ -3,9 +3,7 @@
      Enter searches straight away. -->
 <label class="search-field">
 
-  <span class="visually-hidden">
-    {{ 'STUDENTS.SEARCH' | translate }}
-  </span>
+  <span class="visually-hidden">{{ label() }}</span>
 
   <!-- The wrapper takes the page direction; <mat-icon> itself is always
        direction: ltr (styles.css), so it cannot be placed with inline-start. -->
@@ -17,7 +15,7 @@
     type="search"
     autocomplete="off"
     [value]="search()"
-    [placeholder]="'STUDENTS.SEARCH_PLACEHOLDER' | translate"
+    [placeholder]="placeholder()"
     (input)="onInput($any($event.target).value)"
     (keydown.enter)="searchSubmit.emit()"
   />
@@ -27,7 +25,7 @@
       type="button"
       class="clear-button"
       (click)="searchClear.emit()"
-      [attr.aria-label]="'STUDENTS.CLEAR_SEARCH' | translate"
+      [attr.aria-label]="clearLabel()"
     >
       <mat-icon aria-hidden="true">close</mat-icon>
     </button>

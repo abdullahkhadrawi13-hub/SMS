@@ -619,117 +619,134 @@
   "TEACHERS": {
     "HEADER": {
       "TITLE": "Teacher Management",
-      "SUBTITLE": "Manage teacher information and accounts",
+      "SUBTITLE": "Teacher accounts and contact details.",
       "ADD": "Add Teacher"
     },
 
     "SEARCH": {
       "LABEL": "Search",
-      "PLACEHOLDER": "Search for a teacher...",
+      "PLACEHOLDER": "Search for a teacher",
       "CLEAR": "Clear search",
       "SUBMIT": "Search"
     },
 
     "FILTER": {
-      "TITLE": "Filter Teachers",
-      "ALL": "All statuses",
-      "CLEAR": "Reset",
-      "CANCEL": "Cancel",
-      "APPLY": "Apply"
+      "ALL": "Account: All",
+      "OPTION": "Account: {{name}}",
+      "CLEAR_FILTERS": "Clear filters",
+      "TOGGLE": "Filter"
+    },
+
+    "COUNT": {
+      "MATCHING": {
+        "ZERO": "No teachers match the search",
+        "ONE": "1 teacher matches the search",
+        "TWO": "2 teachers match the search",
+        "FEW": "{{count}} teachers match the search",
+        "MANY": "{{count}} teachers match the search",
+        "OTHER": "{{count}} teachers match the search"
+      }
     },
 
     "TABLE": {
+      "TEACHER": "Teacher",
       "TEACHER_NUMBER": "Teacher Number",
-      "NAME": "Teacher Name",
       "LOGIN_ID": "Login ID",
       "PHONE": "Phone Number",
       "ACTIONS": "Actions",
-      "VIEW": "View",
+      "ACTIONS_FOR": "Actions for {{name}}",
+      "VIEW": "View details",
       "EDIT": "Edit",
       "RESET_PASSWORD": "Reset password",
       "ACTIVATE": "Activate",
       "DEACTIVATE": "Deactivate",
-      "EMPTY": "No teachers to display",
-      "PAGINATION": "Teacher pagination",
       "LOADING": "Loading teachers...",
-      "RETRY": "Retry"
+      "PAGINATION": "Teachers pagination",
+      "NO_MATCH": "No teachers match the search",
+      "NO_MATCH_DESCRIPTION": "Try another word or remove the filter.",
+      "EMPTY": "No teachers have been added yet",
+      "EMPTY_DESCRIPTION": "Start by adding the first teacher with the \"Add Teacher\" button above."
     },
 
     "FORM": {
-      "TITLE": "Add Teacher",
-      "EDIT_TITLE": "Edit Teacher",
-
-      "ARABIC_INFO": "Arabic Information",
-      "ENGLISH_INFO": "English Information",
-      "ACCOUNT_INFO": "Account Information",
-
-      "FIRST_NAME_AR": "First Name",
-      "FATHER_NAME_AR": "Father Name",
-      "GRANDFATHER_NAME_AR": "Grandfather Name",
-      "FAMILY_NAME_AR": "Family Name",
-
-      "FIRST_NAME_EN": "First Name",
-      "FATHER_NAME_EN": "Father Name",
-      "GRANDFATHER_NAME_EN": "Grandfather Name",
-      "FAMILY_NAME_EN": "Family Name",
-
-      "LOGIN_ID": "Login ID",
-      "TEMPORARY_PASSWORD": "Temporary Password",
-      "PHONE": "Phone Number",
-
-      "SUBTITLE": "Enter the teacher's information and account details",
-      "EDIT_SUBTITLE": "Update the teacher's information and account details",
-      "ARABIC_INFO_DESCRIPTION": "Enter the teacher's name in Arabic",
-      "ENGLISH_INFO_DESCRIPTION": "Enter the teacher's name in English",
-      "ACCOUNT_INFO_DESCRIPTION": "Enter the teacher's account information",
-
+      "ADD_TITLE": "Add teacher",
+      "ADD_SUBTITLE": "A new teacher account. The teacher number is generated after saving.",
+      "EDIT_TITLE": "Edit teacher",
+      "CLOSE": "Close",
+      "NAME": {
+        "TITLE": "Teacher name",
+        "HINT": "Full four-part name, as in official documents",
+        "IN_ARABIC": "Name in Arabic",
+        "IN_ENGLISH": "Name in English",
+        "FIRST": "First name",
+        "FATHER": "Father's name",
+        "GRAND_FATHER": "Grandfather's name",
+        "FAMILY": "Family name"
+      },
+      "ACCOUNT": {
+        "TITLE": "Account",
+        "HINT": "How the teacher signs in",
+        "LOGIN_ID": "Login ID",
+        "LOGIN_ID_HELP": "At least 3 characters",
+        "TEMPORARY_PASSWORD": "Temporary password",
+        "PASSWORD_HELP": "Changed by the teacher at first login",
+        "GENERATE": "Generate",
+        "GENERATE_LABEL": "Generate a temporary password",
+        "PHONE_NUMBER": "Phone number",
+        "PHONE_HELP": "10 digits",
+        "RESET_NOTE": "The password isn't changed here. To reset it: ⋮ in the teachers list → Reset password."
+      },
       "CANCEL": "Cancel",
-      "SAVE": "Save",
-      "SAVING": "Saving...",
-      "LOADING": "Loading teacher information...",
-
+      "CREATE": "Add teacher",
+      "UPDATE": "Save changes",
+      "SAVING": "Saving…",
+      "LOADING": "Loading teacher…",
+      "ERRORS_COUNT": {
+        "ONE": "1 field needs fixing",
+        "TWO": "2 fields need fixing",
+        "FEW": "{{count}} fields need fixing",
+        "MANY": "{{count}} fields need fixing"
+      },
+      "DISCARD": {
+        "TITLE": "Discard changes?",
+        "MESSAGE": "What you entered hasn't been saved. If you close the window now, it will be lost.",
+        "CONFIRM": "Discard changes"
+      },
       "ERROR": {
-        "REQUIRED": "This field is required",
-        "MIN_LENGTH": "This field must contain at least 2 characters",
-        "ARABIC_NAME": "Only Arabic letters, spaces, dots, and hyphens are allowed",
-        "ENGLISH_NAME": "Only English letters, spaces, dots, and hyphens are allowed",
-        "PHONE": "Phone number must contain exactly 10 digits",
-        "LOGIN_ID": "Login ID must contain at least 3 characters",
-        "PASSWORD": "Password must contain at least 8 characters",
         "LOAD_FAILED": "Failed to load teacher. Please try again.",
         "INVALID_ID": "Invalid teacher ID."
+      },
+      "VALIDATION": {
+        "REQUIRED": "This field is required.",
+        "ARABIC_ONLY": "Arabic letters and spaces only.",
+        "ENGLISH_ONLY": "English letters and spaces only.",
+        "MIN_LENGTH": "At least 2 characters.",
+        "LOGIN_ID": "Login ID must contain at least 3 characters.",
+        "PASSWORD": "Password must contain at least 8 characters.",
+        "PHONE_NUMBER": "Phone number must contain exactly 10 digits.",
+        "DIGITS_ONLY": "Digits only."
       }
     },
 
     "DETAILS": {
       "TITLE": "Teacher Details",
-      "SUBTITLE": "View teacher information and account details",
       "LOADING": "Loading teacher...",
       "ERROR_TITLE": "Unable to load teacher",
       "INVALID_ID": "Invalid teacher ID.",
       "LOAD_FAILED": "Failed to load teacher. Please try again.",
-      "RETRY": "Retry",
-      "PERSONAL_INFO": "Personal Information",
-      "PERSONAL_INFO_DESCRIPTION": "Teacher name and contact information",
-      "NAME_AR": "Name (Arabic)",
-      "NAME_EN": "Name (English)",
-      "ACCOUNT_INFO": "Account Information",
-      "ACCOUNT_INFO_DESCRIPTION": "Teacher account and access information",
-      "ROLE": "Role",
-      "ACCOUNT_STATUS": "Account Status",
-      "PASSWORD_STATUS": "Password Status",
-      "MUST_CHANGE_PASSWORD": "Must change password",
-      "PASSWORD_NORMAL": "Password is up to date",
+      "TEACHER_CARD": "Teacher details",
+      "NAME_AR": "Name in Arabic",
+      "NAME_EN": "Name in English",
+      "ACCOUNT_CARD": "Account",
+      "PASSWORD": "Password",
+      "MUST_CHANGE_PASSWORD": "Must be changed at first login",
+      "PASSWORD_NORMAL": "Changed",
       "CLOSE": "Close"
     },
 
     "ERROR": {
       "LOAD_FAILED": "Failed to load teachers. Please try again."
-    },
-
-    "ACTIVE": "Active",
-    "INACTIVE": "Inactive",
-    "FILTER_BUTTON": "Filter"
+    }
   },
 
   "PARENTS": {

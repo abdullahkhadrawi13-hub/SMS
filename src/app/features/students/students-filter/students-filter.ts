@@ -41,7 +41,8 @@ export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
     TranslatePipe
   ],
   templateUrl: './students-filter.html',
-  styleUrl: './students-filter.css'
+  // The shared look in styles.css ("List page": .list-filters, .filter-select).
+  host: { class: 'list-filters' }
 })
 export class StudentsFilter {
 

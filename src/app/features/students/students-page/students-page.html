@@ -1,4 +1,4 @@
-<div class="student-list">
+<div>
 
   <!-- Page Header: the title, one description line, "Add student" -->
   <app-students-header
@@ -11,23 +11,26 @@
     <!-- Search and filters: on the page background, outside the table card.
          One row on the computer; on the phone the filters open under
          the search ("Filter" button). -->
-    <div class="toolbar-area">
+    <div>
 
-      <div class="toolbar" [class.filters-open]="filtersOpen()">
+      <div class="list-toolbar">
 
-        <div class="search-row">
+        <div class="list-search-row">
 
-          <app-students-search
+          <app-search-field
             [(search)]="search"
+            [label]="'STUDENTS.SEARCH' | translate"
+            [placeholder]="'STUDENTS.SEARCH_PLACEHOLDER' | translate"
+            [clearLabel]="'STUDENTS.CLEAR_SEARCH' | translate"
             (searchTyping)="onSearchTyping($event)"
             (searchSubmit)="onSearch()"
             (searchClear)="clearSearch()"
-          ></app-students-search>
+          ></app-search-field>
 
           @if (isPhone()) {
             <button
               type="button"
-              class="filter-toggle"
+              class="list-filter-toggle"
               [class.is-active]="filtersOpen() || activeFilterCount() > 0"
               [attr.aria-expanded]="filtersOpen()"
               aria-controls="students-filters"
@@ -38,7 +41,7 @@
               {{ 'STUDENT_FILTER.TOGGLE' | translate }}
 
               @if (activeFilterCount() > 0) {
-                <span class="filter-count">{{ activeFilterCount() }}</span>
+                <span class="list-filter-count">{{ activeFilterCount() }}</span>
               }
             </button>
           }
@@ -62,13 +65,13 @@
            the new number each time it changes. -->
       <div role="status" aria-live="polite">
         @if (resultsKey(); as key) {
-          <p class="results">
+          <p class="list-results">
             <span>{{ key | translate: { count: resultCount() } }}</span>
 
             @if (activeFilterCount() > 0) {
               <span aria-hidden="true">·</span>
 
-              <button type="button" class="clear-filters" (click)="clearFilters()">
+              <button type="button" class="list-clear-filters" (click)="clearFilters()">
                 {{ 'STUDENT_FILTER.CLEAR_FILTERS' | translate }}
               </button>
             }

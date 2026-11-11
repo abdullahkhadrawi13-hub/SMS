@@ -1,613 +1,377 @@
-<div class="teacher-form">
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-  <!-- Page Header -->
-  <app-page-header
-    [title]="(isEditMode() ? 'TEACHERS.FORM.EDIT_TITLE' : 'TEACHERS.FORM.TITLE') | translate"
-    [subtitle]="(isEditMode() ? 'TEACHERS.FORM.EDIT_SUBTITLE' : 'TEACHERS.FORM.SUBTITLE') | translate"
-  />
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode() ? 'TEACHERS.FORM.EDIT_TITLE' : 'TEACHERS.FORM.ADD_TITLE') | translate }}
+    </h2>
+
+    @if (!isEditMode()) {
+      <p class="fd-head-sub explain">
+        {{ 'TEACHERS.FORM.ADD_SUBTITLE' | translate }}
+      </p>
+    } @else if (teacher(); as t) {
+      <p class="fd-head-sub">
+        <span>{{ teacherName() }}</span>
+        ·
+        <bdi class="tabular">{{ t.teacherNumber }}</bdi>
+      </p>
+    }
+  </div>
+
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'TEACHERS.FORM.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="requestClose()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
 
 
-  <!-- Loading (edit mode: while the teacher is being loaded) -->
-  @if (isLoading()) {
+@if (isLoading()) {
 
+  <!-- ================= Edit: loading ================= -->
+  <div class="fd-body">
     <app-state-card
       type="loading"
+      [framed]="false"
       [message]="'TEACHERS.FORM.LOADING' | translate"
     />
+  </div>
 
-  } @else {
+  <footer class="fd-foot">
+    <span class="fd-foot-note"></span>
 
-  <!-- Teacher Form -->
-  <form
-    [formGroup]="teacherForm"
-    (ngSubmit)="onSubmit()"
-    novalidate
-  >
+    <button mat-stroked-button type="button" (click)="requestClose()">
+      {{ 'TEACHERS.FORM.CANCEL' | translate }}
+    </button>
+  </footer>
 
-    <!-- Error -->
-    @if (errorMessage()) {
+} @else if (loadError()) {
 
-      <div class="message-card error-message">
+  <!-- ================= Edit: loading failed ================= -->
+  <div class="fd-body">
+    <app-state-card
+      type="error"
+      [framed]="false"
+      [message]="loadError() | translate"
+      (retry)="loadTeacher()"
+    />
+  </div>
 
-        <mat-icon>error_outline</mat-icon>
+  <footer class="fd-foot">
+    <span class="fd-foot-note"></span>
 
-        <span>
-          {{ errorMessage() | translate }}
-        </span>
+    <button mat-stroked-button type="button" (click)="requestClose()">
+      {{ 'TEACHERS.FORM.CANCEL' | translate }}
+    </button>
+  </footer>
 
-      </div>
+} @else {
 
-    }
+  <form class="fd-form" [formGroup]="teacherForm" (ngSubmit)="onSubmit()" novalidate>
 
-    <!-- ================================
-         Arabic Information
-         ================================ -->
+    <!-- ================= Body (scrolls) ================= -->
+    <div class="fd-body">
 
-    <section class="form-card">
+      <!-- ---------- Teacher name ---------- -->
+      <section class="fd-section" aria-labelledby="tf-name-title">
 
-      <div class="card-header">
-
-        <div class="card-icon">
-          <mat-icon>translate</mat-icon>
+        <div class="fd-section-head">
+          <h3 id="tf-name-title">{{ 'TEACHERS.FORM.NAME.TITLE' | translate }}</h3>
+          <span class="fd-section-hint">· {{ 'TEACHERS.FORM.NAME.HINT' | translate }}</span>
         </div>
 
-        <div>
-
-          <h2>
-            {{ 'TEACHERS.FORM.ARABIC_INFO' | translate }}
-          </h2>
-
-          <p>
-            {{ 'TEACHERS.FORM.ARABIC_INFO_DESCRIPTION' | translate }}
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="form-grid">
-
-        <!-- First Name Arabic -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.FIRST_NAME_AR' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="firstNameAr"
-            [maxlength]="nameMaxLength"
-            dir="rtl"
-            autocomplete="off"
-          />
-
-          @if (isFieldInvalid('firstNameAr')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.firstNameAr.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.firstNameAr.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.ARABIC_NAME' | translate }}
-
-              } @else if (teacherForm.controls.firstNameAr.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-
-        <!-- Father Name Arabic -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.FATHER_NAME_AR' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="fatherNameAr"
-            [maxlength]="nameMaxLength"
-            dir="rtl"
-            autocomplete="off"
-          />
-
-          @if (isFieldInvalid('fatherNameAr')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.fatherNameAr.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.fatherNameAr.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.ARABIC_NAME' | translate }}
-
-              } @else if (teacherForm.controls.fatherNameAr.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-
-        <!-- Grandfather Name Arabic -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.GRANDFATHER_NAME_AR' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="grandFatherNameAr"
-            [maxlength]="nameMaxLength"
-            dir="rtl"
-            autocomplete="off"
-          />
-
-          @if (isFieldInvalid('grandFatherNameAr')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.grandFatherNameAr.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.grandFatherNameAr.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.ARABIC_NAME' | translate }}
-
-              } @else if (teacherForm.controls.grandFatherNameAr.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-
-        <!-- Family Name Arabic -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.FAMILY_NAME_AR' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="familyNameAr"
-            [maxlength]="nameMaxLength"
-            dir="rtl"
-            autocomplete="off"
-          />
-
-          @if (isFieldInvalid('familyNameAr')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.familyNameAr.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.familyNameAr.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.ARABIC_NAME' | translate }}
-
-              } @else if (teacherForm.controls.familyNameAr.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-      </div>
-
-    </section>
-
-
-    <!-- ================================
-         English Information
-         ================================ -->
-
-    <section class="form-card">
-
-      <div class="card-header">
-
-        <div class="card-icon">
-          <mat-icon>language</mat-icon>
-        </div>
-
-        <div>
-
-          <h2>
-            {{ 'TEACHERS.FORM.ENGLISH_INFO' | translate }}
-          </h2>
-
-          <p>
-            {{ 'TEACHERS.FORM.ENGLISH_INFO_DESCRIPTION' | translate }}
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="form-grid">
-
-        <!-- First Name English -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.FIRST_NAME_EN' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="firstNameEn"
-            [maxlength]="nameMaxLength"
-            dir="ltr"
-            autocomplete="off"
-          />
-
-          @if (isFieldInvalid('firstNameEn')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.firstNameEn.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.firstNameEn.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.ENGLISH_NAME' | translate }}
-
-              } @else if (teacherForm.controls.firstNameEn.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-
-        <!-- Father Name English -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.FATHER_NAME_EN' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="fatherNameEn"
-            [maxlength]="nameMaxLength"
-            dir="ltr"
-            autocomplete="off"
-          />
-
-          @if (isFieldInvalid('fatherNameEn')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.fatherNameEn.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.fatherNameEn.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.ENGLISH_NAME' | translate }}
-
-              } @else if (teacherForm.controls.fatherNameEn.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-
-        <!-- Grandfather Name English -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.GRANDFATHER_NAME_EN' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="grandFatherNameEn"
-            [maxlength]="nameMaxLength"
-            dir="ltr"
-            autocomplete="off"
-          />
-
-          @if (isFieldInvalid('grandFatherNameEn')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.grandFatherNameEn.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.grandFatherNameEn.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.ENGLISH_NAME' | translate }}
-
-              } @else if (teacherForm.controls.grandFatherNameEn.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-
-        <!-- Family Name English -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.FAMILY_NAME_EN' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="familyNameEn"
-            [maxlength]="nameMaxLength"
-            dir="ltr"
-            autocomplete="off"
-          />
-
-          @if (isFieldInvalid('familyNameEn')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.familyNameEn.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.familyNameEn.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.ENGLISH_NAME' | translate }}
-
-              } @else if (teacherForm.controls.familyNameEn.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.MIN_LENGTH' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-      </div>
-
-    </section>
-
-
-    <!-- ================================
-         Account Information
-         ================================ -->
-
-    <section class="form-card">
-
-      <div class="card-header">
-
-        <div class="card-icon">
-          <mat-icon>manage_accounts</mat-icon>
-        </div>
-
-        <div>
-
-          <h2>
-            {{ 'TEACHERS.FORM.ACCOUNT_INFO' | translate }}
-          </h2>
-
-          <p>
-            {{ 'TEACHERS.FORM.ACCOUNT_INFO_DESCRIPTION' | translate }}
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="form-grid">
-
-        <!-- Login ID -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.LOGIN_ID' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="loginId"
-            [maxlength]="loginIdMaxLength"
-            dir="ltr"
-            autocomplete="username"
-          />
-
-          @if (isFieldInvalid('loginId')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.loginId.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.loginId.hasError('minlength')) {
-
-                {{ 'TEACHERS.FORM.ERROR.LOGIN_ID' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-
-        <!-- Temporary Password (only when adding a teacher) -->
-        @if (!isEditMode()) {
-
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-            <mat-label>
-              {{ 'TEACHERS.FORM.TEMPORARY_PASSWORD' | translate }}
-            </mat-label>
-
-            <input
-              matInput
-              type="text"
-              formControlName="temporaryPassword"
-              [maxlength]="passwordMaxLength"
-              dir="ltr"
-              autocomplete="new-password"
-            />
-
-            @if (isFieldInvalid('temporaryPassword')) {
-
-              <mat-error>
-
-                @if (teacherForm.controls.temporaryPassword.hasError('required')) {
-
-                  {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-                } @else if (teacherForm.controls.temporaryPassword.hasError('minlength')) {
-
-                  {{ 'TEACHERS.FORM.ERROR.PASSWORD' | translate }}
-
+        <!-- In Arabic -->
+        <fieldset class="fd-name-row">
+          <legend>
+            <span>{{ 'TEACHERS.FORM.NAME.IN_ARABIC' | translate }}</span>
+            <span class="fd-lang-tag" lang="ar" aria-hidden="true">ع</span>
+          </legend>
+
+          <div class="fd-grid fd-grid-4">
+            @for (p of nameParts; track p.part; let first = $first) {
+              @let name = nameControl(p.part, 'Ar');
+
+              <div class="field">
+                <label class="field-label" [for]="'tf-' + name">{{ p.labelKey | translate }}</label>
+
+                <div class="field-box" [class.is-invalid]="isFieldInvalid(name)">
+                  <input
+                    [id]="'tf-' + name"
+                    [formControlName]="name"
+                    [maxlength]="nameMaxLength"
+                    [attr.aria-invalid]="isFieldInvalid(name)"
+                    [attr.aria-describedby]="describedBy(name)"
+                    [attr.cdkFocusInitial]="first && !isEditMode() ? '' : null"
+                    dir="rtl"
+                    autocomplete="off"
+                  />
+                </div>
+
+                @if (isFieldInvalid(name)) {
+                  <div class="field-error" [id]="'tf-' + name + '-error'">
+                    <mat-icon aria-hidden="true">error</mat-icon>
+                    <span>
+                      @if (teacherForm.controls[name].hasError('required')) {
+                        {{ 'TEACHERS.FORM.VALIDATION.REQUIRED' | translate }}
+                      } @else if (teacherForm.controls[name].hasError('pattern')) {
+                        {{ 'TEACHERS.FORM.VALIDATION.ARABIC_ONLY' | translate }}
+                      } @else {
+                        {{ 'TEACHERS.FORM.VALIDATION.MIN_LENGTH' | translate }}
+                      }
+                    </span>
+                  </div>
                 }
-
-              </mat-error>
-
+              </div>
             }
+          </div>
+        </fieldset>
 
-          </mat-form-field>
+        <!-- In English -->
+        <fieldset class="fd-name-row">
+          <legend>
+            <span>{{ 'TEACHERS.FORM.NAME.IN_ENGLISH' | translate }}</span>
+            <span class="fd-lang-tag" lang="en" aria-hidden="true">EN</span>
+          </legend>
 
+          <div class="fd-grid fd-grid-4">
+            @for (p of nameParts; track p.part) {
+              @let name = nameControl(p.part, 'En');
+
+              <div class="field">
+                <label class="field-label" [for]="'tf-' + name">{{ p.labelKey | translate }}</label>
+
+                <div class="field-box" [class.is-invalid]="isFieldInvalid(name)">
+                  <input
+                    [id]="'tf-' + name"
+                    [formControlName]="name"
+                    [maxlength]="nameMaxLength"
+                    [attr.aria-invalid]="isFieldInvalid(name)"
+                    [attr.aria-describedby]="describedBy(name)"
+                    dir="ltr"
+                    autocomplete="off"
+                  />
+                </div>
+
+                @if (isFieldInvalid(name)) {
+                  <div class="field-error" [id]="'tf-' + name + '-error'">
+                    <mat-icon aria-hidden="true">error</mat-icon>
+                    <span>
+                      @if (teacherForm.controls[name].hasError('required')) {
+                        {{ 'TEACHERS.FORM.VALIDATION.REQUIRED' | translate }}
+                      } @else if (teacherForm.controls[name].hasError('pattern')) {
+                        {{ 'TEACHERS.FORM.VALIDATION.ENGLISH_ONLY' | translate }}
+                      } @else {
+                        {{ 'TEACHERS.FORM.VALIDATION.MIN_LENGTH' | translate }}
+                      }
+                    </span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </fieldset>
+
+      </section>
+
+
+      <!-- ---------- Account ---------- -->
+      <section class="fd-section" aria-labelledby="tf-account-title">
+
+        <div class="fd-section-head">
+          <h3 id="tf-account-title">{{ 'TEACHERS.FORM.ACCOUNT.TITLE' | translate }}</h3>
+          <span class="fd-section-hint">· {{ 'TEACHERS.FORM.ACCOUNT.HINT' | translate }}</span>
+        </div>
+
+        <div class="fd-grid fd-grid-3">
+
+          <!-- Login ID -->
+          <div class="field">
+            <label class="field-label" for="tf-loginId">{{ 'TEACHERS.FORM.ACCOUNT.LOGIN_ID' | translate }}</label>
+
+            <div class="field-box" [class.is-invalid]="isFieldInvalid('loginId')">
+              <input
+                id="tf-loginId"
+                formControlName="loginId"
+                [maxlength]="loginIdMaxLength"
+                [attr.aria-invalid]="isFieldInvalid('loginId')"
+                [attr.aria-describedby]="describedBy('loginId', true)"
+                dir="ltr"
+                autocomplete="off"
+              />
+            </div>
+
+            @if (isFieldInvalid('loginId')) {
+              <div class="field-error" id="tf-loginId-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>
+                  @if (teacherForm.controls.loginId.hasError('required')) {
+                    {{ 'TEACHERS.FORM.VALIDATION.REQUIRED' | translate }}
+                  } @else {
+                    {{ 'TEACHERS.FORM.VALIDATION.LOGIN_ID' | translate }}
+                  }
+                </span>
+              </div>
+            } @else {
+              <div class="field-help" id="tf-loginId-help">{{ 'TEACHERS.FORM.ACCOUNT.LOGIN_ID_HELP' | translate }}</div>
+            }
+          </div>
+
+          <!-- Temporary password (add only) -->
+          @if (!isEditMode()) {
+            <div class="field">
+              <label class="field-label" for="tf-temporaryPassword">{{ 'TEACHERS.FORM.ACCOUNT.TEMPORARY_PASSWORD' | translate }}</label>
+
+              <div class="field-box" [class.is-invalid]="isFieldInvalid('temporaryPassword')">
+                <input
+                  id="tf-temporaryPassword"
+                  type="text"
+                  formControlName="temporaryPassword"
+                  [maxlength]="passwordMaxLength"
+                  [attr.aria-invalid]="isFieldInvalid('temporaryPassword')"
+                  [attr.aria-describedby]="describedBy('temporaryPassword', true)"
+                  dir="ltr"
+                  autocomplete="new-password"
+                  spellcheck="false"
+                />
+
+                <button
+                  type="button"
+                  class="field-action"
+                  [attr.aria-label]="'TEACHERS.FORM.ACCOUNT.GENERATE_LABEL' | translate"
+                  (click)="generatePassword()"
+                >
+                  <mat-icon aria-hidden="true">autorenew</mat-icon>
+                  {{ 'TEACHERS.FORM.ACCOUNT.GENERATE' | translate }}
+                </button>
+              </div>
+
+              @if (isFieldInvalid('temporaryPassword')) {
+                <div class="field-error" id="tf-temporaryPassword-error">
+                  <mat-icon aria-hidden="true">error</mat-icon>
+                  <span>
+                    @if (teacherForm.controls.temporaryPassword.hasError('required')) {
+                      {{ 'TEACHERS.FORM.VALIDATION.REQUIRED' | translate }}
+                    } @else {
+                      {{ 'TEACHERS.FORM.VALIDATION.PASSWORD' | translate }}
+                    }
+                  </span>
+                </div>
+              } @else {
+                <div class="field-help" id="tf-temporaryPassword-help">{{ 'TEACHERS.FORM.ACCOUNT.PASSWORD_HELP' | translate }}</div>
+              }
+            </div>
+          }
+
+          <!-- Phone -->
+          <div class="field">
+            <label class="field-label" for="tf-phoneNumber">{{ 'TEACHERS.FORM.ACCOUNT.PHONE_NUMBER' | translate }}</label>
+
+            <div class="field-box" [class.is-invalid]="isFieldInvalid('phoneNumber')">
+              <input
+                id="tf-phoneNumber"
+                type="tel"
+                inputmode="numeric"
+                maxlength="10"
+                formControlName="phoneNumber"
+                (input)="onPhoneInput($event)"
+                [attr.aria-invalid]="isFieldInvalid('phoneNumber')"
+                [attr.aria-describedby]="describedBy('phoneNumber', true)"
+                dir="ltr"
+                autocomplete="off"
+                class="tabular"
+              />
+            </div>
+
+            @if (isFieldInvalid('phoneNumber')) {
+              <div class="field-error" id="tf-phoneNumber-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>
+                  @if (teacherForm.controls.phoneNumber.hasError('required')) {
+                    {{ 'TEACHERS.FORM.VALIDATION.REQUIRED' | translate }}
+                  } @else if (teacherForm.controls.phoneNumber.hasError('digitsOnly')) {
+                    {{ 'TEACHERS.FORM.VALIDATION.DIGITS_ONLY' | translate }}
+                  } @else {
+                    {{ 'TEACHERS.FORM.VALIDATION.PHONE_NUMBER' | translate }}
+                  }
+                </span>
+              </div>
+            } @else {
+              <div class="field-help" id="tf-phoneNumber-help">{{ 'TEACHERS.FORM.ACCOUNT.PHONE_HELP' | translate }}</div>
+            }
+          </div>
+
+        </div>
+
+        @if (isEditMode()) {
+          <div class="fd-note info">
+            <mat-icon aria-hidden="true">info</mat-icon>
+            <span>{{ 'TEACHERS.FORM.ACCOUNT.RESET_NOTE' | translate }}</span>
+          </div>
         }
 
-
-        <!-- Phone Number -->
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-          <mat-label>
-            {{ 'TEACHERS.FORM.PHONE' | translate }}
-          </mat-label>
-
-          <input
-            matInput
-            formControlName="phoneNumber"
-            type="tel"
-            maxlength="10"
-            dir="ltr"
-            autocomplete="tel"
-          />
-
-          @if (isFieldInvalid('phoneNumber')) {
-
-            <mat-error>
-
-              @if (teacherForm.controls.phoneNumber.hasError('required')) {
-
-                {{ 'TEACHERS.FORM.ERROR.REQUIRED' | translate }}
-
-              } @else if (teacherForm.controls.phoneNumber.hasError('pattern')) {
-
-                {{ 'TEACHERS.FORM.ERROR.PHONE' | translate }}
-
-              }
-
-            </mat-error>
-
-          }
-
-        </mat-form-field>
-
-      </div>
-
-    </section>
+      </section>
 
 
-    <!-- ================================
-         Actions
-         ================================ -->
+      @if (errorMessage()) {
+        <div class="fd-note bad" role="alert">
+          <mat-icon aria-hidden="true">error</mat-icon>
+          <span>{{ errorMessage() | translate }}</span>
+        </div>
+      }
 
-    <div class="form-actions">
+    </div>
+
+
+    <!-- ================= Footer (fixed) ================= -->
+    <footer class="fd-foot">
+
+      <span class="fd-foot-note" aria-live="polite">
+        @if (submitAttempted() && invalidCount() > 0) {
+          <mat-icon aria-hidden="true">error</mat-icon>
+          {{ invalidCountKey() | translate: { count: invalidCount() } }}
+        }
+      </span>
 
       <button
         mat-stroked-button
         type="button"
         [disabled]="isSubmitting()"
-        (click)="cancel()"
+        (click)="requestClose()"
       >
         {{ 'TEACHERS.FORM.CANCEL' | translate }}
       </button>
 
       <button
         mat-flat-button
-        color="primary"
         type="submit"
-        [disabled]="isSubmitting()"
+        class="fd-submit"
+        [class.is-busy]="isSubmitting()"
+        [attr.aria-disabled]="isSubmitting() ? 'true' : null"
       >
-        <mat-icon>
+        <!-- The icon stays outside @if so mat-button can place it;
+             while saving it is hidden and the spinner shows instead. -->
+        <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
           {{ isEditMode() ? 'save' : 'person_add' }}
         </mat-icon>
 
+        @if (isSubmitting()) {
+          <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+        }
+
         {{
-          isSubmitting()
-            ? ('TEACHERS.FORM.SAVING' | translate)
-            : ('TEACHERS.FORM.SAVE' | translate)
+          (isSubmitting()
+            ? 'TEACHERS.FORM.SAVING'
+            : isEditMode() ? 'TEACHERS.FORM.UPDATE' : 'TEACHERS.FORM.CREATE') | translate
         }}
       </button>
 
-    </div>
+    </footer>
 
   </form>
-
-  }
-
-</div>
+}

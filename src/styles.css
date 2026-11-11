@@ -339,7 +339,7 @@ html {
 
 /* ---------- Form dialog panel ----------
    panelClass: 'form-dialog' on MatDialog.open() of an add/edit form
-   (students form first). 10px corners and the floating shadow; under
+   (students form, teachers form) and of the teacher details dialog. 10px corners and the floating shadow; under
    720px the dialog fills the screen with no corners. !important wins over
    the width / maxWidth / maxHeight that open() writes on the pane. */
 .form-dialog {
@@ -358,6 +358,960 @@ html {
     height: 100% !important;
     max-height: 100% !important;
   }
+}
+
+/* ---------- Form dialog layout ----------
+   The inside of an add / edit form dialog (and of a details dialog):
+   a fixed header, a body that scrolls by itself, a fixed footer.
+   The students form and the teachers form use it (moved here from
+   students-form.css on 11 Nov 2026); the panel around it is .form-dialog
+   above, and the fields are .field / .field-box.
+
+   The component puts class "fd" on its host:  host: { class: 'fd' }
+
+   <header class="fd-head">
+     <div class="fd-head-text">
+       <h2 mat-dialog-title>Title</h2>
+       <p class="fd-head-sub explain">One line</p>   .explain hides on the phone
+     </div>
+     <button mat-icon-button>✕</button>
+   </header>
+
+   <form class="fd-form">
+     <div class="fd-body">
+       <section class="fd-section">
+         <div class="fd-section-head"><h3>…</h3><span class="fd-section-hint">· …</span></div>
+         <fieldset class="fd-name-row"><legend>… <span class="fd-lang-tag">ع</span></legend>
+           <div class="fd-grid fd-grid-4">…four .field…</div>
+         </fieldset>
+         <div class="fd-grid fd-grid-3">…</div>
+         <div class="fd-note info | warn | bad">…</div>
+       </section>
+     </div>
+     <footer class="fd-foot">
+       <span class="fd-foot-note">3 fields need fixing</span>
+       <button mat-stroked-button>Cancel</button>
+       <button mat-flat-button class="fd-submit">Save</button>
+     </footer>
+   </form> */
+.fd {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+
+  background: var(--surface);
+  color: var(--text);
+  text-align: start;
+}
+
+/* Header */
+.fd-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  flex: none;
+
+  padding: 20px var(--sp-6) var(--sp-4);
+  border-block-end: 1px solid var(--rule);
+}
+
+.fd-head-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* mat-dialog-title gives the dialog its accessible name;
+   its Material spacing and baseline strut are not used here.
+   (The container in the selector wins over Material's own title rules.) */
+.mat-mdc-dialog-container .fd-head h2 {
+  margin: 0;
+  padding: 0;
+
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-20);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-align: start;
+}
+
+.mat-mdc-dialog-container .fd-head h2::before {
+  display: none;
+}
+
+.fd-head-sub {
+  margin: var(--sp-1) 0 0;
+
+  color: var(--muted);
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+.fd-head .mat-mdc-icon-button {
+  flex: none;
+  margin-block-start: -4px;
+  margin-inline-end: -8px;
+}
+
+/* Body */
+.fd-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.fd-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+
+  padding: var(--sp-2) var(--sp-6) var(--sp-6);
+}
+
+/* Sections, a thin rule between them (no inner cards) */
+.fd-section {
+  padding-block-start: 20px;
+}
+
+.fd-section + .fd-section {
+  margin-block-start: 20px;
+  border-block-start: 1px solid var(--rule);
+}
+
+.fd-section-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+
+  margin-block-end: var(--sp-3);
+}
+
+.fd-section-head h3 {
+  margin: 0;
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.fd-section-hint {
+  color: var(--muted);
+  font-size: var(--fs-13);
+}
+
+/* A name row: "Name in Arabic" / "Name in English" with its four parts.
+   The legend is a small heading (14px/700, main text colour) with a
+   language tag, so it never reads like one more field label (13px grey). */
+.fd-name-row {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.fd-name-row + .fd-name-row {
+  margin-block-start: var(--sp-6);
+}
+
+.fd-name-row legend {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+
+  padding: 0;
+  margin-block-end: 10px;
+
+  color: var(--text);
+  font-size: var(--fs-14);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.fd-lang-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 24px;
+  height: 20px;
+  box-sizing: border-box;
+  padding-inline: 6px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--raised);
+
+  color: var(--muted);
+  font-size: var(--fs-11);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.fd-grid {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.fd-grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.fd-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Notes */
+.fd-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+
+  margin-block-start: var(--sp-3);
+  padding: 10px 14px;
+  border-radius: var(--r-control);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+.fd-note mat-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-block-start: 2px;
+
+  font-size: 18px;
+}
+
+.fd-note.info {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.fd-note.warn {
+  border: 1px solid var(--warn-line);
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+
+.fd-note.bad {
+  margin-block-start: var(--sp-4);
+
+  background: var(--bad-bg);
+  color: var(--bad-ink);
+}
+
+/* Footer */
+.fd-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+
+  padding: var(--sp-3) var(--sp-6);
+  border-block-start: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.fd-foot-note {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+
+  color: var(--bad-ink);
+  font-size: var(--fs-13);
+}
+
+.fd-foot-note mat-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+/* While saving the button keeps its colour and cannot be pressed again */
+.fd-submit.is-busy {
+  pointer-events: none;
+}
+
+.fd-submit .fd-hidden {
+  display: none;
+}
+
+.fd-submit-spinner {
+  --mat-progress-spinner-active-indicator-color: var(--on-primary);
+
+  display: inline-block;
+  margin-inline-end: var(--sp-2);
+  vertical-align: middle;
+}
+
+/* Loading / load error inside the dialog */
+.fd-body app-state-card {
+  margin-block: var(--sp-6);
+}
+
+/* Phone (under 720px) */
+@media (max-width: 719.98px) {
+  .fd-head {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .mat-mdc-dialog-container .fd-head h2 {
+    font-size: 18px;
+  }
+
+  .fd-head .mat-mdc-icon-button {
+    margin-block-start: -6px;
+  }
+
+  /* The explanation lines go; a line with the person's name stays */
+  .fd-head-sub.explain,
+  .fd-section-hint {
+    display: none;
+  }
+
+  .fd-body {
+    padding: var(--sp-1) var(--sp-4) 20px;
+  }
+
+  .fd-grid-4,
+  .fd-grid-3 {
+    grid-template-columns: 1fr;
+    gap: var(--sp-3);
+  }
+
+  /* A thin rule between the Arabic and the English group, so the English
+     one reads as its own part. It is the bottom border of the Arabic group:
+     a fieldset draws its legend over its top border, so a top border on the
+     English group would cut through its heading. */
+  .fd-name-row:has(+ .fd-name-row) {
+    padding-block-end: 20px;
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .fd-name-row + .fd-name-row {
+    margin-block-start: 20px;
+  }
+
+  .fd-foot {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .fd-foot-note {
+    display: none;
+  }
+
+  /* The buttons share the width equally */
+  .fd-foot .mat-mdc-button-base {
+    flex: 1;
+  }
+}
+
+/* ---------- List page ----------
+   A page that lists people (students, teachers; moved here from the
+   students files on 11 Nov 2026): the page header, then the search row on
+   the page background, the number of results under it, then the table card.
+
+   <app-…-header />
+   <div class="list-area">
+     <div>
+       <div class="list-toolbar">
+         <div class="list-search-row">
+           <app-search-field … />
+           <button class="list-filter-toggle">…</button>     phone only
+         </div>
+         <app-…-filter />     its host has class "list-filters",
+                              and each list inside it is <select class="filter-select">
+       </div>
+       <div role="status" aria-live="polite">
+         <p class="list-results">
+           <span>3 teachers match the search</span>
+           <span aria-hidden="true">·</span>
+           <button class="list-clear-filters">Clear filters</button>
+         </p>
+       </div>
+     </div>
+     <app-…-table />     see "Data table" below
+   </div>
+
+   No gap above .list-area: the page header already keeps 24px under
+   itself (16px on the phone). */
+
+/* The search row and the table card: 16px apart. */
+.list-area {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-4);
+
+  min-width: 0;
+}
+
+/* Search row: search, then the filters */
+.list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+}
+
+.list-search-row {
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  min-width: 0;
+}
+
+/* The filter lists, next to the search (no dialog) */
+.list-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  min-width: 0;
+}
+
+.filter-select {
+  height: var(--h-control);
+  min-width: 150px;
+
+  box-sizing: border-box;
+  padding-inline: 10px;
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+
+  background-color: var(--surface);
+  color: var(--text);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+
+  cursor: pointer;
+
+  transition: border-color var(--dur), background-color var(--dur), color var(--dur);
+}
+
+/* A list with a longer text ("Section: choose a class first") */
+.filter-select.is-wide {
+  min-width: 180px;
+}
+
+.filter-select:hover:not(:disabled) {
+  background-color: var(--hover);
+}
+
+.filter-select:focus {
+  outline: none;
+
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* A filter that is on: blue border, light blue fill, dark blue text. */
+.filter-select.is-active,
+.filter-select.is-active:hover {
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
+  color: var(--accent-ink);
+
+  font-weight: 600;
+}
+
+/* Disabled (section before a class): readable, and its text says why. */
+.filter-select:disabled {
+  border-color: var(--border);
+  background-color: var(--raised);
+  color: var(--faint);
+
+  cursor: not-allowed;
+}
+
+/* The options open in the browser's own list: keep them plain. */
+.filter-select option {
+  background: var(--surface);
+  color: var(--text);
+
+  font-weight: 400;
+}
+
+/* The number of results (after a search or a filter) */
+.list-results {
+  margin: var(--sp-2) 0 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-variant-numeric: tabular-nums;
+}
+
+/* "Clear filters": a text link (spec: الأزرار → رابط نصي). */
+.list-clear-filters {
+  padding: 0;
+  border: 0;
+
+  background: none;
+  color: var(--accent-ink);
+
+  font-family: var(--font);
+  font-size: var(--fs-13);
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.list-clear-filters:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Phone */
+@media (max-width: 719.98px) {
+
+  .list-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .list-search-row app-search-field {
+    flex: 1;
+  }
+
+  /* One list per line, 44px */
+  .list-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-select,
+  .filter-select.is-wide {
+    width: 100%;
+    min-width: 0;
+    height: var(--h-touch);
+  }
+
+  /* "Clear filters": 44px high to touch, without moving the line. */
+  .list-clear-filters {
+    min-height: var(--h-touch);
+  }
+
+  .list-results {
+    margin-block-start: 0;
+  }
+
+  /* "Filter" button: secondary look, blue when open or a filter is on. */
+  .list-filter-toggle {
+    height: var(--h-touch);
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding-inline: var(--sp-3);
+
+    border: 1px solid var(--control);
+    border-radius: var(--r-control);
+
+    background: var(--surface);
+    color: var(--text);
+
+    font-family: var(--font);
+    font-size: var(--fs-14);
+    font-weight: 600;
+
+    cursor: pointer;
+  }
+
+  .list-filter-toggle.is-active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+
+  .list-filter-toggle mat-icon {
+    width: 18px;
+    height: 18px;
+
+    font-size: 18px;
+  }
+
+  .list-filter-count {
+    min-width: 20px;
+    height: 20px;
+
+    box-sizing: border-box;
+    padding-inline: 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    background: var(--accent);
+    color: var(--on-primary);
+
+    font-size: var(--fs-12);
+    font-weight: 700;
+  }
+
+}
+
+/* ---------- Data table ----------
+   The table card of a list page (students, teachers; moved here from
+   students-table.css on 11 Nov 2026), and the two-line list it becomes
+   on the phone. Spec: "البطاقات" + "الجداول" + "الهاتف".
+
+   <div class="data-card" [class.is-refreshing]="…">
+     <div class="data-card-body">
+       <mat-progress-bar class="data-refresh" />          while reloading
+
+       <div class="data-table"><table mat-table>…</table></div>      computer
+       <ul class="data-items">                                        phone
+         <li class="data-item">
+           <span class="data-avatar" data-tone="1…6">سح</span>
+           <div class="data-item-text">
+             <div class="data-item-line1"><a class="data-link">Name</a> badges</div>
+             <span class="data-item-line2">number · …</span>
+           </div>
+           <button mat-icon-button class="data-actions">⋮</button>
+         </li>
+       </ul>
+
+       <mat-paginator />
+     </div>
+   </div>
+
+   In a table cell: <div class="data-person"> avatar + <a class="data-link">,
+   class="data-muted" for a grey cell, class="data-isolate" for English
+   inside the Arabic page, and the column named "actions" for the ⋮ button. */
+.data-card {
+  width: 100%;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+/* Everything inside the card. The refresh bar sits on its top edge. */
+.data-card-body {
+  position: relative;
+}
+
+.data-card .data-table,
+.data-card .data-items {
+  transition: opacity var(--dur) ease;
+}
+
+/* Refreshing (reload while rows are shown):
+   a thin bar on the top edge; absolute, so the card height never changes. */
+.data-card .data-refresh {
+  position: absolute;
+
+  inset-block-start: 0;
+  inset-inline: 0;
+
+  z-index: 2;
+}
+
+/* Old rows fade a little and cannot be clicked until the new page arrives. */
+.data-card.is-refreshing .data-table,
+.data-card.is-refreshing .data-items {
+  opacity: 0.55;
+
+  pointer-events: none;
+}
+
+/* Table */
+.data-card .data-table {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.data-card .data-table table {
+  width: 100%;
+  min-width: 960px;
+
+  --mat-table-background-color: var(--surface);
+  --mat-table-header-headline-color: var(--faint);
+  --mat-table-row-item-label-text-color: var(--text);
+  --mat-table-row-item-outline-color: var(--rule);
+  --mat-table-header-container-height: 40px;
+  --mat-table-row-item-container-height: var(--row);
+}
+
+/* Header: 40px, 12px/600, no background, a line under it. */
+.data-card .data-table th {
+  height: 40px;
+
+  padding-inline: var(--sp-4);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+
+  color: var(--faint);
+
+  background: transparent;
+
+  border-bottom: 1px solid var(--border);
+
+  text-align: start;
+  white-space: nowrap;
+}
+
+/* Rows: 52px, a light line between them, no zebra. */
+.data-card .data-table td {
+  height: var(--row);
+
+  padding-inline: var(--sp-4);
+
+  font-size: var(--fs-14);
+
+  color: var(--text);
+
+  white-space: nowrap;
+}
+
+.data-card .data-table tr.mat-mdc-row {
+  transition: background-color var(--dur);
+}
+
+.data-card .data-table tr.mat-mdc-row:hover {
+  background: var(--hover);
+}
+
+.data-card .data-muted {
+  color: var(--muted);
+}
+
+/* English inside the Arabic page (username) */
+.data-isolate {
+  unicode-bidi: isolate;
+}
+
+/* Person: avatar + name */
+.data-person {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 240px;
+}
+
+/* 32px, the first letters of the first and the family name,
+   one light colour per person (--avatar-1 ... --avatar-6). */
+.data-avatar {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: var(--fs-12);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.data-avatar[data-tone='1'] { background: var(--avatar-1-bg); color: var(--avatar-1-ink); }
+.data-avatar[data-tone='2'] { background: var(--avatar-2-bg); color: var(--avatar-2-ink); }
+.data-avatar[data-tone='3'] { background: var(--avatar-3-bg); color: var(--avatar-3-ink); }
+.data-avatar[data-tone='4'] { background: var(--avatar-4-bg); color: var(--avatar-4-ink); }
+.data-avatar[data-tone='5'] { background: var(--avatar-5-bg); color: var(--avatar-5-ink); }
+.data-avatar[data-tone='6'] { background: var(--avatar-6-bg); color: var(--avatar-6-ink); }
+
+/* The name: 14px/600. An <a> to the person's page (students),
+   or a <button> that opens the details dialog (teachers). */
+.data-link {
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-weight: 600;
+
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button.data-link {
+  padding: 0;
+  border: 0;
+
+  background: none;
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+
+  text-align: start;
+
+  cursor: pointer;
+}
+
+.data-link:hover {
+  color: var(--accent-ink);
+
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Actions: one ⋮ button at the end of the row */
+.data-card .data-table td.mat-column-actions,
+.data-card .data-table th.mat-column-actions {
+  width: 52px;
+
+  padding-inline: var(--sp-2);
+
+  text-align: center;
+}
+
+.data-card .data-actions {
+  color: var(--muted);
+}
+
+/* Paginator: "1–10 من 531" first, then rows per page and arrows */
+.data-card mat-paginator {
+  border-top: 1px solid var(--rule);
+
+  --mat-paginator-container-background-color: var(--surface);
+  --mat-paginator-container-text-color: var(--muted);
+  --mat-paginator-container-text-size: var(--fs-13);
+  --mat-paginator-container-size: var(--row);
+  --mat-paginator-form-field-container-height: var(--h-control);
+  --mat-paginator-form-field-container-vertical-padding: 6px;
+  --mat-paginator-select-trigger-text-size: var(--fs-13);
+}
+
+.data-card .mat-mdc-paginator-container {
+  justify-content: flex-start;
+
+  padding-inline: 20px var(--sp-2);
+}
+
+/* The range label leaves its group so it can go first. */
+.data-card .mat-mdc-paginator-range-actions {
+  display: contents;
+}
+
+.data-card .mat-mdc-paginator-range-label {
+  order: -1;
+
+  margin: 0;
+  margin-inline-end: auto;
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* Phone: one item per person, two lines */
+.data-items {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.data-item {
+  min-height: 68px;
+
+  box-sizing: border-box;
+  padding-block: 10px;
+  padding-inline: var(--sp-3) var(--sp-1);
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  border-bottom: 1px solid var(--rule);
+}
+
+.data-item-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+/* Line 1: the name, then a badge only when it needs attention. */
+.data-item-line1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+}
+
+/* Line 2: the number · … */
+.data-item-line2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+
+  font-size: var(--fs-13);
+
+  color: var(--muted);
+}
+
+.data-item .data-actions {
+  flex-shrink: 0;
+}
+
+@media (max-width: 719.98px) {
+
+  .data-card .mat-mdc-paginator-container {
+    padding-inline: var(--sp-3) var(--sp-1);
+  }
+
+}
+
+/* ---------- Text for screen readers only ---------- */
+.visually-hidden {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 /* ---------- Tabs ----------
