@@ -22,7 +22,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 // Arabic name parts: the Arabic letters ء to ي (U+0621–U+064A), the
 // harakat so "محمّد" is accepted (U+064B–U+0652), spaces, dots and hyphens.
 // Not accepted: Arabic digits ٠–٩ and marks like ، ؛ ؟ (9 Nov 2026).
-export const ARABIC_NAME = /^[ء-ْ\s.-]+$/;
+export const ARABIC_NAME = /^[\u0621-\u0652\s.-]+$/;
 
 // English name parts: English letters, spaces, dots and hyphens.
 export const ENGLISH_NAME = /^[A-Za-z\s.-]+$/;
