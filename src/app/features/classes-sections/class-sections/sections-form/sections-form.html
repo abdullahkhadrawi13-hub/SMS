@@ -1,126 +1,159 @@
-<h2 mat-dialog-title>
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-  {{
-    isEditMode
-      ? ('CLASS_SECTIONS.FORM.EDIT_TITLE' | translate)
-      : ('CLASS_SECTIONS.FORM.ADD_TITLE' | translate)
-  }}
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode ? 'CLASS_SECTIONS.FORM.EDIT_TITLE' : 'CLASS_SECTIONS.FORM.ADD_TITLE') | translate }}
+    </h2>
 
-</h2>
+    @if (isEditMode) {
+      <p class="fd-head-sub">{{ sectionName() }}</p>
+    }
+  </div>
+
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'CLASS_SECTIONS.FORM.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="requestClose()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
 
 
-<mat-dialog-content>
+<form class="fd-form" [formGroup]="sectionForm" (ngSubmit)="submit()" novalidate>
 
-  <form
-    id="section-form"
-    [formGroup]="sectionForm"
-    class="section-form"
-    (ngSubmit)="submit()"
-    novalidate>
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
 
-    <!-- The class: locked (a section never moves to another class) -->
-    <div class="locked-class">
-      <span class="locked-label">
-        {{ 'CLASS_SECTIONS.FORM.CLASS' | translate }}
-      </span>
-      <span class="locked-value">
-        <mat-icon>lock</mat-icon>
-        {{ className }}
-      </span>
+    <div class="fd-grid xf-fields">
+
+      <!-- The class: locked (a section never moves to another class) -->
+      <div class="field">
+        <label class="field-label" for="xf-class">{{ 'CLASS_SECTIONS.FORM.CLASS' | translate }}</label>
+
+        <div class="field-box is-readonly">
+          <mat-icon class="field-icon" aria-hidden="true">lock</mat-icon>
+          <input id="xf-class" readonly [value]="className()" />
+        </div>
+      </div>
+
+
+      <!-- Arabic name -->
+      <div class="field">
+        <label class="field-label" for="xf-sectionAr">{{ 'CLASS_SECTIONS.FORM.NAME_AR' | translate }}</label>
+
+        <div class="field-box" [class.is-invalid]="isFieldInvalid('sectionAr')">
+          <input
+            id="xf-sectionAr"
+            formControlName="sectionAr"
+            [maxlength]="nameMaxLength"
+            [placeholder]="'CLASS_SECTIONS.FORM.NAME_AR_PLACEHOLDER' | translate"
+            [attr.aria-invalid]="isFieldInvalid('sectionAr')"
+            [attr.aria-describedby]="describedBy('sectionAr')"
+            [attr.cdkFocusInitial]="isEditMode ? null : ''"
+            dir="rtl"
+            autocomplete="off"
+          />
+        </div>
+
+        @if (isFieldInvalid('sectionAr')) {
+          <div class="field-error" id="xf-sectionAr-error">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (sectionForm.controls.sectionAr.hasError('required')) {
+                {{ 'CLASS_SECTIONS.FORM.VALIDATION.REQUIRED' | translate }}
+              } @else {
+                {{ 'CLASS_SECTIONS.FORM.VALIDATION.ARABIC_ONLY' | translate }}
+              }
+            </span>
+          </div>
+        }
+      </div>
+
+
+      <!-- English name -->
+      <div class="field">
+        <label class="field-label" for="xf-sectionEn">{{ 'CLASS_SECTIONS.FORM.NAME_EN' | translate }}</label>
+
+        <div class="field-box" [class.is-invalid]="isFieldInvalid('sectionEn')">
+          <input
+            id="xf-sectionEn"
+            formControlName="sectionEn"
+            [maxlength]="nameMaxLength"
+            [placeholder]="'CLASS_SECTIONS.FORM.NAME_EN_PLACEHOLDER' | translate"
+            [attr.aria-invalid]="isFieldInvalid('sectionEn')"
+            [attr.aria-describedby]="describedBy('sectionEn')"
+            dir="ltr"
+            autocomplete="off"
+          />
+        </div>
+
+        @if (isFieldInvalid('sectionEn')) {
+          <div class="field-error" id="xf-sectionEn-error">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (sectionForm.controls.sectionEn.hasError('required')) {
+                {{ 'CLASS_SECTIONS.FORM.VALIDATION.REQUIRED' | translate }}
+              } @else {
+                {{ 'CLASS_SECTIONS.FORM.VALIDATION.ENGLISH_ONLY' | translate }}
+              }
+            </span>
+          </div>
+        }
+      </div>
+
     </div>
 
+  </div>
 
-    <!-- Arabic name -->
-    <mat-form-field appearance="outline">
 
-      <mat-label>
-        {{ 'CLASS_SECTIONS.FORM.NAME_AR' | translate }}
-      </mat-label>
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
 
-      <input
-        matInput
-        type="text"
-        formControlName="sectionAr"
-        dir="rtl"
-        autocomplete="off"
-        [placeholder]="'CLASS_SECTIONS.FORM.NAME_AR_PLACEHOLDER' | translate">
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ invalidCountKey() | translate }}
+      }
+    </span>
 
-      @if (isFieldInvalid('sectionAr')) {
-        <mat-error>
-          @if (sectionForm.controls.sectionAr.hasError('required')) {
-            {{ 'CLASS_SECTIONS.FORM.VALIDATION.NAME_AR_REQUIRED' | translate }}
-          } @else if (sectionForm.controls.sectionAr.hasError('pattern')) {
-            {{ 'CLASS_SECTIONS.FORM.VALIDATION.ARABIC_ONLY' | translate }}
-          } @else if (sectionForm.controls.sectionAr.hasError('maxlength')) {
-            {{ 'CLASS_SECTIONS.FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
-          }
-        </mat-error>
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="requestClose()"
+    >
+      {{ 'CLASS_SECTIONS.FORM.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="submit"
+      class="fd-submit"
+      [class.is-busy]="isSubmitting()"
+      [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+    >
+      <!-- The icon stays outside @if so mat-button can place it;
+           while saving it is hidden and the spinner shows instead. -->
+      <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
+        {{ isEditMode ? 'save' : 'add' }}
+      </mat-icon>
+
+      @if (isSubmitting()) {
+        <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
       }
 
-    </mat-form-field>
+      {{
+        (isSubmitting()
+          ? 'CLASS_SECTIONS.FORM.SAVING'
+          : isEditMode ? 'CLASS_SECTIONS.FORM.SAVE' : 'CLASS_SECTIONS.FORM.ADD') | translate
+      }}
+    </button>
 
+  </footer>
 
-    <!-- English name -->
-    <mat-form-field appearance="outline">
-
-      <mat-label>
-        {{ 'CLASS_SECTIONS.FORM.NAME_EN' | translate }}
-      </mat-label>
-
-      <input
-        matInput
-        type="text"
-        formControlName="sectionEn"
-        dir="ltr"
-        autocomplete="off"
-        [placeholder]="'CLASS_SECTIONS.FORM.NAME_EN_PLACEHOLDER' | translate">
-
-      @if (isFieldInvalid('sectionEn')) {
-        <mat-error>
-          @if (sectionForm.controls.sectionEn.hasError('required')) {
-            {{ 'CLASS_SECTIONS.FORM.VALIDATION.NAME_EN_REQUIRED' | translate }}
-          } @else if (sectionForm.controls.sectionEn.hasError('pattern')) {
-            {{ 'CLASS_SECTIONS.FORM.VALIDATION.ENGLISH_ONLY' | translate }}
-          } @else if (sectionForm.controls.sectionEn.hasError('maxlength')) {
-            {{ 'CLASS_SECTIONS.FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
-          }
-        </mat-error>
-      }
-
-    </mat-form-field>
-
-  </form>
-
-</mat-dialog-content>
-
-
-<mat-dialog-actions align="end">
-
-  <button
-    mat-stroked-button
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="cancel()">
-
-    {{ 'CLASS_SECTIONS.FORM.CANCEL' | translate }}
-
-  </button>
-
-
-  <button
-    mat-flat-button
-    type="submit"
-    form="section-form"
-    [disabled]="isSubmitting()">
-
-    {{
-      isSubmitting()
-        ? ('CLASS_SECTIONS.FORM.SAVING' | translate)
-        : isEditMode
-          ? ('CLASS_SECTIONS.FORM.SAVE' | translate)
-          : ('CLASS_SECTIONS.FORM.ADD' | translate)
-    }}
-
-  </button>
-
-</mat-dialog-actions>
+</form>

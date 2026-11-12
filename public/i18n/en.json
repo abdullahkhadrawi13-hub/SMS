@@ -453,6 +453,7 @@
     "FORM": {
       "ADD_TITLE": "Add Class",
       "EDIT_TITLE": "Edit Class",
+      "ADD_SUBTITLE": "A new class in the classes list. Its sections are added from its page.",
       "NAME_AR": "Class Name in Arabic",
       "NAME_EN": "Class Name in English",
       "LEVEL": "Level",
@@ -460,17 +461,25 @@
       "GRADUATION": "Graduation class",
       "GRADUATION_HINT": "Students who pass this class are marked graduated during rollover instead of moving up.",
       "CANCEL": "Cancel",
-      "ADD": "Add",
-      "SAVE": "Save",
-      "SAVING": "Saving...",
+      "CLOSE": "Close",
+      "ADD": "Add class",
+      "SAVE": "Save changes",
+      "SAVING": "Saving…",
       "VALIDATION": {
-        "NAME_AR_REQUIRED": "Please enter the class name in Arabic",
-        "NAME_EN_REQUIRED": "Please enter the class name in English",
-        "NAME_MAX_LENGTH": "Class name must not exceed 100 characters",
-        "ARABIC_ONLY": "Arabic letters, numbers and spaces only",
-        "ENGLISH_ONLY": "English letters, numbers and spaces only",
-        "LEVEL_REQUIRED": "Please enter the level",
-        "LEVEL_INVALID": "Level must be a whole number above 0"
+        "REQUIRED": "This field is required.",
+        "ARABIC_ONLY": "Arabic letters, numbers and spaces only.",
+        "ENGLISH_ONLY": "English letters, numbers and spaces only.",
+        "LEVEL_INVALID": "A whole number above 0."
+      },
+      "ERRORS_COUNT": {
+        "ONE": "1 field needs fixing",
+        "TWO": "2 fields need fixing",
+        "FEW": "{{count}} fields need fixing"
+      },
+      "DISCARD": {
+        "TITLE": "Discard changes?",
+        "MESSAGE": "What you entered hasn't been saved. If you close the window now, it will be lost.",
+        "CONFIRM": "Discard changes"
       }
     },
     "COUNTS": {
@@ -558,15 +567,23 @@
       "NAME_EN": "Section Name in English",
       "NAME_EN_PLACEHOLDER": "e.g. A",
       "CANCEL": "Cancel",
-      "ADD": "Add",
-      "SAVE": "Save",
-      "SAVING": "Saving...",
+      "CLOSE": "Close",
+      "ADD": "Add section",
+      "SAVE": "Save changes",
+      "SAVING": "Saving…",
       "VALIDATION": {
-        "NAME_AR_REQUIRED": "Please enter the section name in Arabic",
-        "NAME_EN_REQUIRED": "Please enter the section name in English",
-        "NAME_MAX_LENGTH": "Section name must not exceed 100 characters",
-        "ARABIC_ONLY": "Arabic letters, numbers and spaces only",
-        "ENGLISH_ONLY": "English letters, numbers and spaces only"
+        "REQUIRED": "This field is required.",
+        "ARABIC_ONLY": "Arabic letters, numbers and spaces only.",
+        "ENGLISH_ONLY": "English letters, numbers and spaces only."
+      },
+      "ERRORS_COUNT": {
+        "ONE": "1 field needs fixing",
+        "TWO": "2 fields need fixing"
+      },
+      "DISCARD": {
+        "TITLE": "Discard changes?",
+        "MESSAGE": "What you entered hasn't been saved. If you close the window now, it will be lost.",
+        "CONFIRM": "Discard changes"
       }
     },
     "ERROR": {
