@@ -1,0 +1,76 @@
+/* ================================
+   Day Bar (daily summary and absentees tabs)
+   The date field, "Today" and the day in words, on the page background.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+
+  margin-block-end: var(--sp-4);
+}
+
+.day-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+}
+
+.day-field {
+  width: 180px;
+}
+
+.day-text {
+  margin-inline-start: var(--sp-2);
+
+  color: var(--muted);
+
+  font-size: var(--fs-14);
+}
+
+/* Attendance officer: today only */
+.day-lock {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+}
+
+.day-lock mat-icon {
+  width: 18px;
+  height: 18px;
+
+  color: var(--faint);
+
+  font-size: 18px;
+}
+
+
+/* ---------- Phone (under 720px) ---------- */
+
+@media (max-width: 719.98px) {
+
+  .day-field {
+    flex: 1;
+
+    width: auto;
+    min-width: 0;
+  }
+
+  /* The day in words: its own line */
+  .day-text {
+    flex-basis: 100%;
+
+    margin-inline-start: 0;
+
+    font-size: var(--fs-13);
+  }
+
+}

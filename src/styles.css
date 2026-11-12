@@ -117,6 +117,7 @@ button:focus-visible,
      .is-readonly   grey, for a value that cannot change (lock icon:
                     <mat-icon class="field-icon">lock</mat-icon> before it)
      .is-select     a <select>, with <mat-icon class="field-chevron">
+     .is-date       a date from the calendar (see "A date picked…" below)
    A disabled input or select greys its box by itself. */
 .field {
   display: flex;
@@ -269,6 +270,62 @@ button:focus-visible,
 }
 
 .field-action .mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+/* A date picked from the calendar (mat-datepicker, without mat-form-field).
+   The text cannot be typed: a click anywhere in the box opens the calendar.
+   Used by the attendance page (record tab and the day bar).
+
+   <div class="field-box is-date">
+     <input readonly [matDatepicker]="picker" (click)="picker.open()" />
+     <button type="button" class="field-date-button" (click)="picker.open()">
+       <mat-icon aria-hidden="true">calendar_today</mat-icon>
+     </button>
+     <mat-datepicker #picker />
+   </div> */
+.field-box.is-date > input {
+  cursor: pointer;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.field-box.is-date > input:disabled {
+  cursor: not-allowed;
+}
+
+.field-date-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+
+  width: 34px;
+  height: 100%;
+  padding: 0;
+
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  cursor: pointer;
+
+  color: var(--faint);
+
+  transition: color var(--dur);
+}
+
+.field-date-button:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.field-date-button:disabled {
+  cursor: not-allowed;
+}
+
+.field-date-button .mat-icon {
   width: 18px;
   height: 18px;
 
@@ -1457,6 +1514,17 @@ button.data-link {
 .relationship-0 { background: var(--avatar-3-bg); color: var(--avatar-3-ink); }
 .relationship-1 { background: var(--avatar-4-bg); color: var(--avatar-4-ink); }
 .relationship-2 { background: var(--avatar-5-bg); color: var(--avatar-5-ink); }
+
+/* A light box in the colour of the relationship (a parent's phone in the
+   absentees tab): <div class="relationship-box relationship-box-0">.
+   The chip inside it turns white, so it stays readable on the tint. */
+.relationship-box-0 { background: var(--rel-0-soft); border-color: var(--rel-0-line); }
+.relationship-box-1 { background: var(--rel-1-soft); border-color: var(--rel-1-line); }
+.relationship-box-2 { background: var(--rel-2-soft); border-color: var(--rel-2-line); }
+
+.relationship-box .relationship-chip {
+  background: var(--surface);
+}
 
 /* ---------- Text for screen readers only ---------- */
 .visually-hidden {

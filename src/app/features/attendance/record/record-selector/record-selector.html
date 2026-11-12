@@ -1,117 +1,159 @@
-<!-- Class / Section / Date -->
-<div class="selector-card">
+<!-- Class / Section / Date: three fields on the page background,
+     above the sheet card (the shared field look of styles.css). -->
+<div class="selector">
 
   <div class="selector-fields">
 
     <!-- Class (Active only) -->
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <div class="field">
 
-      <mat-label>
+      <label class="field-label" for="attendance-class">
         {{ 'ATTENDANCE.RECORD_SELECTOR.CLASS' | translate }}
-      </mat-label>
+      </label>
 
-      <mat-select
-        [value]="classId()"
-        [disabled]="locked()"
-        (selectionChange)="classChange.emit($event.value)"
-      >
+      <div class="field-box is-select">
 
-        @for (c of classes(); track c.schoolClassId) {
-          <mat-option [value]="c.schoolClassId">
-            {{ getClassName(c) }}
-          </mat-option>
-        }
-
-      </mat-select>
-
-    </mat-form-field>
-
-
-    <!-- Section (disabled until a class is chosen) -->
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-      <mat-label>
-        {{ 'ATTENDANCE.RECORD_SELECTOR.SECTION' | translate }}
-      </mat-label>
-
-      <mat-select
-        [value]="sectionId()"
-        [disabled]="locked() || classId() === null || sectionsLoading()"
-        (selectionChange)="sectionChange.emit($event.value)"
-      >
-
-        @for (s of sections(); track s.sectionId) {
-          <mat-option [value]="s.sectionId">
-            {{ getSectionName(s) }}
-          </mat-option>
-        }
-
-      </mat-select>
-
-    </mat-form-field>
-
-
-    @if (todayOnly()) {
-
-      <!-- Date: the attendance officer records today only (no date picker) -->
-      <mat-form-field
-        appearance="outline"
-        subscriptSizing="dynamic"
-        class="today-only-field"
-      >
-
-        <mat-label>
-          {{ 'ATTENDANCE.RECORD_SELECTOR.DATE' | translate }}
-        </mat-label>
-
-        <input
-          matInput
-          readonly
-          [value]="displayDate()"
-        />
-
-        <mat-icon matIconSuffix>event_available</mat-icon>
-
-        <mat-hint>
-          {{ 'ATTENDANCE.RECORD_SELECTOR.TODAY_ONLY_HINT' | translate }}
-        </mat-hint>
-
-      </mat-form-field>
-
-    } @else {
-
-      <!-- Date (today or any past day, never a future date) -->
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-        <mat-label>
-          {{ 'ATTENDANCE.RECORD_SELECTOR.DATE' | translate }}
-        </mat-label>
-
-        <input
-          matInput
-          readonly
-          [matDatepicker]="datePicker"
-          [value]="dateValue()"
-          [max]="maxDateValue()"
+        <select
+          id="attendance-class"
           [disabled]="locked()"
-          (dateChange)="onDateChange($event.value)"
-          (click)="datePicker.open()"
-        />
+          (change)="onClassSelect($any($event.target).value)"
+        >
 
-        <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <option value="" [selected]="classId() === null">
+            {{ 'ATTENDANCE.RECORD_SELECTOR.CLASS_PLACEHOLDER' | translate }}
+          </option>
 
-        <mat-datepicker #datePicker></mat-datepicker>
+          @for (c of classes(); track c.schoolClassId) {
+            <option
+              [value]="c.schoolClassId"
+              [selected]="classId() === c.schoolClassId"
+            >
+              {{ getClassName(c) }}
+            </option>
+          }
 
-      </mat-form-field>
+        </select>
 
-    }
+        <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+
+      </div>
+
+    </div>
+
+
+    <!-- Section (disabled until a class is chosen; its text says why) -->
+    <div class="field">
+
+      <label class="field-label" for="attendance-section">
+        {{ 'ATTENDANCE.RECORD_SELECTOR.SECTION' | translate }}
+      </label>
+
+      <div class="field-box is-select">
+
+        <select
+          id="attendance-section"
+          [disabled]="locked() || classId() === null || sectionsLoading()"
+          (change)="onSectionSelect($any($event.target).value)"
+        >
+
+          <option value="" [selected]="sectionId() === null">
+            {{
+              (classId() === null
+                ? 'ATTENDANCE.RECORD_SELECTOR.SECTION_NEEDS_CLASS'
+                : 'ATTENDANCE.RECORD_SELECTOR.SECTION_PLACEHOLDER'
+              ) | translate
+            }}
+          </option>
+
+          @for (s of sections(); track s.sectionId) {
+            <option
+              [value]="s.sectionId"
+              [selected]="sectionId() === s.sectionId"
+            >
+              {{ getSectionName(s) }}
+            </option>
+          }
+
+        </select>
+
+        @if (sectionsLoading()) {
+          <mat-spinner class="field-spinner" diameter="16" aria-hidden="true" />
+        } @else {
+          <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- Date -->
+    <div class="field">
+
+      <label class="field-label" for="attendance-date">
+        {{ 'ATTENDANCE.RECORD_SELECTOR.DATE' | translate }}
+      </label>
+
+      @if (todayOnly()) {
+
+        <!-- The attendance officer records today only (no calendar) -->
+        <div class="field-box is-readonly">
+
+          <mat-icon class="field-icon" aria-hidden="true">lock</mat-icon>
+
+          <input
+            id="attendance-date"
+            readonly
+            aria-describedby="attendance-date-help"
+            [value]="displayDate()"
+          />
+
+        </div>
+
+        <div class="field-help" id="attendance-date-help">
+          {{ 'ATTENDANCE.RECORD_SELECTOR.TODAY_ONLY_HINT' | translate }}
+        </div>
+
+      } @else {
+
+        <!-- Today or any past day, never a future date -->
+        <div class="field-box is-date">
+
+          <input
+            id="attendance-date"
+            readonly
+            [matDatepicker]="datePicker"
+            [value]="dateValue()"
+            [max]="maxDateValue()"
+            [disabled]="locked()"
+            (dateChange)="onDateChange($event.value)"
+            (click)="datePicker.open()"
+          />
+
+          <button
+            type="button"
+            class="field-date-button"
+            [disabled]="locked()"
+            [attr.aria-label]="'ATTENDANCE.RECORD_SELECTOR.OPEN_CALENDAR' | translate"
+            (click)="datePicker.open()"
+          >
+            <mat-icon aria-hidden="true">calendar_today</mat-icon>
+          </button>
+
+          <mat-datepicker #datePicker></mat-datepicker>
+
+        </div>
+
+      }
+
+    </div>
 
   </div>
 
   <!-- Shown while the sheet has unsaved changes -->
   @if (locked()) {
-    <p class="selector-hint">
-      <mat-icon>lock</mat-icon>
+    <p class="selector-note" role="status">
+      <mat-icon aria-hidden="true">lock</mat-icon>
 
       <span>
         {{ 'ATTENDANCE.RECORD_SELECTOR.LOCKED_HINT' | translate }}

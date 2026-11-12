@@ -15,5 +15,5 @@
 /* The tab look (colours, gold line, icon + text) is shared: styles.css
    and material-theme.scss. Only the space under the tabs is set here. */
 .attendance-tabs {
-  margin-bottom: var(--sp-6);
+  margin-block-end: var(--sp-6);
 }

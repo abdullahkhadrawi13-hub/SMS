@@ -1,0 +1,55 @@
+<div class="day-bar">
+
+  @if (todayOnly()) {
+
+    <!-- The attendance officer sees today only: no calendar -->
+    <span class="day-lock">
+      <mat-icon aria-hidden="true">lock</mat-icon>
+
+      {{ 'ATTENDANCE.DAY_BAR.TODAY_ONLY' | translate }}
+    </span>
+
+  } @else {
+
+    <!-- Today or any past day, never a future date -->
+    <div class="field-box is-date day-field">
+
+      <input
+        readonly
+        [attr.aria-label]="'ATTENDANCE.DAY_BAR.DATE' | translate"
+        [matDatepicker]="datePicker"
+        [value]="dateValue()"
+        [max]="maxDateValue()"
+        (dateChange)="onDateChange($event.value)"
+        (click)="datePicker.open()"
+      />
+
+      <button
+        type="button"
+        class="field-date-button"
+        [attr.aria-label]="'ATTENDANCE.DAY_BAR.OPEN_CALENDAR' | translate"
+        (click)="datePicker.open()"
+      >
+        <mat-icon aria-hidden="true">calendar_today</mat-icon>
+      </button>
+
+      <mat-datepicker #datePicker></mat-datepicker>
+
+    </div>
+
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isToday()"
+      (click)="goToToday()"
+    >
+      <mat-icon aria-hidden="true">today</mat-icon>
+
+      {{ 'ATTENDANCE.DAY_BAR.TODAY' | translate }}
+    </button>
+
+  }
+
+  <span class="day-text">{{ displayDate() }}</span>
+
+</div>

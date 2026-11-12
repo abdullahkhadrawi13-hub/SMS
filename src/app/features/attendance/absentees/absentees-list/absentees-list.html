@@ -1,73 +1,26 @@
-<!-- Date -->
-<div class="date-card">
-
-  @if (todayOnly()) {
-
-    <!-- The attendance officer sees today only: no date picker. -->
-    <span class="today-only-chip">
-      <mat-icon>lock_clock</mat-icon>
-
-      {{ 'ATTENDANCE.ABSENTEES_LIST.TODAY_ONLY' | translate }}
-    </span>
-
-  } @else {
-
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-      <mat-label>
-        {{ 'ATTENDANCE.ABSENTEES_LIST.DATE' | translate }}
-      </mat-label>
-
-      <input
-        matInput
-        readonly
-        [matDatepicker]="datePicker"
-        [value]="dateValue()"
-        [max]="maxDateValue()"
-        (dateChange)="onDateChange($event.value)"
-        (click)="datePicker.open()"
-      />
-
-      <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
-
-      <mat-datepicker #datePicker></mat-datepicker>
-
-    </mat-form-field>
-
-    <button
-      mat-stroked-button
-      type="button"
-      class="today-button"
-      [disabled]="isToday()"
-      (click)="goToToday()"
-    >
-      <mat-icon>today</mat-icon>
-
-      {{ 'ATTENDANCE.ABSENTEES_LIST.TODAY' | translate }}
-    </button>
-
-  }
-
-  <span class="date-text">{{ displayDate() }}</span>
-
-</div>
+<!-- Day: the date field, "Today" and the day in words -->
+<app-day-bar
+  [date]="date()"
+  [maxDate]="maxDate()"
+  [todayOnly]="todayOnly()"
+  (dateChange)="dateChange.emit($event)"
+/>
 
 
-<!-- Error -->
+<!-- Error: in the place of the list, with "Retry" -->
 @if (errorMessage()) {
-  <div class="error-banner" role="alert">
-    <mat-icon>error_outline</mat-icon>
-
-    <span>{{ errorMessage() }}</span>
-  </div>
+  <app-state-card
+    type="error"
+    [message]="errorMessage()"
+    (retry)="retry.emit()"
+  />
 }
 
 <!-- First load only (nothing to show yet) -->
-@if (isInitialLoading()) {
+@else if (isInitialLoading()) {
   <app-state-card
     type="loading"
     [message]="'ATTENDANCE.ABSENTEES_LIST.LOADING' | translate"
-    [framed]="false"
   />
 }
 
@@ -85,207 +38,140 @@
     }
 
 
-    <!-- Statistics (for the whole day) -->
-    <div class="statistics">
+    <!-- The numbers of the whole day: one card split by a line -->
+    <dl class="stats">
 
-      <div class="stat-card absent">
-        <div class="stat-icon">
-          <mat-icon>person_off</mat-icon>
-        </div>
+      <div class="stat">
+        <dt>{{ 'ATTENDANCE.ABSENTEES_LIST.TOTAL_ABSENT' | translate }}</dt>
 
-        <div class="stat-info">
-          <h3>
-            {{ 'ATTENDANCE.ABSENTEES_LIST.TOTAL_ABSENT' | translate }}
-          </h3>
-
-          <span class="stat-value">{{ totalAbsent() }}</span>
-        </div>
+        <dd class="tabular" [class.is-bad]="totalAbsent() > 0">{{ totalAbsent() }}</dd>
       </div>
 
-      <div class="stat-card warning">
-        <div class="stat-icon">
-          <mat-icon>phone_disabled</mat-icon>
-        </div>
+      <div class="stat">
+        <dt>{{ 'ATTENDANCE.ABSENTEES_LIST.WITHOUT_PARENT' | translate }}</dt>
 
-        <div class="stat-info">
-          <h3>
-            {{ 'ATTENDANCE.ABSENTEES_LIST.WITHOUT_PARENT' | translate }}
-          </h3>
-
-          <span class="stat-value">{{ withoutParentCount() }}</span>
-        </div>
+        <dd class="tabular" [class.is-warn]="withoutParentCount() > 0">{{ withoutParentCount() }}</dd>
       </div>
 
-    </div>
+    </dl>
 
 
-    <!-- Search + Section -->
-    <div class="filter-card">
+    <!-- Search + section, on the page background (the shared list toolbar
+         of styles.css), and the number of results under them -->
+    <div class="filters">
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+      <div class="list-toolbar">
 
-        <mat-label>
-          {{ 'ATTENDANCE.ABSENTEES_LIST.SEARCH' | translate }}
-        </mat-label>
+        <div class="list-search-row">
+          <app-search-field
+            [search]="search()"
+            [label]="'ATTENDANCE.ABSENTEES_LIST.SEARCH' | translate"
+            [placeholder]="'ATTENDANCE.ABSENTEES_LIST.SEARCH_PLACEHOLDER' | translate"
+            [clearLabel]="'ATTENDANCE.ABSENTEES_LIST.CLEAR_SEARCH' | translate"
+            (searchTyping)="searchChange.emit($event)"
+            (searchClear)="searchChange.emit('')"
+          />
+        </div>
 
-        <mat-icon matIconPrefix>search</mat-icon>
-
-        <input
-          matInput
-          type="text"
-          autocomplete="off"
-          [value]="search()"
-          [placeholder]="'ATTENDANCE.ABSENTEES_LIST.SEARCH_PLACEHOLDER' | translate"
-          (input)="onSearchInput($any($event.target).value)"
-        />
-
-        @if (search()) {
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            [attr.aria-label]="'ATTENDANCE.ABSENTEES_LIST.CLEAR_SEARCH' | translate"
-            (click)="clearSearch()"
+        <div class="list-filters">
+          <select
+            class="filter-select is-wide"
+            [class.is-active]="section() !== null"
+            [attr.aria-label]="'ATTENDANCE.ABSENTEES_LIST.SECTION' | translate"
+            (change)="onSectionSelect($any($event.target).value)"
           >
-            <mat-icon>close</mat-icon>
-          </button>
-        }
 
-      </mat-form-field>
-
-
-      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="section-field">
-
-        <mat-label>
-          {{ 'ATTENDANCE.ABSENTEES_LIST.SECTION' | translate }}
-        </mat-label>
-
-        <mat-select
-          [value]="selectValue()"
-          (selectionChange)="onSectionSelect($event.value)"
-        >
-
-          <!-- The text of the closed list -->
-          <mat-select-trigger>
-            @if (selectedNames(); as names) {
-              {{ 'ATTENDANCE.ABSENTEES_LIST.SECTION_TITLE' | translate: names }}
-            } @else {
+            <option [value]="allSections" [selected]="section() === null">
               {{ 'ATTENDANCE.ABSENTEES_LIST.ALL_SECTIONS' | translate }}
-            }
-          </mat-select-trigger>
+            </option>
 
-          <mat-option [value]="allSections">
-            <span class="option-row">
-              <span class="option-name">
-                {{ 'ATTENDANCE.ABSENTEES_LIST.ALL_SECTIONS' | translate }}
-              </span>
-
-              <span class="option-count">{{ totalAbsent() }}</span>
-            </span>
-          </mat-option>
-
-          @for (classOption of classOptions(); track classOption.classId) {
-            <mat-optgroup [label]="classOption.name">
-
+            <!-- Each section with its number of absent students -->
+            @for (classOption of classOptions(); track classOption.classId) {
               @for (option of classOption.sections; track option.section.sectionId) {
-                <mat-option [value]="option.section.sectionId">
-                  <span class="option-row">
-                    <span class="option-name">
-                      {{ 'ATTENDANCE.ABSENTEES_LIST.SECTION_OPTION' | translate: { sectionName: option.name } }}
-                    </span>
-
-                    <span class="option-count" [class.zero]="option.count === 0">
-                      {{ option.count }}
-                    </span>
-                  </span>
-                </mat-option>
+                <option
+                  [value]="option.section.sectionId"
+                  [selected]="section()?.sectionId === option.section.sectionId"
+                >
+                  {{
+                    'ATTENDANCE.ABSENTEES_LIST.SECTION_OPTION'
+                      | translate: {
+                          className: classOption.name,
+                          sectionName: option.name,
+                          count: option.count
+                        }
+                  }}
+                </option>
               }
+            }
 
-            </mat-optgroup>
-          }
+          </select>
+        </div>
 
-        </mat-select>
+      </div>
 
-      </mat-form-field>
-
-
-      @if (isSearching() && inSection().length > 0) {
-        <p class="result-line">
-          {{
-            'ATTENDANCE.ABSENTEES_LIST.SEARCH_RESULT'
-              | translate: { shown: shownStudents().length, total: inSection().length }
-          }}
-        </p>
-      }
+      <!-- Always in the page, so a screen reader reads every new number -->
+      <div role="status" aria-live="polite">
+        @if (isSearching() && inSection().length > 0) {
+          <p class="list-results">
+            {{
+              'ATTENDANCE.ABSENTEES_LIST.SEARCH_RESULT'
+                | translate: { shown: shownStudents().length, total: inSection().length }
+            }}
+          </p>
+        }
+      </div>
 
     </div>
 
 
     <!-- The selected section has no absent students on this date -->
     @if (isSectionEmpty()) {
-      <div class="empty-card">
-        <mat-icon class="ok">check_circle</mat-icon>
-
-        <h3>
-          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.SECTION_TITLE' | translate }}
-        </h3>
-
-        @if (selectedNames(); as names) {
-          <p>
-            {{
-              'ATTENDANCE.ABSENTEES_LIST.EMPTY.SECTION_MESSAGE'
-                | translate: {
-                    className: names.className,
-                    sectionName: names.sectionName,
-                    date: displayDate()
-                  }
-            }}
-          </p>
-        }
-
+      <app-state-card
+        type="empty"
+        icon="check_circle"
+        [title]="'ATTENDANCE.ABSENTEES_LIST.EMPTY.SECTION_TITLE' | translate"
+        [message]="
+          'ATTENDANCE.ABSENTEES_LIST.EMPTY.SECTION_MESSAGE'
+            | translate: {
+                className: selectedNames()?.className,
+                sectionName: selectedNames()?.sectionName,
+                date: displayDate()
+              }
+        "
+      >
         @if (totalAbsent() > 0) {
           <button
+            actions
             mat-stroked-button
             type="button"
-            class="show-all-button"
             (click)="showAllSections()"
           >
-            <mat-icon>list</mat-icon>
+            <mat-icon aria-hidden="true">list</mat-icon>
 
             {{ 'ATTENDANCE.ABSENTEES_LIST.SHOW_ALL' | translate: { count: totalAbsent() } }}
           </button>
         }
-      </div>
+      </app-state-card>
     }
 
     <!-- No absent students on this day -->
     @else if (isDayEmpty()) {
-      <div class="empty-card">
-        <mat-icon class="ok">check_circle</mat-icon>
-
-        <h3>
-          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.DAY_TITLE' | translate }}
-        </h3>
-
-        <p>
-          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.DAY_MESSAGE' | translate }}
-        </p>
-      </div>
+      <app-state-card
+        type="empty"
+        icon="check_circle"
+        [title]="'ATTENDANCE.ABSENTEES_LIST.EMPTY.DAY_TITLE' | translate"
+        [message]="'ATTENDANCE.ABSENTEES_LIST.EMPTY.DAY_MESSAGE' | translate"
+      />
     }
 
     <!-- Nobody matches the search -->
     @else if (isSearchEmpty()) {
-      <div class="empty-card">
-        <mat-icon>search_off</mat-icon>
-
-        <h3>
-          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.SEARCH_TITLE' | translate }}
-        </h3>
-
-        <p>
-          {{ 'ATTENDANCE.ABSENTEES_LIST.EMPTY.SEARCH_MESSAGE' | translate }}
-        </p>
-      </div>
+      <app-state-card
+        type="empty"
+        icon="search_off"
+        [title]="'ATTENDANCE.ABSENTEES_LIST.EMPTY.SEARCH_TITLE' | translate"
+        [message]="'ATTENDANCE.ABSENTEES_LIST.EMPTY.SEARCH_MESSAGE' | translate"
+      />
     }
 
     <!-- The absent students, one card per section -->
@@ -313,7 +199,7 @@
               type="button"
               (click)="openSheet.emit(group.section)"
             >
-              <mat-icon>edit</mat-icon>
+              <mat-icon aria-hidden="true">edit</mat-icon>
 
               {{ 'ATTENDANCE.ABSENTEES_LIST.OPEN_SHEET' | translate }}
             </button>
@@ -328,13 +214,15 @@
               <!-- Student -->
               <div class="student">
 
-                <div class="avatar">{{ row.initial }}</div>
+                <span class="data-avatar" [attr.data-tone]="row.avatarTone" aria-hidden="true">
+                  {{ row.initials }}
+                </span>
 
                 <div class="student-info">
 
                   @if (canOpenStudent()) {
                     <a
-                      class="student-name link"
+                      class="student-name data-link"
                       [routerLink]="['/students', row.student.studentId]"
                       [queryParams]="{ tab: 'attendance' }"
                       [title]="'ATTENDANCE.ABSENTEES_LIST.OPEN_STUDENT' | translate"
@@ -349,13 +237,7 @@
                     </span>
                   }
 
-                  <div class="student-meta">
-                    <span>
-                      <mat-icon>badge</mat-icon>
-
-                      <span class="ltr">@for (part of row.numberParts; track $index) {@if (part.match) {<mark>{{ part.text }}</mark>} @else {<span>{{ part.text }}</span>}}</span>
-                    </span>
-                  </div>
+                  <span class="student-number tabular" dir="ltr">@for (part of row.numberParts; track $index) {@if (part.match) {<mark>{{ part.text }}</mark>} @else {<span>{{ part.text }}</span>}}</span>
 
                 </div>
 
@@ -366,9 +248,9 @@
               <div class="contacts">
 
                 @for (parentRow of row.parents; track parentRow.parent.parentId) {
-                  <!-- Tinted with the relationship color (father / mother / guardian),
+                  <!-- Tinted with the relationship colour (father / mother / guardian),
                        so each phone is clearly tied to its relationship -->
-                  <div class="contact contact-{{ parentRow.parent.relationship }}">
+                  <div class="contact relationship-box relationship-box-{{ parentRow.parent.relationship }}">
 
                     <span class="relationship-chip relationship-{{ parentRow.parent.relationship }}">
                       {{ parentRow.relationshipKey | translate }}
@@ -387,7 +269,7 @@
 
                     <span class="spacer"></span>
 
-                    <span class="phone ltr">{{ parentRow.parent.phoneNumber }}</span>
+                    <span class="phone tabular" dir="ltr">{{ parentRow.parent.phoneNumber }}</span>
 
                     <a
                       mat-icon-button
@@ -396,13 +278,13 @@
                       [attr.aria-label]="'ATTENDANCE.ABSENTEES_LIST.CALL' | translate"
                       [title]="'ATTENDANCE.ABSENTEES_LIST.CALL' | translate"
                     >
-                      <mat-icon>call</mat-icon>
+                      <mat-icon aria-hidden="true">call</mat-icon>
                     </a>
 
                   </div>
                 } @empty {
                   <div class="no-parent">
-                    <mat-icon>warning_amber</mat-icon>
+                    <mat-icon aria-hidden="true">warning</mat-icon>
 
                     <span class="no-parent-text">
                       {{ 'ATTENDANCE.ABSENTEES_LIST.NO_PARENT' | translate }}
@@ -410,13 +292,10 @@
 
                     @if (canLinkParent()) {
                       <a
-                        mat-button
-                        class="link-parent-button"
+                        class="link-parent"
                         [routerLink]="['/students', row.student.studentId]"
                         [queryParams]="{ tab: 'parents' }"
                       >
-                        <mat-icon>link</mat-icon>
-
                         {{ 'ATTENDANCE.ABSENTEES_LIST.LINK_PARENT' | translate }}
                       </a>
                     }

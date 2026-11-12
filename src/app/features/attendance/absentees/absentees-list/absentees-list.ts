@@ -2,12 +2,8 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -20,17 +16,20 @@ import {
 import { getRelationshipTranslationKey } from '../../../../core/models/parent';
 import {
   AbsenteeSection,
-  formatAttendanceDate,
-  fromApiDate,
-  toApiDate
+  formatAttendanceDate
 } from '../../shared/attendance-shared';
+import { DayBar } from '../../shared/day-bar/day-bar';
+import { SearchField } from '../../../../shared/components/search-field/search-field';
+import { getFullName, getInitials } from '../../../../shared/utils/person-name';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
-// The value of "All sections" in the section list.
-// (Section ids are always above 0. null is not used, because mat-select
-// treats a null option as "nothing selected".)
+// The value of "All sections" in the section list
+// (section ids are always above 0).
 const ALL_SECTIONS = 0;
+
+// Avatar colours: --avatar-1 ... --avatar-6 (the same as the students table).
+const AVATAR_TONES = 6;
 
 // A piece of text, marked when it matches the search (shown in <mark>).
 interface TextPart {
@@ -64,7 +63,11 @@ interface StudentRow {
   student: AbsentStudent;
   nameParts: TextPart[];
   numberParts: TextPart[];
-  initial: string;
+
+  // The round avatar: two letters, and one of the six light colours
+  // (the same colour as in the students table).
+  initials: string;
+  avatarTone: number;
   parents: ParentRow[];
 }
 
@@ -82,13 +85,11 @@ interface SectionGroup {
     RouterLink,
 
     MatButtonModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatProgressBarModule,
-    MatSelectModule,
     TranslatePipe,
+    DayBar,
+    SearchField,
     StateCard,
     StatusBadge,
   ],
@@ -141,6 +142,9 @@ export class AbsenteesList {
   // Opens the attendance sheet of this section in the record tab.
   readonly openSheet = output<AbsenteeSection>();
 
+  // "Retry" on the error card.
+  readonly retry = output<void>();
+
 
   // ===== Loading modes (the same as the daily summary) =====
 
@@ -158,11 +162,7 @@ export class AbsenteesList {
 
   // ===== Date =====
 
-  // The date picker works with Date objects.
-  readonly dateValue = computed(() => fromApiDate(this.date()));
-  readonly maxDateValue = computed(() => fromApiDate(this.maxDate()));
-
-  readonly isToday = computed(() => this.date() === this.maxDate());
+  // (The date field itself is app-day-bar.)
 
   private readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'
@@ -240,13 +240,8 @@ export class AbsenteesList {
     return classes;
   });
 
-  // The value of the section list (ALL_SECTIONS = all sections).
-  readonly selectValue = computed(
-    () => this.section()?.sectionId ?? ALL_SECTIONS
-  );
-
   // The class and section names of the selected section
-  // (shown in the closed section list and in the empty state).
+  // (shown in the empty state).
   readonly selectedNames = computed(() => {
 
     const section = this.section();
@@ -318,13 +313,14 @@ export class AbsenteesList {
         groups.push(group);
       }
 
-      const name = this.getStudentName(student, isArabic);
+      const name = getFullName(student, isArabic);
 
       group.rows.push({
         student,
         nameParts: this.highlight(name, words),
         numberParts: this.highlight(student.studentNumber, words),
-        initial: name.charAt(0),
+        initials: getInitials(student, isArabic),
+        avatarTone: (student.studentId % AVATAR_TONES) + 1,
         parents: student.parents.map(parent => ({
           parent,
           name: isArabic
@@ -359,28 +355,10 @@ export class AbsenteesList {
 
   // ===== Actions =====
 
-  onDateChange(value: Date | null): void {
+  // The section list is a plain <select>: its value is text.
+  onSectionSelect(value: string): void {
 
-    if (!value) {
-      return;
-    }
-
-    this.dateChange.emit(toApiDate(value));
-  }
-
-  goToToday(): void {
-    this.dateChange.emit(this.maxDate());
-  }
-
-  onSearchInput(value: string): void {
-    this.searchChange.emit(value);
-  }
-
-  clearSearch(): void {
-    this.searchChange.emit('');
-  }
-
-  onSectionSelect(sectionId: number): void {
+    const sectionId = Number(value);
 
     if (sectionId === ALL_SECTIONS) {
       this.sectionChange.emit(null);
@@ -422,16 +400,6 @@ export class AbsenteesList {
     return this.isArabic()
       ? section.sectionAr || section.sectionEn
       : section.sectionEn || section.sectionAr;
-  }
-
-  // The four-part name in the current language.
-  private getStudentName(student: AbsentStudent, isArabic: boolean): string {
-
-    const parts = isArabic
-      ? [student.firstNameAr, student.fatherNameAr, student.grandFatherNameAr, student.familyNameAr]
-      : [student.firstNameEn, student.fatherNameEn, student.grandFatherNameEn, student.familyNameEn];
-
-    return parts.filter(Boolean).join(' ');
   }
 
   // Every word must be part of the student number

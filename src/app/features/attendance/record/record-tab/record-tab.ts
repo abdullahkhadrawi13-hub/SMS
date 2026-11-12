@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, forkJoin, map, Observable, of, Subscription } from 'rxjs';
@@ -20,6 +21,8 @@ import {
   AttendanceSheetStats,
   AttendanceSheetTarget,
   AttendanceStatusChange,
+  fromApiDate,
+  toApiDate,
   todayApiDate
 } from '../../shared/attendance-shared';
 
@@ -51,6 +54,12 @@ interface AttendanceSaveResult {
 // student present or absent and save (record-sheet).
 // This component owns all the data of the tab and talks to the API;
 // the two children only show it.
+//
+// The selection is kept in the URL, next to the tab:
+//   /attendance?classId=3&sectionId=12&date=2026-11-10
+// so a refresh (or a link) opens the same sheet again. "date" is left
+// out when it is today. A change of the selection replaces the URL
+// (it is not a new step for the browser's "Back").
 @Component({
   selector: 'app-record-tab',
   imports: [
@@ -71,6 +80,9 @@ export class RecordTab implements OnInit {
   private readonly actionResult = inject(ActionResult);
   private readonly translate = inject(TranslateService);
   private readonly language = inject(Language);
+
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -191,8 +203,135 @@ export class RecordTab implements OnInit {
   private sheetRequest?: Subscription;
 
 
+  constructor() {
+
+    // The selection follows the URL: on the first load (a refresh or a
+    // link), and when another tab asks to open a sheet (see openSheet).
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => this.applyUrlSelection(params));
+  }
+
   ngOnInit(): void {
     this.loadClasses();
+  }
+
+
+  // =========================
+  // Selection in the URL
+  // =========================
+
+  // Reads ?classId= &sectionId= &date= and opens that sheet.
+  // Nothing happens when the URL already says what is on the screen
+  // (every change of the selection writes the URL, see syncUrl).
+  private applyUrlSelection(params: ParamMap): void {
+
+    const classId = this.toId(params.get('classId'));
+
+    // A section means nothing without its class.
+    const sectionId = classId === null
+      ? null
+      : this.toId(params.get('sectionId'));
+
+    const date = this.toDate(params.get('date'));
+
+    if (
+      classId === this.classId()
+      && sectionId === this.sectionId()
+      && date === this.date()
+    ) {
+      return;
+    }
+
+    // Never replace a sheet that has unsaved changes:
+    // the URL goes back to the sheet on the screen.
+    if (this.selectionLocked()) {
+      this.syncUrl();
+      return;
+    }
+
+    this.date.set(date);
+
+    // Same class and its sections are already loaded: only the section
+    // or the date changed.
+    if (
+      classId === this.classId()
+      && (
+        sectionId === null
+        || this.sections().some(s => s.sectionId === sectionId)
+      )
+    ) {
+      this.sectionId.set(sectionId);
+      this.loadSheet();
+      return;
+    }
+
+    this.classId.set(classId);
+    this.sectionId.set(null);
+    this.sections.set([]);
+
+    // Clears the old sheet until the section list is loaded
+    this.loadSheet();
+
+    if (classId !== null) {
+      this.loadSections(classId, sectionId);
+    }
+  }
+
+  // Writes the selection to the URL (the other parameters, like ?tab=, stay).
+  private syncUrl(): void {
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: this.toQueryParams(
+        this.classId(),
+        this.sectionId(),
+        this.date()
+      ),
+      queryParamsHandling: 'merge',
+      // Replace: choosing a section is not a new step for "Back".
+      replaceUrl: true
+    });
+  }
+
+  // null removes the parameter from the URL. Today is not written.
+  private toQueryParams(
+    classId: number | null,
+    sectionId: number | null,
+    date: string
+  ): Record<string, number | string | null> {
+    return {
+      classId,
+      sectionId: classId === null ? null : sectionId,
+      date: date === this.today ? null : date
+    };
+  }
+
+  // "12" -> 12. Anything that is not a positive whole number -> null.
+  private toId(value: string | null): number | null {
+
+    const id = Number(value);
+
+    return value !== null && Number.isInteger(id) && id > 0
+      ? id
+      : null;
+  }
+
+  // The date of the URL, or today when it is missing, not a real date,
+  // in the future, or the user records today only.
+  private toDate(value: string | null): string {
+
+    if (
+      this.todayOnly()
+      || value === null
+      || !/^\d{4}-\d{2}-\d{2}$/.test(value)
+      || toApiDate(fromApiDate(value)) !== value
+      || value > this.today
+    ) {
+      return this.today;
+    }
+
+    return value;
   }
 
 
@@ -208,7 +347,20 @@ export class RecordTab implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
-          this.classes.set(response.success ? response.data : []);
+
+          const classes = response.success ? response.data : [];
+
+          this.classes.set(classes);
+
+          // A class from the URL that is not active (or does not exist):
+          // back to "Choose a class".
+          if (
+            response.success
+            && this.classId() !== null
+            && !classes.some(c => c.schoolClassId === this.classId())
+          ) {
+            this.onClassChange(null);
+          }
         },
 
         error: (error: HttpErrorResponse) => {
@@ -248,6 +400,10 @@ export class RecordTab implements OnInit {
           ) {
             this.sectionId.set(selectSectionId);
             this.loadSheet();
+          } else if (selectSectionId !== null) {
+
+            // The section of the URL is not in this class: remove it.
+            this.syncUrl();
           }
         },
 
@@ -271,6 +427,7 @@ export class RecordTab implements OnInit {
 
     // No section is selected now, so this clears the sheet
     this.loadSheet();
+    this.syncUrl();
 
     if (classId !== null) {
       this.loadSections(classId);
@@ -280,6 +437,7 @@ export class RecordTab implements OnInit {
   onSectionChange(sectionId: number | null): void {
     this.sectionId.set(sectionId);
     this.loadSheet();
+    this.syncUrl();
   }
 
   onDateChange(date: string): void {
@@ -291,6 +449,26 @@ export class RecordTab implements OnInit {
 
     this.date.set(date);
     this.loadSheet();
+    this.syncUrl();
+  }
+
+  // "Retry" on the error card: load again whatever is missing.
+  retry(): void {
+
+    this.sheetError.set(null);
+
+    if (this.classes().length === 0) {
+      this.loadClasses();
+    }
+
+    const classId = this.classId();
+
+    if (classId !== null && this.sections().length === 0) {
+      this.loadSections(classId, this.sectionId());
+      return;
+    }
+
+    this.loadSheet();
   }
 
 
@@ -299,9 +477,11 @@ export class RecordTab implements OnInit {
   // =========================
 
   // Called by the page when the daily summary or the absentees tab asks
-  // to open the sheet of a section on a date (the page has already
-  // switched to this tab).
-  openSheet(target: AttendanceSheetTarget): void {
+  // to open the sheet of a section on a date.
+  // One navigation moves to this tab and puts the section in the URL;
+  // applyUrlSelection() then opens the sheet.
+  // Returns false (with a warning) while this tab has unsaved changes.
+  openSheet(target: AttendanceSheetTarget): boolean {
 
     // Do not replace a sheet that has unsaved changes
     if (this.selectionLocked()) {
@@ -309,18 +489,32 @@ export class RecordTab implements OnInit {
         'warning',
         this.translate.instant('ATTENDANCE.RECORD_SHEET.UNSAVED_BLOCK')
       );
-      return;
+      return false;
     }
 
-    this.date.set(target.date);
-    this.classId.set(target.classId);
-    this.sectionId.set(null);
-    this.sections.set([]);
+    const date = this.todayOnly() ? this.today : target.date;
 
-    // Clears the old sheet until the section list is loaded
-    this.loadSheet();
+    // The same sheet is already open: the URL will not change it,
+    // so load it again here (fresh from the backend).
+    if (
+      target.classId === this.classId()
+      && target.sectionId === this.sectionId()
+      && date === this.date()
+    ) {
+      this.loadSheet();
+    }
 
-    this.loadSections(target.classId, target.sectionId);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        tab: null,
+        ...this.toQueryParams(target.classId, target.sectionId, date)
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+
+    return true;
   }
 
 

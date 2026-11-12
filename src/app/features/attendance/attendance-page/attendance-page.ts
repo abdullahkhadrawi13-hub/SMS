@@ -39,6 +39,8 @@ import { Language } from '../../../core/services/language';
 //
 // The active tab is kept in the URL: /attendance (record),
 // /attendance?tab=summary or /attendance?tab=absentees.
+// The record tab keeps its class, section and date there too
+// (?classId= &sectionId= &date=, see record-tab).
 // The three tabs stay alive while switching ([hidden], not @if), so the
 // unsaved marks of the sheet and the absentees search are not lost.
 @Component({
@@ -182,11 +184,16 @@ export class AttendancePage {
   // =========================
 
   // The daily summary or the absentees tab asks to open the sheet of a
-  // section on a date: move to the record tab and let it open the sheet
-  // (it refuses, with a warning, while it has unsaved changes).
+  // section on a date. The record tab does it with one navigation: it
+  // moves to its tab and puts the section in the URL
+  // (?classId= &sectionId= &date=).
+  // It refuses, with a warning, while it has unsaved changes: then only
+  // the tab changes, so the user sees the sheet that needs saving.
   openSheet(target: AttendanceSheetTarget): void {
-    this.selectTab('record');
-    this.recordTab()?.openSheet(target);
+
+    if (!this.recordTab()?.openSheet(target)) {
+      this.selectTab('record');
+    }
   }
 
 }
