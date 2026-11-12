@@ -1,187 +1,183 @@
+/* ==========================================================
+   Sections list (the table card of a class page)
+   The card, the header row, the row height, the phone items and the
+   refresh bar come from styles.css ("Data table": .data-card, .data-table,
+   .data-items). This file only adds what the sections need.
+   Spec: "SMS — مواصفات تصميم الكحلي والذهبي" → الجداول، شريط التقدّم.
+   Colours and sizes come from src/tokens.css (no hex here).
+   Logical properties only (works the same in RTL and LTR).
+   ========================================================== */
+
 :host {
-
   display: block;
-
 }
 
 
-/* ================================
-   Rows
-   ================================ */
+/* ---------- Table ---------- */
 
-.list-wrapper {
+/* A plain table (not mat-table): four columns, so it needs less width
+   than the people tables (960px). */
+.data-card .data-table table.sections-table {
+  min-width: 560px;
 
-  /* So the refresh bar can sit on top of the rows. */
-  position: relative;
-
+  border-collapse: collapse;
 }
 
-.rows {
+.sections-table tbody td {
+  border-block-end: 1px solid var(--rule);
 
+  transition: background-color var(--dur);
+}
+
+.sections-table tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+.sections-table tbody tr:hover td {
+  background: var(--hover);
+}
+
+/* Students: the number at the end of its column, under its header. */
+.sections-table th.col-students {
+  width: 220px;
+
+  text-align: end;
+}
+
+.sections-table .col-actions {
+  width: 52px;
+
+  padding-inline: var(--sp-2);
+
+  text-align: center;
+}
+
+
+/* ---------- Section name ---------- */
+
+.section-name {
   display: flex;
-
-  flex-direction: column;
-
-  gap: 10px;
-
-  transition: opacity 0.15s ease;
-
-}
-
-
-/* ================================
-   Add Section Row
-   (same dashed style as the "Add academic class" card)
-   ================================ */
-
-.add-row {
-
-  display: flex;
-
   align-items: center;
 
-  gap: 12px;
-
-  padding: 12px 14px;
-
-  border: 2px dashed #d1d5db;
-
-  border-radius: 14px;
-
-  background: transparent;
-
-  font: inherit;
-
-  color: inherit;
-
-  text-align: start;
-
-  cursor: pointer;
-
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
-
+  gap: var(--sp-3);
 }
 
-.add-row:hover {
-
-  border-color: #93b4ea;
-
-  background: #f5f8fe;
-
-}
-
-.add-row:focus-visible {
-
-  outline: 3px solid #93b4ea;
-
-  outline-offset: 2px;
-
-}
-
-.add-icon {
-
-  width: 46px;
-
-  height: 46px;
+/* The section's letter in a small box (spec: مربّعات الشعب, 6px corners). */
+.section-letter {
+  width: 32px;
+  height: 32px;
 
   flex-shrink: 0;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
-  border-radius: 13px;
+  box-sizing: border-box;
 
-  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
 
-  color: #64748b;
+  background: var(--raised);
+  color: var(--text);
 
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-
+  font-size: var(--fs-14);
+  font-weight: 700;
+  line-height: 1;
 }
 
-.add-row:hover .add-icon {
-
-  background: #2554a4;
-
-  color: #ffffff;
-
-}
-
-.add-text {
+.section-name-text {
+  min-width: 0;
 
   display: flex;
-
   flex-direction: column;
-
-  gap: 2px;
-
 }
 
-.add-text strong {
+.section-name-text .data-link {
+  align-self: flex-start;
 
-  font-size: 15px;
+  line-height: 1.4;
+}
 
+/* "Section A" under "شعبة أ": at the start of the column, whatever its
+   own direction. */
+.section-name-text small {
+  align-self: flex-start;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  line-height: 1.4;
+
+  unicode-bidi: isolate;
+}
+
+
+/* ---------- Students: bar + number ---------- */
+
+.students-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: var(--sp-3);
+}
+
+/* Spec: شريط التقدّم — 8px, round, a grey track, a gold fill at the real ratio. */
+.bar {
+  width: 120px;
+  height: 8px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: var(--track);
+}
+
+.bar-fill {
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: var(--mark);
+}
+
+.count {
+  min-width: 24px;
+
+  text-align: end;
+}
+
+/* An active section with no students: a yellow word, not an empty bar. */
+.no-students {
+  display: inline-flex;
+  align-items: center;
+
+  gap: var(--sp-1);
+
+  color: var(--warn-ink);
+
+  font-size: var(--fs-12);
   font-weight: 600;
-
-  color: #111827;
-
 }
 
-.add-text small {
+.no-students mat-icon {
+  width: 14px;
+  height: 14px;
 
-  font-size: 12px;
-
-  color: #6b7280;
-
+  font-size: 14px;
 }
 
-
-/* ================================
-   Refreshing (reload while rows are shown)
-   ================================ */
-
-.refresh-bar {
-
-  position: absolute;
-
-  top: -8px;
-
-  left: 0;
-
-  right: 0;
-
-  z-index: 2;
-
-}
-
-.list-wrapper.is-refreshing .rows {
-
-  opacity: 0.55;
-
-  pointer-events: none;
-
-}
-
-
-/* ================================
-   Reduced Motion
-   ================================ */
 
 @media (prefers-reduced-motion: reduce) {
 
-  .add-row,
-  .add-icon,
-  .rows {
-
+  .sections-table tbody td {
     transition: none;
-
   }
 
 }

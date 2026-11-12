@@ -1,219 +1,84 @@
-/* The grid component behaves like a block inside the parent page. */
-:host {
+/* ==========================================================
+   Classes grid
+   Spec: "SMS — مواصفات تصميم الكحلي والذهبي" → البطاقات.
+   The number of columns follows the width of the grid itself
+   (a container query), so it is the same with or without the sidebar:
+   4 columns from 1040px, 3 from 760px, 2 from 480px, then 1.
+   Colours and sizes come from src/tokens.css (no hex here).
+   ========================================================== */
 
+:host {
   display: block;
 
+  container-type: inline-size;
 }
 
-
-/* ================================
-   Grid
-   ================================ */
-
 .grid-wrapper {
-
   /* So the refresh bar can sit on top of the grid. */
   position: relative;
-
 }
 
 .classes-grid {
-
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
 
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--sp-4);
 
-  gap: 20px;
-
-  transition: opacity 0.15s ease;
-
+  transition: opacity var(--dur) ease;
 }
 
-
-/* ================================
-   Add Academic Class Card
-   (same style as the subject plans' empty card)
-   ================================ */
-
-.add-card {
-
-  /* Same height as the class cards. */
-  height: 232px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 8px;
-
-  padding: 20px;
-
-  border: 2px dashed #d1d5db;
-
-  border-radius: 18px;
-
-  background: transparent;
-
-  font: inherit;
-
-  color: inherit;
-
-  text-align: center;
-
-  cursor: pointer;
-
-  box-sizing: border-box;
-
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    background 0.2s ease;
-
+@container (min-width: 480px) {
+  .classes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.add-card:hover {
-
-  transform: translateY(-3px);
-
-  border-color: #93b4ea;
-
-  background: #f5f8fe;
-
+@container (min-width: 760px) {
+  .classes-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
-.add-card:focus-visible {
-
-  outline: 3px solid #93b4ea;
-
-  outline-offset: 2px;
-
+@container (min-width: 1040px) {
+  .classes-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
-.add-icon {
+/* "Inactive classes (1)": a small heading, 24px above, 12px under. */
+.group-title {
+  margin: var(--sp-6) 0 var(--sp-3);
 
-  width: 46px;
+  color: var(--muted);
 
-  height: 46px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  border-radius: 10px;
-
-  background: #f1f5f9;
-
-  color: #64748b;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-
-}
-
-.add-card:hover .add-icon {
-
-  background: #2554a4;
-
-  color: #ffffff;
-
-}
-
-.add-card h3 {
-
-  margin: 4px 0 0;
-
-  font-size: 16px;
-
+  font-size: var(--fs-13);
   font-weight: 600;
-
-  color: #111827;
-
-}
-
-.add-card p {
-
-  max-width: 26ch;
-
-  margin: 0;
-
-  font-size: 13px;
-
-  line-height: 1.5;
-
-  color: #6b7280;
-
 }
 
 
-/* ================================
-   Refreshing (reload while data is shown)
-   ================================ */
+/* ---------- Reload ---------- */
 
-/* Thin bar on the top edge; absolute, so the height never changes. */
-.refresh-bar {
-
-  position: absolute;
-
-  top: -8px;
-
-  left: 0;
-
-  right: 0;
-
-  z-index: 2;
-
-}
-
-/* Old cards fade a little and cannot be clicked until the new data arrives. */
+/* Old cards fade a little and cannot be clicked until the new list arrives. */
 .grid-wrapper.is-refreshing .classes-grid {
-
   opacity: 0.55;
 
   pointer-events: none;
-
 }
 
+.refresh-bar {
+  position: absolute;
 
-/* ================================
-   Responsive
-   ================================ */
+  inset-block-start: -8px;
+  inset-inline: 0;
 
-@media (max-width: 650px) {
-
-  .classes-grid {
-
-    grid-template-columns: minmax(0, 1fr);
-
-    gap: 14px;
-
-  }
-
+  z-index: 2;
 }
 
-
-/* ================================
-   Reduced Motion
-   ================================ */
 
 @media (prefers-reduced-motion: reduce) {
 
-  .add-card {
-
+  .classes-grid {
     transition: none;
-
-  }
-
-  .add-card:hover {
-
-    transform: none;
-
   }
 
 }

@@ -21,70 +21,58 @@
 }
 
 
-<!-- No classes, and the user cannot add one (Assistant Principal) -->
-@else if (classes().length === 0 && !canManage()) {
+<!-- No classes yet (the Admin adds one from the header button) -->
+@else if (classes().length === 0) {
 
   <app-state-card
     type="empty"
-    icon="class"
-    [message]="'CLASSES.GRID.EMPTY' | translate"
+    icon="school"
+    [title]="'CLASSES.GRID.EMPTY' | translate"
+    [message]="canManage() ? ('CLASSES.GRID.EMPTY_HINT' | translate) : ''"
   />
 
 }
 
 
-<!-- Classes grid -->
+<!-- The cards -->
 @else {
 
   <div class="grid-wrapper" [class.is-refreshing]="isRefreshing()">
 
     <!-- Reload indicator: sits on top without taking any height -->
     @if (isRefreshing()) {
-      <mat-progress-bar
-        class="refresh-bar"
-        mode="indeterminate"
-      ></mat-progress-bar>
+      <mat-progress-bar class="refresh-bar" mode="indeterminate"></mat-progress-bar>
     }
 
-    <div class="classes-grid">
+    <ng-template #cards let-list>
+      <div class="classes-grid">
+        @for (schoolClass of list; track schoolClass.schoolClassId) {
+          <app-class-card
+            [schoolClass]="schoolClass"
+            [sections]="sectionsOf(schoolClass)"
+            [canManage]="canManage()"
+            [isToggling]="togglingClassId() !== null"
+            (edit)="editClass.emit(schoolClass)"
+            (toggleStatus)="toggleStatus.emit(schoolClass)"
+          />
+        }
+      </div>
+    </ng-template>
 
-      <!-- One card per class (its color comes from its position); a click opens the class -->
-      @for (schoolClass of classes(); track schoolClass.schoolClassId; let i = $index) {
-        <app-class-card
-          [schoolClass]="schoolClass"
-          [sections]="sectionsLoaded() ? (sectionsByClass().get(schoolClass.schoolClassId) ?? []) : null"
-          [colorIndex]="i"
-          [canManage]="canManage()"
-          [isToggling]="togglingClassId() !== null"
-          (edit)="editClass.emit(schoolClass)"
-          (toggleStatus)="toggleStatus.emit(schoolClass)"
-        />
-      }
+    <!-- Active classes, by level -->
+    @if (activeClasses().length > 0) {
+      <ng-container [ngTemplateOutlet]="cards" [ngTemplateOutletContext]="{ $implicit: activeClasses() }" />
+    }
 
-      <!-- Add academic class (Admin only) -->
-      @if (canManage()) {
-        <button
-          type="button"
-          class="add-card"
-          (click)="addClass.emit()"
-        >
+    <!-- Inactive classes, under their own heading -->
+    @if (inactiveClasses().length > 0) {
+      <h2 class="group-title">
+        {{ 'CLASSES.GRID.INACTIVE_GROUP' | translate }}
+        <span class="tabular">({{ inactiveClasses().length }})</span>
+      </h2>
 
-          <span class="add-icon">
-            <mat-icon>add</mat-icon>
-          </span>
-
-          <h3>
-            {{ 'CLASSES.GRID.ADD_TITLE' | translate }}
-          </h3>
-
-          <p>
-            {{ 'CLASSES.GRID.ADD_HINT' | translate }}
-          </p>
-
-        </button>
-      }
-
-    </div>
+      <ng-container [ngTemplateOutlet]="cards" [ngTemplateOutletContext]="{ $implicit: inactiveClasses() }" />
+    }
 
   </div>
 

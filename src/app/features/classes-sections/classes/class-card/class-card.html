@@ -1,49 +1,52 @@
-<article
-  class="class-card"
-  [class.inactive]="!schoolClass().isActive"
-  [style.--card-main]="color().main"
-  [style.--card-soft]="color().soft"
-  [style.--card-dark]="color().dark"
->
+<article class="class-card" [class.is-inactive]="!schoolClass().isActive">
 
-  <!-- The whole card opens the class page.
-       A real link: it also opens in a new tab with a middle click. -->
-  <a
-    class="card-link"
-    [routerLink]="['/classes-sections', schoolClass().schoolClassId]"
-    [attr.aria-label]="'CLASSES.CARD.OPEN' | translate: { name: className() }"
-  ></a>
-
-
-  <!-- Top: icon + actions (Admin only) -->
+  <!-- Top: name + level and badges, then ⋮ (Admin only) -->
   <div class="card-top">
 
-    <div class="class-icon">
-      <mat-icon>school</mat-icon>
+    <div class="card-title">
+      <!-- The link covers the whole card (::after). A real link:
+           it also opens in a new tab with a middle click. -->
+      <h2>
+        <a class="card-link" [routerLink]="['/classes-sections', schoolClass().schoolClassId]">
+          {{ className() }}
+        </a>
+      </h2>
+
+      <div class="card-meta">
+        <span class="tabular">
+          {{ 'CLASSES.CARD.LEVEL' | translate }} {{ schoolClass().level }}
+        </span>
+
+        @if (schoolClass().isGraduationGrade) {
+          <app-status-badge tone="gold">
+            {{ 'CLASSES.CARD.GRADUATION_BADGE' | translate }}
+          </app-status-badge>
+        }
+
+        @if (!schoolClass().isActive) {
+          <app-status-badge tone="neutral">
+            {{ 'CLASSES.INACTIVE' | translate }}
+          </app-status-badge>
+        }
+      </div>
     </div>
 
     @if (canManage()) {
       <button
         mat-icon-button
         type="button"
-        class="actions-button"
+        class="card-actions"
         [matMenuTriggerFor]="actionsMenu"
-        [attr.aria-label]="'CLASSES.CARD.ACTIONS' | translate"
+        [attr.aria-label]="'CLASSES.CARD.ACTIONS' | translate: { name: className() }"
       >
         <mat-icon>more_vert</mat-icon>
       </button>
 
       <mat-menu #actionsMenu="matMenu">
 
-        <button
-          mat-menu-item
-          type="button"
-          (click)="edit.emit()"
-        >
+        <button mat-menu-item type="button" (click)="edit.emit()">
           <mat-icon>edit</mat-icon>
-          <span>
-            {{ 'CLASSES.CARD.EDIT' | translate }}
-          </span>
+          <span>{{ 'CLASSES.CARD.EDIT' | translate }}</span>
         </button>
 
         <button
@@ -52,9 +55,7 @@
           [disabled]="isToggling()"
           (click)="toggleStatus.emit()"
         >
-          <mat-icon>
-            {{ schoolClass().isActive ? 'block' : 'check_circle' }}
-          </mat-icon>
+          <mat-icon>{{ schoolClass().isActive ? 'block' : 'check_circle' }}</mat-icon>
           <span>
             {{
               schoolClass().isActive
@@ -70,73 +71,64 @@
   </div>
 
 
-  <!-- Name -->
-  <h3 [title]="className()">
-    {{ className() }}
-  </h3>
-
-
-  <!-- Level + badges -->
-  <div class="badges">
-
-    <span class="badge">
-      {{ 'CLASSES.CARD.LEVEL' | translate }} {{ schoolClass().level }}
-    </span>
-
-    @if (schoolClass().isGraduationGrade) {
-      <span class="badge graduation-badge">
-        <mat-icon>workspace_premium</mat-icon>
-        {{ 'CLASSES.CARD.GRADUATION_BADGE' | translate }}
-      </span>
-    }
-
-    @if (!schoolClass().isActive) {
-      <span class="badge inactive-badge">
-        {{ 'CLASSES.INACTIVE' | translate }}
-      </span>
-    }
-
-  </div>
-
-
-  <!-- The class's sections (an inactive section is crossed out) -->
-  <div class="section-letters">
-    @if (sections(); as sectionList) {
-      @for (section of sectionList; track section.sectionId) {
-        <span
-          class="letter"
-          [class.inactive]="!section.isActive"
-          [title]="sectionName(section)"
+  <!-- One box per section (shown once the sections have loaded) -->
+  @if (sections() !== null && sectionBoxes().length > 0) {
+    <ul class="section-boxes">
+      @for (box of sectionBoxes(); track box.id) {
+        <li
+          class="section-box"
+          [class.is-empty]="box.isEmpty"
+          [class.is-inactive]="box.isInactive"
         >
-          {{ sectionName(section) }}
-        </span>
-      } @empty {
-        <span class="no-sections">
-          {{ 'CLASSES.CARD.NO_SECTIONS' | translate }}
-        </span>
+          <!-- What a screen reader says: "شعبة أ: 22 طالبًا" -->
+          <span class="visually-hidden">
+            {{ 'CLASSES.CARD.SECTION_LABEL' | translate: { name: box.name } }}:
+            {{
+              box.isInactive
+                ? ('CLASSES.CARD.SECTION_INACTIVE' | translate)
+                : (box.studentsKey | translate: { count: box.count })
+            }}
+          </span>
+
+          <span class="box-content" aria-hidden="true">
+            @if (box.isEmpty) {
+              <mat-icon>warning</mat-icon>
+            } @else if (box.isInactive) {
+              <mat-icon>block</mat-icon>
+            }
+
+            <b>{{ box.name }}</b>
+
+            @if (box.isEmpty) {
+              {{ 'CLASSES.CARD.SECTION_EMPTY' | translate }}
+            } @else if (box.isInactive) {
+              {{ 'CLASSES.CARD.SECTION_INACTIVE' | translate }}
+            } @else {
+              <span class="tabular">{{ box.count }}</span>
+            }
+          </span>
+        </li>
       }
-    }
-  </div>
+    </ul>
+  }
 
 
   <!-- Counts + "open" arrow -->
   <div class="card-footer">
 
     @if (sections() !== null) {
-      <span class="count">
-        <mat-icon>groups</mat-icon>
-        {{ sectionsKey() | translate: { count: activeSectionsCount() } }}
-      </span>
-
-      <span class="count">
-        <mat-icon>person</mat-icon>
-        {{ studentsKey() | translate: { count: studentsCount() } }}
+      <span class="tabular">
+        @if (sectionBoxes().length === 0) {
+          {{ 'CLASSES.CARD.NO_SECTIONS' | translate }}
+        } @else {
+          {{ sectionsKey() | translate: { count: activeSectionsCount() } }}
+          ·
+          {{ studentsKey() | translate: { count: studentsCount() } }}
+        }
       </span>
     }
 
-    <span class="open-arrow" aria-hidden="true">
-      <mat-icon>{{ isArabic() ? 'chevron_left' : 'chevron_right' }}</mat-icon>
-    </span>
+    <mat-icon class="open-arrow flip" aria-hidden="true">chevron_right</mat-icon>
 
   </div>
 

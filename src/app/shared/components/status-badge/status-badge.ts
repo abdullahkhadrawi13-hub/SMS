@@ -5,13 +5,14 @@ import { MatIconModule } from '@angular/material/icon';
 
 // The colour of a badge, from the spec's "ألوان المعنى" table.
 // Each colour has one meaning across the whole system.
-// (Gold is the student status "Graduated": see app-student-status.)
+// (A graduated student has its own outlined look: see app-student-status.)
 //
 //   ok       green   active account, present, complete, grades open
 //   bad      red     absent
 //   warn     yellow  partial, incomplete
 //   neutral  grey    inactive, not started, closed, past
-export type StatusBadgeTone = 'ok' | 'bad' | 'warn' | 'neutral';
+//   gold     gold    the graduation class (light gold, dark gold text)
+export type StatusBadgeTone = 'ok' | 'bad' | 'warn' | 'neutral' | 'gold';
 
 
 // The shared filled badge (spec: "الشارات").

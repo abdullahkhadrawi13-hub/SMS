@@ -1,8 +1,79 @@
 /* ================================
    Classes Page
+   Colours and sizes come from src/tokens.css (no hex here).
    ================================ */
 
 .classes-page {
   width: 100%;
   box-sizing: border-box;
+}
+
+
+/* ---------- Totals + note (between the header and the cards) ---------- */
+
+.classes-summary {
+  margin-block-end: var(--sp-4);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-3);
+}
+
+/* "12 صفًا · 25 شعبة · 518 طالبًا" (same look as the results line of the lists) */
+.totals {
+  margin: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+/* Warning note (spec: الملاحظات → تنبيه) */
+.note-warn {
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--sp-2);
+
+  padding: 10px 14px;
+
+  border: 1px solid var(--warn-line);
+  border-radius: var(--r-control);
+
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+.note-warn mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  margin-block-start: 1px;
+
+  font-size: 18px;
+}
+
+.note-warn a {
+  color: var(--warn-ink);
+
+  font-weight: 600;
+
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.note-warn a:hover {
+  color: var(--text);
 }

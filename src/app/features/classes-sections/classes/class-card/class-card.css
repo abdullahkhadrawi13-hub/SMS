@@ -1,464 +1,253 @@
-/* The card behaves like a block inside the grid. */
+/* ==========================================================
+   Class card
+   Spec: "SMS — مواصفات تصميم الكحلي والذهبي" → البطاقات.
+   White, a 1px border, 10px corners, no shadow, no colour of its own.
+   On hover only the border darkens (no lift, no shadow).
+   Colours and sizes come from src/tokens.css (no hex here).
+   Logical properties only (works the same in RTL and LTR).
+   ========================================================== */
+
+/* The grid stretches the card to the height of its row,
+   so the cards of one row end on the same line. */
 :host {
-
   display: block;
-
 }
 
-
-/* ================================
-   Card
-   The colors come from the component
-   (shared/constants/card-colors.ts, grey for an inactive class):
-   --card-main  icon, arrow, borders
-   --card-soft  light background
-   --card-dark  text on the light background
-   ================================ */
-
 .class-card {
-
-  /* Every card is above the link that covers it,
-     so the link can sit under the actions button. */
+  /* The name's link covers the card from here. */
   position: relative;
 
-  /* Fixed height: all cards have the same size. */
-  height: 232px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 8px;
-
-  padding: 16px 16px 12px 18px;
-
-  color: var(--card-dark);
-
-  /* A light tint in the corner + the soft color fading to almost white. */
-  background:
-    radial-gradient(
-      circle at 12% 0%,
-      color-mix(in srgb, var(--card-main) 16%, transparent) 0%,
-      transparent 55%
-    ),
-    linear-gradient(
-      170deg,
-      var(--card-soft) 0%,
-      color-mix(in srgb, var(--card-soft) 45%, #ffffff) 100%
-    );
-
-  border: 1px solid color-mix(in srgb, var(--card-main) 22%, transparent);
-
-  border-radius: 18px;
-
+  height: 100%;
+  min-height: 168px;
   box-sizing: border-box;
 
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
 
+  padding-block-start: 14px;
+  padding-inline: var(--sp-4);
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  transition: border-color var(--dur) ease;
 }
 
 .class-card:hover {
+  border-color: var(--control);
+}
 
-  transform: translateY(-3px);
-
-  border-color: color-mix(in srgb, var(--card-main) 45%, transparent);
-
-  box-shadow: 0 14px 28px color-mix(in srgb, var(--card-main) 20%, transparent);
-
+/* An inactive class: one step greyer. */
+.class-card.is-inactive {
+  background: var(--raised);
 }
 
 
-/* ================================
-   Link (covers the whole card)
-   ================================ */
-
-.card-link {
-
-  position: absolute;
-
-  inset: 0;
-
-  z-index: 1;
-
-  border-radius: inherit;
-
-}
-
-.card-link:focus-visible {
-
-  outline: 3px solid var(--card-main);
-
-  outline-offset: 2px;
-
-}
-
-
-/* ================================
-   Top: icon + actions
-   ================================ */
+/* ---------- Top: name, level, badges, ⋮ ---------- */
 
 .card-top {
-
   display: flex;
-
-  align-items: center;
-
+  align-items: flex-start;
   justify-content: space-between;
 
-  gap: 10px;
-
+  gap: var(--sp-2);
 }
 
-.class-icon {
+.card-title {
+  min-width: 0;
+}
 
-  width: 44px;
+.card-title h2 {
+  margin: 0;
 
-  height: 44px;
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.card-link {
+  display: block;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The link's area is the whole card. */
+.card-link::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+}
+
+.card-link:hover {
+  color: var(--accent-ink);
+}
+
+/* The keyboard ring goes around the whole card, not around the name. */
+.card-link:focus-visible {
+  outline: none;
+}
+
+.card-link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.card-meta {
+  min-height: 24px;
+  margin-block-start: 2px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+/* Above the card's link, so it opens the menu and not the class page. */
+.card-actions {
+  position: relative;
+  z-index: 1;
 
   flex-shrink: 0;
 
-  display: flex;
+  margin-block-start: -6px;
+  margin-inline-end: calc(var(--sp-2) * -1);
 
-  align-items: center;
-
-  justify-content: center;
-
-  border-radius: 13px;
-
-  background: var(--card-main);
-
-  box-shadow: 0 6px 14px color-mix(in srgb, var(--card-main) 35%, transparent);
-
-}
-
-.class-card.inactive .class-icon {
-
-  box-shadow: none;
-
-}
-
-.class-icon mat-icon {
-
-  width: 24px;
-
-  height: 24px;
-
-  font-size: 24px;
-
-  color: #ffffff;
-
-}
-
-/* Above the card link, so it opens the menu and not the class page. */
-.actions-button {
-
-  position: relative;
-
-  z-index: 2;
-
-  color: var(--card-dark);
-
-}
-
-.actions-button:hover {
-
-  background: rgba(255, 255, 255, 0.7);
-
+  color: var(--muted);
 }
 
 
-/* ================================
-   Name
-   ================================ */
+/* ---------- Section boxes ---------- */
 
-.class-card h3 {
+.section-boxes {
+  margin: var(--sp-3) 0 14px;
+  padding: 0;
 
-  margin: 0;
-
-  font-size: 19px;
-
-  font-weight: 700;
-
-  color: var(--card-dark);
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  white-space: nowrap;
-
-}
-
-
-/* ================================
-   Badges
-   ================================ */
-
-.badges {
+  list-style: none;
 
   display: flex;
-
   flex-wrap: wrap;
 
   gap: 6px;
-
-  margin-top: -4px;
-
 }
 
-.badge {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 4px;
-
-  height: 24px;
-
-  padding: 0 9px;
-
-  border-radius: 12px;
-
-  background: rgba(255, 255, 255, 0.75);
-
-  color: var(--card-dark);
-
-  font-size: 12px;
-
-  font-weight: 600;
-
-  white-space: nowrap;
-
+.section-box {
+  flex: none;
 }
 
-/* Graduation: gold, the same on every card. */
-.graduation-badge {
-
-  background: linear-gradient(135deg, #fdebb0, #f2c14e);
-
-  color: #5c3d02;
-
-}
-
-.graduation-badge mat-icon {
-
-  width: 15px;
-
-  height: 15px;
-
-  font-size: 15px;
-
-}
-
-.inactive-badge {
-
-  background: #ffffff;
-
-  color: #991b1b;
-
-}
-
-
-/* ================================
-   Section Letters
-   ================================ */
-
-.section-letters {
-
-  flex: 1;
-
-  min-height: 0;
-
-  display: flex;
-
-  flex-wrap: wrap;
-
-  align-content: flex-start;
-
-  gap: 6px;
-
-  overflow: hidden;
-
-}
-
-.letter {
-
-  min-width: 30px;
-
-  height: 30px;
-
-  padding: 0 6px;
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  border: 1px solid color-mix(in srgb, var(--card-main) 18%, transparent);
-
-  border-radius: 9px;
-
-  background: rgba(255, 255, 255, 0.85);
-
-  color: var(--card-dark);
-
-  font-size: 14px;
-
-  font-weight: 700;
-
+.box-content {
+  height: 28px;
   box-sizing: border-box;
 
-}
-
-/* An inactive section: faded and crossed out. */
-.letter.inactive {
-
-  opacity: 0.45;
-
-  text-decoration: line-through;
-
-}
-
-.no-sections {
-
-  height: 30px;
-
-  padding: 0 10px;
-
   display: inline-flex;
-
   align-items: center;
 
-  border-radius: 9px;
+  gap: 6px;
 
-  background: rgba(255, 255, 255, 0.6);
+  padding-inline: 9px;
 
-  color: #6b7280;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
 
-  font-size: 12px;
+  background: var(--surface);
+  color: var(--muted);
 
+  font-size: var(--fs-12);
+  white-space: nowrap;
+}
+
+.box-content b {
+  color: var(--text);
+
+  font-size: var(--fs-13);
+  font-weight: 700;
+}
+
+.box-content mat-icon {
+  width: 14px;
+  height: 14px;
+
+  font-size: 14px;
+}
+
+/* An active section with no students: yellow (spec: تنبيه). */
+.section-box.is-empty .box-content {
+  border-color: var(--warn-line);
+
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+
+.section-box.is-empty .box-content b {
+  color: var(--warn-ink);
+}
+
+/* An inactive section: grey. */
+.section-box.is-inactive .box-content {
+  background: var(--raised);
+  color: var(--faint);
+}
+
+.section-box.is-inactive .box-content b {
+  color: var(--faint);
 }
 
 
-/* ================================
-   Footer: counts + arrow
-   ================================ */
+/* ---------- Footer: counts + arrow ---------- */
 
 .card-footer {
+  margin-block-start: auto;
+
+  min-height: 44px;
 
   display: flex;
-
   align-items: center;
+  justify-content: space-between;
 
-  gap: 14px;
+  gap: var(--sp-2);
 
-  padding-top: 10px;
+  border-block-start: 1px solid var(--rule);
 
-  border-top: 1px solid color-mix(in srgb, var(--card-main) 16%, transparent);
+  color: var(--muted);
 
-  font-size: 13px;
-
-}
-
-.count {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 5px;
-
-  white-space: nowrap;
-
-  font-variant-numeric: tabular-nums;
-
-}
-
-.count mat-icon {
-
-  width: 17px;
-
-  height: 17px;
-
-  font-size: 17px;
-
-  opacity: 0.8;
-
+  font-size: var(--fs-13);
 }
 
 .open-arrow {
+  flex-shrink: 0;
 
   margin-inline-start: auto;
 
-  width: 30px;
+  width: 18px;
+  height: 18px;
 
-  height: 30px;
+  font-size: 18px;
 
-  flex-shrink: 0;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: var(--card-main);
-
-  color: #ffffff;
-
-  transition: transform 0.2s ease;
-
-}
-
-.open-arrow mat-icon {
-
-  width: 20px;
-
-  height: 20px;
-
-  font-size: 20px;
-
-}
-
-/* The arrow moves a little toward "forward" on hover. */
-.class-card:hover .open-arrow {
-
-  transform: translateX(3px);
-
-}
-
-:host-context([dir='rtl']) .class-card:hover .open-arrow {
-
-  transform: translateX(-3px);
-
+  color: var(--faint);
 }
 
 
-/* ================================
-   Reduced Motion
-   ================================ */
+/* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
 
-  .class-card,
-  .open-arrow {
-
+  .class-card {
     transition: none;
-
-  }
-
-  .class-card:hover,
-  .class-card:hover .open-arrow {
-
-    transform: none;
-
   }
 
 }

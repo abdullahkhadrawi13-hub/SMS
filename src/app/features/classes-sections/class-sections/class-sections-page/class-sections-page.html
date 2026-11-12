@@ -1,12 +1,5 @@
 <div class="class-sections-page">
 
-  <!-- Back to the classes -->
-  <a class="back-link" routerLink="/classes-sections">
-    <mat-icon>arrow_back</mat-icon>
-    {{ 'CLASS_SECTIONS.BACK' | translate }}
-  </a>
-
-
   <!-- First load -->
   @if (isLoadingPage()) {
     <app-state-card
@@ -20,50 +13,58 @@
     <app-state-card
       type="error"
       [message]="pageError() | translate"
+      [showRetry]="pageError() !== 'CLASS_SECTIONS.ERROR.NOT_FOUND'"
       (retry)="loadPage()"
-    />
+    >
+      <a actions mat-stroked-button routerLink="/classes-sections">
+        {{ 'CLASS_SECTIONS.BACK' | translate }}
+      </a>
+    </app-state-card>
   }
 
   <!-- The class and its sections -->
   @else if (schoolClass(); as currentClass) {
 
-    <app-class-banner
+    <app-class-header
       [schoolClass]="currentClass"
-      [color]="color()!"
       [sections]="sections()"
       [sectionsLoaded]="!isLoadingSections() && !sectionsError()"
       [canManage]="canManageClass()"
+      [canAddSection]="canAddSection()"
       [isToggling]="isTogglingClass()"
       (editClass)="openEditClass()"
       (toggleStatus)="toggleClassStatus()"
-    />
-
-    <app-sections-toolbar
-      [terms]="terms()"
-      [selectedTermId]="selectedTermId()"
-      [statusFilter]="statusFilter()"
-      (termChange)="onTermChange($event)"
-      (statusChange)="onStatusChange($event)"
-    />
-
-    <app-sections-list
-      [sections]="visibleSections()"
-      [totalCount]="sections().length"
-      [statusFilter]="statusFilter()"
-      [color]="color()!"
-      [maxStudentCount]="maxStudentCount()"
-      [schoolClass]="currentClass"
-      [isLoading]="isLoadingSections()"
-      [errorMessage]="sectionsError()"
-      [canManage]="canManageSections()"
-      [canAdd]="canAddSection()"
-      [togglingSectionId]="togglingSectionId()"
-      (retry)="loadSections()"
       (addSection)="openAddSection()"
-      (editSection)="openEditSection($event)"
-      (toggleStatus)="toggleSectionStatus($event)"
-      (showAll)="onStatusChange('all')"
     />
+
+    <div class="list-area">
+
+      <app-sections-toolbar
+        [terms]="terms()"
+        [selectedTermId]="selectedTermId()"
+        [statusFilter]="statusFilter()"
+        (termChange)="onTermChange($event)"
+        (statusChange)="onStatusChange($event)"
+      />
+
+      <app-sections-list
+        [sections]="visibleSections()"
+        [totalCount]="sections().length"
+        [statusFilter]="statusFilter()"
+        [maxStudentCount]="maxStudentCount()"
+        [schoolClass]="currentClass"
+        [isLoading]="isLoadingSections()"
+        [errorMessage]="sectionsError()"
+        [canManage]="canManageSections()"
+        [canAdd]="canAddSection()"
+        [togglingSectionId]="togglingSectionId()"
+        (retry)="loadSections()"
+        (editSection)="openEditSection($event)"
+        (toggleStatus)="toggleSectionStatus($event)"
+        (showAll)="onStatusChange('all')"
+      />
+
+    </div>
 
   }
 

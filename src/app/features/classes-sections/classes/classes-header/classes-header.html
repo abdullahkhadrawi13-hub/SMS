@@ -3,12 +3,12 @@
   [subtitle]="'CLASSES.HEADER.SUBTITLE' | translate"
 >
 
-  <!-- The cards' student counts are for this term -->
-  @if (termLabel()) {
-    <span actions class="term-note">
-      <mat-icon>event</mat-icon>
-      {{ 'CLASSES.HEADER.COUNTS_TERM' | translate: { term: termLabel() } }}
-    </span>
+  <!-- The page's primary button (Admin only) -->
+  @if (canManage()) {
+    <button actions mat-flat-button type="button" (click)="addClass.emit()">
+      <mat-icon>add</mat-icon>
+      {{ 'CLASSES.HEADER.ADD_CLASS' | translate }}
+    </button>
   }
 
 </app-page-header>

@@ -1,42 +1,28 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Language } from '../../../../core/services/language';
-import {
-  ClassesSectionsTerm,
-  getTermLabel
-} from '../../shared/classes-sections-shared';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
-// Page title and description, and a note saying which term
-// the cards' student counts are for.
-// Adding a class is done from the "Add academic class" card in the grid.
+// Page title, one description line, and "Add class" (Admin only).
+// The term of the counts is not repeated here: it is in the navbar.
 @Component({
   selector: 'app-classes-header',
   imports: [
+    MatButtonModule,
     MatIconModule,
     TranslatePipe,
     PageHeader,
   ],
   templateUrl: './classes-header.html',
-  styleUrl: './classes-header.css',
 })
 export class ClassesHeader {
 
-  private readonly language = inject(Language);
+  // Shows "Add class" (Admin only).
+  readonly canManage = input(false);
 
-  // The current term (null = none set, or not loaded yet: no note).
-  readonly currentTerm = input<ClassesSectionsTerm | null>(null);
-
-  // "First Term · 2026/2027" in the current language.
-  readonly termLabel = computed(() => {
-    const term = this.currentTerm();
-
-    return term
-      ? getTermLabel(term, this.language.currentDirection() === 'rtl')
-      : '';
-  });
+  readonly addClass = output<void>();
 }

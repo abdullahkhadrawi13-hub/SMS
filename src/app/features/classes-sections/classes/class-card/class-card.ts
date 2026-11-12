@@ -10,17 +10,21 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { SchoolClass } from '../../../../core/models/school-class';
 import { Section } from '../../../../core/models/section';
 import { Language } from '../../../../core/services/language';
-import { CardColor } from '../../../../shared/constants/card-colors';
 import { pluralKey } from '../../../../shared/utils/plural';
-import { getClassColor } from '../../shared/classes-sections-shared';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+import { getClassCounts, isEmptySection } from '../../shared/classes-sections-shared';
 
 
-// One card of the classes page: a light colored card with the class name
-// (in the current language), its level, status and graduation badge,
-// the letters of its sections, and its sections and students count.
+// One card of the classes page (spec: البطاقات): a white card with a thin
+// border, no shadow and no colour of its own.
+//   - the class name (a link to the class page) and the ⋮ menu (Admin)
+//   - the level, and the "Graduation class" / "Inactive" badges
+//   - one small box per section: its letter and student count
+//     (yellow = active with no students, grey = inactive)
+//   - the active sections and students count, and an arrow
 //
-// A click anywhere on the card opens the class page (/classes-sections/:classId).
-// The actions menu (edit / activate / deactivate) sits above that link.
+// The name's link covers the whole card, so a click anywhere opens the class.
+// The ⋮ button sits above that link.
 @Component({
   selector: 'app-class-card',
   imports: [
@@ -29,6 +33,7 @@ import { getClassColor } from '../../shared/classes-sections-shared';
     MatIconModule,
     MatMenuModule,
     TranslatePipe,
+    StatusBadge,
   ],
   templateUrl: './class-card.html',
   styleUrl: './class-card.css',
@@ -47,9 +52,6 @@ export class ClassCard {
   // null = not loaded (still loading, or failed): nothing is shown for them.
   readonly sections = input<Section[] | null>(null);
 
-  // The position of the card in the grid (chooses its color).
-  readonly colorIndex = input(0);
-
   // Shows the actions menu (Admin only).
   readonly canManage = input(false);
 
@@ -66,11 +68,6 @@ export class ClassCard {
 
   // ===== Computed =====
 
-  // The card colors (grey for an inactive class).
-  readonly color = computed<CardColor>(
-    () => getClassColor(this.schoolClass(), this.colorIndex())
-  );
-
   readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'
   );
@@ -82,17 +79,24 @@ export class ClassCard {
       : this.schoolClass().classNameEn
   );
 
-  // Active sections only (an inactive section is shown crossed out).
-  readonly activeSectionsCount = computed(
-    () => (this.sections() ?? []).filter(s => s.isActive).length
+  // The class's sections with what each box shows.
+  readonly sectionBoxes = computed(() =>
+    (this.sections() ?? []).map(section => ({
+      id: section.sectionId,
+      name: this.isArabic() ? section.sectionAr : section.sectionEn,
+      count: section.studentCount,
+      isInactive: !section.isActive,
+      isEmpty: isEmptySection(section),
+      studentsKey: pluralKey('CLASSES.COUNTS.STUDENTS', section.studentCount)
+    }))
   );
 
-  // Students of the class in the current term (all its sections).
-  readonly studentsCount = computed(
-    () => (this.sections() ?? []).reduce((sum, s) => sum + s.studentCount, 0)
-  );
+  private readonly counts = computed(() => getClassCounts(this.sections() ?? []));
 
-  // The plural form of the counts ("3 sections", "شعبتان", ...).
+  readonly activeSectionsCount = computed(() => this.counts().activeSections);
+  readonly studentsCount = computed(() => this.counts().students);
+
+  // The plural form of the counts ("3 شعب", "شعبتان", ...).
   readonly sectionsKey = computed(
     () => pluralKey('CLASSES.COUNTS.SECTIONS', this.activeSectionsCount())
   );
@@ -100,9 +104,4 @@ export class ClassCard {
   readonly studentsKey = computed(
     () => pluralKey('CLASSES.COUNTS.STUDENTS', this.studentsCount())
   );
-
-  // Section name according to the current language.
-  sectionName(section: Section): string {
-    return this.isArabic() ? section.sectionAr : section.sectionEn;
-  }
 }

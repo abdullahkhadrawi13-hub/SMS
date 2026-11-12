@@ -1,7 +1,7 @@
 import { AcademicTerm } from '../../../core/models/academic-term';
 import { AcademicYear } from '../../../core/models/academic-year';
 import { SchoolClass } from '../../../core/models/school-class';
-import { CardColor, getCardColor } from '../../../shared/constants/card-colors';
+import { Section } from '../../../core/models/section';
 
 
 // =========================
@@ -10,7 +10,7 @@ import { CardColor, getCardColor } from '../../../shared/constants/card-colors';
 
 
 // One academic term with the name of its year
-// ("First Term · 2026/2027"): the term dropdown and the header note.
+// ("First Term · 2026/2027"): the term dropdown of a class page.
 // A term has no year name of its own, so the years are loaded too.
 export interface ClassesSectionsTerm {
   academicTermId: number;
@@ -57,31 +57,38 @@ export function getTermLabel(
 }
 
 
-// Classes in school order (by level). Both pages sort the same way,
-// so a class keeps the same color on its card and on its own page.
+// Classes in school order (by level). Both pages sort the same way.
 export function sortClassesByLevel(classes: SchoolClass[]): SchoolClass[] {
   return [...classes].sort((a, b) => a.level - b.level);
 }
 
 
-// Grey colors of an inactive class (its card and its page).
-export const INACTIVE_CLASS_COLOR: CardColor = {
-  main: '#9ca3af',
-  soft: '#f3f4f6',
-  dark: '#4b5563'
-};
+// Sections in name order (أ، ب، ج...).
+export function sortSectionsByName(sections: Section[]): Section[] {
+  return [...sections].sort((a, b) => a.sectionAr.localeCompare(b.sectionAr, 'ar'));
+}
 
 
-// The color of a class: its position among all the classes
-// (sorted by level), or grey when the class is inactive.
-export function getClassColor(
-  schoolClass: SchoolClass,
-  position: number
-): CardColor {
+// An active section with no students: shown in yellow ("No students"),
+// because the admin may need to move students into it or deactivate it.
+export function isEmptySection(section: Section): boolean {
+  return section.isActive && section.studentCount === 0;
+}
 
-  return schoolClass.isActive
-    ? getCardColor(position)
-    : INACTIVE_CLASS_COLOR;
+
+// The numbers of one class in a term (its sections, already loaded).
+export interface ClassCounts {
+  // Active sections only (an inactive section does not count).
+  activeSections: number;
+  // Students of all the class's sections.
+  students: number;
+}
+
+export function getClassCounts(sections: Section[]): ClassCounts {
+  return {
+    activeSections: sections.filter(s => s.isActive).length,
+    students: sections.reduce((sum, s) => sum + s.studentCount, 0)
+  };
 }
 
 
