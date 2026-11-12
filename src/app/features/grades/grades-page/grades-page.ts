@@ -28,6 +28,7 @@ import { SectionsService } from '../../../core/services/sections';
 import { StudentGradesService } from '../../../core/services/student-grades';
 import { TeacherAssignmentsService } from '../../../core/services/teacher-assignments';
 import { ActionResult } from '../../../shared/services/action-result';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { SaveBar } from '../../../shared/components/save-bar/save-bar';
 import { LeaveConfirmation } from '../../../core/guards/unsaved-changes-guard';
 
@@ -57,7 +58,6 @@ import {
   MarkChange,
   parseMark,
 } from '../grades';
-import { GradesHeader } from '../grades-header/grades-header';
 import { GradesSelector } from '../grades-selector/grades-selector';
 import {
   GradesEmptyState,
@@ -101,9 +101,9 @@ import { GradeHistoryCache } from '../grade-history-cache';
 @Component({
   selector: 'app-grades-page',
   imports: [
-    GradesHeader,
     GradesSelector,
     GradesSheet,
+    PageHeader,
     SaveBar,
     TranslatePipe,
   ],
@@ -261,6 +261,14 @@ export class GradesPage implements OnInit, LeaveConfirmation {
 
     return term ? getTermLabel(term, this.isArabic()) : '';
   });
+
+  // Staff: the teacher of the chosen subject (shown under the sheet's title).
+  // A teacher sees their own sheets only, so no name is shown to them.
+  readonly sheetTeacherName = computed(
+    () => this.assignmentOptions().find(
+      o => o.teacherAssignmentId === this.assignmentId()
+    )?.teacherName ?? ''
+  );
 
 
   // =========================

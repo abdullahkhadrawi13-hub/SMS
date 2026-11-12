@@ -1763,14 +1763,21 @@
     },
     "SELECTOR": {
       "CLASS_AND_SUBJECT": "الصف والمادة",
+      "CLASS_AND_SUBJECT_PLACEHOLDER": "اختر الصف والمادة",
       "MY_SUBJECTS_HINT": "من صفوفك في الفصل الحالي",
       "TERM": "الفصل الدراسي",
-      "CURRENT": "الحالي",
+      "TERM_PLACEHOLDER": "اختر الفصل",
       "CURRENT_SUFFIX": "(الحالي)",
       "CLOSED": "مغلقة",
+      "CLOSED_SUFFIX": "(مغلقة)",
       "CLASS": "الصف",
+      "CLASS_PLACEHOLDER": "اختر الصف",
       "SECTION": "الشعبة",
+      "SECTION_PLACEHOLDER": "اختر الشعبة",
+      "SECTION_NEEDS_CLASS": "اختر صفًا أولًا",
       "SUBJECT": "المادة",
+      "SUBJECT_PLACEHOLDER": "اختر المادة",
+      "SUBJECT_NEEDS_SECTION": "اختر شعبة أولًا",
       "NO_SUBJECTS": "لا توجد مواد مسندة لهذه الشعبة في هذا الفصل.",
       "TEACHER": "المعلم: {{name}}",
       "LOCKED_HINT": "احفظ العلامات المعدّلة أو تراجع عنها أولًا حتى تغيّر الاختيار."
@@ -1813,11 +1820,13 @@
         "OUT_OF": "من {{max}}",
         "RESULT": "النتيجة",
         "NO_ASSESSMENT": "لا يوجد تقييم بعد",
-        "TOTAL_AFTER_SAVE": "المجموع يتحدّث بعد حفظ الكشف"
+        "AFTER_SAVE": "بعد الحفظ"
       },
       "CELL": {
-        "RANGE_ERROR": "أدخل رقمًا بين 0 و {{max}} (منزلتان عشريتان كحد أقصى)",
-        "CLEAR_ERROR": "لا يمكن حذف علامة محفوظة، يمكن تعديلها فقط"
+        "ABOVE_MAX": "أكبر من {{max}}",
+        "DECIMALS": "منزلتان فقط",
+        "NOT_NUMBER": "أرقام فقط",
+        "CLEAR": "لا تُحذف، عدّلها"
       },
       "RESULT": {
         "PASSED": "ناجح",
@@ -1829,7 +1838,8 @@
         "INVALID": "غير صالحة",
         "FIXED": "مكوّن ثابت من خطة المادة",
         "MISSING": "علامة لم تُدخل بعد (لا تُحسب صفرًا)",
-        "EDITED": "عُدّلت بعد إدخالها (اضغط أيقونة أي علامة لعرض سجلها)"
+        "HISTORY": "سجل العلامة: مرّ على علامة محفوظة ثم اضغط الأيقونة",
+        "KEYS": "Enter للطالب التالي، Tab للتقييم التالي"
       },
       "HISTORY": {
         "OPEN": "سجل العلامة",

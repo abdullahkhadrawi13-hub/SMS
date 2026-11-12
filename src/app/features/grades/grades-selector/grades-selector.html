@@ -1,56 +1,53 @@
-<div class="selector-card">
+<!-- The fields that choose the sheet, on the page background above the
+     sheet card (the shared field look of styles.css). -->
+<div class="selector">
 
-  <!-- ===== Teacher: class and subject + current term ===== -->
+  <!-- ===== Teacher: one field, their own subjects in the current term ===== -->
   @if (mode() === 'teacher') {
 
-    <div class="selector-fields teacher">
+    <div class="selector-fields is-teacher">
 
-      <!-- The teacher's own subjects in the current term -->
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <div class="field">
 
-        <mat-label>
+        <label class="field-label" for="grades-assignment">
           {{ 'GRADES.SELECTOR.CLASS_AND_SUBJECT' | translate }}
-        </mat-label>
+        </label>
 
-        <mat-select
-          [value]="assignmentId()"
-          [disabled]="locked() || assignmentsLoading()"
-          (selectionChange)="assignmentChange.emit($event.value)"
-        >
-          @for (option of assignments(); track option.teacherAssignmentId) {
-            <mat-option [value]="option.teacherAssignmentId">
-              {{ option.label }}
-            </mat-option>
+        <div class="field-box is-select">
+
+          <select
+            id="grades-assignment"
+            aria-describedby="grades-assignment-help"
+            [disabled]="locked() || assignmentsLoading()"
+            (change)="onSelect(assignmentChange, $any($event.target).value)"
+          >
+
+            <option value="" [selected]="assignmentId() === null">
+              {{ 'GRADES.SELECTOR.CLASS_AND_SUBJECT_PLACEHOLDER' | translate }}
+            </option>
+
+            @for (option of assignments(); track option.teacherAssignmentId) {
+              <option
+                [value]="option.teacherAssignmentId"
+                [selected]="assignmentId() === option.teacherAssignmentId"
+              >
+                {{ option.label }}
+              </option>
+            }
+
+          </select>
+
+          @if (assignmentsLoading()) {
+            <mat-spinner class="field-spinner" diameter="16" aria-hidden="true" />
+          } @else {
+            <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
           }
-        </mat-select>
 
-        @if (assignmentsLoading()) {
-          <mat-spinner matSuffix diameter="18"></mat-spinner>
-        }
+        </div>
 
-        <mat-hint>
+        <div class="field-help" id="grades-assignment-help">
           {{ 'GRADES.SELECTOR.MY_SUBJECTS_HINT' | translate }}
-        </mat-hint>
-
-      </mat-form-field>
-
-
-      <!-- Current term (read-only: the teacher works in the current term) -->
-      <div class="term-box">
-
-        <span class="term-box-label">
-          {{ 'GRADES.SELECTOR.TERM' | translate }}
-        </span>
-
-        <span class="term-box-value">
-          <mat-icon>event</mat-icon>
-
-          <span class="term-name">{{ currentTermName() || '—' }}</span>
-
-          <span class="current-tag">
-            {{ 'GRADES.SELECTOR.CURRENT' | translate }}
-          </span>
-        </span>
+        </div>
 
       </div>
 
@@ -62,140 +59,198 @@
   <!-- ===== Admin / Assistant Principal: term → class → section → subject ===== -->
   @else {
 
-    <div class="selector-fields staff">
+    <div class="selector-fields">
 
-      <!-- Academic term (the current term is selected by default) -->
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <!-- Academic term (the current term is selected by default).
+           A term whose grades are closed says so in its text, so it is
+           seen before the term is chosen. -->
+      <div class="field">
 
-        <mat-label>
+        <label class="field-label" for="grades-term">
           {{ 'GRADES.SELECTOR.TERM' | translate }}
-        </mat-label>
+        </label>
 
-        <mat-select
-          [value]="termId()"
-          [disabled]="locked() || termsLoading()"
-          (selectionChange)="termChange.emit($event.value)"
-        >
-          <!-- The chosen term, with the same "Closed" tag as in the list -->
-          <mat-select-trigger>
-            @if (selectedTerm(); as term) {
-              {{ getTermLabel(term) }}
+        <div class="field-box is-select">
 
-              @if (term.isCurrent) {
-                {{ 'GRADES.SELECTOR.CURRENT_SUFFIX' | translate }}
-              }
+          <select
+            id="grades-term"
+            [disabled]="locked() || termsLoading()"
+            (change)="onSelect(termChange, $any($event.target).value)"
+          >
 
-              @if (term.areGradesClosed) {
-                <span class="closed-tag">{{ 'GRADES.SELECTOR.CLOSED' | translate }}</span>
-              }
+            @if (termId() === null) {
+              <option value="" selected>
+                {{ 'GRADES.SELECTOR.TERM_PLACEHOLDER' | translate }}
+              </option>
             }
-          </mat-select-trigger>
 
-          @for (term of terms(); track term.academicTermId) {
-            <mat-option [value]="term.academicTermId">
-              {{ getTermLabel(term) }}
+            @for (term of terms(); track term.academicTermId) {
+              <option
+                [value]="term.academicTermId"
+                [selected]="termId() === term.academicTermId"
+              >
+                {{ getTermLabel(term) }}
+                @if (term.isCurrent) {
+                  {{ 'GRADES.SELECTOR.CURRENT_SUFFIX' | translate }}
+                }
+                @if (term.areGradesClosed) {
+                  {{ 'GRADES.SELECTOR.CLOSED_SUFFIX' | translate }}
+                }
+              </option>
+            }
 
-              @if (term.isCurrent) {
-                {{ 'GRADES.SELECTOR.CURRENT_SUFFIX' | translate }}
-              }
+          </select>
 
-              <!-- The term's grades are closed: seen before it is chosen -->
-              @if (term.areGradesClosed) {
-                <span class="closed-tag">{{ 'GRADES.SELECTOR.CLOSED' | translate }}</span>
-              }
-            </mat-option>
+          @if (termsLoading()) {
+            <mat-spinner class="field-spinner" diameter="16" aria-hidden="true" />
+          } @else {
+            <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
           }
-        </mat-select>
 
-        @if (termsLoading()) {
-          <mat-spinner matSuffix diameter="18"></mat-spinner>
-        }
+        </div>
 
-      </mat-form-field>
+      </div>
 
 
       <!-- Class (active only) -->
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <div class="field">
 
-        <mat-label>
+        <label class="field-label" for="grades-class">
           {{ 'GRADES.SELECTOR.CLASS' | translate }}
-        </mat-label>
+        </label>
 
-        <mat-select
-          [value]="classId()"
-          [disabled]="locked() || termId() === null"
-          (selectionChange)="classChange.emit($event.value)"
-        >
-          @for (c of classes(); track c.schoolClassId) {
-            <mat-option [value]="c.schoolClassId">
-              {{ getClassName(c) }}
-            </mat-option>
-          }
-        </mat-select>
+        <div class="field-box is-select">
 
-      </mat-form-field>
+          <select
+            id="grades-class"
+            [disabled]="locked() || termId() === null"
+            (change)="onSelect(classChange, $any($event.target).value)"
+          >
+
+            <option value="" [selected]="classId() === null">
+              {{ 'GRADES.SELECTOR.CLASS_PLACEHOLDER' | translate }}
+            </option>
+
+            @for (c of classes(); track c.schoolClassId) {
+              <option
+                [value]="c.schoolClassId"
+                [selected]="classId() === c.schoolClassId"
+              >
+                {{ getClassName(c) }}
+              </option>
+            }
+
+          </select>
+
+          <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+
+        </div>
+
+      </div>
 
 
-      <!-- Section (disabled until a class is chosen) -->
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <!-- Section (disabled until a class is chosen; its text says why) -->
+      <div class="field">
 
-        <mat-label>
+        <label class="field-label" for="grades-section">
           {{ 'GRADES.SELECTOR.SECTION' | translate }}
-        </mat-label>
+        </label>
 
-        <mat-select
-          [value]="sectionId()"
-          [disabled]="locked() || classId() === null || sectionsLoading()"
-          (selectionChange)="sectionChange.emit($event.value)"
-        >
-          @for (s of sections(); track s.sectionId) {
-            <mat-option [value]="s.sectionId">
-              {{ getSectionName(s) }}
-            </mat-option>
+        <div class="field-box is-select">
+
+          <select
+            id="grades-section"
+            [disabled]="locked() || classId() === null || sectionsLoading()"
+            (change)="onSelect(sectionChange, $any($event.target).value)"
+          >
+
+            <option value="" [selected]="sectionId() === null">
+              {{
+                (classId() === null
+                  ? 'GRADES.SELECTOR.SECTION_NEEDS_CLASS'
+                  : 'GRADES.SELECTOR.SECTION_PLACEHOLDER'
+                ) | translate
+              }}
+            </option>
+
+            @for (s of sections(); track s.sectionId) {
+              <option
+                [value]="s.sectionId"
+                [selected]="sectionId() === s.sectionId"
+              >
+                {{ getSectionName(s) }}
+              </option>
+            }
+
+          </select>
+
+          @if (sectionsLoading()) {
+            <mat-spinner class="field-spinner" diameter="16" aria-hidden="true" />
+          } @else {
+            <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
           }
-        </mat-select>
 
-        @if (sectionsLoading()) {
-          <mat-spinner matSuffix diameter="18"></mat-spinner>
-        }
+        </div>
 
-      </mat-form-field>
+      </div>
 
 
-      <!-- Subject (the subjects taught in the section; disabled until a section is chosen) -->
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <!-- Subject (the subjects taught in the section; disabled until a
+           section is chosen, and its text says why) -->
+      <div class="field">
 
-        <mat-label>
+        <label class="field-label" for="grades-subject">
           {{ 'GRADES.SELECTOR.SUBJECT' | translate }}
-        </mat-label>
+        </label>
 
-        <mat-select
-          [value]="assignmentId()"
-          [disabled]="locked() || sectionId() === null || assignmentsLoading() || assignments().length === 0"
-          (selectionChange)="assignmentChange.emit($event.value)"
-        >
-          @for (option of assignments(); track option.teacherAssignmentId) {
-            <mat-option [value]="option.teacherAssignmentId">
-              {{ option.label }}
-            </mat-option>
+        <div class="field-box is-select">
+
+          <select
+            id="grades-subject"
+            [attr.aria-describedby]="noSubjects() || selectedTeacherName() ? 'grades-subject-help' : null"
+            [disabled]="locked() || sectionId() === null || assignmentsLoading() || assignments().length === 0"
+            (change)="onSelect(assignmentChange, $any($event.target).value)"
+          >
+
+            <option value="" [selected]="assignmentId() === null">
+              {{
+                (sectionId() === null
+                  ? 'GRADES.SELECTOR.SUBJECT_NEEDS_SECTION'
+                  : 'GRADES.SELECTOR.SUBJECT_PLACEHOLDER'
+                ) | translate
+              }}
+            </option>
+
+            @for (option of assignments(); track option.teacherAssignmentId) {
+              <option
+                [value]="option.teacherAssignmentId"
+                [selected]="assignmentId() === option.teacherAssignmentId"
+              >
+                {{ option.label }}
+              </option>
+            }
+
+          </select>
+
+          @if (assignmentsLoading()) {
+            <mat-spinner class="field-spinner" diameter="16" aria-hidden="true" />
+          } @else {
+            <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
           }
-        </mat-select>
 
-        @if (assignmentsLoading()) {
-          <mat-spinner matSuffix diameter="18"></mat-spinner>
-        }
+        </div>
 
         @if (noSubjects()) {
-          <mat-hint>
+          <div class="field-help" id="grades-subject-help">
             {{ 'GRADES.SELECTOR.NO_SUBJECTS' | translate }}
-          </mat-hint>
+          </div>
         } @else if (selectedTeacherName()) {
-          <mat-hint>
+          <div class="field-help" id="grades-subject-help">
             {{ 'GRADES.SELECTOR.TEACHER' | translate: { name: selectedTeacherName() } }}
-          </mat-hint>
+          </div>
         }
 
-      </mat-form-field>
+      </div>
 
     </div>
 
@@ -204,8 +259,9 @@
 
   <!-- Marks not saved yet: the fields cannot change -->
   @if (locked()) {
-    <p class="locked-hint">
-      <mat-icon>lock</mat-icon>
+    <p class="selector-note" role="status">
+      <mat-icon aria-hidden="true">lock</mat-icon>
+
       <span>{{ 'GRADES.SELECTOR.LOCKED_HINT' | translate }}</span>
     </p>
   }

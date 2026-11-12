@@ -97,51 +97,8 @@
 
 /* The result: the same look as app-status-badge
    (6px corners, a dot in the text colour). */
-.result-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 6px;
-
-  height: 24px;
-
-  padding-inline: 10px;
-
-  border-radius: var(--r-pill);
-
-  font-size: var(--fs-12);
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.result-badge::before {
-  content: "";
-
-  width: 6px;
-  height: 6px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: currentColor;
-}
-
-.result-badge.passed {
-  background: var(--ok-bg);
-  color: var(--ok-ink);
-}
-
-.result-badge.failed {
-  background: var(--bad-bg);
-  color: var(--bad-ink);
-}
-
-.result-badge.incomplete {
-  background: var(--warn-bg);
-  color: var(--warn-ink);
-}
+/* The result badge (passed / failed / incomplete) is shared with the
+   grade sheet: styles.css ("Result badge"). */
 
 
 /* ================================
@@ -399,27 +356,4 @@
     padding-inline: var(--sp-4);
   }
 
-}
-
-
-/* ================================
-   History menu / bottom sheet
-   ::ng-deep is needed because both open in an overlay, outside this
-   component. Same rules as grades-sheet.css: that file is not loaded
-   here (the student dialog has no grade sheet).
-   ================================ */
-
-/* Wide screens: the menu is wider than a normal menu (280px). */
-::ng-deep .grade-history-menu.mat-mdc-menu-panel {
-  width: 340px;
-  max-width: calc(100vw - 32px);
-}
-
-::ng-deep .grade-history-menu .mat-mdc-menu-content {
-  padding: 0;
-}
-
-/* Narrow screens: the history fills the bottom sheet edge to edge. */
-::ng-deep .grade-history-sheet.mat-bottom-sheet-container {
-  padding: 0;
 }

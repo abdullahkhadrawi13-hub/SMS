@@ -9,9 +9,9 @@
 
 
 /* ================================
-   Page Header (same look as grades-header)
+   Class chip (next to the page title)
+   A neutral chip: 24px, 6px corners, 12px/600.
    ================================ */
-
 
 .class-chip {
   display: inline-flex;
@@ -19,14 +19,17 @@
 
   gap: 6px;
 
-  padding: 6px 12px;
+  height: 24px;
 
-  border-radius: 20px;
+  padding-inline: 10px;
 
-  background: #e7f6ee;
-  color: #166534;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
 
-  font-size: 13px;
+  background: var(--surface);
+  color: var(--muted);
+
+  font-size: var(--fs-12);
   font-weight: 600;
 
   white-space: nowrap;
@@ -40,7 +43,7 @@
 }
 
 .selected-class {
-  margin-bottom: 12px;
+  margin-block-end: var(--sp-3);
 }
 
 
@@ -52,23 +55,23 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 
-  gap: 12px;
+  gap: var(--sp-3);
 
-  margin-bottom: 16px;
+  margin-block-end: var(--sp-4);
 }
 
 .child-card {
   display: flex;
   align-items: center;
 
-  gap: 10px;
+  gap: var(--sp-3);
 
-  padding: 12px;
+  padding: var(--sp-3);
 
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
 
-  background: #ffffff;
+  background: var(--surface);
   color: inherit;
 
   font: inherit;
@@ -76,15 +79,15 @@
 
   cursor: pointer;
 
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color var(--dur) ease, background-color var(--dur) ease;
 }
 
 .child-card:hover {
-  border-color: #b9c6dd;
+  border-color: var(--control);
 }
 
 .child-card:focus-visible {
-  outline: 2px solid #2554a4;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -92,9 +95,9 @@
 .child-card.selected {
   padding: 11px;
 
-  border: 2px solid #2554a4;
+  border: 2px solid var(--accent);
 
-  background: #f5f8ff;
+  background: var(--accent-soft);
 }
 
 .avatar {
@@ -109,9 +112,9 @@
 
   border-radius: 50%;
 
-  color: #ffffff;
+  color: var(--on-primary);
 
-  font-size: 16px;
+  font-size: var(--fs-16);
   font-weight: 700;
 }
 
@@ -131,16 +134,16 @@
 
   gap: 4px 6px;
 
-  font-size: 14px;
+  font-size: var(--fs-14);
   font-weight: 600;
 
-  color: #111827;
+  color: var(--text);
 }
 
 .child-class {
-  font-size: 12px;
+  font-size: var(--fs-12);
 
-  color: #6b7280;
+  color: var(--muted);
 }
 
 
@@ -148,9 +151,7 @@
    Responsive
    ================================ */
 
-@media (max-width: 650px) {
-
-  
+@media (max-width: 719.98px) {
 
   /* Phones: the children scroll sideways in one row. */
   .children {
@@ -160,7 +161,7 @@
 
     scroll-snap-type: x mandatory;
 
-    padding-bottom: 6px;
+    padding-block-end: 6px;
   }
 
   .child-card {

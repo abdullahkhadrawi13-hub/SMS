@@ -9,9 +9,9 @@
 
 
 /* ================================
-   Page Header (same look as grades-header)
+   Class chip (next to the page title)
+   A neutral chip: 24px, 6px corners, 12px/600.
    ================================ */
-
 
 .class-chip {
   display: inline-flex;
@@ -19,14 +19,17 @@
 
   gap: 6px;
 
-  padding: 6px 12px;
+  height: 24px;
 
-  border-radius: 20px;
+  padding-inline: 10px;
 
-  background: #e7f6ee;
-  color: #166534;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
 
-  font-size: 13px;
+  background: var(--surface);
+  color: var(--muted);
+
+  font-size: var(--fs-12);
   font-weight: 600;
 
   white-space: nowrap;

@@ -1,7 +1,10 @@
 <div class="grades-page">
 
   <!-- Page Header -->
-  <app-grades-header [subtitleKey]="subtitleKey()"></app-grades-header>
+  <app-page-header
+    [title]="'GRADES.HEADER.TITLE' | translate"
+    [subtitle]="subtitleKey() | translate"
+  />
 
 
   <!-- Which sheet: teacher (class and subject) or staff (term → class → section → subject) -->
@@ -18,7 +21,6 @@
     [assignments]="assignmentOptions()"
     [assignmentsLoading]="assignmentsLoading()"
     [assignmentId]="assignmentId()"
-    [currentTermName]="currentTermName()"
     [locked]="hasChanges()"
     (termChange)="onTermChange($event)"
     (classChange)="onClassChange($event)"
@@ -34,6 +36,7 @@
     [editable]="editable()"
     [viewer]="viewer()"
     [termName]="sheetTermName()"
+    [teacherName]="sheetTeacherName()"
     [loading]="sheetLoading()"
     [saving]="saving()"
     [errorMessage]="errorMessage()"

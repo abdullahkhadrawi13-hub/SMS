@@ -1,42 +1,42 @@
-/* The sheet component behaves like a block inside the parent page. */
+/* ================================
+   Grades Sheet (the marks of one subject in one section)
+   One card: the head (title, one line, counters), the notes, the marks
+   table and the legend.
+   Spec: "كشف العلامات". Colours and sizes from src/tokens.css only.
+   Logical properties only.
+   The history menu and bottom sheet open outside this component:
+   their rules are in styles.css ("A mark's history").
+   ================================ */
+
 :host {
   display: block;
 }
 
+.sheet-card {
+  min-width: 0;
 
-/* ================================
-   Table Card
-   ================================ */
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
 
-.table-card {
-  width: 100%;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--surface);
 
   overflow: hidden;
-
-  box-sizing: border-box;
 }
 
 
-/* ================================
-   Sheet Toolbar: title + counters
-   ================================ */
+/* ---------- Head ---------- */
 
-.sheet-toolbar {
+.sheet-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 
-  gap: 16px;
+  gap: var(--sp-3) var(--sp-6);
 
-  padding: 16px 20px;
+  padding: var(--sp-4) 20px;
 
-  border-bottom: 1px solid #e5e7eb;
+  border-block-end: 1px solid var(--border);
 }
 
 .sheet-title {
@@ -44,204 +44,204 @@
 }
 
 .sheet-title h2 {
-  margin: 0 0 6px;
+  margin: 0;
 
-  font-size: 18px;
-  font-weight: 600;
+  color: var(--text);
 
-  color: #111827;
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
+/* Term · teacher · passing mark, then the plan's state */
 .sheet-title p {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 6px;
+  gap: 2px 6px;
 
-  margin: 0;
+  margin: var(--sp-1) 0 0;
 
-  font-size: 13px;
+  color: var(--muted);
 
-  color: #6b7280;
+  font-size: var(--fs-13);
 }
 
-.dot {
-  color: #9ca3af;
+.sheet-title .sep {
+  color: var(--faint);
 }
 
-/* Plan state (same colors as the Subjects page badges) */
-.plan-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 2px 10px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.plan-badge mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
-
-.plan-badge.ok {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.plan-badge.warn {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.plan-badge.neutral {
-  background: #f1f5f9;
-  color: #374151;
-}
-
+/* Label 13px, number 16px/700 (the same counters as the attendance sheet) */
 .sheet-counters {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 8px;
+  gap: var(--sp-2) var(--sp-6);
+
+  margin: 0;
 }
 
 .counter {
+  display: flex;
+  align-items: baseline;
+
+  gap: 6px;
+}
+
+.counter dt {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.counter dd {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+}
+
+.counter dd.is-bad {
+  color: var(--bad-ink);
+}
+
+
+/* ---------- Plan state badge (next to the passing mark) ----------
+   24px, 6px corners, 12px/600. The result badge of each student is
+   shared with the student's grade cards: styles.css ("Result badge"). */
+
+.plan-badge {
   display: inline-flex;
   align-items: center;
 
-  gap: 6px;
+  gap: var(--sp-1);
 
-  padding: 6px 12px;
+  height: 24px;
 
-  border-radius: 20px;
+  margin-inline-start: 6px;
+  padding-inline: var(--sp-2);
 
-  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+
+  background: var(--raised);
+  color: var(--muted);
+
+  font-size: var(--fs-12);
   font-weight: 600;
 
   white-space: nowrap;
 }
 
-.counter mat-icon {
-  width: 17px;
-  height: 17px;
+.plan-badge mat-icon {
+  width: 14px;
+  height: 14px;
 
-  font-size: 17px;
+  font-size: 14px;
 }
 
-.counter.total {
-  background: #f1f5f9;
-  color: #374151;
+.plan-badge.ok {
+  border-color: var(--ok-line);
+
+  background: var(--ok-bg);
+  color: var(--ok-ink);
 }
 
-.counter.passed {
-  background: #f0fdf4;
-  color: #166534;
-}
+.plan-badge.warn {
+  border-color: var(--warn-line);
 
-.counter.failed {
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.counter.incomplete {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--warn-bg);
+  color: var(--warn-ink);
 }
 
 
-/* ================================
-   Notes
-   ================================ */
+/* ---------- Notes ----------
+   10px × 14px, 8px corners, 18px icon, 13px text. */
 
 .notes {
   display: flex;
   flex-direction: column;
 
-  gap: 8px;
+  gap: var(--sp-2);
 
-  padding: 14px 20px 0;
+  padding: var(--sp-3) 20px;
+
+  border-block-end: 1px solid var(--border);
 }
 
 .note {
   display: flex;
   align-items: flex-start;
 
-  gap: 8px;
+  gap: var(--sp-2);
 
   margin: 0;
   padding: 10px 14px;
 
-  border-radius: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-control);
 
-  font-size: 13px;
+  font-size: var(--fs-13);
   line-height: 1.6;
 }
 
 .note mat-icon {
   flex-shrink: 0;
 
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  margin-block-start: 1px;
 
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .note.info {
-  background: #e6f1fb;
-  color: #0c447c;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
 }
 
 .note.warn {
-  background: #fef3c7;
-  color: #92400e;
+  border-color: var(--warn-line);
+
+  background: var(--warn-bg);
+  color: var(--warn-ink);
 }
 
-/* The term's grades are closed: grey with its own icon (event_busy),
-   so it is not mixed up with the plan's padlock. */
+/* The term's grades are closed: grey, with a bold first line */
 .note.closed {
-  background: #eef2f7;
-  color: #334155;
+  border-color: var(--border);
 
-  border: 1px solid #d5dde8;
+  background: var(--raised);
+  color: var(--muted);
 }
 
 .note-title {
   display: block;
 
-  margin-bottom: 2px;
+  color: var(--text);
 
-  color: #1e293b;
+  font-weight: 600;
 }
 
 
-/* ================================
-   Table
-   A plain table (not mat-table): the header has two rows
-   and the component cells span their assessments.
-   ================================ */
+/* ---------- Table ----------
+   A plain table (not mat-table): the header has two rows and the
+   component cells span their assessments. */
 
 .table-wrapper {
   width: 100%;
-
-  margin-top: 14px;
 
   overflow-x: auto;
 }
 
 .grades-table {
   width: 100%;
-  min-width: 640px;
 
+  /* separate: a sticky cell keeps its own lines while the table scrolls */
   border-collapse: separate;
   border-spacing: 0;
 
@@ -250,216 +250,210 @@
 
 .grades-table th,
 .grades-table td {
-  padding: 8px 10px;
+  box-sizing: border-box;
+
+  padding: 0 var(--sp-3);
 
   text-align: center;
-
   white-space: nowrap;
-
-  border-bottom: 1px solid #e5e7eb;
 }
 
-.grades-table th {
-  font-size: 13px;
+/* Header: 12px/600, a line under it */
+.grades-table thead th {
+  height: 40px;
+
+  border-block-end: 1px solid var(--border);
+
+  background: var(--surface);
+  color: var(--faint);
+
+  font-size: var(--fs-12);
   font-weight: 600;
-
-  color: #374151;
-
-  background: #f8fafc;
 }
 
-.grades-table td {
-  height: 56px;
+/* Rows: 52px, a light line between them, no zebra */
+.grades-table tbody th,
+.grades-table tbody td {
+  height: var(--row);
 
-  font-size: 14px;
+  padding-block: var(--sp-2);
 
-  color: #374151;
+  border-block-end: 1px solid var(--rule);
 
-  background: #ffffff;
+  background: var(--surface);
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 400;
 }
 
+.grades-table tbody tr:last-child th,
+.grades-table tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+.grades-table tbody tr:hover th,
 .grades-table tbody tr:hover td {
-  background: #f8fafc;
+  background: var(--hover);
 }
 
-/* The first row of the header has no line under the component bands. */
-.component-row .component-head {
-  padding: 0;
-
-  border-bottom: 0;
-}
-
-
-/* ----- Student column (stays visible while scrolling sideways) ----- */
-
-.student-col {
-  position: sticky;
-  inset-inline-start: 0;
-  z-index: 1;
-
-  min-width: 220px;
-
-  text-align: start !important;
-
-  padding-inline-start: 20px !important;
-
-  border-inline-end: 1px solid #e5e7eb;
-}
-
-th.student-col {
-  z-index: 2;
-}
-
-.student-name {
+.sub {
   display: block;
 
-  font-weight: 600;
-
-  color: #111827;
-}
-
-.student-number {
-  display: block;
-
-  margin-top: 2px;
-
-  font-size: 12px;
-
-  color: #6b7280;
+  font-size: var(--fs-11);
+  font-weight: 400;
 }
 
 
-/* ----- Component band (the component's color on top) ----- */
+/* ---------- Component bands (header only) ----------
+   Two neutral shades in turn, so each component and its assessments read
+   as one group. The text on a band is --muted (--faint is too light on
+   the darker shade). */
 
-.component-band {
-  display: flex;
+.grades-table thead .band-a {
+  background: var(--band-a);
+  color: var(--muted);
+}
+
+.grades-table thead .band-b {
+  background: var(--band-b);
+  color: var(--muted);
+}
+
+.grades-table thead .component-head {
+  height: 32px;
+
+  border-block-end: 0;
+}
+
+.component-label {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
 
   gap: 6px;
-
-  padding: 9px 10px;
-
-  border-top: 3px solid var(--component-color);
-
-  background: color-mix(in srgb, var(--component-color) 10%, #ffffff);
 }
 
-.component-weight {
-  font-weight: 400;
-
-  color: #6b7280;
+.component-name,
+.assessment-name {
+  color: var(--text);
 }
 
 .fixed-icon {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 
-  font-size: 15px;
-
-  color: #6b7280;
+  font-size: 14px;
 }
 
+.grades-table thead .assessment-head {
+  height: 44px;
 
-/* ----- Assessment heads ----- */
-
-.assessment-head {
-  font-weight: 500 !important;
+  line-height: 1.4;
 }
 
 .assessment-name {
   display: block;
 }
 
-.grades-table .sub {
+.empty-head {
+  font-weight: 400;
+}
+
+/* A thin line where a component's columns begin */
+.grades-table .group-start {
+  border-inline-start: 1px solid var(--rule);
+}
+
+
+/* ---------- Sticky columns ----------
+   The student at the start; the total and the result at the end. */
+
+.student-col,
+.total-col,
+.result-col {
+  position: sticky;
+  z-index: 1;
+}
+
+.grades-table thead .student-col,
+.grades-table thead .total-col,
+.grades-table thead .result-col {
+  z-index: 2;
+}
+
+.grades-table .student-col {
+  inset-inline-start: 0;
+
+  width: 230px;
+  min-width: 230px;
+  max-width: 230px;
+
+  padding-inline: 20px var(--sp-3);
+
+  border-inline-end: 1px solid var(--border);
+
+  text-align: start;
+}
+
+.student-name {
   display: block;
 
-  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  font-size: 11px;
+  font-weight: 600;
+}
+
+.student-number {
+  display: block;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
   font-weight: 400;
-
-  color: #6b7280;
 }
 
-.empty-head {
-  max-width: 140px;
+.grades-table .total-col {
+  inset-inline-end: 112px;
 
-  font-size: 12px !important;
-  font-weight: 400 !important;
+  width: 88px;
+  min-width: 88px;
 
-  color: #6b7280 !important;
-
-  white-space: normal !important;
+  border-inline-start: 1px solid var(--border);
 }
 
-
-/* ----- Mark cells ----- */
-
-.mark-input {
-  width: 68px;
-  height: 36px;
-
-  padding: 0 6px;
-
-  text-align: center;
-
-  font: inherit;
-  font-size: 14px;
-
-  color: #111827;
-
-  background: #ffffff;
-
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-
-  box-sizing: border-box;
-
-  transition: border-color 0.15s ease, background 0.15s ease;
+.grades-table tbody .total-col {
+  font-weight: 700;
 }
 
-.mark-input:hover {
-  border-color: #9ca3af;
+.grades-table .result-col {
+  inset-inline-end: 0;
+
+  width: 112px;
+  min-width: 112px;
 }
 
-.mark-input:focus {
-  outline: 2px solid #2554a4;
-  outline-offset: 0;
+/* A student with unsaved marks: the total comes back after saving */
+.after-save {
+  color: var(--faint);
 
-  border-color: #2554a4;
-}
-
-.mark-input:disabled {
-  color: #6b7280;
-
-  background: #f9fafb;
-}
-
-/* Typed and not saved yet. */
-.mark-input.changed {
-  background: #fff7d6;
-
-  border-color: #e3b448;
-}
-
-/* Cannot be saved (out of range, not a number, or a cleared saved mark). */
-.mark-input.invalid {
-  color: #991b1b;
-
-  background: #fef2f2;
-
-  border-color: #dc2626;
+  font-size: var(--fs-12);
+  font-weight: 400;
 }
 
 .missing {
-  color: #9ca3af;
+  color: var(--faint);
 }
 
 
-/* ----- History button (corner of a saved mark) ----- */
+/* ---------- Mark cell ----------
+   64 × 36px, the number in the middle. The history button sits in the
+   space between two cells, so it never covers a mark. */
 
-/* Holds the mark and the button, so the button sits on the mark's corner. */
+.mark-col {
+  min-width: 96px;
+}
+
 .mark-cell {
   position: relative;
 
@@ -468,178 +462,175 @@ th.student-col {
   justify-content: center;
 }
 
+.mark-input,
 .mark-text {
-  display: inline-block;
+  box-sizing: border-box;
 
-  min-width: 40px;
-  padding: 4px 6px;
+  width: 64px;
+  height: var(--h-control);
 }
+
+.mark-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Empty: white with the field border */
+.mark-input {
+  padding: 0 var(--sp-1);
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+
+  background: var(--surface);
+  color: var(--text);
+
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+
+  text-align: center;
+
+  transition: border-color var(--dur), background-color var(--dur), box-shadow var(--dur);
+}
+
+/* Saved: quiet grey */
+.mark-input.is-saved {
+  border-color: var(--border);
+
+  background: var(--raised);
+}
+
+/* Changed and not saved yet */
+.mark-input.is-changed {
+  border: 2px solid var(--chg);
+
+  background: var(--chg-bg);
+}
+
+/* Cannot be saved: the reason is written under the cell */
+.mark-input.is-invalid {
+  border: 2px solid var(--bad);
+
+  background: var(--bad-bg);
+  color: var(--bad-ink);
+}
+
+.mark-input:focus {
+  outline: none;
+
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.mark-input.is-changed:focus {
+  border-color: var(--chg);
+}
+
+.mark-input.is-invalid:focus {
+  border-color: var(--bad);
+}
+
+/* While saving */
+.mark-input:disabled {
+  color: var(--faint);
+
+  cursor: progress;
+}
+
+.mark-error {
+  display: block;
+
+  margin-block-start: 2px;
+
+  color: var(--bad-ink);
+
+  font-size: var(--fs-11);
+  line-height: 1.3;
+}
+
+
+/* ---------- History button ----------
+   Hidden until the pointer is on the cell or the focus is inside it. */
 
 .history-button {
   position: absolute;
-  top: -9px;
-  inset-inline-end: -11px;
+  inset-block-start: 50%;
+  inset-inline-end: -22px;
 
-  width: 22px;
-  height: 22px;
-
-  padding: 0;
-
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #e5e7eb;
-  border-radius: 50%;
+  width: 20px;
+  height: 20px;
 
-  background: #ffffff;
-  color: #9ca3af;
+  padding: 0;
+
+  border: 0;
+  border-radius: var(--sp-1);
+
+  background: transparent;
+  color: var(--accent-ink);
 
   cursor: pointer;
 
-  /* Hidden until its own cell is hovered (or the button / its input is focused). */
   opacity: 0;
 
-  transition: opacity 0.15s ease, color 0.15s ease;
+  transform: translateY(-50%);
+  transition: opacity var(--dur) ease, background-color var(--dur) ease;
 }
 
 .history-button mat-icon {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 
-  font-size: 14px;
+  font-size: 16px;
 }
 
-.grades-table tbody .mark-col:hover .history-button,
-.mark-cell:focus-within .history-button,
-.history-button[aria-expanded='true'] {
+.mark-col:hover .history-button,
+.mark-col:focus-within .history-button,
+.history-button[aria-expanded='true'],
+.history-button:focus-visible {
   opacity: 1;
 }
 
 .history-button:hover {
-  color: #2554a4;
+  background: var(--accent-soft);
 }
 
-.history-button:focus-visible {
-  opacity: 1;
-
-  outline: 2px solid #2554a4;
-  outline-offset: 1px;
-}
-
-/* Edited after it was first entered: always visible, in blue. */
+/* Changed after it was first entered: a different colour when it shows
+   (its label and tooltip say so too) */
 .history-button.edited {
-  opacity: 1;
-
-  color: #2554a4;
-  background: #eef3fc;
-
-  border-color: #bfd0ee;
+  color: var(--warn-ink);
 }
 
-/* Touch screens have no hover: every saved mark shows a faint button. */
+/* Touch screens have no hover: every saved mark shows the button. */
 @media (hover: none) {
 
   .history-button {
-    opacity: 0.75;
-  }
-
-  .history-button.edited {
     opacity: 1;
   }
 
 }
 
 
-/* ----- Total and result ----- */
-
-.total-col {
-  min-width: 80px;
-}
-
-td.total-col {
-  font-size: 15px;
-  font-weight: 700;
-
-  color: #111827;
-}
-
-/* The student has unsaved marks: this total is from the saved marks. */
-td.total-col.stale {
-  color: #9ca3af;
-}
-
-.result-col {
-  min-width: 100px;
-
-  padding-inline-end: 20px !important;
-}
-
-.result-badge {
-  display: inline-block;
-
-  padding: 4px 12px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.result-badge.passed {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.result-badge.failed {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.result-badge.incomplete {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-
-/* ================================
-   History menu / bottom sheet
-   ::ng-deep is needed because both open in an overlay,
-   outside this component (same as the teacher list in subject-assignments-form).
-   ================================ */
-
-/* Wide screens: the menu is wider than a normal menu (280px). */
-::ng-deep .grade-history-menu.mat-mdc-menu-panel {
-  width: 340px;
-  max-width: calc(100vw - 32px);
-}
-
-::ng-deep .grade-history-menu .mat-mdc-menu-content {
-  padding: 0;
-}
-
-/* Narrow screens: the history fills the bottom sheet edge to edge. */
-::ng-deep .grade-history-sheet.mat-bottom-sheet-container {
-  padding: 0;
-}
-
-
-/* ================================
-   Legend
-   ================================ */
+/* ---------- Legend ---------- */
 
 .legend {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 8px 18px;
+  gap: var(--sp-2) var(--sp-4);
 
-  padding: 12px 20px 16px;
+  padding: var(--sp-3) 20px;
 
-  font-size: 12px;
+  border-block-start: 1px solid var(--border);
 
-  color: #6b7280;
+  color: var(--muted);
+
+  font-size: var(--fs-12);
 }
 
 .legend > span {
@@ -650,101 +641,132 @@ td.total-col.stale {
 }
 
 .legend mat-icon {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .swatch {
-  display: inline-block;
+  box-sizing: border-box;
 
   width: 14px;
   height: 14px;
 
-  border: 1px solid;
-  border-radius: 4px;
+  border: 2px solid;
+  border-radius: var(--sp-1);
 }
 
-.swatch.changed {
-  background: #fff7d6;
-  border-color: #e3b448;
+.swatch.is-changed {
+  border-color: var(--chg);
+
+  background: var(--chg-bg);
 }
 
-.swatch.invalid {
-  background: #fef2f2;
-  border-color: #dc2626;
-}
+.swatch.is-invalid {
+  border-color: var(--bad);
 
-/* The same look as an edited mark's history button. */
-.legend-history {
-  width: 20px;
-  height: 20px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #bfd0ee;
-  border-radius: 50%;
-
-  background: #eef3fc;
-  color: #2554a4;
-}
-
-.legend .legend-history mat-icon {
-  width: 13px;
-  height: 13px;
-
-  font-size: 13px;
+  background: var(--bad-bg);
 }
 
 
-/* ================================
-   No students (inside the card)
-   ================================ */
+/* ---------- No students in the section ---------- */
 
 .no-students {
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  gap: 6px;
+  gap: var(--sp-2);
 
-  padding: 36px 20px;
+  padding: var(--sp-8) 20px;
 
   text-align: center;
 }
 
 .no-students mat-icon {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
 
-  font-size: 44px;
+  color: var(--state-icon);
 
-  color: #9ca3af;
+  font-size: 48px;
 }
 
 .no-students h3 {
   margin: 0;
 
-  font-size: 17px;
+  color: var(--text);
 
-  color: #111827;
+  font-size: var(--fs-16);
+  font-weight: 700;
 }
 
 .no-students p {
   margin: 0;
 
-  font-size: 14px;
+  color: var(--muted);
 
-  color: #6b7280;
+  font-size: var(--fs-13);
 }
 
 
-/* ================================
-   Reduced Motion
-   ================================ */
+/* ---------- Phone (under 720px) ----------
+   The sheet stays a table that scrolls sideways inside its card, with
+   the student column fixed. The total and the result scroll with the
+   marks (there is no room to fix three columns), and a mark is 44px
+   high to touch. */
+
+@media (max-width: 719.98px) {
+
+  .sheet-head,
+  .notes,
+  .legend {
+    padding-inline: var(--sp-4);
+  }
+
+  .sheet-counters {
+    gap: var(--sp-1) var(--sp-4);
+  }
+
+  .grades-table .student-col {
+    width: 148px;
+    min-width: 148px;
+    max-width: 148px;
+
+    padding-inline: var(--sp-4) var(--sp-2);
+  }
+
+  .student-name {
+    white-space: normal;
+
+    line-height: 1.4;
+  }
+
+  .grades-table .total-col,
+  .grades-table .result-col {
+    position: static;
+  }
+
+  .mark-input,
+  .mark-text {
+    height: var(--h-touch);
+  }
+
+  .history-button {
+    inset-inline-end: -24px;
+
+    width: 24px;
+    height: 24px;
+  }
+
+  /* No keyboard on the phone */
+  .legend .legend-keys {
+    display: none;
+  }
+
+}
+
 
 @media (prefers-reduced-motion: reduce) {
 
