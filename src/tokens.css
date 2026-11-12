@@ -74,6 +74,10 @@
   --rel-1-soft: #fcf4f7; --rel-1-line: #f3d9e2;
   --rel-2-soft: #fcf7ea; --rel-2-line: #ecdcae;
 
+  /* grade sheet header: the plan components take these two neutral shades
+     in turn (spec: "كشف العلامات") — added 12 Nov 2026 */
+  --band-a: #f4f6f9; --band-b: #eaeef4;
+
   /* unsaved-changes bar (shared save-bar) — warm yellow, final (6 Nov 2026) */
   --save-bg: #fff4d6; --save-line: #ecc76b; --save-ink: #5c3d07; --save-muted: #74500f;
 

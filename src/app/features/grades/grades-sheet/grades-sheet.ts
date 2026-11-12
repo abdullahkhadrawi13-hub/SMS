@@ -13,7 +13,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -23,7 +22,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Language } from '../../../core/services/language';
 import { GradeSheet, GradeSheetMark } from '../../../core/models/student-grade';
 import {
-  componentColor,
   FULL_WEIGHT,
   formatNumber,
   PLAN_STATUS_BADGE,
@@ -33,6 +31,7 @@ import {
 
 import {
   getMarkError,
+  getMarkErrorReason,
   GradeHistoryTarget,
   GradesDraft,
   GradesSheetCounts,
@@ -66,32 +65,42 @@ interface SheetNote {
   params?: Record<string, string>;
 }
 
-// Up to this width the history opens as a bottom sheet instead of a menu
-// (the same width the other pages switch to their phone layout).
-const NARROW_SCREEN = '(max-width: 650px)';
+// The short reason written under a cell that cannot be saved.
+interface CellError {
+  key: string;
+  params?: Record<string, string>;
+}
+
+// Phone (under 720px, like the rest of the app): the history opens as a
+// bottom sheet instead of a menu.
+const NARROW_SCREEN = '(max-width: 719.98px)';
 
 
 // The grade sheet: title, counters, notes and the marks table.
 //
-// Columns: one group per plan component (its color and weight on top),
-// one column per assessment under it, then the total (out of 100) and the result.
+// Columns: one group per plan component (its name and weight on top, the
+// groups take two neutral shades in turn), one column per assessment under
+// it, then the total (out of 100) and the result.
 // Rows: the students actively enrolled in the section.
+// The student stays at the start and the total and result at the end
+// while the assessments scroll sideways.
 //
 // The total and the result come from the backend (saved marks only):
-// they change after "Save sheet", not while typing.
+// they change after "Save sheet", not while typing. A student with unsaved
+// marks shows "After saving" in place of the total.
 //
 // editable = true: each mark is an input. The typed text goes to the parent
 // (markChange), which keeps it in the draft until it is saved.
-// The sheet only shows the draft: yellow = changed, red = not allowed.
+// The sheet only shows the draft: a cell is empty, saved, changed (yellow)
+// or not allowed (red, with the reason written under it).
 //
-// Every saved mark has a small history button in its corner
-// (always visible on an edited mark, on row hover for the others).
+// Every saved mark has a small history button next to it, shown when the
+// pointer is on the cell or the focus is inside it (always on a touch screen).
 // It opens the mark's history: a menu on wide screens, a bottom sheet on
-// narrow ones. The history can be read even when the term's grades are closed.
+// the phone. The history can be read even when the term's grades are closed.
 @Component({
   selector: 'app-grades-sheet',
   imports: [
-    MatButtonModule,
     MatIconModule,
     MatMenuModule,
     MatTooltipModule,
@@ -135,6 +144,9 @@ export class GradesSheet {
 
   // "First Term · 2026/2027" (shown under the title).
   readonly termName = input('');
+
+  // Staff: the teacher of the subject (shown under the title).
+  readonly teacherName = input('');
 
   readonly loading = input(false);
   readonly saving = input(false);
@@ -218,10 +230,9 @@ export class GradesSheet {
 
     const isArabic = this.isArabic();
 
-    return sortComponents(sheet.components).map((component, index) => ({
+    return sortComponents(sheet.components).map(component => ({
       component,
       name: isArabic ? component.nameAr : component.nameEn,
-      color: componentColor(index),
 
       // The sheet already returns the assessments grouped and sorted.
       assessments: sheet.assessments
@@ -255,7 +266,7 @@ export class GradesSheet {
     }));
   });
 
-  // The students that have unsaved marks (their total is shown faded).
+  // The students that have unsaved marks ("After saving" in place of the total).
   private readonly changedStudents = computed(() => {
 
     const ids = new Set<number>();
@@ -398,23 +409,42 @@ export class GradesSheet {
       : 'invalid';
   }
 
-  // The tooltip of a cell that cannot be saved (translation key, or '').
-  cellErrorKey(row: SheetRow, column: SheetColumn): string {
+  // The reason written under a cell that cannot be saved (null when it can).
+  cellError(row: SheetRow, column: SheetColumn): CellError | null {
 
     const typed = this.draft()[markKey(row.student.studentId, column.assessment.assessmentId)];
 
     if (typed === undefined) {
-      return '';
+      return null;
     }
 
     const saved = row.savedMarks.get(column.assessment.assessmentId) ?? null;
-    const error = getMarkError(typed, saved, column.assessment.maxMark);
 
-    if (error === 'range') {
-      return 'GRADES.SHEET.CELL.RANGE_ERROR';
+    switch (getMarkErrorReason(typed, saved, column.assessment.maxMark)) {
+
+      case 'above-max':
+        return {
+          key: 'GRADES.SHEET.CELL.ABOVE_MAX',
+          params: { max: formatNumber(column.assessment.maxMark) },
+        };
+
+      case 'decimals':
+        return { key: 'GRADES.SHEET.CELL.DECIMALS' };
+
+      case 'not-number':
+        return { key: 'GRADES.SHEET.CELL.NOT_NUMBER' };
+
+      case 'clear':
+        return { key: 'GRADES.SHEET.CELL.CLEAR' };
+
+      default:
+        return null;
     }
+  }
 
-    return error === 'clear' ? 'GRADES.SHEET.CELL.CLEAR_ERROR' : '';
+  // The id of a cell's error line (the input points to it: aria-describedby).
+  errorId(row: SheetRow, column: SheetColumn): string {
+    return `mark-error-${markKey(row.student.studentId, column.assessment.assessmentId)}`;
   }
 
   savedMark(row: SheetRow, column: SheetColumn): string {

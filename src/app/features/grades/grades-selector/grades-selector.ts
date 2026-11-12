@@ -1,11 +1,18 @@
-import { Component, computed, input, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  OutputEmitterRef,
+} from '@angular/core';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
+
+import { Language } from '../../../core/services/language';
 
 import { ActiveSectionDto } from '../../../core/models/section';
 import { SchoolClassSimpleDto } from '../../../core/models/school-class';
@@ -17,9 +24,14 @@ import { GradesAssignmentOption, GradesSelectorMode } from '../grades';
 // The fields that choose which grade sheet is shown.
 //
 // teacher mode: one field "Class and subject" (the teacher's own subjects
-//   in the current term) + the current term, read-only.
+//   in the current term). The current term itself is in the navbar and
+//   under the sheet's title.
 // staff mode (Admin, Assistant Principal): term → class → section → subject.
-//   Each field is enabled after the one before it is chosen.
+//   Each field is enabled after the one before it is chosen, and a
+//   disabled field says what to choose first.
+//
+// The fields are plain <select> elements with the shared field look
+// (styles.css, "Form fields"), on the page background above the sheet.
 //
 // All data is owned by the parent page.
 // locked: the fields cannot change while marks are not saved
@@ -27,16 +39,16 @@ import { GradesAssignmentOption, GradesSelectorMode } from '../grades';
 @Component({
   selector: 'app-grades-selector',
   imports: [
-    MatFormFieldModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatSelectModule,
     TranslatePipe,
   ],
   templateUrl: './grades-selector.html',
   styleUrl: './grades-selector.css',
 })
 export class GradesSelector {
+
+  private readonly language = inject(Language);
 
   readonly mode = input.required<GradesSelectorMode>();
 
@@ -62,9 +74,6 @@ export class GradesSelector {
   readonly assignmentsLoading = input(false);
   readonly assignmentId = input<number | null>(null);
 
-  // Teacher mode: the name of the current term (shown read-only).
-  readonly currentTermName = input('');
-
   // true while marks are not saved: every field is disabled.
   readonly locked = input(false);
 
@@ -82,11 +91,6 @@ export class GradesSelector {
     )?.teacherName ?? ''
   );
 
-  // Staff mode: the chosen term (shown by the term field's mat-select-trigger).
-  readonly selectedTerm = computed(
-    () => this.terms().find(t => t.academicTermId === this.termId()) ?? null
-  );
-
   // Staff mode: a section is chosen but it has no subjects.
   readonly noSubjects = computed(
     () => this.sectionId() !== null
@@ -95,8 +99,18 @@ export class GradesSelector {
   );
 
 
+  // A <select> gives its value as text; the empty choice is ignored
+  // (a field never goes back to "nothing chosen" by itself).
+  onSelect(target: OutputEmitterRef<number>, value: string): void {
+
+    if (value !== '') {
+      target.emit(Number(value));
+    }
+  }
+
+
   isArabic(): boolean {
-    return document.documentElement.lang === 'ar';
+    return this.language.currentDirection() === 'rtl';
   }
 
   getTermLabel(term: TermOption): string {

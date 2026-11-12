@@ -51,7 +51,6 @@ export function markKey(studentId: number, assessmentId: number): string {
 export interface SheetColumnGroup {
   component: GradeSheetComponent;
   name: string;
-  color: string;
   assessments: SheetColumn[];
 }
 
@@ -120,8 +119,15 @@ export interface MarkChange {
 //            cannot be removed from the sheet, only changed)
 export type MarkCellState = 'saved' | 'changed' | 'invalid';
 
-// Why a cell is invalid (shown as the cell's tooltip).
+// Why a cell is invalid.
 export type MarkError = 'range' | 'clear';
+
+// The short reason written under an invalid cell:
+// - above-max:  a number above the assessment's max mark ("Above 60")
+// - decimals:   more than 2 decimals
+// - not-number: anything else that is not a mark (letters, a minus sign)
+// - clear:      a saved mark was emptied (it can be changed, not removed)
+export type MarkErrorReason = 'above-max' | 'decimals' | 'not-number' | 'clear';
 
 
 // =====================================================
@@ -194,4 +200,31 @@ export function getMarkError(
   }
 
   return Number.isNaN(value) ? 'range' : null;
+}
+
+
+// The short reason of a mark that cannot be saved, or null when it can.
+export function getMarkErrorReason(
+  text: string,
+  saved: number | null,
+  maxMark: number
+): MarkErrorReason | null {
+
+  const error = getMarkError(text, saved, maxMark);
+
+  if (error === null) {
+    return null;
+  }
+
+  if (error === 'clear') {
+    return 'clear';
+  }
+
+  const normalized = normalizeMarkText(text);
+
+  if (MARK_PATTERN.test(normalized)) {
+    return 'above-max';
+  }
+
+  return /^\d+\.\d{3,}$/.test(normalized) ? 'decimals' : 'not-number';
 }

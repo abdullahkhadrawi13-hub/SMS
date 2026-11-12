@@ -46,29 +46,33 @@
 <!-- Sheet -->
 @else {
 
-  <div class="table-card">
+  <section class="sheet-card" aria-labelledby="grades-sheet-title">
 
-    <!-- Title + counters -->
-    <div class="sheet-toolbar">
+    <!-- Head: subject and section, one line under them, then the counters -->
+    <div class="sheet-head">
 
       <div class="sheet-title">
 
-        <h2>{{ title() }}</h2>
+        <h2 id="grades-sheet-title">{{ title() }}</h2>
 
         <p>
           @if (termName()) {
             <span>{{ termName() }}</span>
           }
 
+          @if (teacherName()) {
+            <span class="sep" aria-hidden="true">·</span>
+            <span>{{ 'GRADES.SELECTOR.TEACHER' | translate: { name: teacherName() } }}</span>
+          }
+
           @if (passingMark()) {
-            <span class="dot">·</span>
+            <span class="sep" aria-hidden="true">·</span>
             <span>{{ 'GRADES.SHEET.PASSING_MARK' | translate: { mark: passingMark() } }}</span>
           }
 
           @if (planBadge(); as badge) {
-            <span class="dot">·</span>
             <span class="plan-badge" [class]="badge.cssClass">
-              <mat-icon>{{ badge.icon }}</mat-icon>
+              <mat-icon aria-hidden="true">{{ badge.icon }}</mat-icon>
               {{ badge.labelKey | translate }}
             </span>
           }
@@ -76,32 +80,30 @@
 
       </div>
 
-      <div class="sheet-counters">
+      <!-- From the saved results (they change after "Save sheet") -->
+      <dl class="sheet-counters">
 
-        <span class="counter total">
-          <mat-icon>groups</mat-icon>
-          {{ 'GRADES.SHEET.COUNTERS.STUDENTS' | translate }}
-          <strong>{{ counts().total }}</strong>
-        </span>
+        <div class="counter">
+          <dt>{{ 'GRADES.SHEET.COUNTERS.STUDENTS' | translate }}</dt>
+          <dd class="tabular">{{ counts().total }}</dd>
+        </div>
 
-        <span class="counter passed">
-          {{ 'GRADES.SHEET.COUNTERS.PASSED' | translate }}
-          <strong>{{ counts().passed }}</strong>
-        </span>
+        <div class="counter">
+          <dt>{{ 'GRADES.SHEET.COUNTERS.PASSED' | translate }}</dt>
+          <dd class="tabular">{{ counts().passed }}</dd>
+        </div>
 
-        <span class="counter failed">
-          {{ 'GRADES.SHEET.COUNTERS.FAILED' | translate }}
-          <strong>{{ counts().failed }}</strong>
-        </span>
+        <div class="counter">
+          <dt>{{ 'GRADES.SHEET.COUNTERS.FAILED' | translate }}</dt>
+          <dd class="tabular" [class.is-bad]="counts().failed > 0">{{ counts().failed }}</dd>
+        </div>
 
-        @if (counts().incomplete > 0) {
-          <span class="counter incomplete">
-            {{ 'GRADES.SHEET.COUNTERS.INCOMPLETE' | translate }}
-            <strong>{{ counts().incomplete }}</strong>
-          </span>
-        }
+        <div class="counter">
+          <dt>{{ 'GRADES.SHEET.COUNTERS.INCOMPLETE' | translate }}</dt>
+          <dd class="tabular">{{ counts().incomplete }}</dd>
+        </div>
 
-      </div>
+      </dl>
 
     </div>
 
@@ -111,7 +113,7 @@
       <div class="notes">
         @for (note of notes(); track note.key) {
           <p class="note" [class]="note.tone">
-            <mat-icon>{{ note.icon }}</mat-icon>
+            <mat-icon aria-hidden="true">{{ note.icon }}</mat-icon>
             <span>
               @if (note.titleKey) {
                 <strong class="note-title">{{ note.titleKey | translate }}</strong>
@@ -128,7 +130,7 @@
     @if (rows().length === 0) {
 
       <div class="no-students">
-        <mat-icon>groups</mat-icon>
+        <mat-icon aria-hidden="true">groups</mat-icon>
 
         <h3>{{ 'GRADES.SHEET.EMPTY.NO_STUDENTS_TITLE' | translate }}</h3>
 
@@ -137,33 +139,38 @@
 
     } @else {
 
-      <!-- Marks table (scrolls sideways when the assessments do not fit) -->
+      <!-- Marks table: scrolls sideways inside the card when the assessments
+           do not fit. The student stays at the start, the total and the
+           result at the end. -->
       <div class="table-wrapper">
 
         <table class="grades-table">
 
           <thead>
 
-            <!-- Row 1: the plan components -->
+            <!-- Row 1: the plan components (two neutral shades, in turn) -->
             <tr class="component-row">
 
-              <th class="student-col" rowspan="2">
+              <th class="student-col" rowspan="2" scope="col">
                 {{ 'GRADES.SHEET.TABLE.STUDENT' | translate }}
               </th>
 
-              @for (group of groups(); track group.component.subjectPlanComponentId) {
+              @for (group of groups(); track group.component.subjectPlanComponentId; let even = $even) {
                 <th
                   class="component-head"
+                  scope="colgroup"
+                  [class.band-a]="even"
+                  [class.band-b]="!even"
                   [attr.colspan]="group.assessments.length || 1"
-                  [style.--component-color]="group.color"
                 >
-                  <span class="component-band">
+                  <span class="component-label">
                     <span class="component-name">{{ group.name }}</span>
                     <span class="component-weight">{{ formatMax(group.component.weight) }}%</span>
 
                     @if (!group.component.teacherAddsAssessments) {
                       <mat-icon
                         class="fixed-icon"
+                        [attr.aria-label]="'GRADES.SHEET.TABLE.FIXED_COMPONENT' | translate"
                         [matTooltip]="'GRADES.SHEET.TABLE.FIXED_COMPONENT' | translate"
                       >push_pin</mat-icon>
                     }
@@ -171,12 +178,12 @@
                 </th>
               }
 
-              <th class="total-col" rowspan="2">
+              <th class="total-col" rowspan="2" scope="col">
                 {{ 'GRADES.SHEET.TABLE.TOTAL' | translate }}
                 <span class="sub">{{ 'GRADES.SHEET.TABLE.OUT_OF' | translate: { max: 100 } }}</span>
               </th>
 
-              <th class="result-col" rowspan="2">
+              <th class="result-col" rowspan="2" scope="col">
                 {{ 'GRADES.SHEET.TABLE.RESULT' | translate }}
               </th>
 
@@ -185,17 +192,28 @@
             <!-- Row 2: the assessments under each component -->
             <tr class="assessment-row">
 
-              @for (group of groups(); track group.component.subjectPlanComponentId) {
+              @for (group of groups(); track group.component.subjectPlanComponentId; let even = $even) {
 
-                @for (column of group.assessments; track column.assessment.assessmentId) {
-                  <th class="assessment-head">
+                @for (column of group.assessments; track column.assessment.assessmentId; let first = $first) {
+                  <th
+                    class="assessment-head"
+                    scope="col"
+                    [class.band-a]="even"
+                    [class.band-b]="!even"
+                    [class.group-start]="first"
+                  >
                     <span class="assessment-name">{{ column.name }}</span>
                     <span class="sub">
                       {{ 'GRADES.SHEET.TABLE.OUT_OF' | translate: { max: formatMax(column.assessment.maxMark) } }}
                     </span>
                   </th>
                 } @empty {
-                  <th class="assessment-head empty-head">
+                  <th
+                    class="assessment-head empty-head group-start"
+                    scope="col"
+                    [class.band-a]="even"
+                    [class.band-b]="!even"
+                  >
                     {{ 'GRADES.SHEET.TABLE.NO_ASSESSMENT' | translate }}
                   </th>
                 }
@@ -214,19 +232,19 @@
               <tr>
 
                 <!-- Student (stays visible while scrolling sideways) -->
-                <td class="student-col">
+                <th class="student-col" scope="row">
                   <span class="student-name">{{ row.name }}</span>
-                  <span class="student-number">{{ row.student.studentNumber }}</span>
-                </td>
+                  <span class="student-number tabular">{{ row.student.studentNumber }}</span>
+                </th>
 
                 <!-- Marks -->
                 @for (group of groups(); track group.component.subjectPlanComponentId) {
 
-                  @for (column of group.assessments; track column.assessment.assessmentId) {
+                  @for (column of group.assessments; track column.assessment.assessmentId; let first = $first) {
 
-                    <td class="mark-col">
+                    <td class="mark-col" [class.group-start]="first">
 
-                      <!-- The mark + its history button in the corner -->
+                      <!-- The mark, with its history button next to it -->
                       <span class="mark-cell">
 
                         @if (editable()) {
@@ -236,13 +254,15 @@
                             type="text"
                             inputmode="decimal"
                             autocomplete="off"
-                            [class.changed]="cellState(row, column) === 'changed'"
-                            [class.invalid]="cellState(row, column) === 'invalid'"
+                            [class.is-saved]="cellState(row, column) === 'saved' && savedMark(row, column) !== ''"
+                            [class.is-changed]="cellState(row, column) === 'changed'"
+                            [class.is-invalid]="cellState(row, column) === 'invalid'"
                             [value]="cellText(row, column)"
                             [disabled]="saving()"
                             [attr.data-assessment]="column.assessment.assessmentId"
                             [attr.aria-label]="row.name + ' - ' + column.name"
-                            [matTooltip]="cellErrorKey(row, column) | translate: { max: formatMax(column.assessment.maxMark) }"
+                            [attr.aria-invalid]="cellState(row, column) === 'invalid' ? 'true' : null"
+                            [attr.aria-describedby]="cellState(row, column) === 'invalid' ? errorId(row, column) : null"
                             (input)="onInput(row, column, $event)"
                             (keydown)="onKeydown($event, column)"
                           />
@@ -252,14 +272,16 @@
                           @if (savedMark(row, column)) {
                             <span class="mark-text">{{ savedMark(row, column) }}</span>
                           } @else {
-                            <span class="missing">—</span>
+                            <span class="mark-text missing">—</span>
                           }
 
                         }
 
                         <!--
-                          Only a saved mark has a history.
-                          Wide screen: opens the menu below. Narrow screen: no menu
+                          Only a saved mark has a history. The button shows when
+                          the pointer is on the cell or the focus is inside it
+                          (always on a touch screen, which has no hover).
+                          Wide screen: opens the menu below. Phone: no menu
                           (null), the click opens the bottom sheet instead.
                           While typing marks the button is skipped by Tab
                           (tabindex -1), so Tab goes from mark to mark.
@@ -272,33 +294,39 @@
                             [matMenuTriggerFor]="isNarrow() ? null : historyMenu"
                             [matMenuTriggerData]="{ row: row, column: column }"
                             [attr.tabindex]="editable() ? -1 : null"
-                            [attr.aria-label]="('GRADES.SHEET.HISTORY.OPEN' | translate) + ': ' + row.name + ' - ' + column.name"
+                            [attr.aria-label]="((cell.isEdited ? 'GRADES.SHEET.HISTORY.EDITED' : 'GRADES.SHEET.HISTORY.OPEN') | translate) + ': ' + row.name + ' - ' + column.name"
                             [matTooltip]="(cell.isEdited ? 'GRADES.SHEET.HISTORY.EDITED' : 'GRADES.SHEET.HISTORY.OPEN') | translate"
                             (click)="openHistory(row, column)"
                           >
-                            <mat-icon>history</mat-icon>
+                            <mat-icon aria-hidden="true">history</mat-icon>
                           </button>
                         }
 
                       </span>
 
+                      <!-- Why the mark cannot be saved, written under the cell -->
+                      @if (cellError(row, column); as error) {
+                        <span class="mark-error" [id]="errorId(row, column)">
+                          {{ error.key | translate: error.params }}
+                        </span>
+                      }
+
                     </td>
 
                   } @empty {
-                    <td class="mark-col">
-                      <span class="missing">—</span>
+                    <td class="mark-col group-start">
+                      <span class="mark-text missing">—</span>
                     </td>
                   }
 
                 }
 
-                <!-- Total (saved marks only: updated after saving) -->
-                <td
-                  class="total-col"
-                  [class.stale]="hasChanges(row)"
-                  [matTooltip]="hasChanges(row) ? ('GRADES.SHEET.TABLE.TOTAL_AFTER_SAVE' | translate) : ''"
-                >
-                  @if (row.student.total !== null) {
+                <!-- Total: the backend counts it from the saved marks,
+                     so a student with unsaved marks shows "After saving". -->
+                <td class="total-col">
+                  @if (hasChanges(row)) {
+                    <span class="after-save">{{ 'GRADES.SHEET.TABLE.AFTER_SAVE' | translate }}</span>
+                  } @else if (row.student.total !== null) {
                     {{ formatTotal(row.student.total) }}
                   } @else {
                     <span class="missing">—</span>
@@ -332,38 +360,43 @@
 
         @if (editable()) {
           <span>
-            <i class="swatch changed"></i>
+            <i class="swatch is-changed" aria-hidden="true"></i>
             {{ 'GRADES.SHEET.LEGEND.CHANGED' | translate }}
           </span>
 
           <span>
-            <i class="swatch invalid"></i>
+            <i class="swatch is-invalid" aria-hidden="true"></i>
             {{ 'GRADES.SHEET.LEGEND.INVALID' | translate }}
           </span>
         }
 
         <span>
-          <mat-icon>push_pin</mat-icon>
+          <mat-icon aria-hidden="true">push_pin</mat-icon>
           {{ 'GRADES.SHEET.LEGEND.FIXED' | translate }}
         </span>
 
         <span>
-          <span class="missing">—</span>
+          <span class="missing" aria-hidden="true">—</span>
           {{ 'GRADES.SHEET.LEGEND.MISSING' | translate }}
         </span>
 
         <span>
-          <i class="legend-history" aria-hidden="true">
-            <mat-icon>history</mat-icon>
-          </i>
-          {{ 'GRADES.SHEET.LEGEND.EDITED' | translate }}
+          <mat-icon aria-hidden="true">history</mat-icon>
+          {{ 'GRADES.SHEET.LEGEND.HISTORY' | translate }}
         </span>
+
+        @if (editable()) {
+          <span class="legend-keys">
+            <mat-icon aria-hidden="true">keyboard</mat-icon>
+            {{ 'GRADES.SHEET.LEGEND.KEYS' | translate }}
+          </span>
+        }
 
       </div>
 
     }
 
-  </div>
+  </section>
 
 }
 

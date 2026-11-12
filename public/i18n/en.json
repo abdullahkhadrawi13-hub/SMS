@@ -1764,14 +1764,21 @@
     },
     "SELECTOR": {
       "CLASS_AND_SUBJECT": "Class and subject",
+      "CLASS_AND_SUBJECT_PLACEHOLDER": "Choose a class and subject",
       "MY_SUBJECTS_HINT": "From your classes in the current term",
       "TERM": "Academic term",
-      "CURRENT": "Current",
+      "TERM_PLACEHOLDER": "Choose a term",
       "CURRENT_SUFFIX": "(current)",
       "CLOSED": "Closed",
+      "CLOSED_SUFFIX": "(closed)",
       "CLASS": "Class",
+      "CLASS_PLACEHOLDER": "Choose a class",
       "SECTION": "Section",
+      "SECTION_PLACEHOLDER": "Choose a section",
+      "SECTION_NEEDS_CLASS": "Choose a class first",
       "SUBJECT": "Subject",
+      "SUBJECT_PLACEHOLDER": "Choose a subject",
+      "SUBJECT_NEEDS_SECTION": "Choose a section first",
       "NO_SUBJECTS": "No subjects are assigned to this section in this term.",
       "TEACHER": "Teacher: {{name}}",
       "LOCKED_HINT": "Save or undo your changed marks first to change the selection."
@@ -1814,11 +1821,13 @@
         "OUT_OF": "out of {{max}}",
         "RESULT": "Result",
         "NO_ASSESSMENT": "No assessment yet",
-        "TOTAL_AFTER_SAVE": "The total updates after you save the sheet"
+        "AFTER_SAVE": "After saving"
       },
       "CELL": {
-        "RANGE_ERROR": "Enter a number from 0 to {{max}} (2 decimals at most)",
-        "CLEAR_ERROR": "A saved mark can't be removed, only changed"
+        "ABOVE_MAX": "Above {{max}}",
+        "DECIMALS": "2 decimals at most",
+        "NOT_NUMBER": "Numbers only",
+        "CLEAR": "Can't be removed"
       },
       "RESULT": {
         "PASSED": "Passed",
@@ -1830,7 +1839,8 @@
         "INVALID": "Not valid",
         "FIXED": "Fixed component of the subject plan",
         "MISSING": "No mark yet (not counted as zero)",
-        "EDITED": "Changed after it was entered (click a mark's icon to see its history)"
+        "HISTORY": "Mark history: point at a saved mark, then click the icon",
+        "KEYS": "Enter for the next student, Tab for the next assessment"
       },
       "HISTORY": {
         "OPEN": "Mark history",

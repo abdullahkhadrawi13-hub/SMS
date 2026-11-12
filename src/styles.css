@@ -1648,3 +1648,77 @@ button.data-link {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* ---------- A mark's history (grades) ----------
+   The history of one mark opens in an overlay, outside its component:
+   a menu on wide screens, a bottom sheet on the phone. Used by the grade
+   sheet and by the student's grade cards. */
+
+/* Wider than a normal menu (280px). */
+.grade-history-menu.mat-mdc-menu-panel {
+  width: 340px;
+  max-width: calc(100vw - 32px);
+}
+
+.grade-history-menu .mat-mdc-menu-content {
+  padding: 0;
+}
+
+/* The history fills the bottom sheet edge to edge. */
+.grade-history-sheet.mat-bottom-sheet-container {
+  padding: 0;
+}
+
+
+/* ---------- Result badge (grades) ----------
+   Passed / failed / incomplete: 24px, 6px corners, 12px/600, a 6px dot at
+   its start. Used by the grade sheet and the student's grade cards.
+
+     <span class="result-badge passed">Passed</span>
+*/
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  height: 24px;
+
+  padding-inline: 10px;
+
+  border-radius: var(--r-pill);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.result-badge::before {
+  content: "";
+
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+.result-badge.passed {
+  background: var(--ok-bg);
+  color: var(--ok-ink);
+}
+
+.result-badge.failed {
+  background: var(--bad-bg);
+  color: var(--bad-ink);
+}
+
+.result-badge.incomplete {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
