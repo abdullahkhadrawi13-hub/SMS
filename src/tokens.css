@@ -67,6 +67,13 @@
   --avatar-5-bg: #f7edd6; --avatar-5-ink: #5c410b;
   --avatar-6-bg: #e3e7ee; --avatar-6-ink: #3b4456;
 
+  /* relationship boxes (father / mother / guardian): a very light tint and
+     its border, from the same families as the relationship chips
+     (--avatar-3 / -4 / -5). Used by the absentees tab — added 12 Nov 2026 */
+  --rel-0-soft: #f3f7fc; --rel-0-line: #d6e2f3;
+  --rel-1-soft: #fcf4f7; --rel-1-line: #f3d9e2;
+  --rel-2-soft: #fcf7ea; --rel-2-line: #ecdcae;
+
   /* unsaved-changes bar (shared save-bar) — warm yellow, final (6 Nov 2026) */
   --save-bg: #fff4d6; --save-line: #ecc76b; --save-ink: #5c3d07; --save-muted: #74500f;
 

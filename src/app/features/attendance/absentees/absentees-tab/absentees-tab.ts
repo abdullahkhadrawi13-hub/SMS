@@ -143,6 +143,11 @@ export class AbsenteesTab {
       });
   }
 
+  // "Retry" on the error card.
+  reload(): void {
+    this.loadAbsentees();
+  }
+
   onDateChange(date: string): void {
 
     // The attendance officer cannot leave today

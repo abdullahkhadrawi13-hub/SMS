@@ -10,13 +10,11 @@ import {
   untracked
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 
@@ -29,11 +27,9 @@ import { AttendanceAccessService } from '../../../../core/services/attendance-ac
 import { Language } from '../../../../core/services/language';
 import {
   AttendanceSheetTarget,
-  formatAttendanceDate,
-  fromApiDate,
-  toApiDate,
   todayApiDate
 } from '../../shared/attendance-shared';
+import { DayBar } from '../../shared/day-bar/day-bar';
 import { AttendanceDailySummary, AttendanceSummarySection } from '../../../../core/models/attendance';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
@@ -41,12 +37,30 @@ import { StatusBadge } from '../../../../shared/components/status-badge/status-b
 // Recording state of one section on the selected day.
 type SectionState = 'complete' | 'partial' | 'notStarted';
 
+// The text of the state badge and of the button that opens the sheet.
+const STATE_KEYS: Record<SectionState, string> = {
+  complete: 'ATTENDANCE.DAILY_SUMMARY.STATE.COMPLETE',
+  partial: 'ATTENDANCE.DAILY_SUMMARY.STATE.PARTIAL',
+  notStarted: 'ATTENDANCE.DAILY_SUMMARY.STATE.NOT_STARTED'
+};
+
+const ACTION_KEYS: Record<SectionState, string> = {
+  complete: 'ATTENDANCE.DAILY_SUMMARY.ACTION.OPEN',
+  partial: 'ATTENDANCE.DAILY_SUMMARY.ACTION.CONTINUE',
+  notStarted: 'ATTENDANCE.DAILY_SUMMARY.ACTION.RECORD'
+};
+
 // One row of the sections table.
 interface AttendanceSummaryRow {
   section: AttendanceSummarySection;
   className: string;
   sectionName: string;
   state: SectionState;
+
+  // Translation keys of the state badge and of the button that opens
+  // the sheet ("Open sheet" / "Continue" / "Record attendance").
+  stateKey: string;
+  actionKey: string;
 
   // Recorded students as a percentage (0 - 100), for the progress bar.
   progress: number;
@@ -59,14 +73,14 @@ interface AttendanceSummaryRow {
 @Component({
   selector: 'app-daily-summary-tab',
   imports: [
+    NgTemplateOutlet,
+
     MatButtonModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatProgressBarModule,
     MatTableModule,
     TranslatePipe,
+    DayBar,
     StateCard,
     StatusBadge,
   ],
@@ -137,21 +151,11 @@ export class DailySummaryTab {
     'recorded',
     'absent',
     'state',
-    'actions'
+    'open'
   ];
-
-  // The date picker works with Date objects.
-  readonly dateValue = computed(() => fromApiDate(this.date()));
-  readonly maxDateValue = fromApiDate(this.maxDate);
-
-  readonly isToday = computed(() => this.date() === this.maxDate);
 
   private readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'
-  );
-
-  readonly displayDate = computed(() =>
-    formatAttendanceDate(this.date(), this.isArabic())
   );
 
   // Sections that still need recording (not started or partial).
@@ -180,21 +184,28 @@ export class DailySummaryTab {
 
     const isArabic = this.isArabic();
 
-    return (this.summary()?.sections ?? []).map(section => ({
-      section,
-      className: isArabic
-        ? section.classNameAr
-        : section.classNameEn,
-      sectionName: isArabic
-        ? section.sectionAr
-        : section.sectionEn,
-      state: this.getState(section),
-      progress: section.studentCount > 0
-        ? Math.round(
-            (section.recordedCount / section.studentCount) * 100
-          )
-        : 0
-    }));
+    return (this.summary()?.sections ?? []).map(section => {
+
+      const state = this.getState(section);
+
+      return {
+        section,
+        className: isArabic
+          ? section.classNameAr
+          : section.classNameEn,
+        sectionName: isArabic
+          ? section.sectionAr
+          : section.sectionEn,
+        state,
+        stateKey: STATE_KEYS[state],
+        actionKey: ACTION_KEYS[state],
+        progress: section.studentCount > 0
+          ? Math.round(
+              (section.recordedCount / section.studentCount) * 100
+            )
+          : 0
+      };
+    });
   });
 
 
@@ -250,20 +261,13 @@ export class DailySummaryTab {
   }
 
 
-  onDateChange(value: Date | null): void {
-
-    if (!value) {
-      return;
-    }
-
-    this.changeDate(toApiDate(value));
+  // "Retry" on the error card.
+  reload(): void {
+    this.loadSummary();
   }
 
-  goToToday(): void {
-    this.changeDate(this.maxDate);
-  }
-
-  private changeDate(date: string): void {
+  // The day picked in the day bar (app-day-bar).
+  changeDate(date: string): void {
 
     // The attendance officer cannot leave today
     if (this.todayOnly()) {

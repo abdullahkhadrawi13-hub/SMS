@@ -1,10 +1,8 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -17,14 +15,15 @@ import {
   toApiDate
 } from '../../shared/attendance-shared';
 
+// The three fields above the attendance sheet: class, section and date.
+// It only shows the selection and reports changes; the record tab owns
+// the data (and keeps the selection in the URL).
 @Component({
   selector: 'app-record-selector',
   imports: [
     MatDatepickerModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
-    MatSelectModule,
+    MatProgressSpinnerModule,
     TranslatePipe
   ],
   templateUrl: './record-selector.html',
@@ -80,6 +79,16 @@ export class RecordSelector {
     formatAttendanceDate(this.date(), this.isArabic())
   );
 
+
+  // The two lists are plain <select> elements: their value is text.
+  // "" is the first line ("Choose a class" / "Choose a section").
+  onClassSelect(value: string): void {
+    this.classChange.emit(value === '' ? null : Number(value));
+  }
+
+  onSectionSelect(value: string): void {
+    this.sectionChange.emit(value === '' ? null : Number(value));
+  }
 
   onDateChange(value: Date | null): void {
 

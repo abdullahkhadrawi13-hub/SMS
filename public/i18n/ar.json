@@ -1417,10 +1417,21 @@
       "UNMARKED": "غير محدد"
     },
 
+    "DAY_BAR": {
+      "DATE": "التاريخ",
+      "OPEN_CALENDAR": "فتح التقويم",
+      "TODAY": "اليوم",
+      "TODAY_ONLY": "اليوم فقط"
+    },
+
     "RECORD_SELECTOR": {
       "CLASS": "الصف",
+      "CLASS_PLACEHOLDER": "اختر الصف",
       "SECTION": "الشعبة",
+      "SECTION_PLACEHOLDER": "اختر الشعبة",
+      "SECTION_NEEDS_CLASS": "اختر صفًا أولًا",
       "DATE": "التاريخ",
+      "OPEN_CALENDAR": "فتح التقويم",
       "LOCKED_HINT": "احفظ التغييرات أو تراجع عنها أولاً لتتمكن من تغيير الصف أو الشعبة أو التاريخ.",
       "TODAY_ONLY_HINT": "يمكنك تسجيل الحضور لليوم الحالي فقط."
     },
@@ -1428,7 +1439,9 @@
     "RECORD_SHEET": {
       "TITLE": "{{className}} · شعبة {{sectionName}}",
       "TOTAL": "الإجمالي",
-      "MARK_REMAINING_PRESENT": "تحديد الباقي حاضر",
+      "MARK_REMAINING_PRESENT": "الباقون حاضرون",
+      "PROGRESS": "تم تحديد حالة {{marked}} من {{total}}",
+      "STATUS_OF": "حالة {{name}}",
       "UNSAVED_BADGE": "غير محفوظ",
       "UNMARKED_HINT": "حدّد حالة جميع الطلاب قبل الحفظ (المتبقي: {{count}})",
       "UNSAVED_CHANGES": "تغييرات غير محفوظة: {{count}}",
@@ -1456,13 +1469,14 @@
     },
 
     "DAILY_SUMMARY": {
-      "DATE": "التاريخ",
-      "TODAY": "اليوم",
       "LOADING": "جارٍ تحميل ملخص الحضور...",
       "COMPLETED_SECTIONS": "الشعب المكتملة",
       "OF_TOTAL": "من {{total}}",
       "PENDING_SECTIONS": "شعب بانتظار التسجيل",
       "TOTAL_ABSENT": "إجمالي الغياب",
+      "SECTION_TITLE": "{{className}} · شعبة {{sectionName}}",
+      "RECORDED_OF": "سُجّل {{recorded}} من {{total}}",
+      "ABSENT_COUNT": "غياب {{count}}",
 
       "TABLE": {
         "CLASS": "الصف",
@@ -1492,10 +1506,7 @@
     },
 
     "ABSENTEES_LIST": {
-      "DATE": "التاريخ",
       "SECTION": "الشعبة",
-      "TODAY": "اليوم",
-      "TODAY_ONLY": "اليوم فقط",
       "LOADING": "جارٍ تحميل قائمة الغائبين...",
       "TOTAL_ABSENT": "الطلاب الغائبون",
       "WITHOUT_PARENT": "بلا وليّ أمر مرتبط",
@@ -1504,7 +1515,7 @@
       "CLEAR_SEARCH": "مسح البحث",
       "SEARCH_RESULT": "{{shown}} من {{total}} طالب غائب يطابق البحث",
       "ALL_SECTIONS": "كل الشعب",
-      "SECTION_OPTION": "شعبة {{sectionName}}",
+      "SECTION_OPTION": "{{className}} · شعبة {{sectionName}} ({{count}})",
       "SECTION_TITLE": "{{className}} · شعبة {{sectionName}}",
       "ABSENT_COUNT": "{{count}} غائب",
       "OPEN_SHEET": "فتح الكشف",

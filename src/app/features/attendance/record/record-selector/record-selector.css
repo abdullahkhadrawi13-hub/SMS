@@ -1,90 +1,65 @@
-/* The selector behaves like a block inside the record tab. */
-:host {
-  display: block;
-}
-
-
 /* ================================
-   Selector Card
+   Record Selector (class / section / date)
+   Three fields on the page background, above the sheet card.
+   The field look is shared: styles.css ("Form fields").
+   Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
-.selector-card {
-  padding: 20px;
-  margin-bottom: 20px;
+:host {
+  display: block;
 
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  box-sizing: border-box;
+  margin-block-end: var(--sp-4);
 }
 
 .selector-fields {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 240px));
 
-  /* Each field keeps its own height. Without this the other fields are
-     stretched when the date field has a hint line under it. */
+  /* Each field keeps its own height (the date may have a help line). */
   align-items: start;
 
-  gap: 16px;
-}
-
-.selector-fields mat-form-field {
-  width: 100%;
-}
-
-/* The date is picked from the calendar only. */
-.selector-fields input[readonly] {
-  cursor: pointer;
-}
-
-/* Attendance officer: the date is fixed to today, it cannot be opened. */
-.selector-fields .today-only-field input[readonly] {
-  cursor: default;
-}
-
-.selector-fields .today-only-field mat-icon {
-  color: #6b7280;
+  gap: var(--sp-3) var(--sp-4);
 }
 
 
-/* ================================
-   Locked Hint
-   ================================ */
+/* ---------- Locked note (unsaved changes) ---------- */
 
-.selector-hint {
+.selector-note {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 
-  gap: 8px;
+  gap: var(--sp-2);
 
-  margin: 14px 0 0;
+  margin: var(--sp-3) 0 0;
+  padding: 10px 14px;
 
-  color: #92400e;
+  border: 1px solid var(--warn-line);
+  border-radius: var(--r-control);
 
-  font-size: 13px;
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
 }
 
-.selector-hint mat-icon {
+.selector-note mat-icon {
+  flex-shrink: 0;
+
   width: 18px;
   height: 18px;
+  margin-block-start: 1px;
 
   font-size: 18px;
-
-  flex-shrink: 0;
 }
 
 
-/* ================================
-   Responsive
-   ================================ */
+/* ---------- Phone (under 720px): one field per line ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 719.98px) {
 
   .selector-fields {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
 }

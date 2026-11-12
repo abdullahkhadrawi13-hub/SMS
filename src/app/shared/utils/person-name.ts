@@ -11,9 +11,8 @@
 //   );
 //
 // Used by: the navbar, the profile dialog, the welcome of the dashboards,
-// and the students, teachers and parents sections.
-// (absentees-list still has its own copies of these functions; they can
-// move here in a later cleanup.)
+// the students, teachers and parents sections, and the absentees tab
+// of the attendance page.
 
 
 // Anything that has the four-part name in Arabic and English.

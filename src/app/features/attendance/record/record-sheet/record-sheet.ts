@@ -1,9 +1,7 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -36,13 +34,16 @@ interface AttendanceSheetRow {
   changed: boolean;
 }
 
+// The attendance sheet of one section on one day: the head (counters,
+// progress, "the rest are present") and one row per student with a
+// present / absent switch (two real radio buttons).
+// It only shows the data and reports what the user does; the record tab
+// owns the data and talks to the API.
 @Component({
   selector: 'app-record-sheet',
   imports: [
     MatButtonModule,
-    MatButtonToggleModule,
     MatIconModule,
-    MatTableModule,
     TranslatePipe,
     SaveBar,
     StateCard,
@@ -82,17 +83,27 @@ export class RecordSheet {
   readonly reset = output<void>();
   readonly save = output<void>();
 
+  // "Retry" on the error card.
+  readonly retry = output<void>();
+
   // Status values used in the template.
   readonly present = ATTENDANCE_PRESENT;
   readonly absent = ATTENDANCE_ABSENT;
 
-  // Columns displayed in the sheet table.
-  readonly displayedColumns = [
-    'index',
-    'studentNumber',
-    'name',
-    'status'
-  ];
+  // Students that have a status (present or absent), and the same number
+  // as a percentage (0 - 100) for the progress bar.
+  readonly marked = computed(
+    () => this.stats().total - this.stats().unmarked
+  );
+
+  readonly progress = computed(() => {
+
+    const total = this.stats().total;
+
+    return total > 0
+      ? Math.round((this.marked() / total) * 100)
+      : 0;
+  });
 
   private readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'

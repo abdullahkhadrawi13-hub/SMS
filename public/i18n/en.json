@@ -1418,10 +1418,21 @@
       "UNMARKED": "Unmarked"
     },
 
+    "DAY_BAR": {
+      "DATE": "Date",
+      "OPEN_CALENDAR": "Open calendar",
+      "TODAY": "Today",
+      "TODAY_ONLY": "Today only"
+    },
+
     "RECORD_SELECTOR": {
       "CLASS": "Class",
+      "CLASS_PLACEHOLDER": "Choose a class",
       "SECTION": "Section",
+      "SECTION_PLACEHOLDER": "Choose a section",
+      "SECTION_NEEDS_CLASS": "Choose a class first",
       "DATE": "Date",
+      "OPEN_CALENDAR": "Open calendar",
       "LOCKED_HINT": "Save or reset your changes first to change the class, section or date.",
       "TODAY_ONLY_HINT": "You can record attendance for today only."
     },
@@ -1429,7 +1440,9 @@
     "RECORD_SHEET": {
       "TITLE": "{{className}} · Section {{sectionName}}",
       "TOTAL": "Total",
-      "MARK_REMAINING_PRESENT": "Mark remaining present",
+      "MARK_REMAINING_PRESENT": "Mark the rest present",
+      "PROGRESS": "{{marked}} of {{total}} marked",
+      "STATUS_OF": "Status of {{name}}",
       "UNSAVED_BADGE": "Unsaved",
       "UNMARKED_HINT": "Choose a status for every student before saving (remaining: {{count}})",
       "UNSAVED_CHANGES": "Unsaved changes: {{count}}",
@@ -1457,13 +1470,14 @@
     },
 
     "DAILY_SUMMARY": {
-      "DATE": "Date",
-      "TODAY": "Today",
       "LOADING": "Loading attendance summary...",
       "COMPLETED_SECTIONS": "Completed Sections",
       "OF_TOTAL": "of {{total}}",
       "PENDING_SECTIONS": "Pending Sections",
       "TOTAL_ABSENT": "Total Absent",
+      "SECTION_TITLE": "{{className}} · Section {{sectionName}}",
+      "RECORDED_OF": "{{recorded}} of {{total}} recorded",
+      "ABSENT_COUNT": "{{count}} absent",
 
       "TABLE": {
         "CLASS": "Class",
@@ -1493,10 +1507,7 @@
     },
 
     "ABSENTEES_LIST": {
-      "DATE": "Date",
       "SECTION": "Section",
-      "TODAY": "Today",
-      "TODAY_ONLY": "Today only",
       "LOADING": "Loading absent students...",
       "TOTAL_ABSENT": "Absent students",
       "WITHOUT_PARENT": "No linked parent",
@@ -1505,7 +1516,7 @@
       "CLEAR_SEARCH": "Clear search",
       "SEARCH_RESULT": "{{shown}} of {{total}} absent students match the search",
       "ALL_SECTIONS": "All sections",
-      "SECTION_OPTION": "Section {{sectionName}}",
+      "SECTION_OPTION": "{{className}} · Section {{sectionName}} ({{count}})",
       "SECTION_TITLE": "{{className}} · Section {{sectionName}}",
       "ABSENT_COUNT": "{{count}} absent",
       "OPEN_SHEET": "Open sheet",
