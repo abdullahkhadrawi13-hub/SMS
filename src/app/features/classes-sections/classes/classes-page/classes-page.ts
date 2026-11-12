@@ -1,9 +1,13 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin, switchMap } from 'rxjs';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { SchoolClass } from '../../../../core/models/school-class';
 import { Section } from '../../../../core/models/section';
@@ -16,9 +20,14 @@ import { Language } from '../../../../core/services/language';
 import { Permissions } from '../../../../core/services/permissions';
 import { ActionResult } from '../../../../shared/services/action-result';
 
+import { pluralKey } from '../../../../shared/utils/plural';
+
 import {
   ClassesSectionsTerm,
+  getClassCounts,
+  isEmptySection,
   sortClassesByLevel,
+  sortSectionsByName,
   toClassesSectionsTerms
 } from '../../shared/classes-sections-shared';
 
@@ -31,14 +40,19 @@ import {
 } from '../classes-form/classes-form';
 
 // The first page of "Classes & Sections" (/classes-sections):
-// one card per class. A card shows the class's sections and student count
-// in the current term, and opens the class page (/classes-sections/:classId).
+// the header ("Add class"), one line with the school's totals, a yellow
+// note when an active section has no students, then one card per class.
+// A card shows the class's sections and student count in the current term,
+// and opens the class page (/classes-sections/:classId).
 @Component({
   selector: 'app-classes-page',
   imports: [
+    RouterLink,
     ClassesHeader,
     ClassesGrid,
     MatDialogModule,
+    MatIconModule,
+    TranslatePipe,
   ],
   templateUrl: './classes-page.html',
   styleUrl: './classes-page.css',
@@ -113,12 +127,64 @@ export class ClassesPage {
       byClass.set(section.classId, list);
     }
 
-    for (const list of byClass.values()) {
-      list.sort((a, b) => a.sectionAr.localeCompare(b.sectionAr, 'ar'));
+    for (const [classId, list] of byClass) {
+      byClass.set(classId, sortSectionsByName(list));
     }
 
     return byClass;
   });
+
+  private readonly isArabic = computed(
+    () => this.language.currentDirection() === 'rtl'
+  );
+
+  // Between two names in a sentence: "،" in Arabic, "," in English.
+  readonly listSeparator = computed(() => this.isArabic() ? '، ' : ', ');
+
+
+  // ===== The line under the header: the school's totals =====
+  // Active classes, their active sections, and every student,
+  // in the current term. Shown only once the sections have loaded.
+
+  readonly totals = computed(() => {
+    const activeClasses = this.classes().filter(c => c.isActive);
+
+    const sections = activeClasses.flatMap(
+      c => this.sectionsByClass().get(c.schoolClassId) ?? []
+    );
+
+    const counts = getClassCounts(sections);
+
+    return [
+      { key: pluralKey('CLASSES.COUNTS.CLASSES', activeClasses.length), count: activeClasses.length },
+      { key: pluralKey('CLASSES.COUNTS.SECTIONS', counts.activeSections), count: counts.activeSections },
+      { key: pluralKey('CLASSES.COUNTS.STUDENTS', counts.students), count: counts.students }
+    ];
+  });
+
+
+  // ===== The yellow note: active sections with no students =====
+  // Only in active classes. Each one links to its class page.
+
+  readonly emptySections = computed(() =>
+    this.classes()
+      .filter(c => c.isActive)
+      .flatMap(c =>
+        (this.sectionsByClass().get(c.schoolClassId) ?? [])
+          .filter(isEmptySection)
+          .map(section => ({
+            sectionId: section.sectionId,
+            classId: c.schoolClassId,
+            label: this.isArabic()
+              ? `${c.classNameAr} · ${section.sectionAr}`
+              : `${c.classNameEn} · ${section.sectionEn}`
+          }))
+      )
+  );
+
+  readonly emptySectionsKey = computed(
+    () => pluralKey('CLASSES.NOTE.EMPTY_SECTIONS', this.emptySections().length)
+  );
 
   constructor() {
     // Load the classes and their sections when the page is opened.

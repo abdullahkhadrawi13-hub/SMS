@@ -1,102 +1,223 @@
-<!-- Error -->
-@if (errorMessage()) {
+<!-- The card keeps its shape in every state; the state is drawn inside it. -->
+<div class="data-card" [class.is-refreshing]="isRefreshing()">
 
-  <app-state-card
-    type="error"
-    [message]="errorMessage() | translate"
-    (retry)="retry.emit()"
-  />
+  <div class="data-card-body">
 
-}
-
-
-<!-- First load -->
-@else if (isInitialLoading()) {
-
-  <app-state-card
-    type="loading"
-    [message]="'CLASS_SECTIONS.LIST.LOADING' | translate"
-  />
-
-}
-
-
-<!-- Sections exist, but none match the status filter -->
-@else if (isFilteredEmpty()) {
-
-  <app-state-card
-    type="empty"
-    icon="filter_alt_off"
-    [message]="'CLASS_SECTIONS.LIST.NO_MATCH' | translate"
-  >
-    <button actions mat-button type="button" (click)="showAll.emit()">
-      {{ 'CLASS_SECTIONS.LIST.SHOW_ALL' | translate }}
-    </button>
-  </app-state-card>
-
-}
-
-
-<!-- No sections, and the user cannot add one -->
-@else if (sections().length === 0 && !showAddRow()) {
-
-  <app-state-card
-    type="empty"
-    icon="groups"
-    [message]="'CLASS_SECTIONS.LIST.EMPTY' | translate"
-  />
-
-}
-
-
-<!-- The rows -->
-@else {
-
-  <div class="list-wrapper" [class.is-refreshing]="isRefreshing()">
-
-    <!-- Reload indicator: sits on top without taking any height -->
-    @if (isRefreshing()) {
-      <mat-progress-bar class="refresh-bar" mode="indeterminate"></mat-progress-bar>
+    <!-- Error -->
+    @if (errorMessage()) {
+      <app-state-card
+        type="error"
+        [message]="errorMessage() | translate"
+        [framed]="false"
+        (retry)="retry.emit()"
+      />
     }
 
-    <div class="rows">
+    <!-- First load -->
+    @else if (isInitialLoading()) {
+      <app-state-card
+        type="loading"
+        [message]="'CLASS_SECTIONS.LIST.LOADING' | translate"
+        [framed]="false"
+      />
+    }
 
-      @for (section of sections(); track section.sectionId) {
-        <app-section-row
-          [section]="section"
-          [color]="color()"
-          [maxStudentCount]="maxStudentCount()"
-          [canManage]="canManage()"
-          [isToggling]="togglingSectionId() !== null"
-          (edit)="editSection.emit(section)"
-          (toggleStatus)="toggleStatus.emit(section)"
-        />
-      }
-
-      <!-- Add section (Admin, active class) -->
-      @if (showAddRow()) {
-        <button type="button" class="add-row" (click)="addSection.emit()">
-
-          <span class="add-icon">
-            <mat-icon>add</mat-icon>
-          </span>
-
-          <span class="add-text">
-            <strong>{{ 'CLASS_SECTIONS.LIST.ADD_TITLE' | translate }}</strong>
-            <small>
-              {{
-                totalCount() === 0
-                  ? ('CLASS_SECTIONS.LIST.ADD_HINT_FIRST' | translate)
-                  : ('CLASS_SECTIONS.LIST.ADD_HINT' | translate: { className: className() })
-              }}
-            </small>
-          </span>
-
+    <!-- Sections exist, but none match the status filter -->
+    @else if (isFilteredEmpty()) {
+      <app-state-card
+        type="empty"
+        icon="filter_alt_off"
+        [title]="'CLASS_SECTIONS.LIST.NO_MATCH' | translate"
+        [framed]="false"
+      >
+        <button actions mat-stroked-button type="button" (click)="showAll.emit()">
+          {{ 'CLASS_SECTIONS.LIST.SHOW_ALL' | translate }}
         </button>
+      </app-state-card>
+    }
+
+    <!-- No sections yet -->
+    @else if (sections().length === 0) {
+      <app-state-card
+        type="empty"
+        icon="groups"
+        [title]="'CLASS_SECTIONS.LIST.EMPTY' | translate"
+        [message]="canAdd() ? ('CLASS_SECTIONS.LIST.EMPTY_HINT' | translate) : ''"
+        [framed]="false"
+      />
+    }
+
+    <!-- The rows -->
+    @else {
+
+      <!-- Reload indicator: sits on top without taking any height -->
+      @if (isRefreshing()) {
+        <mat-progress-bar class="data-refresh" mode="indeterminate"></mat-progress-bar>
       }
 
-    </div>
+      <!-- Phone: one item per section, two lines -->
+      @if (isPhone()) {
+        <ul class="data-items">
+          @for (row of rows(); track row.section.sectionId) {
+            <li class="data-item">
+
+              <span class="section-letter" aria-hidden="true">{{ row.letter }}</span>
+
+              <div class="data-item-text">
+                <div class="data-item-line1">
+                  <ng-container [ngTemplateOutlet]="nameLink" [ngTemplateOutletContext]="{ $implicit: row }" />
+
+                  @if (!row.section.isActive) {
+                    <app-status-badge tone="neutral">
+                      {{ 'CLASS_SECTIONS.ROW.INACTIVE' | translate }}
+                    </app-status-badge>
+                  }
+                </div>
+
+                <span class="data-item-line2 tabular">
+                  @if (row.isEmpty) {
+                    <span class="no-students">
+                      <mat-icon aria-hidden="true">warning</mat-icon>
+                      {{ 'CLASS_SECTIONS.ROW.EMPTY' | translate }}
+                    </span>
+                  } @else {
+                    {{ row.studentsKey | translate: { count: row.section.studentCount } }}
+                  }
+                </span>
+              </div>
+
+              <ng-container [ngTemplateOutlet]="actionsMenu" [ngTemplateOutletContext]="{ $implicit: row }" />
+
+            </li>
+          }
+        </ul>
+      }
+
+      <!-- Computer: the table -->
+      @else {
+        <div class="data-table">
+          <table class="sections-table">
+
+            <thead>
+              <tr>
+                <th scope="col">{{ 'CLASS_SECTIONS.LIST.SECTION' | translate }}</th>
+                <th scope="col" class="col-students">{{ 'CLASS_SECTIONS.LIST.STUDENTS' | translate }}</th>
+                <th scope="col">{{ 'CLASS_SECTIONS.LIST.STATUS' | translate }}</th>
+                <th scope="col" class="col-actions">
+                  <span class="visually-hidden">{{ 'CLASS_SECTIONS.LIST.ACTIONS' | translate }}</span>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (row of rows(); track row.section.sectionId) {
+                <tr>
+
+                  <!-- Letter + name (a link to the section's students) + the other language -->
+                  <td>
+                    <div class="section-name">
+                      <span class="section-letter" aria-hidden="true">{{ row.letter }}</span>
+
+                      <div class="section-name-text">
+                        <ng-container [ngTemplateOutlet]="nameLink" [ngTemplateOutletContext]="{ $implicit: row }" />
+                        <small [attr.dir]="row.otherNameDir">
+                          {{ otherNameKey() | translate: { name: row.otherName } }}
+                        </small>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Students: a gold bar (relative to the biggest section) + the number -->
+                  <td class="col-students">
+                    <div class="students-cell">
+                      @if (row.isEmpty) {
+                        <span class="no-students">
+                          <mat-icon aria-hidden="true">warning</mat-icon>
+                          {{ 'CLASS_SECTIONS.ROW.EMPTY' | translate }}
+                        </span>
+                      } @else {
+                        <span class="bar" aria-hidden="true">
+                          <span class="bar-fill" [style.width.%]="row.barWidth"></span>
+                        </span>
+                      }
+
+                      <span class="count tabular">{{ row.section.studentCount }}</span>
+                    </div>
+                  </td>
+
+                  <!-- Status -->
+                  <td>
+                    <app-status-badge [tone]="row.section.isActive ? 'ok' : 'neutral'">
+                      {{ (row.section.isActive ? 'CLASS_SECTIONS.ROW.ACTIVE' : 'CLASS_SECTIONS.ROW.INACTIVE') | translate }}
+                    </app-status-badge>
+                  </td>
+
+                  <!-- ⋮ (Admin only) -->
+                  <td class="col-actions">
+                    <ng-container [ngTemplateOutlet]="actionsMenu" [ngTemplateOutletContext]="{ $implicit: row }" />
+                  </td>
+
+                </tr>
+              }
+            </tbody>
+
+          </table>
+        </div>
+      }
+
+    }
 
   </div>
 
-}
+</div>
+
+
+<!-- The section's name: a link to the students page, filtered on this class and section -->
+<ng-template #nameLink let-row>
+  <a
+    class="data-link"
+    routerLink="/students"
+    [queryParams]="row.studentsQuery"
+    [attr.aria-label]="'CLASS_SECTIONS.ROW.OPEN_STUDENTS' | translate: { name: (nameKey() | translate: { name: row.name }) }"
+    [title]="'CLASS_SECTIONS.ROW.OPEN_STUDENTS' | translate: { name: (nameKey() | translate: { name: row.name }) }"
+  >{{ nameKey() | translate: { name: row.name } }}</a>
+</ng-template>
+
+
+<!-- ⋮ of a section: edit, activate / deactivate (Admin only) -->
+<ng-template #actionsMenu let-row>
+  @if (canManage()) {
+    <button
+      mat-icon-button
+      type="button"
+      class="data-actions"
+      [matMenuTriggerFor]="menu"
+      [attr.aria-label]="'CLASS_SECTIONS.ROW.ACTIONS' | translate: { name: (nameKey() | translate: { name: row.name }) }"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item type="button" (click)="editSection.emit(row.section)">
+        <mat-icon>edit</mat-icon>
+        <span>{{ 'CLASS_SECTIONS.ROW.EDIT' | translate }}</span>
+      </button>
+
+      <button
+        mat-menu-item
+        type="button"
+        [disabled]="togglingSectionId() !== null"
+        (click)="toggleStatus.emit(row.section)"
+      >
+        <mat-icon>{{ row.section.isActive ? 'block' : 'check_circle' }}</mat-icon>
+        <span>
+          {{
+            row.section.isActive
+              ? ('CLASS_SECTIONS.ROW.DEACTIVATE' | translate)
+              : ('CLASS_SECTIONS.ROW.ACTIVATE' | translate)
+          }}
+        </span>
+      </button>
+    </mat-menu>
+  }
+</ng-template>

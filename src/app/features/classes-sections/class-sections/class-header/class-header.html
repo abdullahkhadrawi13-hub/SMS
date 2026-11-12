@@ -1,0 +1,73 @@
+<app-page-header
+  [title]="className()"
+  backLink="/classes-sections"
+  [backLabel]="'CLASS_SECTIONS.BACK' | translate"
+>
+
+  <!-- Next to the name -->
+  @if (schoolClass().isGraduationGrade) {
+    <app-status-badge badge tone="gold">
+      {{ 'CLASSES.CARD.GRADUATION_BADGE' | translate }}
+    </app-status-badge>
+  }
+
+  @if (!schoolClass().isActive) {
+    <app-status-badge badge tone="neutral">
+      {{ 'CLASS_SECTIONS.HEADER.INACTIVE_CLASS' | translate }}
+    </app-status-badge>
+  }
+
+  <!-- "Level 8 · 3 sections · 64 students" (the counts once the sections loaded) -->
+  <span subtitle class="tabular">
+    {{ 'CLASSES.CARD.LEVEL' | translate }} {{ schoolClass().level }}
+    @if (sectionsLoaded()) {
+      · {{ sectionsKey() | translate: { count: activeSections() } }}
+      · {{ studentsKey() | translate: { count: students() } }}
+    }
+  </span>
+
+  <!-- Class actions (Admin only); the primary button last -->
+  @if (canManage()) {
+    <ng-container actions>
+      <button mat-stroked-button type="button" (click)="editClass.emit()">
+        <mat-icon>edit</mat-icon>
+        {{ 'CLASS_SECTIONS.HEADER.EDIT_CLASS' | translate }}
+      </button>
+
+      <button
+        mat-icon-button
+        type="button"
+        [matMenuTriggerFor]="classMenu"
+        [attr.aria-label]="'CLASSES.CARD.ACTIONS' | translate: { name: className() }"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #classMenu="matMenu">
+        <button
+          mat-menu-item
+          type="button"
+          [disabled]="isToggling()"
+          (click)="toggleStatus.emit()"
+        >
+          <mat-icon>{{ schoolClass().isActive ? 'block' : 'check_circle' }}</mat-icon>
+          <span>
+            {{
+              schoolClass().isActive
+                ? ('CLASS_SECTIONS.HEADER.DEACTIVATE_CLASS' | translate)
+                : ('CLASS_SECTIONS.HEADER.ACTIVATE_CLASS' | translate)
+            }}
+          </span>
+        </button>
+      </mat-menu>
+    </ng-container>
+  }
+
+  @if (canAddSection()) {
+    <button actions mat-flat-button type="button" (click)="addSection.emit()">
+      <mat-icon>add</mat-icon>
+      {{ 'CLASS_SECTIONS.HEADER.ADD_SECTION' | translate }}
+    </button>
+  }
+
+</app-page-header>

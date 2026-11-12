@@ -418,25 +418,37 @@
   "CLASSES": {
     "HEADER": {
       "TITLE": "Classes & Sections",
-      "SUBTITLE": "Choose a class to see its sections and how many students each has",
-      "COUNTS_TERM": "Counts for {{term}}"
+      "SUBTITLE": "The school’s classes, their sections and student counts.",
+      "ADD_CLASS": "Add class"
     },
     "GRID": {
       "LOADING": "Loading classes...",
       "EMPTY": "No classes yet",
       "RETRY": "Retry",
-      "ADD_TITLE": "Add Academic Class",
-      "ADD_HINT": "Add a new class with a level that sets its order"
+      "EMPTY_HINT": "Add the first class with the “Add class” button.",
+      "INACTIVE_GROUP": "Inactive classes"
     },
     "CARD": {
       "LEVEL": "Level",
       "GRADUATION_BADGE": "Graduation class",
-      "ACTIONS": "Actions",
+      "ACTIONS": "Actions for {{name}}",
       "EDIT": "Edit",
       "ACTIVATE": "Activate",
       "DEACTIVATE": "Deactivate",
-      "OPEN": "Open {{name}}",
-      "NO_SECTIONS": "No sections yet"
+      "NO_SECTIONS": "No sections yet",
+      "SECTION_LABEL": "Section {{name}}",
+      "SECTION_EMPTY": "No students",
+      "SECTION_INACTIVE": "Inactive"
+    },
+    "NOTE": {
+      "EMPTY_SECTIONS": {
+        "ZERO": "No active section is empty",
+        "ONE": "An active section has no students:",
+        "TWO": "2 active sections have no students:",
+        "FEW": "{{count}} active sections have no students:",
+        "MANY": "{{count}} active sections have no students:",
+        "OTHER": "{{count}} active sections have no students:"
+      }
     },
     "FORM": {
       "ADD_TITLE": "Add Class",
@@ -462,6 +474,14 @@
       }
     },
     "COUNTS": {
+      "CLASSES": {
+        "ZERO": "No classes",
+        "ONE": "1 class",
+        "TWO": "2 classes",
+        "FEW": "{{count}} classes",
+        "MANY": "{{count}} classes",
+        "OTHER": "{{count}} classes"
+      },
       "SECTIONS": {
         "ZERO": "No sections",
         "ONE": "1 section",
@@ -490,19 +510,18 @@
     "BACK": "Classes & Sections",
     "LOADING": "Loading the class...",
     "RETRY": "Retry",
-    "BANNER": {
-      "ACTIVE_SECTIONS": "Active sections",
-      "STUDENTS": "Students",
-      "EMPTY_SECTIONS": "Empty sections",
+    "HEADER": {
       "INACTIVE_CLASS": "Inactive class",
       "EDIT_CLASS": "Edit class",
       "ACTIVATE_CLASS": "Activate class",
-      "DEACTIVATE_CLASS": "Deactivate class"
+      "DEACTIVATE_CLASS": "Deactivate class",
+      "ADD_SECTION": "Add section"
     },
     "TOOLBAR": {
-      "TERM": "Students in",
+      "TERM": "Term",
       "CURRENT": "current",
       "STATUS": "Section status",
+      "STATUS_OPTION": "Status: {{name}}",
       "STATUS_ALL": "All",
       "STATUS_ACTIVE": "Active",
       "STATUS_INACTIVE": "Inactive"
@@ -510,27 +529,22 @@
     "LIST": {
       "LOADING": "Loading sections...",
       "EMPTY": "This class has no sections yet.",
+      "EMPTY_HINT": "Add the first section with the “Add section” button.",
       "NO_MATCH": "No sections with this status.",
       "SHOW_ALL": "Show all sections",
-      "ADD_TITLE": "Add section",
-      "ADD_HINT": "To {{className}}",
-      "ADD_HINT_FIRST": "This class has no sections yet"
+      "SECTION": "Section",
+      "STUDENTS": "Students",
+      "STATUS": "Status",
+      "ACTIONS": "Actions"
     },
     "ROW": {
       "NAME_AR": "شعبة {{name}}",
       "NAME_EN": "Section {{name}}",
-      "STUDENTS_UNIT": {
-        "ZERO": "students",
-        "ONE": "student",
-        "TWO": "students",
-        "FEW": "students",
-        "MANY": "students",
-        "OTHER": "students"
-      },
       "ACTIVE": "Active",
       "INACTIVE": "Inactive",
-      "EMPTY": "Empty",
-      "ACTIONS": "Section {{name}} actions",
+      "EMPTY": "No students",
+      "OPEN_STUDENTS": "{{name}}: view students",
+      "ACTIONS": "Actions for {{name}}",
       "EDIT": "Edit section",
       "ACTIVATE": "Activate section",
       "DEACTIVATE": "Deactivate section"

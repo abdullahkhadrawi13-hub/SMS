@@ -6,7 +6,6 @@ import { forkJoin } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -24,8 +23,8 @@ import { ActionResult } from '../../../../shared/services/action-result';
 import {
   ClassesSectionsTerm,
   SectionStatusFilter,
-  getClassColor,
   sortClassesByLevel,
+  sortSectionsByName,
   toClassesSectionsTerms
 } from '../../shared/classes-sections-shared';
 
@@ -35,7 +34,7 @@ import {
   ClassFormResult
 } from '../../classes/classes-form/classes-form';
 
-import { ClassBanner } from '../class-banner/class-banner';
+import { ClassHeader } from '../class-header/class-header';
 import { SectionsToolbar } from '../sections-toolbar/sections-toolbar';
 import { SectionsList } from '../sections-list/sections-list';
 import {
@@ -46,8 +45,10 @@ import {
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 // The page of one class: /classes-sections/:classId
-// (opened from a class card). It shows the class (banner),
-// then its sections with their student count in the chosen term.
+// (opened from a class card). It shows the class (header with its
+// counts and actions), the term and status lists, then its sections
+// with their student count in the chosen term. A section's name opens
+// the students page filtered on this class and section.
 //
 // The parent owns and loads all the data;
 // the children only display it and send the actions up.
@@ -57,9 +58,8 @@ import { StateCard } from '../../../../shared/components/state-card/state-card';
     RouterLink,
     MatButtonModule,
     MatDialogModule,
-    MatIconModule,
     TranslatePipe,
-    ClassBanner,
+    ClassHeader,
     SectionsToolbar,
     SectionsList,
     StateCard,
@@ -94,23 +94,13 @@ export class ClassSectionsPage {
   // The class id from the URL. 0 = not a valid id.
   readonly classId = signal(0);
 
-  // Every class, sorted by level: the class's position in this list
-  // gives it the same color as its card on the classes page.
+  // Every class (the list endpoint has no "get one class").
   private readonly classes = signal<SchoolClass[]>([]);
 
   // This page's class (null while loading, or not found).
   readonly schoolClass = computed(
     () => this.classes().find(c => c.schoolClassId === this.classId()) ?? null
   );
-
-  // The class colors (grey for an inactive class).
-  readonly color = computed(() => {
-    const schoolClass = this.schoolClass();
-
-    return schoolClass
-      ? getClassColor(schoolClass, this.classes().indexOf(schoolClass))
-      : null;
-  });
 
   // First load of the class and the terms (the whole page waits for it).
   readonly isLoadingPage = signal(false);
@@ -272,11 +262,7 @@ export class ClassSectionsPage {
             return;
           }
 
-          this.sections.set(
-            [...response.data].sort((a, b) =>
-              a.sectionAr.localeCompare(b.sectionAr, 'ar')
-            )
-          );
+          this.sections.set(sortSectionsByName(response.data));
         },
 
         error: (error: HttpErrorResponse) => {

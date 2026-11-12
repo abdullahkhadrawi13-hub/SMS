@@ -75,3 +75,10 @@ mat-icon {
   border-color: var(--border);
   color: var(--muted);
 }
+
+/* Gold: the graduation class. Gold is never the text colour on white
+   (contrast 2.6:1), so the fill is light gold and the text dark gold. */
+:host([data-tone='gold']) {
+  background: var(--gold-bg);
+  color: var(--gold-ink);
+}

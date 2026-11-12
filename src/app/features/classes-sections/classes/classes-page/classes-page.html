@@ -1,9 +1,37 @@
 <div class="classes-page">
 
-  <!-- Page Header (+ which term the counts are for) -->
-  <app-classes-header [currentTerm]="currentTerm()" />
+  <!-- Title, description, "Add class" (Admin only) -->
+  <app-classes-header [canManage]="canManage()" (addClass)="openAddClass()" />
 
-  <!-- Classes Grid (error / loading / cards / add card) -->
+  <!-- The school's totals and the yellow note: only once the sections loaded -->
+  @if (sectionsLoaded() && classes().length > 0 && !errorMessage()) {
+    <div class="classes-summary">
+
+      <p class="totals tabular">
+        @for (item of totals(); track item.key; let last = $last) {
+          <span>{{ item.key | translate: { count: item.count } }}</span>
+          @if (!last) {
+            <span aria-hidden="true">·</span>
+          }
+        }
+      </p>
+
+      @if (emptySections().length > 0) {
+        <div class="note-warn" role="status">
+          <mat-icon aria-hidden="true">warning</mat-icon>
+          <span>
+            {{ emptySectionsKey() | translate: { count: emptySections().length } }}
+            @for (item of emptySections(); track item.sectionId; let last = $last) {
+              <a [routerLink]="['/classes-sections', item.classId]">{{ item.label }}</a>{{ last ? '' : listSeparator() }}
+            }
+          </span>
+        </div>
+      }
+
+    </div>
+  }
+
+  <!-- Classes Grid (error / loading / empty / cards) -->
   <app-classes-grid
     [classes]="classes()"
     [sectionsByClass]="sectionsByClass()"
@@ -13,7 +41,6 @@
     [canManage]="canManage()"
     [togglingClassId]="togglingClassId()"
     (retry)="retry()"
-    (addClass)="openAddClass()"
     (editClass)="openEditClass($event)"
     (toggleStatus)="toggleClassStatus($event)"
   />
