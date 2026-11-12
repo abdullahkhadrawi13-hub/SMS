@@ -63,3 +63,11 @@ export function nameValidator(control: AbstractControl<string>): ValidationError
 export function digitsOnlyValidator(control: AbstractControl<string>): ValidationErrors | null {
   return /^[0-9]*$/.test(control.value) ? null : { digitsOnly: true };
 }
+
+
+// A text field that must be filled (12 Nov 2026, class and section forms):
+// only spaces counts as empty, so "   " says "required" instead of
+// being sent as an empty name. (Validators.required accepts spaces.)
+export function requiredTextValidator(control: AbstractControl<string>): ValidationErrors | null {
+  return control.value.trim() === '' ? { required: true } : null;
+}

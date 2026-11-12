@@ -1,160 +1,204 @@
-<h2 mat-dialog-title>
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-  {{
-    isEditMode
-      ? ('CLASSES.FORM.EDIT_TITLE' | translate)
-      : ('CLASSES.FORM.ADD_TITLE' | translate)
-  }}
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode ? 'CLASSES.FORM.EDIT_TITLE' : 'CLASSES.FORM.ADD_TITLE') | translate }}
+    </h2>
 
-</h2>
+    @if (isEditMode) {
+      <p class="fd-head-sub">{{ className() }}</p>
+    } @else {
+      <p class="fd-head-sub explain">
+        {{ 'CLASSES.FORM.ADD_SUBTITLE' | translate }}
+      </p>
+    }
+  </div>
 
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'CLASSES.FORM.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="requestClose()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
 
-<mat-dialog-content>
-
-  <form
-    id="class-form"
-    [formGroup]="classForm"
-    class="class-form"
-    (ngSubmit)="submit()"
-    novalidate>
-
-    <!-- Arabic name -->
-    <mat-form-field appearance="outline">
-
-      <mat-label>
-        {{ 'CLASSES.FORM.NAME_AR' | translate }}
-      </mat-label>
-
-      <input
-        matInput
-        type="text"
-        formControlName="classNameAr"
-        dir="rtl"
-        autocomplete="off">
-
-      @if (isFieldInvalid('classNameAr')) {
-        <mat-error>
-          @if (classForm.controls.classNameAr.hasError('required')) {
-            {{ 'CLASSES.FORM.VALIDATION.NAME_AR_REQUIRED' | translate }}
-          } @else if (classForm.controls.classNameAr.hasError('pattern')) {
-            {{ 'CLASSES.FORM.VALIDATION.ARABIC_ONLY' | translate }}
-          } @else if (classForm.controls.classNameAr.hasError('maxlength')) {
-            {{ 'CLASSES.FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
-          }
-        </mat-error>
-      }
-
-    </mat-form-field>
+</header>
 
 
-    <!-- English name -->
-    <mat-form-field appearance="outline">
+<form class="fd-form" [formGroup]="classForm" (ngSubmit)="submit()" novalidate>
 
-      <mat-label>
-        {{ 'CLASSES.FORM.NAME_EN' | translate }}
-      </mat-label>
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
 
-      <input
-        matInput
-        type="text"
-        formControlName="classNameEn"
-        dir="ltr"
-        autocomplete="off">
+    <div class="fd-grid cf-fields">
 
-      @if (isFieldInvalid('classNameEn')) {
-        <mat-error>
-          @if (classForm.controls.classNameEn.hasError('required')) {
-            {{ 'CLASSES.FORM.VALIDATION.NAME_EN_REQUIRED' | translate }}
-          } @else if (classForm.controls.classNameEn.hasError('pattern')) {
-            {{ 'CLASSES.FORM.VALIDATION.ENGLISH_ONLY' | translate }}
-          } @else if (classForm.controls.classNameEn.hasError('maxlength')) {
-            {{ 'CLASSES.FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
-          }
-        </mat-error>
-      }
+      <!-- Arabic name -->
+      <div class="field">
+        <label class="field-label" for="cf-classNameAr">{{ 'CLASSES.FORM.NAME_AR' | translate }}</label>
 
-    </mat-form-field>
+        <div class="field-box" [class.is-invalid]="isFieldInvalid('classNameAr')">
+          <input
+            id="cf-classNameAr"
+            formControlName="classNameAr"
+            [maxlength]="nameMaxLength"
+            [attr.aria-invalid]="isFieldInvalid('classNameAr')"
+            [attr.aria-describedby]="describedBy('classNameAr')"
+            [attr.cdkFocusInitial]="isEditMode ? null : ''"
+            dir="rtl"
+            autocomplete="off"
+          />
+        </div>
+
+        @if (isFieldInvalid('classNameAr')) {
+          <div class="field-error" id="cf-classNameAr-error">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (classForm.controls.classNameAr.hasError('required')) {
+                {{ 'CLASSES.FORM.VALIDATION.REQUIRED' | translate }}
+              } @else {
+                {{ 'CLASSES.FORM.VALIDATION.ARABIC_ONLY' | translate }}
+              }
+            </span>
+          </div>
+        }
+      </div>
 
 
-    <!-- Level -->
-    <mat-form-field appearance="outline">
+      <!-- English name -->
+      <div class="field">
+        <label class="field-label" for="cf-classNameEn">{{ 'CLASSES.FORM.NAME_EN' | translate }}</label>
 
-      <mat-label>
-        {{ 'CLASSES.FORM.LEVEL' | translate }}
-      </mat-label>
+        <div class="field-box" [class.is-invalid]="isFieldInvalid('classNameEn')">
+          <input
+            id="cf-classNameEn"
+            formControlName="classNameEn"
+            [maxlength]="nameMaxLength"
+            [attr.aria-invalid]="isFieldInvalid('classNameEn')"
+            [attr.aria-describedby]="describedBy('classNameEn')"
+            dir="ltr"
+            autocomplete="off"
+          />
+        </div>
 
-      <input
-        matInput
-        type="number"
-        min="1"
-        step="1"
-        inputmode="numeric"
-        formControlName="level"
-        dir="ltr">
+        @if (isFieldInvalid('classNameEn')) {
+          <div class="field-error" id="cf-classNameEn-error">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (classForm.controls.classNameEn.hasError('required')) {
+                {{ 'CLASSES.FORM.VALIDATION.REQUIRED' | translate }}
+              } @else {
+                {{ 'CLASSES.FORM.VALIDATION.ENGLISH_ONLY' | translate }}
+              }
+            </span>
+          </div>
+        }
+      </div>
 
-      <!-- The hint and the error use the same one-line space under the field. -->
-      @if (isFieldInvalid('level')) {
-        <mat-error>
-          @if (classForm.controls.level.hasError('required')) {
-            {{ 'CLASSES.FORM.VALIDATION.LEVEL_REQUIRED' | translate }}
-          } @else {
-            {{ 'CLASSES.FORM.VALIDATION.LEVEL_INVALID' | translate }}
-          }
-        </mat-error>
-      } @else {
-        <mat-hint>
-          {{ 'CLASSES.FORM.LEVEL_HINT' | translate }}
-        </mat-hint>
-      }
 
-    </mat-form-field>
+      <!-- Level -->
+      <div class="field">
+        <label class="field-label" for="cf-level">{{ 'CLASSES.FORM.LEVEL' | translate }}</label>
+
+        <div class="field-box cf-level-box" [class.is-invalid]="isFieldInvalid('level')">
+          <input
+            id="cf-level"
+            class="tabular"
+            formControlName="level"
+            inputmode="numeric"
+            [maxlength]="levelMaxDigits"
+            [attr.aria-invalid]="isFieldInvalid('level')"
+            [attr.aria-describedby]="describedBy('level', true)"
+            (input)="onLevelInput($event)"
+            dir="ltr"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- The help and the error use the same line under the field. -->
+        @if (isFieldInvalid('level')) {
+          <div class="field-error" id="cf-level-error">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (classForm.controls.level.hasError('required')) {
+                {{ 'CLASSES.FORM.VALIDATION.REQUIRED' | translate }}
+              } @else {
+                {{ 'CLASSES.FORM.VALIDATION.LEVEL_INVALID' | translate }}
+              }
+            </span>
+          </div>
+        } @else {
+          <div class="field-help" id="cf-level-help">{{ 'CLASSES.FORM.LEVEL_HINT' | translate }}</div>
+        }
+      </div>
+
+    </div>
 
 
     <!-- Graduation class -->
-    <div class="graduation-field">
+    <div class="cf-graduation">
 
-      <mat-slide-toggle formControlName="isGraduationGrade">
-        {{ 'CLASSES.FORM.GRADUATION' | translate }}
+      <mat-slide-toggle
+        formControlName="isGraduationGrade"
+        aria-describedby="cf-graduation-help"
+      >
+        <span class="cf-graduation-label">{{ 'CLASSES.FORM.GRADUATION' | translate }}</span>
       </mat-slide-toggle>
 
-      <p class="graduation-hint">
+      <p class="field-help" id="cf-graduation-help">
         {{ 'CLASSES.FORM.GRADUATION_HINT' | translate }}
       </p>
 
     </div>
 
-  </form>
-
-</mat-dialog-content>
+  </div>
 
 
-<mat-dialog-actions align="end">
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
 
-  <button
-    mat-stroked-button
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="cancel()">
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ invalidCountKey() | translate: { count: invalidCount() } }}
+      }
+    </span>
 
-    {{ 'CLASSES.FORM.CANCEL' | translate }}
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="requestClose()"
+    >
+      {{ 'CLASSES.FORM.CANCEL' | translate }}
+    </button>
 
-  </button>
+    <button
+      mat-flat-button
+      type="submit"
+      class="fd-submit"
+      [class.is-busy]="isSubmitting()"
+      [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+    >
+      <!-- The icon stays outside @if so mat-button can place it;
+           while saving it is hidden and the spinner shows instead. -->
+      <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
+        {{ isEditMode ? 'save' : 'add' }}
+      </mat-icon>
 
+      @if (isSubmitting()) {
+        <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+      }
 
-  <button
-    mat-flat-button
-    type="submit"
-    form="class-form"
-    [disabled]="isSubmitting()">
+      {{
+        (isSubmitting()
+          ? 'CLASSES.FORM.SAVING'
+          : isEditMode ? 'CLASSES.FORM.SAVE' : 'CLASSES.FORM.ADD') | translate
+      }}
+    </button>
 
-    {{
-      isSubmitting()
-        ? ('CLASSES.FORM.SAVING' | translate)
-        : isEditMode
-          ? ('CLASSES.FORM.SAVE' | translate)
-          : ('CLASSES.FORM.ADD' | translate)
-    }}
+  </footer>
 
-  </button>
-
-</mat-dialog-actions>
+</form>

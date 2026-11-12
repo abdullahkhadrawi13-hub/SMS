@@ -346,6 +346,11 @@ export class ClassesPage {
       .open<ClassesForm, ClassFormData, ClassFormResult>(ClassesForm, {
         width: '500px',
         maxWidth: '95vw',
+        maxHeight: '90vh',
+
+        // Shared form panel (styles.css): full screen on the phone
+        panelClass: 'form-dialog',
+
         direction: this.language.currentDirection(),
         data
       })
