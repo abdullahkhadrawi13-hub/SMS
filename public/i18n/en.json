@@ -1407,8 +1407,7 @@
         "MANY": "{{count}} subjects",
         "OTHER": "{{count}} subjects"
       },
-      "PASSING_MARK": "Passing mark {{mark}} of 100",
-      "NO_PLAN": "The administration hasn't set the plan yet"
+      "SUBJECT_ARIA": "{{subject}} · plan: {{status}}"
     },
     "PAGE": {
       "LOADING": "Loading your classes...",
@@ -1454,6 +1453,7 @@
       "FORM": {
         "ADD_TITLE": "Add assessment",
         "EDIT_TITLE": "Edit assessment",
+        "CLOSE": "Close",
         "COMPONENT": "Component: {{name}} · weight {{weight}}%",
         "NAME_AR": "Arabic name",
         "NAME_EN": "English name",

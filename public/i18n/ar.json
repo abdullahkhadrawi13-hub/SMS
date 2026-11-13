@@ -1406,8 +1406,7 @@
         "MANY": "{{count}} مادة",
         "OTHER": "{{count}} مادة"
       },
-      "PASSING_MARK": "علامة النجاح {{mark}} من 100",
-      "NO_PLAN": "لم تحدد الإدارة الخطة بعد"
+      "SUBJECT_ARIA": "{{subject}} · الخطة: {{status}}"
     },
     "PAGE": {
       "LOADING": "جاري تحميل صفوفك...",
@@ -1453,6 +1452,7 @@
       "FORM": {
         "ADD_TITLE": "إضافة تقييم",
         "EDIT_TITLE": "تعديل التقييم",
+        "CLOSE": "إغلاق",
         "COMPONENT": "البند: {{name}} · وزنه {{weight}}%",
         "NAME_AR": "الاسم بالعربية",
         "NAME_EN": "الاسم بالإنجليزية",
