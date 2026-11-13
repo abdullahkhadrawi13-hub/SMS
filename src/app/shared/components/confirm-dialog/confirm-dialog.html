@@ -1,0 +1,40 @@
+<div class="confirm" [class.danger]="data.tone === 'danger'">
+
+  <div class="confirm-body">
+
+    <span class="confirm-icon" aria-hidden="true">
+      <mat-icon>{{ data.icon }}</mat-icon>
+    </span>
+
+    <h2 mat-dialog-title>
+      {{ data.titleKey | translate }}
+    </h2>
+
+    <mat-dialog-content>
+      <p>{{ data.messageKey | translate: data.messageParams }}</p>
+    </mat-dialog-content>
+
+  </div>
+
+  <mat-dialog-actions>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="cancel()"
+    >
+      {{ 'SHARED.CONFIRM.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="button"
+      [class.btn-danger]="data.tone === 'danger'"
+      (click)="confirm()"
+    >
+      {{ data.confirmKey | translate }}
+    </button>
+
+  </mat-dialog-actions>
+
+</div>

@@ -1,135 +1,149 @@
-<!-- Subject form dialog -->
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-<h2 mat-dialog-title>
-  {{
-    isEditMode
-      ? ('SUBJECTS.CATALOG_FORM.EDIT_TITLE' | translate)
-      : ('SUBJECTS.CATALOG_FORM.TITLE' | translate)
-  }}
-</h2>
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode ? 'SUBJECTS.CATALOG_FORM.EDIT_TITLE' : 'SUBJECTS.CATALOG_FORM.TITLE') | translate }}
+    </h2>
 
+    @if (isEditMode) {
+      <p class="fd-head-sub">{{ subjectName() }}</p>
+    } @else {
+      <p class="fd-head-sub explain">{{ 'SUBJECTS.CATALOG_FORM.SUBTITLE' | translate }}</p>
+    }
+  </div>
 
-<mat-dialog-content>
-
-  <form
-    [formGroup]="subjectForm"
-    (ngSubmit)="onSubmit()"
-  >
-
-    <!-- Arabic Subject Name -->
-    <mat-form-field
-      appearance="outline"
-      class="form-field"
-    >
-
-      <mat-label>
-        {{ 'SUBJECTS.CATALOG_FORM.NAME_AR' | translate }}
-      </mat-label>
-
-      <input
-        matInput
-        formControlName="subjectAr"
-        dir="rtl"
-        [placeholder]="'SUBJECTS.CATALOG_FORM.NAME_AR_PLACEHOLDER' | translate"
-      />
-
-      @if (isFieldInvalid('subjectAr')) {
-
-        <mat-error>
-
-          @if (subjectForm.controls.subjectAr.hasError('required')) {
-            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_REQUIRED' | translate }}
-          }
-
-          @else if (subjectForm.controls.subjectAr.hasError('minlength')) {
-            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_MIN_LENGTH' | translate }}
-          }
-
-          @else if (subjectForm.controls.subjectAr.hasError('pattern')) {
-            {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_PATTERN' | translate }}
-          }
-
-        </mat-error>
-
-      }
-
-    </mat-form-field>
-
-
-    <!-- English Subject Name -->
-    <mat-form-field
-      appearance="outline"
-      class="form-field"
-    >
-
-      <mat-label>
-        {{ 'SUBJECTS.CATALOG_FORM.NAME_EN' | translate }}
-      </mat-label>
-
-      <input
-        matInput
-        formControlName="subjectEn"
-        dir="ltr"
-        [placeholder]="'SUBJECTS.CATALOG_FORM.NAME_EN_PLACEHOLDER' | translate"
-      />
-
-      @if (isFieldInvalid('subjectEn')) {
-
-        <mat-error>
-
-          @if (subjectForm.controls.subjectEn.hasError('required')) {
-            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_REQUIRED' | translate }}
-          }
-
-          @else if (subjectForm.controls.subjectEn.hasError('minlength')) {
-            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_MIN_LENGTH' | translate }}
-          }
-
-          @else if (subjectForm.controls.subjectEn.hasError('pattern')) {
-            {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_PATTERN' | translate }}
-          }
-
-        </mat-error>
-
-      }
-
-    </mat-form-field>
-
-  </form>
-
-</mat-dialog-content>
-
-
-<!-- Dialog actions -->
-
-<mat-dialog-actions align="end">
-
-  <!-- Cancel -->
   <button
-    mat-stroked-button
+    mat-icon-button
     type="button"
+    [attr.aria-label]="'SUBJECTS.FORMS.CLOSE' | translate"
     [disabled]="isSubmitting()"
-    (click)="cancel()"
+    (click)="closing.requestClose()"
   >
-    {{ 'SUBJECTS.CATALOG_FORM.CANCEL' | translate }}
+    <mat-icon aria-hidden="true">close</mat-icon>
   </button>
 
+</header>
 
-  <!-- Save -->
-  <button
-    mat-flat-button
-    color="primary"
-    type="button"
-    [disabled]="subjectForm.invalid || isSubmitting()"
-    (click)="onSubmit()"
-  >
-    <mat-icon>save</mat-icon>
 
-    {{
-      isSubmitting()
-        ? ('SUBJECTS.CATALOG_FORM.SAVING' | translate)
-        : ('SUBJECTS.CATALOG_FORM.SAVE' | translate)
-    }}
-  </button>
+<form class="fd-form" [formGroup]="subjectForm" (ngSubmit)="onSubmit()" novalidate>
 
-</mat-dialog-actions>
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
+
+    <div class="fd-grid sf-fields">
+
+      <!-- Arabic name -->
+      <div class="field">
+        <label class="field-label" for="sf-subjectAr">{{ 'SUBJECTS.CATALOG_FORM.NAME_AR' | translate }}</label>
+
+        <div class="field-box" [class.is-invalid]="isFieldInvalid('subjectAr')">
+          <input
+            id="sf-subjectAr"
+            formControlName="subjectAr"
+            dir="rtl"
+            autocomplete="off"
+            [maxlength]="nameMaxLength"
+            [attr.aria-invalid]="isFieldInvalid('subjectAr')"
+            [attr.aria-describedby]="isFieldInvalid('subjectAr') ? 'sf-subjectAr-error' : null"
+          />
+        </div>
+
+        @if (isFieldInvalid('subjectAr')) {
+          <div class="field-error" id="sf-subjectAr-error">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (subjectForm.controls.subjectAr.hasError('required')) {
+                {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+              } @else if (subjectForm.controls.subjectAr.hasError('pattern')) {
+                {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_PATTERN' | translate }}
+              } @else {
+                {{ 'SUBJECTS.CATALOG_FORM.NAME_AR_MIN_LENGTH' | translate }}
+              }
+            </span>
+          </div>
+        }
+      </div>
+
+
+      <!-- English name -->
+      <div class="field">
+        <label class="field-label" for="sf-subjectEn">{{ 'SUBJECTS.CATALOG_FORM.NAME_EN' | translate }}</label>
+
+        <div class="field-box" [class.is-invalid]="isFieldInvalid('subjectEn')">
+          <input
+            id="sf-subjectEn"
+            formControlName="subjectEn"
+            dir="ltr"
+            autocomplete="off"
+            [maxlength]="nameMaxLength"
+            [attr.aria-invalid]="isFieldInvalid('subjectEn')"
+            [attr.aria-describedby]="isFieldInvalid('subjectEn') ? 'sf-subjectEn-error' : null"
+          />
+        </div>
+
+        @if (isFieldInvalid('subjectEn')) {
+          <div class="field-error" id="sf-subjectEn-error">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (subjectForm.controls.subjectEn.hasError('required')) {
+                {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+              } @else if (subjectForm.controls.subjectEn.hasError('pattern')) {
+                {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_PATTERN' | translate }}
+              } @else {
+                {{ 'SUBJECTS.CATALOG_FORM.NAME_EN_MIN_LENGTH' | translate }}
+              }
+            </span>
+          </div>
+        }
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
+
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ errorsKey() | translate: { count: invalidCount() } }}
+      }
+    </span>
+
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="closing.requestClose()"
+    >
+      {{ 'SUBJECTS.CATALOG_FORM.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="submit"
+      class="fd-submit"
+      [class.is-busy]="isSubmitting()"
+      [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+    >
+      <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
+        {{ isEditMode ? 'save' : 'add' }}
+      </mat-icon>
+
+      @if (isSubmitting()) {
+        <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+      }
+
+      {{
+        (isSubmitting()
+          ? 'SUBJECTS.CATALOG_FORM.SAVING'
+          : isEditMode ? 'SUBJECTS.CATALOG_FORM.SAVE' : 'SUBJECTS.CATALOG_FORM.ADD') | translate
+      }}
+    </button>
+
+  </footer>
+
+</form>

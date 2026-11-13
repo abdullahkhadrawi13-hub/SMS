@@ -234,9 +234,10 @@ export class SubjectsCatalogTab implements OnInit {
 
     this.dialog
       .open(SubjectsCatalogForm, {
-        width: '500px',
+        width: '480px',
         maxWidth: '95vw',
         maxHeight: '90vh',
+        panelClass: 'form-dialog',
         data,
       })
       .afterClosed()

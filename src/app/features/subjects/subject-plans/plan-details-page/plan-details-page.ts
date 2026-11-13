@@ -51,9 +51,9 @@ import { passingMarkValidator } from '../plan-validators';
 import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
 import { PlanComponentForm, PlanComponentFormData } from '../plan-component-form/plan-component-form';
 import {
-  PlanConfirmData,
-  PlanConfirmDialog,
-} from '../plan-confirm-dialog/plan-confirm-dialog';
+  ConfirmDialogData,
+  ConfirmDialog,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
@@ -411,7 +411,7 @@ export class PlanDetailsPage implements OnInit {
 
     const unlocking = plan.isLocked;
 
-    const confirmData: PlanConfirmData = unlocking
+    const confirmData: ConfirmDialogData = unlocking
       ? {
           icon: 'lock_open',
           titleKey: 'SUBJECTS.PLAN_CONFIRM.UNLOCK_TITLE',
@@ -528,6 +528,7 @@ export class PlanDetailsPage implements OnInit {
         width: '600px',
         maxWidth: '95vw',
         maxHeight: '90vh',
+        panelClass: 'form-dialog',
         data,
       })
       .afterClosed()
@@ -605,10 +606,10 @@ export class PlanDetailsPage implements OnInit {
   // =========================
 
   // Opens the confirmation dialog and runs the action when confirmed.
-  private confirm(data: PlanConfirmData, action: () => void): void {
+  private confirm(data: ConfirmDialogData, action: () => void): void {
 
     this.dialog
-      .open(PlanConfirmDialog, { maxWidth: '95vw', data })
+      .open(ConfirmDialog, { maxWidth: '95vw', data })
       .afterClosed()
       .subscribe((confirmed?: boolean) => {
         if (confirmed) {

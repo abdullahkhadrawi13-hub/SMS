@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -16,11 +16,8 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 
 import { catchError, debounceTime, filter, map, of, switchMap, tap } from 'rxjs';
 
@@ -30,14 +27,22 @@ import { ApiMessageService } from '../../../../core/services/api-message';
 import { TeacherAssignmentsService } from '../../../../core/services/teacher-assignments';
 import { TeachersService } from '../../../../core/services/teachers';
 import { ActionResult } from '../../../../shared/services/action-result';
+import { Language } from '../../../../core/services/language';
 
 import {
   formatNumber,
+  nameInitials,
   SubjectOption,
   teacherOptionFromDto,
   TeacherOption,
 } from '../../shared/subjects-shared';
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
+import {
+  errorsCountKey,
+  focusFirstInvalid,
+  showFieldError,
+  useDiscardOnClose,
+} from '../../shared/subjects-form-dialog';
 
 
 // Data passed by the parent (subject-assignments-tab) when the dialog is opened.
@@ -49,7 +54,7 @@ export interface SubjectAssignmentsFormData {
   classId: number;
   sectionId: number;
 
-  // Names shown in the read-only box.
+  // Names shown in the line under the title.
   termLabel: string;
   className: string;
   sectionName: string;
@@ -84,11 +89,14 @@ export interface SubjectAssignmentsFormResult {
 }
 
 
-// Teacher search (combobox): the search starts after this many characters,
-// waits this long after the last key, and shows at most this many results.
-const TEACHER_SEARCH_MIN_LENGTH = 2;
-const TEACHER_SEARCH_DEBOUNCE_MS = 300;
+// Teacher search (combobox): the same timing as the teachers list
+// (13 Nov 2026): it searches from the first letter, 400ms after the last key,
+// and shows at most this many results.
+const TEACHER_SEARCH_DEBOUNCE_MS = 400;
 const TEACHER_SEARCH_PAGE_SIZE = 20;
+
+// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
+const AVATAR_TONES = 6;
 
 
 // The teacher field holds the typed text (string) until a teacher is chosen
@@ -116,22 +124,30 @@ function teacherSelectedValidator(
 // (API Reference, section 9). A subject without a plan for this term and class
 // cannot be added (the backend answers 400), so it is shown disabled,
 // with a link to create the plan first.
+//
+// The shared form dialog look (navy & gold, 13 Nov 2026), like the class form:
+// "Discard changes?" before closing with unsaved changes, errors shown at the
+// right time (showFieldError), the first wrong field focused on save.
+// The subject is a plain <select> whose options say the state of their plan;
+// the teacher stays a search (mat-autocomplete) in the shared field look.
+// Opened by the assignments tab with panelClass 'form-dialog'.
 @Component({
   selector: 'app-subject-assignments-form',
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
-    MatFormFieldModule,
     MatAutocompleteModule,
     MatIconModule,
-    MatInputModule,
     MatProgressSpinnerModule,
-    MatSelectModule,
     TranslatePipe,
   ],
   templateUrl: './subject-assignments-form.html',
   styleUrl: './subject-assignments-form.css',
+  host: {
+    // The shared form dialog layout in styles.css (.fd, .fd-head, .fd-body…)
+    class: 'fd',
+  },
 })
 export class SubjectAssignmentsForm implements OnInit {
 
@@ -145,6 +161,8 @@ export class SubjectAssignmentsForm implements OnInit {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly language = inject(Language);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly data = inject<SubjectAssignmentsFormData>(MAT_DIALOG_DATA);
 
@@ -153,7 +171,10 @@ export class SubjectAssignmentsForm implements OnInit {
   // true while the request is running (prevents double clicks).
   readonly isSubmitting = signal(false);
 
-  readonly minSearchLength = TEACHER_SEARCH_MIN_LENGTH;
+  // "N fields need fixing" next to the buttons, after a save with errors.
+  readonly submitAttempted = signal(false);
+  readonly invalidCount = signal(0);
+  readonly errorsKey = computed(() => errorsCountKey(this.invalidCount()));
 
   // Teacher search (GET /api/teachers?search=...&isActive=true).
   // Each result is turned into a TeacherOption, the type the field holds.
@@ -202,15 +223,6 @@ export class SubjectAssignmentsForm implements OnInit {
     return this.data.subjects.find(o => o.subject.subjectId === id)?.plan ?? null;
   });
 
-  // The chosen subject's name, shown in the closed select.
-  readonly selectedSubjectName = computed(() => {
-
-    const id = this.selectedSubjectId();
-    const option = this.data.subjects.find(o => o.subject.subjectId === id);
-
-    return option ? this.getSubjectName(option) : '';
-  });
-
   // The subjects that cannot be chosen yet (no plan for this term and class).
   readonly subjectsWithoutPlan = computed(
     () => this.data.subjects.filter(o => o.plan === null)
@@ -224,8 +236,20 @@ export class SubjectAssignmentsForm implements OnInit {
   );
 
 
+  // ✕, Cancel, backdrop click and Esc: asks first when something changed.
+  readonly closing = useDiscardOnClose({
+    isDirty: () => this.assignmentForm.dirty,
+    isBusy: () => this.isSubmitting(),
+  });
+
+
   ngOnInit(): void {
     this.listenToTeacherSearch();
+
+    // Keep the error count up to date while the user fixes the fields.
+    this.assignmentForm.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.invalidCount.set(this.countInvalid()));
 
     this.assignmentForm.controls.subjectId.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -258,14 +282,15 @@ export class SubjectAssignmentsForm implements OnInit {
           this.teacherResults.set([]);
           this.teachersError.set(false);
           this.searchedText.set('');
-          this.teachersLoading.set(text.length >= TEACHER_SEARCH_MIN_LENGTH);
+          this.teachersLoading.set(text.length > 0);
         }),
 
         debounceTime(TEACHER_SEARCH_DEBOUNCE_MS),
 
         switchMap(text => {
 
-          if (text.length < TEACHER_SEARCH_MIN_LENGTH) {
+          // An empty field sends nothing (the list stays closed).
+          if (text.length === 0) {
             return of(null);
           }
 
@@ -316,15 +341,7 @@ export class SubjectAssignmentsForm implements OnInit {
   };
 
 
-  // The typed text, used to show the hint and the clear button.
-  get teacherText(): string {
-
-    const value = this.assignmentForm.controls.teacher.value;
-
-    return typeof value === 'string' ? value.trim() : '';
-  }
-
-
+  // Shows the ✕ button of the teacher field.
   get hasTeacherValue(): boolean {
     return !!this.assignmentForm.controls.teacher.value;
   }
@@ -332,11 +349,47 @@ export class SubjectAssignmentsForm implements OnInit {
 
   clearTeacher(): void {
     this.assignmentForm.controls.teacher.setValue(null);
+    this.assignmentForm.controls.teacher.markAsDirty();
+    this.assignmentForm.controls.teacher.markAsUntouched();
+
+    document.getElementById('af-teacher')?.focus();
   }
 
 
   isArabic(): boolean {
-    return document.documentElement.lang === 'ar';
+    return this.language.currentDirection() === 'rtl';
+  }
+
+
+  // The text of a subject in the list: its name, and the state of its plan
+  // when it is not ready ("(No plan)", "(Weights 80 of 100)").
+  subjectOptionLabel(option: SubjectOption): string {
+
+    if (!option.plan) {
+      return 'SUBJECTS.ASSIGNMENTS_FORM.OPTION_NO_PLAN';
+    }
+
+    return option.plan.isComplete
+      ? 'SUBJECTS.ASSIGNMENTS_FORM.OPTION_READY'
+      : 'SUBJECTS.ASSIGNMENTS_FORM.OPTION_INCOMPLETE';
+  }
+
+  subjectOptionParams(option: SubjectOption): { name: string; total: string } {
+    return {
+      name: this.getSubjectName(option),
+      total: formatNumber(option.plan?.totalWeight ?? 0),
+    };
+  }
+
+
+  // The teacher's avatar in the results: initials and colour
+  // (the same colour for the same teacher, as in the teachers list).
+  teacherInitials(teacher: TeacherOption): string {
+    return nameInitials(this.getTeacherName(teacher));
+  }
+
+  avatarTone(teacher: TeacherOption): number {
+    return (teacher.teacherId % AVATAR_TONES) + 1;
   }
 
   getSubjectName(option: SubjectOption): string {
@@ -375,24 +428,41 @@ export class SubjectAssignmentsForm implements OnInit {
   }
 
 
+  // An empty field says "required" after pressing the button; a typed
+  // teacher that was not chosen from the list says so on leaving the field.
   isFieldInvalid(
     fieldName: keyof typeof this.assignmentForm.controls
   ): boolean {
 
-    const control = this.assignmentForm.controls[fieldName];
+    return showFieldError(
+      this.assignmentForm.controls[fieldName],
+      this.submitAttempted(),
+      []
+    );
+  }
 
-    return control.invalid && control.touched;
+
+  private countInvalid(): number {
+    return Object.values(this.assignmentForm.controls)
+      .filter((control: AbstractControl) => control.invalid)
+      .length;
   }
 
 
   onSubmit(): void {
 
-    if (this.assignmentForm.invalid) {
-      this.assignmentForm.markAllAsTouched();
+    // The button keeps its colour while saving, so guard here instead.
+    if (this.isSubmitting() || this.noSubjects || this.noSubjectWithPlan) {
       return;
     }
 
-    if (this.isSubmitting()) {
+    if (this.assignmentForm.invalid) {
+      this.assignmentForm.markAllAsTouched();
+
+      this.submitAttempted.set(true);
+      this.invalidCount.set(this.countInvalid());
+
+      focusFirstInvalid(this.host);
       return;
     }
 
@@ -454,8 +524,4 @@ export class SubjectAssignmentsForm implements OnInit {
       });
   }
 
-
-  cancel(): void {
-    this.dialogRef.close();
-  }
 }

@@ -26,7 +26,7 @@ export interface SetCurrentDialogData {
 // "Are you sure?" before changing the current term: it changes the term the
 // whole school works in (attendance, subject plans, teacher assignments).
 // Closes with true when the user confirms; the page sends the request.
-// Same layout as plan-confirm-dialog.
+// Same layout as the shared confirm-dialog.
 @Component({
   selector: 'app-set-current-dialog',
   imports: [

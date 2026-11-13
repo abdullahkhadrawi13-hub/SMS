@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -11,21 +11,20 @@ import {
 } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { SubjectPlansService } from '../../../../core/services/subject-plans';
 import { ActionResult } from '../../../../shared/services/action-result';
+import { Language } from '../../../../core/services/language';
 import {
   SubjectPlan,
   SubjectPlanComponent,
@@ -41,6 +40,13 @@ import {
   weightValidator,
 } from '../plan-validators';
 import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
+import {
+  errorsCountKey,
+  focusFirstInvalid,
+  restartWhenCleared,
+  showFieldError,
+  useDiscardOnClose,
+} from '../../shared/subjects-form-dialog';
 
 
 // Data passed by the plan details page.
@@ -77,21 +83,29 @@ function withinRemaining(remaining: number): ValidatorFn {
 // The type (fixed / open) is chosen when adding and never changes after:
 // to change it, delete the component and add a new one.
 // Both requests return the whole plan; the dialog closes with it.
+//
+// The shared form dialog look (navy & gold, 13 Nov 2026), like the class form:
+// "Discard changes?" before closing with unsaved changes, errors shown at the
+// right time (showFieldError), the first wrong field focused on save.
+// The type is a two-choice switch (.choice-switch in styles.css).
+// Opened by the plan details page with panelClass 'form-dialog'.
 @Component({
   selector: 'app-plan-component-form',
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
-    MatButtonToggleModule,
     MatDialogModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
+    MatProgressSpinnerModule,
     PlanWeightBar,
     TranslatePipe,
   ],
   templateUrl: './plan-component-form.html',
   styleUrl: './plan-component-form.css',
+  host: {
+    // The shared form dialog layout in styles.css (.fd, .fd-head, .fd-body…)
+    class: 'fd',
+  },
 })
 export class PlanComponentForm {
 
@@ -104,12 +118,28 @@ export class PlanComponentForm {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly language = inject(Language);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly data = inject<PlanComponentFormData>(MAT_DIALOG_DATA);
 
   readonly isEditMode = this.data.mode === 'edit';
 
   readonly isSubmitting = signal(false);
+
+  // "N fields need fixing" next to the buttons, after a save with errors.
+  readonly submitAttempted = signal(false);
+  readonly invalidCount = signal(0);
+  readonly errorsKey = computed(() => errorsCountKey(this.invalidCount()));
+
+  // The line under the title: "Mathematics · First Grade".
+  readonly planLine = computed(() => {
+    const plan = this.data.plan;
+
+    return this.language.currentDirection() === 'rtl'
+      ? `${plan.subjectAr} · ${plan.classNameAr}`
+      : `${plan.subjectEn} · ${plan.classNameEn}`;
+  });
 
   readonly nameMaxLength = COMPONENT_NAME_MAX_LENGTH;
 
@@ -131,7 +161,7 @@ export class PlanComponentForm {
   // Weight bar
   // =========================
 
-  // The other components, in the plan's order (the same colors as the details page).
+  // The other components, in the plan's order (as in the details page).
   private readonly otherComponents = sortComponents(this.data.plan.components)
     .filter(c => c.subjectPlanComponentId !== this.data.component?.subjectPlanComponentId);
 
@@ -223,7 +253,22 @@ export class PlanComponentForm {
   readonly isFixed = computed(() => !this.isOpen());
 
 
+  // ✕, Cancel, backdrop click and Esc: asks first when something changed.
+  readonly closing = useDiscardOnClose({
+    isDirty: () => this.componentForm.dirty,
+    isBusy: () => this.isSubmitting(),
+  });
+
+
   constructor() {
+
+    // Keep the error count up to date while the user fixes the fields.
+    this.componentForm.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.invalidCount.set(this.countInvalid()));
+
+    const c = this.componentForm.controls;
+    restartWhenCleared([c.nameAr, c.nameEn, c.weight, c.maxMark, c.order], this.destroyRef);
 
     this.updateMaxMarkRules(this.isOpen());
 
@@ -291,19 +336,34 @@ export class PlanComponentForm {
   }
 
 
-  isInvalid(control: AbstractControl): boolean {
-    return control.invalid && control.touched;
+  // Wrong characters at once, other errors on leaving the field,
+  // an empty field after pressing the button (see showFieldError()).
+  isInvalid(name: keyof typeof this.componentForm.controls): boolean {
+    return showFieldError(this.componentForm.controls[name], this.submitAttempted());
+  }
+
+
+  private countInvalid(): number {
+    return Object.values(this.componentForm.controls)
+      .filter((control: AbstractControl) => control.invalid)
+      .length;
   }
 
 
   onSubmit(): void {
 
-    if (this.componentForm.invalid) {
-      this.componentForm.markAllAsTouched();
+    // The button keeps its colour while saving, so guard here instead.
+    if (this.isSubmitting()) {
       return;
     }
 
-    if (this.isSubmitting()) {
+    if (this.componentForm.invalid) {
+      this.componentForm.markAllAsTouched();
+
+      this.submitAttempted.set(true);
+      this.invalidCount.set(this.countInvalid());
+
+      focusFirstInvalid(this.host);
       return;
     }
 
@@ -367,8 +427,4 @@ export class PlanComponentForm {
       });
   }
 
-
-  cancel(): void {
-    this.dialogRef.close();
-  }
 }

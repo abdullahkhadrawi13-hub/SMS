@@ -42,9 +42,9 @@ import { toEnglishDigits } from '../../../../shared/utils/english-digits';
 import { requiredTextValidator } from '../../../../shared/utils/form-validators';
 
 import {
-  PlanConfirmData,
-  PlanConfirmDialog
-} from '../../../subjects/subject-plans/plan-confirm-dialog/plan-confirm-dialog';
+  ConfirmDialogData,
+  ConfirmDialog
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
 
 // Data passed to the dialog.
@@ -278,7 +278,7 @@ export class ClassesForm {
     this.isConfirmingClose = true;
 
     return this.dialog
-      .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         maxWidth: '95vw',
         data: {
           icon: 'edit_note',

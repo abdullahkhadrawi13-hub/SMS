@@ -661,6 +661,7 @@ export class SubjectAssignmentsTab {
         width: '560px',
         maxWidth: '95vw',
         maxHeight: '90vh',
+        panelClass: 'form-dialog',
         data,
       })
       .afterClosed()

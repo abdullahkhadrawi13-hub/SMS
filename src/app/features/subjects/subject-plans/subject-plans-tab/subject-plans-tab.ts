@@ -340,6 +340,7 @@ export class SubjectPlansTab {
               width: '760px',
               maxWidth: '95vw',
               maxHeight: '90vh',
+              panelClass: 'form-dialog',
               data,
             })
             .afterClosed()
@@ -383,6 +384,8 @@ export class SubjectPlansTab {
       .open(CopyPlansDialog, {
         width: '520px',
         maxWidth: '95vw',
+        maxHeight: '90vh',
+        panelClass: 'form-dialog',
         data,
       })
       .afterClosed()

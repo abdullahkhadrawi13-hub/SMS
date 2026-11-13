@@ -66,9 +66,9 @@ import {
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
 import {
-  PlanConfirmData,
-  PlanConfirmDialog
-} from '../../subjects/subject-plans/plan-confirm-dialog/plan-confirm-dialog';
+  ConfirmDialogData,
+  ConfirmDialog
+} from '../../../shared/components/confirm-dialog/confirm-dialog';
 
 
 export interface StudentFormDialogData {
@@ -386,7 +386,7 @@ export class StudentsForm {
     this.isConfirmingClose = true;
 
     return this.dialog
-      .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         maxWidth: '95vw',
         data: {
           icon: 'edit_note',
