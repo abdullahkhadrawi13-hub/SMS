@@ -7,15 +7,15 @@ import {
   signal,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgTemplateOutlet } from '@angular/common';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
@@ -23,7 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { Language } from '../../../../core/services/language';
@@ -39,8 +39,8 @@ import {
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 import {
-  componentColor,
   formatNumber,
+  nameInitials,
   FULL_WEIGHT,
   getPlanStatus,
   PLAN_STATUS_BADGE,
@@ -56,14 +56,15 @@ import {
 } from '../plan-confirm-dialog/plan-confirm-dialog';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+import { PHONE_QUERY } from '../../../../layouts/dashboard-layout/dashboard-layout';
 
 
-// One component row of the table, with its name and color.
+// One component row of the table, with its names.
 interface ComponentRow {
   component: SubjectPlanComponent;
   nameAr: string;
   nameEn: string;
-  color: string;
 }
 
 
@@ -73,17 +74,26 @@ interface PlanSection {
   sectionName: string;
   teacherName: string;
   isActive: boolean;
+
+  // The teacher's avatar: initials and colour (the same colour as in the teachers list).
+  initials: string;
+  avatarTone: number;
 }
+
+
+// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
+const AVATAR_TONES = 6;
 
 
 // The page of one subject plan: /subjects/plans/:planId
 // (SMS API Reference, section 9).
 //
-// Shows the plan of one subject for one class and term:
-//   - the passing mark (editable inline by the Admin)
-//   - the weights bar and the components table
+// Shows the plan of one subject for one class and term, in two columns
+// (one column on the phone):
+//   - main: the gold weights bar and the components table
 //     (add / edit / delete a component, Admin only)
-//   - the sections that follow the plan, and their teachers
+//   - side: the passing mark (editable inline by the Admin),
+//     and the sections that follow the plan, with their teachers
 //   - the lock: locked after the first mark; the Admin can unlock it
 //     (and lock it by hand when the weights add up to 100)
 //
@@ -92,13 +102,12 @@ interface PlanSection {
 @Component({
   selector: 'app-plan-details-page',
   imports: [
+    NgTemplateOutlet,
     ReactiveFormsModule,
     RouterLink,
     MatButtonModule,
     MatDialogModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatMenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
@@ -107,6 +116,7 @@ interface PlanSection {
     TranslatePipe,
     PageHeader,
     StateCard,
+    StatusBadge,
   ],
   templateUrl: './plan-details-page.html',
   styleUrl: './plan-details-page.css',
@@ -134,6 +144,13 @@ export class PlanDetailsPage implements OnInit {
 
   readonly formatNumber = formatNumber;
   readonly fullWeight = FULL_WEIGHT;
+
+  // Under 720px: the components become a two-line list
+  // and the side cards go under them.
+  readonly isPhone = toSignal(
+    inject(BreakpointObserver).observe(PHONE_QUERY).pipe(map(r => r.matches)),
+    { initialValue: false }
+  );
 
 
   // =========================
@@ -189,11 +206,10 @@ export class PlanDetailsPage implements OnInit {
       return [];
     }
 
-    return sortComponents(plan.components).map((component, index) => ({
+    return sortComponents(plan.components).map(component => ({
       component,
       nameAr: component.nameAr,
       nameEn: component.nameEn,
-      color: componentColor(index),
     }));
   });
 
@@ -216,14 +232,29 @@ export class PlanDetailsPage implements OnInit {
     () => this.canEdit() && (this.plan()?.totalWeight ?? 0) < FULL_WEIGHT
   );
 
+  // Why "Add component" is disabled (its tooltip), or '' when it is not.
+  readonly addComponentReason = computed(() => {
+
+    const plan = this.plan();
+
+    if (!plan || this.canAddComponent()) {
+      return '';
+    }
+
+    return plan.isLocked
+      ? 'SUBJECTS.PLAN_DETAILS.LOCKED_TOOLTIP'
+      : 'SUBJECTS.PLAN_DETAILS.FULL_TOOLTIP';
+  });
+
   readonly displayedColumns = computed(() =>
     this.canManage()
-      ? ['name', 'type', 'weight', 'maxMark', 'actions']
-      : ['name', 'type', 'weight', 'maxMark']
+      ? ['name', 'type', 'maxMark', 'weight', 'actions']
+      : ['name', 'type', 'maxMark', 'weight']
   );
 
   // Back to the plans tab, on the same term and class.
   readonly backQueryParams = computed(() => this.tabQueryParams('plans'));
+
 
   readonly assignmentsQueryParams = computed(() => this.tabQueryParams('assignments'));
 
@@ -317,12 +348,19 @@ export class PlanDetailsPage implements OnInit {
 
           const sections = (response.success ? response.data : [])
             .filter(a => this.followsPlan(a, plan))
-            .map(a => ({
-              assignmentId: a.teacherAssignmentId,
-              sectionName: isArabic ? a.sectionAr : a.sectionEn,
-              teacherName: (isArabic ? a.teacherNameAr : a.teacherNameEn) || a.teacherNumber,
-              isActive: a.isActive,
-            }))
+            .map(a => {
+
+              const name = isArabic ? a.teacherNameAr : a.teacherNameEn;
+
+              return {
+                assignmentId: a.teacherAssignmentId,
+                sectionName: isArabic ? a.sectionAr : a.sectionEn,
+                teacherName: name || a.teacherNumber,
+                isActive: a.isActive,
+                initials: nameInitials(name),
+                avatarTone: (a.teacherId % AVATAR_TONES) + 1,
+              };
+            })
             .sort((a, b) => a.sectionName.localeCompare(b.sectionName));
 
           this.sections.set(sections);
@@ -619,12 +657,12 @@ export class PlanDetailsPage implements OnInit {
 
 
   // ?tab=...&termId=...&classId=... of the Subjects page, for this plan.
-  private tabQueryParams(tab: SubjectsTab): Record<string, string | number> {
+  private tabQueryParams(tab: SubjectsTab): Record<string, string> {
 
     const plan = this.plan();
 
     return plan
-      ? { tab, termId: plan.academicTermId, classId: plan.classId }
+      ? { tab, termId: String(plan.academicTermId), classId: String(plan.classId) }
       : { tab };
   }
 }

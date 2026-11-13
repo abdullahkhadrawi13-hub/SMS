@@ -1,242 +1,215 @@
-<!-- Error -->
-@if (errorMessage()) {
+<!-- The card keeps its shape in every state; the state is drawn inside it. -->
+<div class="data-card" [class.is-refreshing]="isRefreshing()">
 
-  <app-state-card
-    type="error"
-    [message]="errorMessage() | translate"
-    (retry)="retry.emit()"
-  />
+  <div class="data-card-body">
 
-}
-
-<!-- First load only (nothing to show yet) -->
-@else if (isInitialLoading()) {
-
-  <app-state-card
-    type="loading"
-    [message]="'SUBJECTS.CATALOG_TABLE.LOADING' | translate"
-  />
-
-}
-
-<!-- Subject table card -->
-@else {
-
-  <div class="table-card" [class.is-refreshing]="isRefreshing()">
-
-    <!-- Reload indicator: sits on top of the card without taking any height -->
-    @if (isRefreshing()) {
-      <mat-progress-bar
-        class="refresh-bar"
-        mode="indeterminate"
-      ></mat-progress-bar>
+    <!-- Error -->
+    @if (errorMessage()) {
+      <app-state-card
+        type="error"
+        [message]="errorMessage() | translate"
+        [framed]="false"
+        (retry)="retry.emit()"
+      />
     }
 
-    @if (subjects().length > 0) {
-
-      <!-- Table wrapper allows horizontal scrolling on smaller screens. -->
-      <div class="table-wrapper">
-
-        <table
-          mat-table
-          [dataSource]="subjects()"
-        >
-
-          <!-- Subject ID -->
-          <ng-container matColumnDef="subjectId">
-
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-            >
-              {{ 'SUBJECTS.CATALOG_TABLE.SUBJECT_ID' | translate }}
-            </th>
-
-            <td
-              mat-cell
-              *matCellDef="let subject"
-            >
-              {{ subject.subjectId }}
-            </td>
-
-          </ng-container>
-
-
-          <!-- Arabic Name -->
-          <ng-container matColumnDef="nameAr">
-
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-            >
-              {{ 'SUBJECTS.CATALOG_TABLE.NAME_AR' | translate }}
-            </th>
-
-            <td
-              mat-cell
-              *matCellDef="let subject"
-            >
-
-              <div class="subject-name-cell">
-
-                <!-- Subject icon -->
-                <div class="subject-icon">
-                  <mat-icon>menu_book</mat-icon>
-                </div>
-
-                <!-- dir="rtl" keeps the Arabic name readable in the English page. -->
-                <span dir="rtl">
-                  {{ subject.subjectAr }}
-                </span>
-
-              </div>
-
-            </td>
-
-          </ng-container>
-
-
-          <!-- English Name -->
-          <ng-container matColumnDef="nameEn">
-
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-            >
-              {{ 'SUBJECTS.CATALOG_TABLE.NAME_EN' | translate }}
-            </th>
-
-            <td
-              mat-cell
-              *matCellDef="let subject"
-            >
-              <!-- dir="ltr" keeps the English name readable in the Arabic page. -->
-              <span dir="ltr">
-                {{ subject.subjectEn }}
-              </span>
-            </td>
-
-          </ng-container>
-
-
-          <!-- Status -->
-          <ng-container matColumnDef="status">
-
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-            >
-              {{ 'SUBJECTS.CATALOG_TABLE.STATUS' | translate }}
-            </th>
-
-            <td
-              mat-cell
-              *matCellDef="let subject"
-            >
-
-              <!-- Active / inactive status badge -->
-              <app-status-badge [tone]="subject.isActive ? 'ok' : 'neutral'">
-                {{ (subject.isActive ? 'SUBJECTS.ACTIVE' : 'SUBJECTS.INACTIVE') | translate }}
-              </app-status-badge>
-
-            </td>
-
-          </ng-container>
-
-
-          <!-- Actions (Admin only) -->
-          <ng-container matColumnDef="actions">
-
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-            >
-              {{ 'SUBJECTS.CATALOG_TABLE.ACTIONS' | translate }}
-            </th>
-
-            <td
-              mat-cell
-              *matCellDef="let subject"
-            >
-
-              <!-- Subject actions menu -->
-              <button
-                mat-icon-button
-                [matMenuTriggerFor]="subjectMenu"
-                type="button"
-                [attr.aria-label]="'SUBJECTS.CATALOG_TABLE.ACTIONS' | translate"
-              >
-                <mat-icon>more_vert</mat-icon>
-              </button>
-
-              <mat-menu #subjectMenu="matMenu">
-
-                <!-- Edit subject -->
-                <button
-                  mat-menu-item
-                  type="button"
-                  (click)="editSubject.emit(subject)"
-                >
-                  <mat-icon>edit</mat-icon>
-
-                  {{ 'SUBJECTS.CATALOG_TABLE.EDIT' | translate }}
-                </button>
-
-                <!-- Activate / deactivate subject -->
-                <button
-                  mat-menu-item
-                  type="button"
-                  (click)="toggleStatus.emit(subject)"
-                >
-                  <mat-icon>
-                    {{ subject.isActive ? 'block' : 'check_circle' }}
-                  </mat-icon>
-
-                  {{
-                    subject.isActive
-                      ? ('SUBJECTS.CATALOG_TABLE.DEACTIVATE' | translate)
-                      : ('SUBJECTS.CATALOG_TABLE.ACTIVATE' | translate)
-                  }}
-
-                </button>
-
-              </mat-menu>
-
-            </td>
-
-          </ng-container>
-
-
-          <!-- Table header row -->
-          <tr
-            mat-header-row
-            *matHeaderRowDef="displayedColumns()"
-          ></tr>
-
-          <!-- Table data rows -->
-          <tr
-            mat-row
-            *matRowDef="let row; columns: displayedColumns()"
-          ></tr>
-
-        </table>
-
-      </div>
-
-    } @else {
-
-      <!-- Empty state -->
+    <!-- First load only (nothing to show yet) -->
+    @else if (isInitialLoading()) {
       <app-state-card
-        type="empty"
-        icon="menu_book"
-        [message]="isFiltered()
-          ? ('SUBJECTS.CATALOG_TABLE.NO_RESULTS' | translate)
-          : ('SUBJECTS.CATALOG_TABLE.EMPTY' | translate)"
+        type="loading"
+        [message]="'SUBJECTS.CATALOG_TABLE.LOADING' | translate"
         [framed]="false"
       />
+    }
+
+    @else {
+
+      <!-- Reload indicator: sits on top of the list without taking any height -->
+      @if (isRefreshing()) {
+        <mat-progress-bar class="data-refresh" mode="indeterminate"></mat-progress-bar>
+      }
+
+      @if (subjects().length > 0) {
+
+        <!-- Phone: one item per subject, two lines -->
+        @if (isPhone()) {
+
+          <ul class="data-items">
+            @for (subject of subjects(); track subject.subjectId) {
+              <li class="data-item">
+
+                <div class="data-item-text">
+                  <div class="data-item-line1">
+                    <span class="subject-name">{{ isArabic() ? subject.subjectAr : subject.subjectEn }}</span>
+
+                    <!-- Only what needs attention -->
+                    @if (!subject.isActive) {
+                      <app-status-badge tone="neutral">
+                        {{ 'SUBJECTS.INACTIVE' | translate }}
+                      </app-status-badge>
+                    }
+                  </div>
+
+                  <span class="data-item-line2">
+                    <!-- The name in the other language, isolated in its own direction -->
+                    <bdi [attr.dir]="isArabic() ? 'ltr' : 'rtl'">{{ isArabic() ? subject.subjectEn : subject.subjectAr }}</bdi>
+                    <span aria-hidden="true">·</span>
+                    <span class="tabular">{{ subject.subjectId }}</span>
+                  </span>
+                </div>
+
+                @if (canManage()) {
+                  <ng-container
+                    [ngTemplateOutlet]="actionsMenu"
+                    [ngTemplateOutletContext]="{ $implicit: subject }"
+                  />
+                }
+
+              </li>
+            }
+          </ul>
+
+        }
+
+        <!-- Computer: the table -->
+        @else {
+
+          <div class="data-table">
+            <table mat-table [dataSource]="subjects()">
+
+              <!-- Subject number -->
+              <ng-container matColumnDef="subjectId">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'SUBJECTS.CATALOG_TABLE.SUBJECT_ID' | translate }}
+                </th>
+
+                <td mat-cell *matCellDef="let subject" class="data-muted tabular">
+                  {{ subject.subjectId }}
+                </td>
+              </ng-container>
+
+              <!-- Arabic name. The cell follows the page's alignment;
+                   only the text is isolated in its own direction (bdi),
+                   so both name columns line up at the start of the page. -->
+              <ng-container matColumnDef="nameAr">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'SUBJECTS.CATALOG_TABLE.NAME_AR' | translate }}
+                </th>
+
+                <td mat-cell *matCellDef="let subject">
+                  <bdi dir="rtl" class="subject-name">{{ subject.subjectAr }}</bdi>
+                </td>
+              </ng-container>
+
+              <!-- English name (same alignment as the Arabic one) -->
+              <ng-container matColumnDef="nameEn">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'SUBJECTS.CATALOG_TABLE.NAME_EN' | translate }}
+                </th>
+
+                <td mat-cell *matCellDef="let subject">
+                  <bdi dir="ltr">{{ subject.subjectEn }}</bdi>
+                </td>
+              </ng-container>
+
+              <!-- Status -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'SUBJECTS.CATALOG_TABLE.STATUS' | translate }}
+                </th>
+
+                <td mat-cell *matCellDef="let subject">
+                  <app-status-badge [tone]="subject.isActive ? 'ok' : 'neutral'">
+                    {{ (subject.isActive ? 'SUBJECTS.ACTIVE' : 'SUBJECTS.INACTIVE') | translate }}
+                  </app-status-badge>
+                </td>
+              </ng-container>
+
+              <!-- Actions: one ⋮ button at the end of the row (Admin only) -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>
+                  <span class="visually-hidden">{{ 'SUBJECTS.CATALOG_TABLE.ACTIONS' | translate }}</span>
+                </th>
+
+                <td mat-cell *matCellDef="let subject">
+                  <ng-container
+                    [ngTemplateOutlet]="actionsMenu"
+                    [ngTemplateOutletContext]="{ $implicit: subject }"
+                  />
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+
+              <tr mat-row *matRowDef="let row; columns: displayedColumns()"></tr>
+            </table>
+          </div>
+
+        }
+
+      } @else {
+
+        <!-- Empty: "no match" after a search or filter, "no subjects yet" without them -->
+        @if (isFiltered()) {
+          <app-state-card
+            type="empty"
+            icon="search_off"
+            [title]="'SUBJECTS.CATALOG_TABLE.NO_RESULTS' | translate"
+            [message]="'SUBJECTS.CATALOG_TABLE.NO_RESULTS_DESCRIPTION' | translate"
+            [framed]="false"
+          />
+        } @else {
+          <app-state-card
+            type="empty"
+            icon="menu_book"
+            [title]="'SUBJECTS.CATALOG_TABLE.EMPTY' | translate"
+            [message]="canManage() ? ('SUBJECTS.CATALOG_TABLE.EMPTY_DESCRIPTION' | translate) : ''"
+            [framed]="false"
+          />
+        }
+
+      }
 
     }
 
   </div>
 
-}
+</div>
+
+
+<!-- The ⋮ menu of one subject (table row and phone item) -->
+<ng-template #actionsMenu let-subject>
+  <button
+    mat-icon-button
+    type="button"
+    class="data-actions"
+    [matMenuTriggerFor]="subjectMenu"
+    [attr.aria-label]="'SUBJECTS.CATALOG_TABLE.ACTIONS_FOR' | translate: { name: isArabic() ? subject.subjectAr : subject.subjectEn }"
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+  <mat-menu #subjectMenu="matMenu">
+
+    <!-- Edit -->
+    <button mat-menu-item type="button" (click)="editSubject.emit(subject)">
+      <mat-icon>edit</mat-icon>
+
+      {{ 'SUBJECTS.CATALOG_TABLE.EDIT' | translate }}
+    </button>
+
+    <!-- Activate / deactivate -->
+    <button mat-menu-item type="button" (click)="toggleStatus.emit(subject)">
+      <mat-icon>
+        {{ subject.isActive ? 'block' : 'check_circle' }}
+      </mat-icon>
+
+      {{
+        subject.isActive
+          ? ('SUBJECTS.CATALOG_TABLE.DEACTIVATE' | translate)
+          : ('SUBJECTS.CATALOG_TABLE.ACTIVATE' | translate)
+      }}
+    </button>
+
+  </mat-menu>
+</ng-template>

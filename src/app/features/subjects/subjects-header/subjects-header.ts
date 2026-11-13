@@ -31,9 +31,18 @@ export class SubjectsHeader {
   // The parent page shows them for the Admin, on the plans tab only.
   readonly showPlanActions = input(false);
 
+  // Shows "Add subject to section".
+  // The parent page shows it for the Admin, on the subject assignments tab only,
+  // and enables it once a section is chosen.
+  readonly showAssignmentActions = input(false);
+  readonly canAddAssignment = input(false);
+
   // Emitted when the user clicks the "Add subject" button.
   // The parent page opens the form dialog and reloads the list afterwards.
   readonly addSubject = output<void>();
+
+  // Emitted by "Add subject to section"; the page passes it to the assignments tab.
+  readonly addAssignment = output<void>();
 
   // Emitted by the plans tab buttons; the page passes them to the plans tab.
   readonly addPlan = output<void>();

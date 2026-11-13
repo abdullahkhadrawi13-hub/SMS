@@ -1,3 +1,9 @@
+/* ================================
+   Plan weights bar
+   Gold parts on a grey track (spec: شريط التقدّم).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
 :host {
   display: block;
 }
@@ -14,25 +20,25 @@
   align-items: center;
   justify-content: space-between;
 
-  gap: 8px;
+  gap: var(--sp-2);
 
-  font-size: 12.5px;
+  color: var(--muted);
 
-  color: #6b7280;
+  font-size: var(--fs-12);
 }
 
 .weight-total {
-  font-variant-numeric: tabular-nums;
+  color: var(--text);
 
-  color: #111827;
+  font-variant-numeric: tabular-nums;
 }
 
 .weight-total.under {
-  color: #92400e;
+  color: var(--warn-ink);
 }
 
 .weight-total.over {
-  color: #b91c1c;
+  color: var(--bad-ink);
 }
 
 /* The bar: one part per component, a 2px gap between parts.
@@ -42,13 +48,13 @@
 
   gap: 2px;
 
-  height: 10px;
+  height: 8px;
 
-  border-radius: 6px;
+  border-radius: 999px;
 
   overflow: hidden;
 
-  background: #f1f5f9;
+  background: var(--track);
 }
 
 .bar-part {
@@ -59,4 +65,11 @@
   min-width: 0;
 
   height: 100%;
+
+  background: var(--mark);
+}
+
+/* Over 100 (only while typing in a form): the parts turn red. */
+.bar.over .bar-part {
+  background: var(--bad);
 }

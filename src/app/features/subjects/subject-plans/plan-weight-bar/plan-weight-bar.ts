@@ -2,13 +2,14 @@ import { Component, computed, input } from '@angular/core';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { componentColor, formatNumber, FULL_WEIGHT } from '../../shared/subjects-shared';
+import { formatNumber, FULL_WEIGHT } from '../../shared/subjects-shared';
 
 
-// The weights of a plan as one bar: one colored part per component
-// (in the components' order), and "Total weights 80 / 100" above it.
-// Used by the plan card, the plan details page and the plan form.
-// Display only.
+// The weights of a plan as one bar: one gold part per component
+// (in the components' order), and "Total weights 80 / 100" above it
+// (showTotal = false hides that line: the plan card).
+// Used by the plan card, the plan details page, the plan forms
+// and the teacher's assessments page. Display only.
 @Component({
   selector: 'app-plan-weight-bar',
   imports: [TranslatePipe],
@@ -19,6 +20,9 @@ export class PlanWeightBar {
 
   // The weight of each component, in their order.
   readonly weights = input<number[]>([]);
+
+  // Shows "Total weights 80 / 100" above the bar.
+  readonly showTotal = input(true);
 
   readonly fullWeight = FULL_WEIGHT;
 
@@ -40,9 +44,8 @@ export class PlanWeightBar {
     return total > FULL_WEIGHT ? 'over' : 'under';
   });
 
-  // One part per component, with its width (out of 100) and color.
-  readonly parts = computed(() => this.weights().map((weight, index) => ({
+  // One part per component, with its width (out of 100).
+  readonly parts = computed(() => this.weights().map(weight => ({
     width: Math.max(Number(weight) || 0, 0),
-    color: componentColor(index),
   })));
 }

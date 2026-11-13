@@ -1035,7 +1035,8 @@
       "SUBTITLE_ASSIGNMENTS": "Each section's subjects and teachers, by term",
       "SUBTITLE_CATALOG": "Every subject taught at the school",
       "ADD_PLAN": "New Plan",
-      "COPY_PLANS": "Copy from Earlier Term"
+      "COPY_PLANS": "Copy from Earlier Term",
+      "ADD_ASSIGNMENT": "Add subject to section"
     },
     "TABS": {
       "PLANS": "Subject Plans",
@@ -1045,19 +1046,22 @@
     "CATALOG_SEARCH": {
       "LABEL": "Search",
       "PLACEHOLDER": "Search by subject name",
-      "CLEAR": "Clear search",
-      "SUBMIT": "Search"
-    },
-    "CATALOG_TAB": {
-      "FILTER_BUTTON": "Filter"
+      "CLEAR": "Clear search"
     },
     "CATALOG_FILTER": {
-      "TITLE": "Filter Subjects",
       "STATUS": "Status",
-      "ALL": "All",
-      "CLEAR": "Clear",
-      "CANCEL": "Cancel",
-      "APPLY": "Apply"
+      "ALL": "Status: All",
+      "TOGGLE": "Filter",
+      "OPTION": "Status: {{name}}",
+      "CLEAR_FILTERS": "Clear filters",
+      "MATCHING": {
+        "ZERO": "No subjects match the search",
+        "ONE": "1 subject matches the search",
+        "TWO": "2 subjects match the search",
+        "FEW": "{{count}} subjects match the search",
+        "MANY": "{{count}} subjects match the search",
+        "OTHER": "{{count}} subjects match the search"
+      }
     },
     "ACTIVE": "Active",
     "INACTIVE": "Inactive",
@@ -1073,7 +1077,10 @@
       "EMPTY": "No subjects found",
       "NO_RESULTS": "No subject matches the search or filter",
       "LOADING": "Loading subjects...",
-      "RETRY": "Retry"
+      "RETRY": "Retry",
+      "NO_RESULTS_DESCRIPTION": "Try another word, or clear the filters.",
+      "EMPTY_DESCRIPTION": "Add the first subject with the \"Add subject\" button.",
+      "ACTIONS_FOR": "Actions for {{name}}"
     },
     "CATALOG_FORM": {
       "TITLE": "Add Subject",
@@ -1096,13 +1103,12 @@
       "TERM": "Academic Term",
       "CLASS": "Class",
       "SECTION": "Section",
-      "CURRENT": "(Current)"
+      "CURRENT": "(Current)",
+      "CLASS_PLACEHOLDER": "Choose a class",
+      "SECTION_PLACEHOLDER": "Choose a section",
+      "SECTION_NEEDS_CLASS": "Choose a class first"
     },
     "ASSIGNMENTS_TABLE": {
-      "TITLE": "{{className}} — Section {{sectionName}} Subjects",
-      "TOTAL": "Subjects",
-      "ADD": "Add Subject to Section",
-      "ADD_FIRST": "Add the First Subject",
       "SUBJECT": "Subject",
       "TEACHER": "Teacher",
       "STATUS": "Status",
@@ -1119,11 +1125,11 @@
       "EMPTY_TITLE": "This section has no subjects yet",
       "EMPTY_MESSAGE": "Add the subjects taught in {{className}} — Section {{sectionName}} during {{termName}} and choose each subject's teacher.",
       "EMPTY_MESSAGE_READONLY": "No subjects have been added to this section in this term.",
-      "PLAN": "Plan",
-      "PLAN_WEIGHTS": "Weights {{total}} of 100",
+      "PLAN_WEIGHTS": "Plan weights {{total}} of 100",
       "VIEW_PLAN": "View Subject Plan",
       "MISSING": "These subjects have a plan for this class but no teacher in section {{sectionName}}: {{names}}. The section's students will count as missing marks in them at rollover.",
-      "ASSIGN_TEACHER": "Assign a Teacher"
+      "ASSIGN_TEACHER": "Assign a Teacher",
+      "ACTIONS_FOR": "Actions for {{name}}"
     },
     "ASSIGNMENTS_FORM": {
       "ADD_TITLE": "Add Subject to Section",
@@ -1166,7 +1172,6 @@
     },
     "PLANS_TAB": {
       "RETRY": "Retry",
-      "TITLE": "{{className}} Plans",
       "COUNT_SUBJECTS": "Subjects",
       "COUNT_READY": "Ready",
       "COUNT_INCOMPLETE": "Incomplete",
@@ -1193,7 +1198,8 @@
       "COMPLETE": "Complete"
     },
     "PLAN_WEIGHT_BAR": {
-      "TOTAL_WEIGHT": "Total weights"
+      "TOTAL_WEIGHT": "Total weights",
+      "ARIA": "Total weights {{total}} of 100"
     },
     "PLAN_FORM": {
       "TITLE": "New Subject Plan",
@@ -1237,12 +1243,10 @@
     "PLAN_DETAILS": {
       "RETRY": "Retry",
       "ACTIONS": "Actions",
-      "BREADCRUMB": "Breadcrumb",
       "TITLE": "{{subject}} Plan",
       "LOADING": "Loading the plan...",
       "NOT_FOUND_TITLE": "Plan Not Found",
       "NOT_FOUND_MESSAGE": "This plan may have been deleted, or the link is wrong.",
-      "BACK": "Back to Subject Plans",
       "UNLOCK": "Unlock",
       "LOCK": "Lock Plan",
       "MORE": "More",
@@ -1276,7 +1280,12 @@
       "SAVE": "Save",
       "CANCEL": "Cancel",
       "OUT_OF": "of 100",
-      "PASSING_MARK_ERROR": "The passing mark must be above 0 and at most 100"
+      "PASSING_MARK_ERROR": "The passing mark must be above 0 and at most 100",
+      "BACK_TO_PLANS": "Subject plans",
+      "OUT_OF_MAX": "out of {{max}}",
+      "WEIGHT_VALUE": "Weight {{weight}}%",
+      "ACTIONS_FOR": "Actions for {{name}}",
+      "SECTION_NAME": "Section {{name}}"
     },
     "PLAN_COMPONENT_FORM": {
       "ADD_TITLE": "Add Component",
@@ -1933,7 +1942,7 @@
       "GRADUATE": "Graduate",
       "NEEDS_DECISION": "Needs a decision",
       "ALREADY_PLACED": "Already placed",
-       "NO_TARGET": "No section to move to"
+      "NO_TARGET": "No section to move to"
     },
     "THRESHOLD": {
       "LABEL": "Repeat suggestion rule",

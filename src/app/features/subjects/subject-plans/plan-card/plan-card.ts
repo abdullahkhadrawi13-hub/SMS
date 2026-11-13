@@ -1,7 +1,6 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,7 +9,6 @@ import { Language } from '../../../../core/services/language';
 import { SubjectPlan } from '../../../../core/models/subject-plan';
 
 import {
-  componentColor,
   formatNumber,
   FULL_WEIGHT,
   getPlanStatus,
@@ -18,19 +16,20 @@ import {
   sortComponents,
 } from '../../shared/subjects-shared';
 import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 
 // One card of the plans tab: one subject's plan for the selected class.
-// Shows the state, the passing mark, the weights bar, the components
+// Shows the state, the passing mark, the gold weights bar, the components
 // and how many sections follow the plan. "Open" goes to the plan details page.
 // Display only.
 @Component({
   selector: 'app-plan-card',
   imports: [
-    MatButtonModule,
     MatIconModule,
     PlanWeightBar,
     RouterLink,
+    StatusBadge,
     TranslatePipe,
   ],
   templateUrl: './plan-card.html',
@@ -64,10 +63,9 @@ export class PlanCard {
   );
 
   readonly components = computed(() =>
-    sortComponents(this.plan().components).map((component, index) => ({
+    sortComponents(this.plan().components).map(component => ({
       component,
       name: this.isArabic() ? component.nameAr : component.nameEn,
-      color: componentColor(index),
     }))
   );
 
