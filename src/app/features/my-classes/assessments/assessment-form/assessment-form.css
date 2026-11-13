@@ -1,100 +1,55 @@
-.assessment-form {
+/* Add / edit assessment dialog (the teacher).
+   The layout (.fd, .fd-head, .fd-body, .fd-foot, .fd-note) and the fields
+   (.field, .field-box…) are the shared ones in styles.css.
+   Only what this form adds is here. */
+
+.af-fields {
   display: flex;
   flex-direction: column;
 
-  gap: 16px;
+  gap: 20px;
 
-  padding-top: 4px;
+  padding-block-start: var(--sp-4);
 }
 
-mat-form-field {
-  width: 100%;
+/* The notes sit in the column gap, not with their own top margin. */
+.af-fields .fd-note {
+  margin-block-start: 0;
 }
 
+.af-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 
-/* ================================
-   Component Context
-   ================================ */
-
-.component-context {
+/* The component line under the title: its colour dot, then its name and weight */
+.af-component {
   display: flex;
   align-items: center;
 
-  gap: 8px;
-
-  margin: 0;
-
-  font-size: 13px;
-
-  color: #6b7280;
+  gap: var(--sp-2);
 }
 
-.component-dot {
-  width: 10px;
-  height: 10px;
-
+.af-dot {
   flex-shrink: 0;
+
+  width: 8px;
+  height: 8px;
 
   border-radius: 50%;
 }
 
 
-/* ================================
-   Fields
-   ================================ */
+/* Phone (under 720px): one field per line */
+@media (max-width: 719.98px) {
 
-.two-fields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  .af-fields {
+    gap: var(--sp-4);
+  }
 
-  gap: 12px;
-}
+  .af-grid-2 {
+    grid-template-columns: minmax(0, 1fr);
 
-.form-note {
-  display: flex;
-  align-items: flex-start;
-
-  gap: 8px;
-
-  margin: 0;
-
-  font-size: 13px;
-  line-height: 1.6;
-
-  color: #4b5563;
-}
-
-.form-note mat-icon {
-  width: 18px;
-  height: 18px;
-
-  font-size: 18px;
-
-  flex-shrink: 0;
-
-  color: #6b7280;
-}
-
-
-/* ================================
-   Dialog Actions
-   ================================ */
-
-mat-dialog-actions {
-  gap: 8px;
-
-  padding: 16px 24px 20px;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 600px) {
-
-  .two-fields {
-    grid-template-columns: 1fr;
+    gap: var(--sp-3);
   }
 
 }

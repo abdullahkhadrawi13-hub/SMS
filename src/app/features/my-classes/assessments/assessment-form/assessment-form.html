@@ -1,140 +1,202 @@
-<!-- Add / edit an assessment under an open component -->
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-<h2 mat-dialog-title>
-  {{
-    isEditMode
-      ? ('MY_CLASSES.ASSESSMENTS.FORM.EDIT_TITLE' | translate)
-      : ('MY_CLASSES.ASSESSMENTS.FORM.ADD_TITLE' | translate)
-  }}
-</h2>
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode ? 'MY_CLASSES.ASSESSMENTS.FORM.EDIT_TITLE' : 'MY_CLASSES.ASSESSMENTS.FORM.ADD_TITLE') | translate }}
+    </h2>
 
-
-<mat-dialog-content>
-
-  <form
-    [formGroup]="assessmentForm"
-    class="assessment-form"
-    (ngSubmit)="onSubmit()"
-  >
-
-    <!-- The component the assessment goes under -->
-    <p class="component-context">
-      <span class="component-dot" [style.background]="data.color"></span>
-
-      {{
-        'MY_CLASSES.ASSESSMENTS.FORM.COMPONENT'
-          | translate: { name: data.componentName, weight: componentWeight }
-      }}
+    <!-- The component the assessment goes under, with its colour dot -->
+    <p class="fd-head-sub af-component">
+      <span class="af-dot" [style.background]="data.color" aria-hidden="true"></span>
+      {{ 'MY_CLASSES.ASSESSMENTS.FORM.COMPONENT' | translate: { name: data.componentName, weight: componentWeight } }}
     </p>
+  </div>
+
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'MY_CLASSES.ASSESSMENTS.FORM.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="closing.requestClose()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
 
 
-    <div class="two-fields">
+<form class="fd-form" [formGroup]="assessmentForm" (ngSubmit)="onSubmit()" novalidate>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'MY_CLASSES.ASSESSMENTS.FORM.NAME_AR' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="nameAr"
-          dir="rtl"
-          [maxlength]="nameMaxLength"
-          placeholder="كويز 1"
-        />
-        @if (isInvalid(assessmentForm.controls.nameAr)) {
-          <mat-error>
-            @if (assessmentForm.controls.nameAr.hasError('required')) {
-              {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
-            } @else if (assessmentForm.controls.nameAr.hasError('invalidChars')) {
-              {{ 'MY_CLASSES.ASSESSMENTS.FORM.ARABIC_ONLY' | translate }}
-            } @else if (assessmentForm.controls.nameAr.hasError('minLetters')) {
-              {{ 'MY_CLASSES.ASSESSMENTS.FORM.MIN_LETTERS_AR' | translate }}
-            }
-          </mat-error>
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
+
+    <div class="af-fields">
+
+      <!-- Names -->
+      <div class="fd-grid af-grid-2">
+
+        <div class="field">
+          <label class="field-label" for="af-nameAr">{{ 'MY_CLASSES.ASSESSMENTS.FORM.NAME_AR' | translate }}</label>
+
+          <div class="field-box" [class.is-invalid]="isInvalid('nameAr')">
+            <input
+              id="af-nameAr"
+              formControlName="nameAr"
+              dir="rtl"
+              autocomplete="off"
+              placeholder="كويز 1"
+              [maxlength]="nameMaxLength"
+              [attr.aria-invalid]="isInvalid('nameAr')"
+              [attr.aria-describedby]="isInvalid('nameAr') ? 'af-nameAr-error' : null"
+              [attr.cdkFocusInitial]="isEditMode ? null : ''"
+            />
+          </div>
+
+          @if (isInvalid('nameAr')) {
+            <div class="field-error" id="af-nameAr-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (assessmentForm.controls.nameAr.hasError('required')) {
+                  {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
+                } @else if (assessmentForm.controls.nameAr.hasError('invalidChars')) {
+                  {{ 'MY_CLASSES.ASSESSMENTS.FORM.ARABIC_ONLY' | translate }}
+                } @else {
+                  {{ 'MY_CLASSES.ASSESSMENTS.FORM.MIN_LETTERS_AR' | translate }}
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="af-nameEn">{{ 'MY_CLASSES.ASSESSMENTS.FORM.NAME_EN' | translate }}</label>
+
+          <div class="field-box" [class.is-invalid]="isInvalid('nameEn')">
+            <input
+              id="af-nameEn"
+              formControlName="nameEn"
+              dir="ltr"
+              autocomplete="off"
+              placeholder="Quiz 1"
+              [maxlength]="nameMaxLength"
+              [attr.aria-invalid]="isInvalid('nameEn')"
+              [attr.aria-describedby]="isInvalid('nameEn') ? 'af-nameEn-error' : null"
+            />
+          </div>
+
+          @if (isInvalid('nameEn')) {
+            <div class="field-error" id="af-nameEn-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (assessmentForm.controls.nameEn.hasError('required')) {
+                  {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
+                } @else if (assessmentForm.controls.nameEn.hasError('invalidChars')) {
+                  {{ 'MY_CLASSES.ASSESSMENTS.FORM.ENGLISH_ONLY' | translate }}
+                } @else {
+                  {{ 'MY_CLASSES.ASSESSMENTS.FORM.MIN_LETTERS_EN' | translate }}
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+      </div>
+
+
+      <!-- Max mark (any number above 0: the component averages the percentages) -->
+      <div class="field">
+        <label class="field-label" for="af-maxMark">{{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK' | translate }}</label>
+
+        <div class="field-box" [class.is-invalid]="isInvalid('maxMark')">
+          <input
+            id="af-maxMark"
+            class="tabular"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="any"
+            formControlName="maxMark"
+            [attr.aria-invalid]="isInvalid('maxMark')"
+            aria-describedby="af-maxMark-note"
+          />
+        </div>
+
+        @if (isInvalid('maxMark')) {
+          <div class="field-error" id="af-maxMark-note">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (assessmentForm.controls.maxMark.hasError('required')) {
+                {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
+              } @else {
+                {{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_ERROR' | translate: { max: maxMarkLimit } }}
+              }
+            </span>
+          </div>
+        } @else {
+          <div class="field-help" id="af-maxMark-note">
+            {{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_HINT' | translate }}
+          </div>
         }
-      </mat-form-field>
+      </div>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'MY_CLASSES.ASSESSMENTS.FORM.NAME_EN' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="nameEn"
-          dir="ltr"
-          [maxlength]="nameMaxLength"
-          placeholder="Quiz 1"
-        />
-        @if (isInvalid(assessmentForm.controls.nameEn)) {
-          <mat-error>
-            @if (assessmentForm.controls.nameEn.hasError('required')) {
-              {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
-            } @else if (assessmentForm.controls.nameEn.hasError('invalidChars')) {
-              {{ 'MY_CLASSES.ASSESSMENTS.FORM.ENGLISH_ONLY' | translate }}
-            } @else if (assessmentForm.controls.nameEn.hasError('minLetters')) {
-              {{ 'MY_CLASSES.ASSESSMENTS.FORM.MIN_LETTERS_EN' | translate }}
-            }
-          </mat-error>
-        }
-      </mat-form-field>
+
+      <!-- Edit: the backend refuses a new max mark when the assessment has marks -->
+      @if (isEditMode) {
+        <div class="fd-note info">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <span>{{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_NOTE' | translate }}</span>
+        </div>
+      }
 
     </div>
 
+  </div>
 
-    <!-- Max mark (any number above 0: the component averages the percentages) -->
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label>{{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK' | translate }}</mat-label>
-      <input matInput type="number" min="0" step="any" formControlName="maxMark" />
 
-      <mat-hint>{{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_HINT' | translate }}</mat-hint>
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
 
-      @if (isInvalid(assessmentForm.controls.maxMark)) {
-        <mat-error>
-          @if (assessmentForm.controls.maxMark.hasError('required')) {
-            {{ 'MY_CLASSES.ASSESSMENTS.FORM.REQUIRED' | translate }}
-          } @else {
-            {{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_ERROR' | translate: { max: maxMarkLimit } }}
-          }
-        </mat-error>
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ errorsKey() | translate: { count: invalidCount() } }}
       }
-    </mat-form-field>
+    </span>
 
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="closing.requestClose()"
+    >
+      {{ 'MY_CLASSES.ASSESSMENTS.FORM.CANCEL' | translate }}
+    </button>
 
-    @if (isEditMode) {
-      <p class="form-note">
-        <mat-icon>info</mat-icon>
-        <span>{{ 'MY_CLASSES.ASSESSMENTS.FORM.MAX_MARK_NOTE' | translate }}</span>
-      </p>
-    }
+    <button
+      mat-flat-button
+      type="submit"
+      class="fd-submit"
+      [class.is-busy]="isSubmitting()"
+      [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+    >
+      <!-- The icon stays outside @if so mat-button can place it;
+           while saving it is hidden and the spinner shows instead. -->
+      <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
+        {{ isEditMode ? 'save' : 'add' }}
+      </mat-icon>
 
-  </form>
+      @if (isSubmitting()) {
+        <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+      }
 
-</mat-dialog-content>
+      {{
+        (isSubmitting()
+          ? 'MY_CLASSES.ASSESSMENTS.FORM.SAVING'
+          : isEditMode ? 'MY_CLASSES.ASSESSMENTS.FORM.SAVE' : 'MY_CLASSES.ASSESSMENTS.FORM.ADD') | translate
+      }}
+    </button>
 
+  </footer>
 
-<mat-dialog-actions align="end">
-
-  <button
-    mat-stroked-button
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="cancel()"
-  >
-    {{ 'MY_CLASSES.ASSESSMENTS.FORM.CANCEL' | translate }}
-  </button>
-
-  <button
-    mat-flat-button
-    color="primary"
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="onSubmit()"
-  >
-    <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
-
-    @if (isSubmitting()) {
-      {{ 'MY_CLASSES.ASSESSMENTS.FORM.SAVING' | translate }}
-    } @else if (isEditMode) {
-      {{ 'MY_CLASSES.ASSESSMENTS.FORM.SAVE' | translate }}
-    } @else {
-      {{ 'MY_CLASSES.ASSESSMENTS.FORM.ADD' | translate }}
-    }
-  </button>
-
-</mat-dialog-actions>
+</form>

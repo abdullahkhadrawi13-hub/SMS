@@ -1454,22 +1454,23 @@
       "FORM": {
         "ADD_TITLE": "Add assessment",
         "EDIT_TITLE": "Edit assessment",
+        "CLOSE": "Close",
         "COMPONENT": "Component: {{name}} · weight {{weight}}%",
         "NAME_AR": "Arabic name",
         "NAME_EN": "English name",
         "MAX_MARK": "Max mark",
         "MAX_MARK_HINT": "The component averages the percentages of its assessments, so they don't need the same max mark.",
         "MAX_MARK_ERROR": "Must be above 0 and up to {{max}}",
-        "MAX_MARK_NOTE": "If the assessment has marks, its max mark can't be changed.",
-        "REQUIRED": "This field is required",
+        "MAX_MARK_NOTE": "If this assessment has marks, its max mark can't be changed.",
+        "REQUIRED": "This field is required.",
         "ARABIC_ONLY": "Arabic letters, numbers and spaces only",
         "ENGLISH_ONLY": "English letters, numbers and spaces only",
         "MIN_LETTERS_AR": "The name needs at least 2 Arabic letters",
         "MIN_LETTERS_EN": "The name needs at least 2 English letters",
         "CANCEL": "Cancel",
-        "ADD": "Add",
-        "SAVE": "Save",
-        "SAVING": "Saving..."
+        "ADD": "Add assessment",
+        "SAVE": "Save changes",
+        "SAVING": "Saving…"
       },
       "DELETE": {
         "TITLE": "Delete the assessment?",

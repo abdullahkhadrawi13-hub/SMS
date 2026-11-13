@@ -391,6 +391,12 @@ export class AssessmentsPage implements OnInit {
         data,
         width: '520px',
         maxWidth: '95vw',
+        maxHeight: '90vh',
+
+        // Shared form panel (styles.css): full screen on the phone
+        panelClass: 'form-dialog',
+
+        direction: this.language.currentDirection(),
       })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
