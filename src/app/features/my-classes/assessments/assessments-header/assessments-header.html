@@ -1,47 +1,31 @@
+<!-- The header of the assessments page: "My classes" back link, the subject,
+     the plan state badge next to it, and class · section · term under it.
+     Before the assignment arrives, the title is just "Assessments". -->
 <app-page-header
-  [title]="'MY_CLASSES.ASSESSMENTS.HEADER.TITLE' | translate: { subject: subjectName() }"
+  [title]="subjectName()
+    ? ('MY_CLASSES.ASSESSMENTS.HEADER.TITLE' | translate: { subject: subjectName() })
+    : ('MY_CLASSES.ASSESSMENTS.HEADER.FALLBACK_TITLE' | translate)"
+  backLink="/my-classes"
+  [backLabel]="'MY_CLASSES.HEADER.TITLE' | translate"
 >
 
-  <div leading class="subject-icon">
-    <mat-icon>menu_book</mat-icon>
-  </div>
+  @if (planBadge(); as badge) {
+    <app-status-badge badge [tone]="badge.tone" [icon]="badge.icon">
+      {{ badge.labelKey | translate }}
+    </app-status-badge>
+  }
 
-  <span subtitle>
-    {{ className() }}
-    <span class="dot">·</span>
-    {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: sectionName() } }}
+  @if (subjectName()) {
+    <span subtitle>
+      {{ className() }}
+      <span class="sep" aria-hidden="true">·</span>
+      {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: sectionName() } }}
 
-    @if (termName()) {
-      <span class="dot">·</span>
-      <span class="term-name">{{ termName() }}</span>
-    }
-  </span>
-
-
-  <!-- The plan: passing mark and state -->
-  @if (passingMark() !== null || planBadge()) {
-
-    <div actions class="chips">
-
-      @if (passingMark() !== null) {
-        <span class="chip">
-          <mat-icon>flag</mat-icon>
-          {{ 'MY_CLASSES.ASSESSMENTS.HEADER.PASSING_MARK' | translate: { mark: passingMark() } }}
-        </span>
+      @if (termName()) {
+        <span class="sep" aria-hidden="true">·</span>
+        {{ termName() }}
       }
-
-      @if (planBadge(); as badge) {
-        <span
-          class="chip {{ badge.cssClass }}"
-          [matTooltip]="'MY_CLASSES.ASSESSMENTS.HEADER.PLAN_TOOLTIP' | translate"
-        >
-          <mat-icon>{{ badge.icon }}</mat-icon>
-          {{ badge.labelKey | translate }}
-        </span>
-      }
-
-    </div>
-
+    </span>
   }
 
 </app-page-header>

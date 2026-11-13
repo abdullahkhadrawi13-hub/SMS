@@ -1,13 +1,14 @@
-<article class="component-card" [style.--component-color]="group().color">
+<!-- One quiet card per plan component (spec: البطاقات).
+     The component's colour is only the small dot before its name
+     (the same dot as in the Admin's plan form). -->
+<article class="component-card">
 
-  <!-- Header: name, type and weight -->
-  <div class="card-header">
+  <!-- Head: dot, name and type, and the weight at the end -->
+  <div class="card-head">
 
-    <div class="component-icon">
-      <mat-icon>{{ isOpen() ? 'playlist_add' : 'push_pin' }}</mat-icon>
-    </div>
+    <span class="dot" [style.background]="group().color" aria-hidden="true"></span>
 
-    <div class="component-info">
+    <div class="head-text">
 
       <h3>{{ group().componentName }}</h3>
 
@@ -21,95 +22,98 @@
 
     </div>
 
-    <span
-      class="weight-badge"
-      [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.WEIGHT_TOOLTIP' | translate: { weight: weight() }"
-    >
-      <bdi>{{ weight() }}%</bdi>
-    </span>
+    <div class="weight">
+      <strong><bdi>{{ weight() }}%</bdi></strong>
+      <span>{{ 'MY_CLASSES.ASSESSMENTS.CARD.OF_FINAL' | translate }}</span>
+    </div>
 
   </div>
 
 
   <!-- The section's assessments under this component -->
-  <div class="assessments-list">
+  @if (group().assessments.length > 0) {
 
-    @for (assessment of group().assessments; track assessment.assessmentId) {
+    <ul class="assessments">
 
-      <div class="assessment-row">
+      @for (assessment of group().assessments; track assessment.assessmentId) {
 
-        <div class="assessment-info">
+        <li class="assessment-row">
 
-          <span class="assessment-name">{{ assessmentName(assessment) }}</span>
-
-          <span class="assessment-meta">
-            {{ 'MY_CLASSES.ASSESSMENTS.CARD.OUT_OF' | translate: { max: maxMark(assessment) } }}
-
-            <!-- TODO(grades): show how many students have a mark here
-                 (e.g. "18/25 marks", from the grade sheet), and disable
-                 delete when the assessment has marks. -->
+          <span class="assessment-text">
+            <span class="assessment-name">{{ assessmentName(assessment) }}</span>
+            <span class="assessment-meta">
+              {{ 'MY_CLASSES.ASSESSMENTS.CARD.OUT_OF' | translate: { max: maxMark(assessment) } }}
+            </span>
           </span>
 
-        </div>
+          <!-- Fixed assessments are created by the system: a lock, no actions -->
+          @if (assessment.isFixed) {
 
-        <!-- Fixed assessments are created by the system: no actions -->
-        @if (!assessment.isFixed) {
+            <span class="fixed-lock" [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.FIXED_TOOLTIP' | translate">
+              <mat-icon aria-hidden="true">lock</mat-icon>
+              <span class="visually-hidden">{{ 'MY_CLASSES.ASSESSMENTS.CARD.FIXED_TOOLTIP' | translate }}</span>
+            </span>
 
-          <button
-            mat-icon-button
-            type="button"
-            [disabled]="busyAssessmentId() === assessment.assessmentId"
-            [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.EDIT' | translate"
-            [attr.aria-label]="'MY_CLASSES.ASSESSMENTS.CARD.EDIT' | translate"
-            (click)="editAssessment.emit(assessment)"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
+          } @else {
 
-          <button
-            mat-icon-button
-            type="button"
-            class="delete-button"
-            [disabled]="busyAssessmentId() === assessment.assessmentId"
-            [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.DELETE' | translate"
-            [attr.aria-label]="'MY_CLASSES.ASSESSMENTS.CARD.DELETE' | translate"
-            (click)="deleteAssessment.emit(assessment)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
+            <!-- One ⋮ per row (spec: الجداول → الإجراءات) -->
+            <button
+              mat-icon-button
+              type="button"
+              [disabled]="busyAssessmentId() === assessment.assessmentId"
+              [matMenuTriggerFor]="rowMenu"
+              [attr.aria-label]="'MY_CLASSES.ASSESSMENTS.CARD.ACTIONS' | translate: { name: assessmentName(assessment) }"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
 
-        } @else {
+            <mat-menu #rowMenu="matMenu">
 
-          <mat-icon
-            class="fixed-lock"
-            [matTooltip]="'MY_CLASSES.ASSESSMENTS.CARD.FIXED_TOOLTIP' | translate"
-          >lock</mat-icon>
+              <button mat-menu-item type="button" (click)="editAssessment.emit(assessment)">
+                <mat-icon>edit</mat-icon>
+                <span>{{ 'MY_CLASSES.ASSESSMENTS.CARD.EDIT' | translate }}</span>
+              </button>
 
-        }
+              <button
+                mat-menu-item
+                type="button"
+                class="danger-item"
+                (click)="deleteAssessment.emit(assessment)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>{{ 'MY_CLASSES.ASSESSMENTS.CARD.DELETE' | translate }}</span>
+              </button>
 
-      </div>
+            </mat-menu>
 
-    } @empty {
+          }
 
-      <p class="empty-component">
-        @if (isOpen()) {
-          {{ 'MY_CLASSES.ASSESSMENTS.CARD.EMPTY_OPEN' | translate }}
-        } @else {
-          {{ 'MY_CLASSES.ASSESSMENTS.CARD.EMPTY_FIXED' | translate }}
-        }
-      </p>
+        </li>
 
-    }
+      }
 
-  </div>
+    </ul>
+
+  } @else {
+
+    <p class="empty-component">
+      @if (isOpen()) {
+        {{ 'MY_CLASSES.ASSESSMENTS.CARD.EMPTY_OPEN' | translate }}
+      } @else {
+        {{ 'MY_CLASSES.ASSESSMENTS.CARD.EMPTY_FIXED' | translate }}
+      }
+    </p>
+
+  }
 
 
-  <!-- Footer: add (open) or a note (fixed) -->
-  <div class="card-footer">
+  <!-- Foot: "Add assessment" (open) or a note (fixed) -->
+  <div class="card-foot">
 
     @if (isOpen()) {
 
       <button
+        mat-stroked-button
         type="button"
         class="add-button"
         (click)="addAssessment.emit()"
@@ -121,7 +125,7 @@
     } @else {
 
       <span class="fixed-note">
-        <mat-icon>admin_panel_settings</mat-icon>
+        <mat-icon aria-hidden="true">admin_panel_settings</mat-icon>
         {{ 'MY_CLASSES.ASSESSMENTS.CARD.FIXED_NOTE' | translate }}
       </span>
 

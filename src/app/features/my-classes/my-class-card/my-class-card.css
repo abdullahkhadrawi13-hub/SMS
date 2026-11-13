@@ -1,280 +1,171 @@
-/* The component behaves like a block inside the cards grid. */
+/* ================================
+   My classes · one card per class + section
+   A quiet card: white, 1px border, no shadow, no lift on hover
+   (spec: البطاقات). Every subject is shown; the card grows with them.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
 :host {
   display: block;
+
+  min-width: 0;
 }
-
-
-/* ================================
-   Card
-   The colors come from the component:
-   --card-main, --card-soft, --card-dark
-   ================================ */
 
 .class-card {
-  /* Fixed height: all cards have the same size,
-     whatever the number of subjects. */
-  height: 300px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
 
-  display: flex;
-  flex-direction: column;
+  background: var(--surface);
 
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
   overflow: hidden;
-  box-sizing: border-box;
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.class-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 
-/* ================================
-   Card Header (colored)
-   ================================ */
+/* ---------- Head: class · section, number of subjects ---------- */
 
-.card-header {
-  flex-shrink: 0;
-
+.card-head {
   display: flex;
   align-items: center;
-  gap: 12px;
 
-  padding: 16px 18px;
+  gap: var(--sp-3);
 
-  background: var(--card-main);
-  color: #ffffff;
+  padding: var(--sp-4) 20px var(--sp-3);
 }
 
-.class-icon {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.class-icon mat-icon {
-  width: 24px;
-  height: 24px;
-  font-size: 24px;
-  color: #ffffff;
-}
-
-.class-info {
+.card-head h2 {
   flex: 1;
   min-width: 0;
 
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.class-info h3 {
   margin: 0;
-  font-size: 17px;
-  font-weight: 600;
-  color: #ffffff;
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-.section-name {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+.sep {
+  margin-inline: var(--sp-1);
 
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--faint);
+
+  font-weight: 400;
 }
 
-.section-name mat-icon {
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
-}
-
-.subjects-badge {
+.count {
   flex-shrink: 0;
 
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  color: var(--faint);
 
-  padding: 5px 11px;
-  border-radius: 20px;
-
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--card-dark);
-
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--fs-12);
   white-space: nowrap;
 }
 
-.subjects-badge mat-icon {
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
+
+/* ---------- Subject lines (each one a link) ---------- */
+
+.subjects {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  border-block-start: 1px solid var(--rule);
 }
 
-
-/* ================================
-   Subject Lines
-   ================================ */
-
-.subjects-list {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-
-  padding: 4px 0;
+.subjects li + li {
+  border-block-start: 1px solid var(--rule);
 }
 
 .subject-line {
   display: flex;
   align-items: center;
-  gap: 12px;
 
-  padding: 10px 18px;
+  gap: var(--sp-3);
 
-  /* The line is a link (opens the subject's assessments). */
+  min-height: 56px;
+  padding-block: var(--sp-2);
+  padding-inline: 20px var(--sp-3);
+
   color: inherit;
   text-decoration: none;
-  cursor: pointer;
 
-  transition: background 0.15s ease;
+  transition: background var(--dur) ease;
 }
 
 .subject-line:hover {
-  background: var(--card-soft);
+  background: var(--hover);
 }
 
 .subject-line:focus-visible {
-  outline: 2px solid var(--card-main);
+  outline: 2px solid var(--accent);
   outline-offset: -2px;
 }
 
-.subject-line:hover .line-arrow {
-  color: var(--card-dark);
-}
-
-.subject-line + .subject-line {
-  border-top: 1px solid #f1f5f9;
-}
-
-.subject-dot {
-  width: 10px;
-  height: 10px;
-  flex-shrink: 0;
-
-  border-radius: 50%;
-  background: var(--card-main);
-}
-
-.subject-info {
+.subject-text {
   flex: 1;
   min-width: 0;
 
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 
 .subject-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: #111827;
+  color: var(--text);
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.passing-mark {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-
-/* ================================
-   Assessment Structure Badge
-   ================================ */
-
-.structure-badge {
-  flex-shrink: 0;
-
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  padding: 5px 10px;
-  border-radius: 20px;
-
-  background: #fffbeb;
-  color: #92400e;
-
-  font-size: 12px;
+  font-size: var(--fs-14);
   font-weight: 600;
-  white-space: nowrap;
 }
 
-.structure-badge.locked {
-  background: #f0fdf4;
-  color: #166534;
+.subject-meta {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-variant-numeric: tabular-nums;
 }
 
-.structure-badge mat-icon {
-  width: 14px;
-  height: 14px;
-  font-size: 14px;
-}
-
-
-/* ================================
-   Arrow (no action yet)
-   ================================ */
-
-.line-arrow {
-  flex-shrink: 0;
-  color: #9ca3af;
-}
-
-/* Arabic (RTL): the arrow points to the left. */
-:host-context([dir='rtl']) .line-arrow {
-  transform: scaleX(-1);
-}
-
-
-/* ================================
-   More Subjects
-   ================================ */
-
-.more-subjects {
+.arrow {
   flex-shrink: 0;
 
-  margin: 0 18px 14px;
-  padding: 7px 12px;
-  border-radius: 10px;
+  width: 20px;
+  height: 20px;
 
-  background: var(--card-soft);
-  color: var(--card-dark);
+  font-size: 20px;
 
-  font-size: 13px;
-  font-weight: 600;
-  text-align: center;
+  color: var(--faint);
+}
+
+.subject-line:hover .arrow {
+  color: var(--text);
+}
+
+
+/* ---------- Plan badge: at the end of the line, under the name on the phone ---------- */
+
+.badge-phone {
+  display: none;
+}
+
+@media (max-width: 719.98px) {
+
+  .card-head {
+    padding: var(--sp-3) var(--sp-4) 10px;
+  }
+
+  .subject-line {
+    padding-inline: var(--sp-4) var(--sp-2);
+  }
+
+  .badge-end {
+    display: none;
+  }
+
+  .badge-phone {
+    display: inline-flex;
+    align-self: flex-start;
+
+    margin-block-start: var(--sp-1);
+  }
+
 }

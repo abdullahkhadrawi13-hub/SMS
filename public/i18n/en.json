@@ -1371,25 +1371,46 @@
   "MY_CLASSES": {
     "HEADER": {
       "TITLE": "My Classes",
-      "SUBTITLE": "The classes, sections and subjects you teach"
+      "SUBTITLE": "The subjects you teach in each section. Select a subject to manage its assessments."
     },
     "STATS": {
+      "TITLE": "My classes numbers",
       "SECTIONS": "Sections",
+      "IN_CLASSES": {
+        "ZERO": "",
+        "ONE": "in 1 class",
+        "TWO": "in 2 classes",
+        "FEW": "in {{count}} classes",
+        "MANY": "in {{count}} classes",
+        "OTHER": "in {{count}} classes"
+      },
       "SUBJECTS": "Subjects",
-      "LOCKED": "Locked Subject Plans",
-      "OF_TOTAL": "of {{total}}"
+      "ASSIGNMENTS": {
+        "ZERO": "No assignments",
+        "ONE": "1 assignment",
+        "TWO": "2 assignments",
+        "FEW": "{{count}} assignments",
+        "MANY": "{{count}} assignments",
+        "OTHER": "{{count}} assignments"
+      },
+      "LOCKED": "Locked plans",
+      "OF_TOTAL": "of {{total}}",
+      "LOCKED_ARIA": "{{count}} of {{total}} plans locked"
     },
     "CARD": {
       "SECTION": "Section {{name}}",
-      "SUBJECTS_COUNT": "Subjects: {{count}}",
+      "SUBJECTS": {
+        "ZERO": "No subjects",
+        "ONE": "1 subject",
+        "TWO": "2 subjects",
+        "FEW": "{{count}} subjects",
+        "MANY": "{{count}} subjects",
+        "OTHER": "{{count}} subjects"
+      },
       "PASSING_MARK": "Passing mark {{mark}} of 100",
-      "MORE_SUBJECTS": "+{{count}} more",
-      "LOCKED": "Locked",
-      "UNLOCKED": "Open",
-      "NO_PLAN": "No plan yet"
+      "NO_PLAN": "The administration hasn't set the plan yet"
     },
     "PAGE": {
-      "HINT": "Subjects are assigned to you by the administrator, who also sets each subject's plan (components and passing mark). Click a subject to manage its assessments.",
       "LOADING": "Loading your classes...",
       "RETRY": "Retry",
       "EMPTY_TITLE": "No classes assigned to you",
@@ -1397,32 +1418,34 @@
     },
     "ASSESSMENTS": {
       "PAGE": {
-        "BREADCRUMB": "Breadcrumb",
         "LOADING": "Loading assessments...",
-        "BACK": "Back to My Classes",
         "NOT_FOUND_TITLE": "Subject not found",
         "NOT_FOUND_MESSAGE": "This subject is not one of your subjects in the current term.",
         "NO_PLAN_TITLE": "This subject has no plan yet",
         "NO_PLAN_MESSAGE": "The administration sets the subject plan (components, weights and passing mark). After that you can add your assessments here.",
-        "WEIGHTS_TITLE": "Marks distribution",
+        "PLAN_TITLE": "Subject plan",
         "WEIGHTS_HINT": "The plan comes from the administration. You add assessments under open components only.",
-        "INCOMPLETE_NOTE": "The component weights add up to less than 100, so marks can't be entered until the administration completes the plan. You can add your assessments now.",
+        "PASSING_MARK": "Passing mark",
+        "COMPONENTS": "Components",
+        "LOCKED_GRADES": "The plan is locked because it has marks. Its components and weights don't change; you can still add assessments under the open components.",
+        "LOCKED_MANUAL": "The administration locked the plan. Its components and weights don't change; you can still add assessments under the open components.",
+        "INCOMPLETE_NOTE": "The component weights add up to {{total}} of 100, so marks can't be entered until the administration completes the plan. You can add your assessments now.",
         "NO_COMPONENTS_TITLE": "The plan has no components",
         "NO_COMPONENTS_MESSAGE": "The administration hasn't added any component to this subject's plan yet."
       },
       "HEADER": {
         "TITLE": "{{subject}} Assessments",
-        "PASSING_MARK": "Passing mark {{mark}}",
-        "PLAN_TOOLTIP": "The same plan for every section of the class. It locks when the first mark is entered, and only the administration can unlock it."
+        "FALLBACK_TITLE": "Assessments"
       },
       "CARD": {
         "OPEN": "Open · you add your own assessments",
         "FIXED": "Fixed · out of {{max}}",
-        "WEIGHT_TOOLTIP": "Weight of the final mark: {{weight}}%",
+        "OF_FINAL": "of the mark",
         "OUT_OF": "Out of {{max}}",
         "ADD": "Add assessment",
         "EDIT": "Edit",
         "DELETE": "Delete",
+        "ACTIONS": "{{name}} actions",
         "EMPTY_OPEN": "No assessments yet. Students' totals stay incomplete until you add at least one.",
         "EMPTY_FIXED": "This component has no assessment.",
         "FIXED_TOOLTIP": "Fixed assessment from the subject plan",

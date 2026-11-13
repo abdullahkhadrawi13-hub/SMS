@@ -2,6 +2,7 @@ import { Component, computed, inject, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -15,7 +16,7 @@ import { ComponentGroup } from '../assessments';
 
 // One component of the subject plan, with the section's assessments under it.
 //   - open component: the teacher's own assessments (quizzes), with
-//     "Add assessment", and edit / delete on each one.
+//     "Add assessment", and edit / delete in one ⋮ menu on each one.
 //   - fixed component: its one assessment, created by the system from the plan.
 //     Read-only for the teacher (the Admin manages it in the subject plan).
 // Display only: the page opens the dialogs and sends the requests.
@@ -24,6 +25,7 @@ import { ComponentGroup } from '../assessments';
   imports: [
     MatButtonModule,
     MatIconModule,
+    MatMenuModule,
     MatTooltipModule,
     TranslatePipe,
   ],

@@ -1,142 +1,153 @@
-<div class="assessments-page">
+<!-- Header: back to "My classes", the subject, the plan state, class · section · term -->
+<app-assessments-header
+  [subjectName]="subjectName()"
+  [className]="className()"
+  [sectionName]="sectionName()"
+  [termName]="termName()"
+  [planBadge]="planBadge()"
+/>
 
-  <!-- Breadcrumb: My classes › subject · class / section -->
-  <nav class="crumbs" [attr.aria-label]="'MY_CLASSES.ASSESSMENTS.PAGE.BREADCRUMB' | translate">
 
-    <a routerLink="/my-classes">
-      {{ 'MY_CLASSES.HEADER.TITLE' | translate }}
-    </a>
+<!-- Not one of the teacher's assignments -->
+@if (notFound()) {
 
-    @if (assignment()) {
-      <mat-icon class="crumb-arrow">chevron_right</mat-icon>
-      <span>{{ subjectName() }} · {{ className() }} / {{ sectionName() }}</span>
+  <app-state-card
+    type="empty"
+    icon="search_off"
+    [title]="'MY_CLASSES.ASSESSMENTS.PAGE.NOT_FOUND_TITLE' | translate"
+    [message]="'MY_CLASSES.ASSESSMENTS.PAGE.NOT_FOUND_MESSAGE' | translate"
+  />
+
+}
+
+<!-- Error -->
+@else if (errorMessage()) {
+
+  <app-state-card
+    type="error"
+    [message]="errorMessage() | translate"
+    [showRetry]="errorRetryable()"
+    (retry)="loadPage()"
+  />
+
+}
+
+<!-- Loading -->
+@else if (isLoading() || !assignment()) {
+
+  <app-state-card
+    type="loading"
+    [message]="'MY_CLASSES.ASSESSMENTS.PAGE.LOADING' | translate"
+  />
+
+}
+
+<!-- No subject plan yet -->
+@else if (noPlan()) {
+
+  <app-state-card
+    type="empty"
+    icon="rule"
+    [title]="'MY_CLASSES.ASSESSMENTS.PAGE.NO_PLAN_TITLE' | translate"
+    [message]="'MY_CLASSES.ASSESSMENTS.PAGE.NO_PLAN_MESSAGE' | translate"
+  />
+
+}
+
+@else if (plan(); as currentPlan) {
+
+  <div class="assessments">
+
+    <!-- Notices (spec: الملاحظات) -->
+    @if (currentPlan.isLocked || !currentPlan.isComplete) {
+
+      <div class="notices">
+
+        @if (currentPlan.isLocked) {
+          <div class="notice info">
+            <mat-icon aria-hidden="true">lock</mat-icon>
+            <span>
+              {{
+                (currentPlan.hasGrades
+                  ? 'MY_CLASSES.ASSESSMENTS.PAGE.LOCKED_GRADES'
+                  : 'MY_CLASSES.ASSESSMENTS.PAGE.LOCKED_MANUAL') | translate
+              }}
+            </span>
+          </div>
+        }
+
+        <!-- Weights under 100: marks cannot be entered yet -->
+        @if (!currentPlan.isComplete) {
+          <div class="notice warn">
+            <mat-icon aria-hidden="true">warning_amber</mat-icon>
+            <span>
+              {{ 'MY_CLASSES.ASSESSMENTS.PAGE.INCOMPLETE_NOTE' | translate: { total: totalWeight() } }}
+            </span>
+          </div>
+        }
+
+      </div>
+
     }
 
-  </nav>
+
+    <!-- The subject plan: passing mark, components, weights -->
+    <section class="plan-card" aria-labelledby="plan-card-title">
+
+      <div class="plan-top">
+
+        <div class="plan-text">
+          <h2 id="plan-card-title">{{ 'MY_CLASSES.ASSESSMENTS.PAGE.PLAN_TITLE' | translate }}</h2>
+          <p>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.WEIGHTS_HINT' | translate }}</p>
+        </div>
+
+        <dl class="facts">
+          <div class="fact">
+            <dt>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.PASSING_MARK' | translate }}</dt>
+            <dd>{{ passingMark() }}</dd>
+          </div>
+
+          <div class="fact">
+            <dt>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.COMPONENTS' | translate }}</dt>
+            <dd>{{ groups().length }}</dd>
+          </div>
+        </dl>
+
+      </div>
+
+      <app-plan-weight-bar [weights]="weights()" />
+
+    </section>
 
 
-  <!-- Not one of the teacher's assignments -->
-  @if (notFound()) {
+    <!-- One card per plan component -->
+    @if (groups().length > 0) {
 
-    <app-state-card
-      type="empty"
-      icon="search_off"
-      [title]="'MY_CLASSES.ASSESSMENTS.PAGE.NOT_FOUND_TITLE' | translate"
-      [message]="'MY_CLASSES.ASSESSMENTS.PAGE.NOT_FOUND_MESSAGE' | translate"
-    >
-      <a actions mat-flat-button color="primary" routerLink="/my-classes">
-        {{ 'MY_CLASSES.ASSESSMENTS.PAGE.BACK' | translate }}
-      </a>
-    </app-state-card>
+      <div class="cards-grid">
 
-  }
+        @for (group of groups(); track group.component.subjectPlanComponentId) {
+          <app-plan-component-card
+            [group]="group"
+            [busyAssessmentId]="busyAssessmentId()"
+            (addAssessment)="openAddAssessment(group)"
+            (editAssessment)="openEditAssessment(group, $event)"
+            (deleteAssessment)="confirmDeleteAssessment($event)"
+          />
+        }
 
-  <!-- Error -->
-  @else if (errorMessage()) {
+      </div>
 
-    <app-state-card
-      type="error"
-      [message]="errorMessage() | translate"
-      [showRetry]="errorRetryable()"
-      (retry)="loadPage()"
-    />
-
-  }
-
-  <!-- Loading -->
-  @else if (isLoading() || !assignment()) {
-
-    <app-state-card
-      type="loading"
-      [message]="'MY_CLASSES.ASSESSMENTS.PAGE.LOADING' | translate"
-    />
-
-  }
-
-  @else {
-
-    <!-- Header -->
-    <app-assessments-header
-      [subjectName]="subjectName()"
-      [className]="className()"
-      [sectionName]="sectionName()"
-      [termName]="termName()"
-      [passingMark]="passingMark()"
-      [planBadge]="planBadge()"
-    ></app-assessments-header>
-
-
-    <!-- No subject plan yet -->
-    @if (noPlan()) {
+    } @else {
 
       <app-state-card
         type="empty"
-        icon="rule"
-        [title]="'MY_CLASSES.ASSESSMENTS.PAGE.NO_PLAN_TITLE' | translate"
-        [message]="'MY_CLASSES.ASSESSMENTS.PAGE.NO_PLAN_MESSAGE' | translate"
+        icon="playlist_remove"
+        [title]="'MY_CLASSES.ASSESSMENTS.PAGE.NO_COMPONENTS_TITLE' | translate"
+        [message]="'MY_CLASSES.ASSESSMENTS.PAGE.NO_COMPONENTS_MESSAGE' | translate"
       />
 
     }
 
-    @else if (plan(); as currentPlan) {
+  </div>
 
-      <!-- The plan's weights -->
-      <section class="plan-strip">
-
-        <div class="plan-strip-top">
-
-          <h2>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.WEIGHTS_TITLE' | translate }}</h2>
-
-          <span class="plan-owner">
-            <mat-icon>admin_panel_settings</mat-icon>
-            {{ 'MY_CLASSES.ASSESSMENTS.PAGE.WEIGHTS_HINT' | translate }}
-          </span>
-
-        </div>
-
-        <app-plan-weight-bar [weights]="weights()"></app-plan-weight-bar>
-
-        <!-- Weights under 100: marks cannot be entered yet -->
-        @if (!currentPlan.isComplete) {
-          <p class="incomplete-note">
-            <mat-icon>warning_amber</mat-icon>
-            <span>{{ 'MY_CLASSES.ASSESSMENTS.PAGE.INCOMPLETE_NOTE' | translate }}</span>
-          </p>
-        }
-
-      </section>
-
-
-      <!-- One card per plan component -->
-      @if (groups().length > 0) {
-
-        <div class="cards-grid">
-
-          @for (group of groups(); track group.component.subjectPlanComponentId) {
-            <app-plan-component-card
-              [group]="group"
-              [busyAssessmentId]="busyAssessmentId()"
-              (addAssessment)="openAddAssessment(group)"
-              (editAssessment)="openEditAssessment(group, $event)"
-              (deleteAssessment)="confirmDeleteAssessment($event)"
-            ></app-plan-component-card>
-          }
-
-        </div>
-
-      } @else {
-
-        <app-state-card
-          type="empty"
-          icon="playlist_remove"
-          [title]="'MY_CLASSES.ASSESSMENTS.PAGE.NO_COMPONENTS_TITLE' | translate"
-          [message]="'MY_CLASSES.ASSESSMENTS.PAGE.NO_COMPONENTS_MESSAGE' | translate"
-        />
-
-      }
-
-    }
-
-  }
-
-</div>
+}

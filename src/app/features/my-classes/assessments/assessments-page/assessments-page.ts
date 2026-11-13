@@ -8,10 +8,9 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { catchError, forkJoin, of, throwError } from 'rxjs';
 
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -30,8 +29,6 @@ import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 import {
   componentColor,
   formatNumber,
-  getPlanStatus,
-  PLAN_STATUS_BADGE,
   sortComponents,
 } from '../../../subjects/shared/subjects-shared';
 import { PlanWeightBar } from '../../../subjects/subject-plans/plan-weight-bar/plan-weight-bar';
@@ -41,7 +38,8 @@ import {
 } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
 import { AssessmentFormData, ComponentGroup } from '../assessments';
-import { AssessmentsHeader, PlanStatusBadge } from '../assessments-header/assessments-header';
+import { AssessmentsHeader } from '../assessments-header/assessments-header';
+import { MY_PLAN_BADGE, MyPlanBadge, myPlanStatus } from '../../my-classes-shared';
 import { PlanComponentCard } from '../plan-component-card/plan-component-card';
 import { AssessmentForm } from '../assessment-form/assessment-form';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
@@ -64,11 +62,9 @@ import { StateCard } from '../../../../shared/components/state-card/state-card';
 @Component({
   selector: 'app-assessments-page',
   imports: [
-    RouterLink,
     AssessmentsHeader,
     PlanComponentCard,
     PlanWeightBar,
-    MatButtonModule,
     MatIconModule,
     TranslatePipe,
     StateCard,
@@ -142,12 +138,24 @@ export class AssessmentsPage implements OnInit {
 
   readonly passingMark = computed(() => {
     const plan = this.plan();
-    return plan ? formatNumber(plan.passingMark) : null;
+    return plan ? formatNumber(plan.passingMark) : '';
   });
 
-  readonly planBadge = computed<PlanStatusBadge | null>(() => {
+  readonly totalWeight = computed(() => {
     const plan = this.plan();
-    return plan ? PLAN_STATUS_BADGE[getPlanStatus(plan)] : null;
+    return plan ? formatNumber(plan.totalWeight) : '';
+  });
+
+  // The plan state next to the title (the same badge the Admin sees),
+  // or "No plan". Nothing while loading or on an error.
+  readonly planBadge = computed<MyPlanBadge | null>(() => {
+
+    if (this.noPlan()) {
+      return MY_PLAN_BADGE.none;
+    }
+
+    const plan = this.plan();
+    return plan ? MY_PLAN_BADGE[myPlanStatus(plan)] : null;
   });
 
 
@@ -156,7 +164,8 @@ export class AssessmentsPage implements OnInit {
   // =========================
 
   // One group per plan component, in the components' order.
-  // The color is the component's position color, as in the Admin's plan page.
+  // The color is the component's position color (a small dot on its card),
+  // the same dot as in the Admin's plan form.
   readonly groups = computed<ComponentGroup[]>(() => {
 
     const plan = this.plan();
