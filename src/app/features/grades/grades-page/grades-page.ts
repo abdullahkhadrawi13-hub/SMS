@@ -43,9 +43,9 @@ import { TeacherAssignment } from '../../../core/models/teacher-assignment';
 
 import { getTermLabel, TermOption } from '../../subjects/shared/subjects-shared';
 import {
-  PlanConfirmData,
-  PlanConfirmDialog,
-} from '../../subjects/subject-plans/plan-confirm-dialog/plan-confirm-dialog';
+  ConfirmDialogData,
+  ConfirmDialog,
+} from '../../../shared/components/confirm-dialog/confirm-dialog';
 
 import {
   getMarkError,
@@ -405,7 +405,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
     }
 
     return this.dialog
-      .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         data: {
           icon: 'edit_note',
           titleKey: 'GRADES.LEAVE.TITLE',

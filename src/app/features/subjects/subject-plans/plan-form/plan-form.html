@@ -1,231 +1,329 @@
-<!-- New subject plan -->
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-<h2 mat-dialog-title>
-  {{ 'SUBJECTS.PLAN_FORM.TITLE' | translate }}
-</h2>
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>{{ 'SUBJECTS.PLAN_FORM.TITLE' | translate }}</h2>
+
+    <!-- The class and the term (fixed: chosen in the plans tab) -->
+    <p class="fd-head-sub">{{ data.className }} · {{ data.termLabel }}</p>
+  </div>
+
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'SUBJECTS.FORMS.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="closing.requestClose()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
 
 
-<mat-dialog-content>
+<form class="fd-form" [formGroup]="planForm" (ngSubmit)="onSubmit()" novalidate>
 
-  <div class="form-content">
-
-    <p class="form-subtitle">
-      {{ 'SUBJECTS.PLAN_FORM.SUBTITLE' | translate }}
-    </p>
-
-    <!-- Fixed values (read-only) -->
-    <div class="context-box">
-
-      <div class="context-item">
-        <span class="context-label">{{ 'SUBJECTS.PLAN_FORM.TERM' | translate }}</span>
-        <span class="context-value">{{ data.termLabel }}</span>
-      </div>
-
-      <div class="context-item">
-        <span class="context-label">{{ 'SUBJECTS.PLAN_FORM.CLASS' | translate }}</span>
-        <span class="context-value">{{ data.className }}</span>
-      </div>
-
-    </div>
-
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
 
     @if (data.subjects.length === 0) {
 
       <!-- Every active subject already has a plan for this class -->
-      <div class="message-card info">
-        <mat-icon>check_circle</mat-icon>
-
-        <span>
-          {{ 'SUBJECTS.PLAN_FORM.NO_SUBJECTS' | translate: { className: data.className } }}
-        </span>
-      </div>
+      <section class="fd-section">
+        <div class="fd-note info">
+          <mat-icon aria-hidden="true">check_circle</mat-icon>
+          <span>{{ 'SUBJECTS.PLAN_FORM.NO_SUBJECTS' | translate: { className: data.className } }}</span>
+        </div>
+      </section>
 
     } @else {
 
-      <form
-        [formGroup]="planForm"
-        class="plan-form"
-        (ngSubmit)="onSubmit()"
-      >
+      <!-- ===== Subject and passing mark ===== -->
+      <section class="fd-section">
 
-        <div class="two-fields">
+        <p class="pf-explain">{{ 'SUBJECTS.PLAN_FORM.SUBTITLE' | translate }}</p>
+
+        <div class="fd-grid pf-grid-2">
 
           <!-- Subject (only subjects without a plan for this class) -->
-          <mat-form-field appearance="outline">
+          <div class="field">
+            <label class="field-label" for="pf-subject">{{ 'SUBJECTS.PLAN_FORM.SUBJECT' | translate }}</label>
 
-            <mat-label>{{ 'SUBJECTS.PLAN_FORM.SUBJECT' | translate }}</mat-label>
+            <div class="field-box is-select" [class.is-invalid]="isInvalid(planForm.controls.subjectId)">
+              <select
+                id="pf-subject"
+                formControlName="subjectId"
+                [attr.aria-invalid]="isInvalid(planForm.controls.subjectId)"
+                aria-describedby="pf-subject-note"
+              >
+                <option [ngValue]="null" disabled>{{ 'SUBJECTS.PLAN_FORM.SUBJECT_PLACEHOLDER' | translate }}</option>
 
-            <mat-select formControlName="subjectId">
-              @for (subject of data.subjects; track subject.subjectId) {
-                <mat-option [value]="subject.subjectId">
-                  {{ getSubjectName(subject) }}
-                </mat-option>
-              }
-            </mat-select>
+                @for (subject of data.subjects; track subject.subjectId) {
+                  <option [ngValue]="subject.subjectId">{{ getSubjectName(subject) }}</option>
+                }
+              </select>
 
-            <mat-hint>{{ 'SUBJECTS.PLAN_FORM.SUBJECT_HINT' | translate }}</mat-hint>
+              <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+            </div>
 
             @if (isInvalid(planForm.controls.subjectId)) {
-              <mat-error>{{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}</mat-error>
+              <div class="field-error" id="pf-subject-note">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>{{ 'SUBJECTS.FORMS.REQUIRED' | translate }}</span>
+              </div>
+            } @else {
+              <div class="field-help" id="pf-subject-note">{{ 'SUBJECTS.PLAN_FORM.SUBJECT_HINT' | translate }}</div>
             }
-
-          </mat-form-field>
-
+          </div>
 
           <!-- Passing mark (above 0, at most 100) -->
-          <mat-form-field appearance="outline">
+          <div class="field">
+            <label class="field-label" for="pf-passingMark">{{ 'SUBJECTS.PLAN_FORM.PASSING_MARK' | translate }}</label>
 
-            <mat-label>{{ 'SUBJECTS.PLAN_FORM.PASSING_MARK' | translate }}</mat-label>
-
-            <input
-              matInput
-              type="number"
-              min="0"
-              max="100"
-              step="any"
-              formControlName="passingMark"
-            />
-
-            <span matTextSuffix>{{ 'SUBJECTS.PLAN_FORM.OUT_OF' | translate }}</span>
+            <div class="field-box" [class.is-invalid]="isInvalid(planForm.controls.passingMark)">
+              <input
+                id="pf-passingMark"
+                class="tabular"
+                type="number"
+                inputmode="decimal"
+                min="0"
+                max="100"
+                step="any"
+                formControlName="passingMark"
+                [attr.aria-invalid]="isInvalid(planForm.controls.passingMark)"
+                [attr.aria-describedby]="isInvalid(planForm.controls.passingMark) ? 'pf-passingMark-error' : null"
+              />
+              <span class="field-suffix" aria-hidden="true">{{ 'SUBJECTS.PLAN_FORM.OUT_OF' | translate }}</span>
+            </div>
 
             @if (isInvalid(planForm.controls.passingMark)) {
-              <mat-error>
-                @if (planForm.controls.passingMark.hasError('required')) {
-                  {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
-                } @else {
-                  {{ 'SUBJECTS.PLAN_FORM.PASSING_MARK_ERROR' | translate }}
-                }
-              </mat-error>
+              <div class="field-error" id="pf-passingMark-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>
+                  @if (planForm.controls.passingMark.hasError('required')) {
+                    {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                  } @else {
+                    {{ 'SUBJECTS.PLAN_FORM.PASSING_MARK_ERROR' | translate }}
+                  }
+                </span>
+              </div>
             }
-
-          </mat-form-field>
+          </div>
 
         </div>
 
+      </section>
 
-        <!-- Components -->
-        <div class="components-head">
 
-          <div>
-            <h3>{{ 'SUBJECTS.PLAN_FORM.COMPONENTS' | translate }}</h3>
-            <p>{{ 'SUBJECTS.PLAN_FORM.COMPONENTS_HINT' | translate }}</p>
-          </div>
+      <!-- ===== Components ===== -->
+      <section class="fd-section" aria-labelledby="pf-components-title">
 
-          <button
-            mat-button
-            type="button"
-            (click)="addComponent()"
-          >
+        <div class="fd-section-head">
+          <h3 id="pf-components-title">{{ 'SUBJECTS.PLAN_FORM.COMPONENTS' | translate }}</h3>
+
+          <span class="fd-section-hint pf-hint">· {{ 'SUBJECTS.PLAN_FORM.COMPONENTS_HINT' | translate }}</span>
+
+          <button mat-stroked-button type="button" class="pf-add" (click)="addComponent()">
             <mat-icon>add</mat-icon>
             {{ 'SUBJECTS.PLAN_FORM.ADD_COMPONENT' | translate }}
           </button>
-
         </div>
 
-
-        <div class="component-rows" formArrayName="components">
+        <div formArrayName="components">
 
           @for (row of components.controls; track row; let i = $index) {
 
-            <div class="component-row" [formGroupName]="i">
+            <div class="pf-row" [formGroupName]="i">
 
-              <span class="row-dot" [style.background]="componentColor(i)"></span>
+              <span class="pf-number tabular" aria-hidden="true">{{ i + 1 }}</span>
 
-              <div class="row-fields">
+              <fieldset class="pf-row-fields">
 
-                <!-- Names -->
-                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="name-field">
-                  <mat-label>{{ 'SUBJECTS.PLAN_FORM.NAME_AR' | translate }}</mat-label>
-                  <input matInput formControlName="nameAr" dir="rtl" [maxlength]="nameMaxLength" />
-                  @if (isInvalid(row.controls.nameAr)) {
-                    <mat-error>
-                      @if (row.controls.nameAr.hasError('required')) {
-                        {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
-                      } @else if (row.controls.nameAr.hasError('invalidChars')) {
-                        {{ 'SUBJECTS.PLAN_FORM.ARABIC_ONLY' | translate }}
-                      } @else if (row.controls.nameAr.hasError('minLetters')) {
-                        {{ 'SUBJECTS.PLAN_FORM.MIN_LETTERS_AR' | translate }}
+                <legend class="visually-hidden">
+                  {{ 'SUBJECTS.PLAN_FORM.COMPONENT_NUMBER' | translate: { number: i + 1 } }}
+                </legend>
+
+                <!-- Line 1: the names -->
+                <div class="fd-grid pf-grid-2">
+
+                  <div class="field">
+                    <label class="field-label" [for]="'pf-nameAr-' + i">{{ 'SUBJECTS.PLAN_FORM.NAME_AR' | translate }}</label>
+
+                    <div class="field-box" [class.is-invalid]="isInvalid(row.controls.nameAr)">
+                      <input
+                        [id]="'pf-nameAr-' + i"
+                        formControlName="nameAr"
+                        dir="rtl"
+                        autocomplete="off"
+                        [maxlength]="nameMaxLength"
+                        [attr.aria-invalid]="isInvalid(row.controls.nameAr)"
+                        [attr.aria-describedby]="isInvalid(row.controls.nameAr) ? 'pf-nameAr-error-' + i : null"
+                      />
+                    </div>
+
+                    @if (isInvalid(row.controls.nameAr)) {
+                      <div class="field-error" [id]="'pf-nameAr-error-' + i">
+                        <mat-icon aria-hidden="true">error</mat-icon>
+                        <span>
+                          @if (row.controls.nameAr.hasError('required')) {
+                            {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                          } @else if (row.controls.nameAr.hasError('invalidChars')) {
+                            {{ 'SUBJECTS.PLAN_FORM.ARABIC_ONLY' | translate }}
+                          } @else {
+                            {{ 'SUBJECTS.PLAN_FORM.MIN_LETTERS_AR' | translate }}
+                          }
+                        </span>
+                      </div>
+                    }
+                  </div>
+
+                  <div class="field">
+                    <label class="field-label" [for]="'pf-nameEn-' + i">{{ 'SUBJECTS.PLAN_FORM.NAME_EN' | translate }}</label>
+
+                    <div class="field-box" [class.is-invalid]="isInvalid(row.controls.nameEn)">
+                      <input
+                        [id]="'pf-nameEn-' + i"
+                        formControlName="nameEn"
+                        dir="ltr"
+                        autocomplete="off"
+                        [maxlength]="nameMaxLength"
+                        [attr.aria-invalid]="isInvalid(row.controls.nameEn)"
+                        [attr.aria-describedby]="isInvalid(row.controls.nameEn) ? 'pf-nameEn-error-' + i : null"
+                      />
+                    </div>
+
+                    @if (isInvalid(row.controls.nameEn)) {
+                      <div class="field-error" [id]="'pf-nameEn-error-' + i">
+                        <mat-icon aria-hidden="true">error</mat-icon>
+                        <span>
+                          @if (row.controls.nameEn.hasError('required')) {
+                            {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                          } @else if (row.controls.nameEn.hasError('invalidChars')) {
+                            {{ 'SUBJECTS.PLAN_FORM.ENGLISH_ONLY' | translate }}
+                          } @else {
+                            {{ 'SUBJECTS.PLAN_FORM.MIN_LETTERS_EN' | translate }}
+                          }
+                        </span>
+                      </div>
+                    }
+                  </div>
+
+                </div>
+
+                <!-- Line 2: type, weight, max mark -->
+                <div class="fd-grid pf-grid-3">
+
+                  <!-- Type: fixed (one exam per section) or open (the teacher adds) -->
+                  <div class="field">
+                    <span class="field-label" [id]="'pf-type-' + i">{{ 'SUBJECTS.PLAN_FORM.TYPE' | translate }}</span>
+
+                    <!-- [formControl] with a name per row: the radios of each row are their own group -->
+                    <div class="choice-switch" role="radiogroup" [attr.aria-labelledby]="'pf-type-' + i">
+                      <label class="choice-option">
+                        <input type="radio" [formControl]="row.controls.isOpen" [name]="'pf-type-radio-' + i" [value]="false" />
+                        <span class="choice-face">
+                          <mat-icon aria-hidden="true">push_pin</mat-icon>
+                          {{ 'SUBJECTS.PLAN_FORM.FIXED' | translate }}
+                        </span>
+                      </label>
+
+                      <label class="choice-option">
+                        <input type="radio" [formControl]="row.controls.isOpen" [name]="'pf-type-radio-' + i" [value]="true" />
+                        <span class="choice-face">
+                          <mat-icon aria-hidden="true">playlist_add</mat-icon>
+                          {{ 'SUBJECTS.PLAN_FORM.OPEN' | translate }}
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Weight -->
+                  <div class="field">
+                    <label class="field-label" [for]="'pf-weight-' + i">{{ 'SUBJECTS.PLAN_FORM.WEIGHT' | translate }}</label>
+
+                    <div class="field-box" [class.is-invalid]="isInvalid(row.controls.weight)">
+                      <input
+                        [id]="'pf-weight-' + i"
+                        class="tabular"
+                        type="number"
+                        inputmode="decimal"
+                        min="0"
+                        step="any"
+                        [max]="maxWeight(i)"
+                        formControlName="weight"
+                        [attr.aria-invalid]="isInvalid(row.controls.weight)"
+                        [attr.aria-describedby]="isInvalid(row.controls.weight) ? 'pf-weight-error-' + i : null"
+                      />
+                      <span class="field-suffix" aria-hidden="true">%</span>
+                    </div>
+
+                    @if (isInvalid(row.controls.weight)) {
+                      <div class="field-error" [id]="'pf-weight-error-' + i">
+                        <mat-icon aria-hidden="true">error</mat-icon>
+                        <span>
+                          @if (row.controls.weight.hasError('required')) {
+                            {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                          } @else {
+                            {{ 'SUBJECTS.PLAN_FORM.WEIGHT_ERROR' | translate }}
+                          }
+                        </span>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Max mark: a fixed component only; an open one says the teacher sets it -->
+                  <div class="field">
+                    <label class="field-label" [for]="'pf-maxMark-' + i">{{ 'SUBJECTS.PLAN_FORM.MAX_MARK' | translate }}</label>
+
+                    @if (row.controls.isOpen.value) {
+                      <div class="field-box is-readonly">
+                        <input
+                          [id]="'pf-maxMark-' + i"
+                          readonly
+                          tabindex="-1"
+                          [value]="'SUBJECTS.PLAN_FORM.MAX_MARK_TEACHER' | translate"
+                        />
+                      </div>
+                    } @else {
+                      <div class="field-box" [class.is-invalid]="isInvalid(row.controls.maxMark)">
+                        <input
+                          [id]="'pf-maxMark-' + i"
+                          class="tabular"
+                          type="number"
+                          inputmode="decimal"
+                          min="0"
+                          step="any"
+                          formControlName="maxMark"
+                          [attr.aria-invalid]="isInvalid(row.controls.maxMark)"
+                          [attr.aria-describedby]="isInvalid(row.controls.maxMark) ? 'pf-maxMark-error-' + i : null"
+                        />
+                      </div>
+
+                      @if (isInvalid(row.controls.maxMark)) {
+                        <div class="field-error" [id]="'pf-maxMark-error-' + i">
+                          <mat-icon aria-hidden="true">error</mat-icon>
+                          <span>
+                            @if (row.controls.maxMark.hasError('required')) {
+                              {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                            } @else {
+                              {{ 'SUBJECTS.PLAN_FORM.MAX_MARK_ERROR' | translate }}
+                            }
+                          </span>
+                        </div>
                       }
-                    </mat-error>
-                  }
-                </mat-form-field>
+                    }
+                  </div>
 
-                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="name-field">
-                  <mat-label>{{ 'SUBJECTS.PLAN_FORM.NAME_EN' | translate }}</mat-label>
-                  <input matInput formControlName="nameEn" dir="ltr" [maxlength]="nameMaxLength" />
-                  @if (isInvalid(row.controls.nameEn)) {
-                    <mat-error>
-                      @if (row.controls.nameEn.hasError('required')) {
-                        {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
-                      } @else if (row.controls.nameEn.hasError('invalidChars')) {
-                        {{ 'SUBJECTS.PLAN_FORM.ENGLISH_ONLY' | translate }}
-                      } @else if (row.controls.nameEn.hasError('minLetters')) {
-                        {{ 'SUBJECTS.PLAN_FORM.MIN_LETTERS_EN' | translate }}
-                      }
-                    </mat-error>
-                  }
-                </mat-form-field>
+                </div>
 
-                <!-- Type: fixed (one exam per section) or open (the teacher adds) -->
-                <mat-button-toggle-group
-                  formControlName="isOpen"
-                  class="type-toggle"
-                  [attr.aria-label]="'SUBJECTS.PLAN_FORM.TYPE' | translate"
-                >
-                  <mat-button-toggle [value]="false">
-                    {{ 'SUBJECTS.PLAN_FORM.FIXED' | translate }}
-                  </mat-button-toggle>
-                  <mat-button-toggle [value]="true">
-                    {{ 'SUBJECTS.PLAN_FORM.OPEN' | translate }}
-                  </mat-button-toggle>
-                </mat-button-toggle-group>
-
-                <!-- Weight -->
-                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="number-field">
-                  <mat-label>{{ 'SUBJECTS.PLAN_FORM.WEIGHT' | translate }}</mat-label>
-                  <input matInput type="number" min="0" [max]="maxWeight(i)" step="any" formControlName="weight" />
-                  <span matTextSuffix>%</span>
-                  @if (isInvalid(row.controls.weight)) {
-                    <mat-error>
-                      @if (row.controls.weight.hasError('required')) {
-                        {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
-                      } @else {
-                        {{ 'SUBJECTS.PLAN_FORM.WEIGHT_ERROR' | translate }}
-                      }
-                    </mat-error>
-                  }
-                </mat-form-field>
-
-                <!-- Max mark (fixed components only) -->
-                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="number-field">
-                  <mat-label>{{ 'SUBJECTS.PLAN_FORM.MAX_MARK' | translate }}</mat-label>
-                  <input
-                    matInput
-                    type="number"
-                    min="0"
-                    step="any"
-                    formControlName="maxMark"
-                    [placeholder]="row.controls.isOpen.value ? ('SUBJECTS.PLAN_FORM.MAX_MARK_TEACHER' | translate) : ''"
-                  />
-                  @if (isInvalid(row.controls.maxMark)) {
-                    <mat-error>
-                      @if (row.controls.maxMark.hasError('required')) {
-                        {{ 'SUBJECTS.PLAN_FORM.REQUIRED' | translate }}
-                      } @else {
-                        {{ 'SUBJECTS.PLAN_FORM.MAX_MARK_ERROR' | translate }}
-                      }
-                    </mat-error>
-                  }
-                </mat-form-field>
-
-              </div>
+              </fieldset>
 
               <button
                 mat-icon-button
                 type="button"
-                class="remove-button"
+                class="pf-remove"
                 (click)="removeComponent(i)"
-                [attr.aria-label]="'SUBJECTS.PLAN_FORM.REMOVE_COMPONENT' | translate"
+                [attr.aria-label]="'SUBJECTS.PLAN_FORM.REMOVE_COMPONENT_NUMBER' | translate: { number: i + 1 }"
               >
                 <mat-icon>close</mat-icon>
               </button>
@@ -234,9 +332,7 @@
 
           } @empty {
 
-            <p class="no-components">
-              {{ 'SUBJECTS.PLAN_FORM.NO_COMPONENTS' | translate }}
-            </p>
+            <p class="pf-empty">{{ 'SUBJECTS.PLAN_FORM.NO_COMPONENTS' | translate }}</p>
 
           }
 
@@ -244,75 +340,79 @@
 
 
         <!-- Total of the weights -->
-        <app-plan-weight-bar [weights]="weights()"></app-plan-weight-bar>
+        <div class="pf-weights">
+          <app-plan-weight-bar [weights]="weights()"></app-plan-weight-bar>
+        </div>
 
         @if (weightCapped()) {
-
           <!-- A weight was cut down so the total stays at 100 -->
-          <div class="message-card warning" role="status">
-            <mat-icon>warning_amber</mat-icon>
+          <div class="fd-note warn" role="status">
+            <mat-icon aria-hidden="true">warning_amber</mat-icon>
             <span>{{ 'SUBJECTS.PLAN_FORM.WEIGHT_LIMIT' | translate }}</span>
           </div>
-
         } @else if (components.hasError('overWeight')) {
-
-          <div class="message-card error">
-            <mat-icon>error_outline</mat-icon>
+          <div class="fd-note bad" role="alert">
+            <mat-icon aria-hidden="true">error</mat-icon>
             <span>{{ 'SUBJECTS.PLAN_FORM.OVER_WEIGHT' | translate }}</span>
           </div>
-
         } @else if (total() < fullWeight) {
-
-          <div class="message-card warning">
-            <mat-icon>info</mat-icon>
+          <div class="fd-note warn">
+            <mat-icon aria-hidden="true">info</mat-icon>
             <span>{{ 'SUBJECTS.PLAN_FORM.UNDER_WEIGHT' | translate: { remaining: remaining() } }}</span>
           </div>
-
         }
 
         @if (components.hasError('repeatedName')) {
-          <div class="message-card error">
-            <mat-icon>error_outline</mat-icon>
+          <div class="fd-note bad" role="alert">
+            <mat-icon aria-hidden="true">error</mat-icon>
             <span>{{ 'SUBJECTS.PLAN_FORM.REPEATED_NAME' | translate }}</span>
           </div>
         }
 
-      </form>
+      </section>
 
     }
 
   </div>
 
-</mat-dialog-content>
 
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
 
-<mat-dialog-actions align="end">
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ errorsKey() | translate: { count: invalidCount() } }}
+      }
+    </span>
 
-  <button
-    mat-stroked-button
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="cancel()"
-  >
-    {{ 'SUBJECTS.PLAN_FORM.CANCEL' | translate }}
-  </button>
-
-  @if (data.subjects.length > 0) {
     <button
-      mat-flat-button
-      color="primary"
+      mat-stroked-button
       type="button"
       [disabled]="isSubmitting()"
-      (click)="onSubmit()"
+      (click)="closing.requestClose()"
     >
-      <mat-icon>save</mat-icon>
-
-      {{
-        isSubmitting()
-          ? ('SUBJECTS.PLAN_FORM.SAVING' | translate)
-          : ('SUBJECTS.PLAN_FORM.SAVE' | translate)
-      }}
+      {{ 'SUBJECTS.PLAN_FORM.CANCEL' | translate }}
     </button>
-  }
 
-</mat-dialog-actions>
+    @if (data.subjects.length > 0) {
+      <button
+        mat-flat-button
+        type="submit"
+        class="fd-submit"
+        [class.is-busy]="isSubmitting()"
+        [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+      >
+        <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">save</mat-icon>
+
+        @if (isSubmitting()) {
+          <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+        }
+
+        {{ (isSubmitting() ? 'SUBJECTS.PLAN_FORM.SAVING' : 'SUBJECTS.PLAN_FORM.SAVE') | translate }}
+      </button>
+    }
+
+  </footer>
+
+</form>

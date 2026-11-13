@@ -1,6 +1,6 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -9,15 +9,17 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+import { filter } from 'rxjs';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { SubjectPlansService } from '../../../../core/services/subject-plans';
 import { ActionResult } from '../../../../shared/services/action-result';
+import { Language } from '../../../../core/services/language';
 import { CopySubjectPlansResult } from '../../../../core/models/subject-plan';
 
 import { getTermLabel, TermOption } from '../../shared/subjects-shared';
@@ -38,20 +40,26 @@ export interface CopyPlansData {
 // (components and passing mark, unlocked). A plan that already exists in the
 // target term, or one for an inactive class or subject, is skipped.
 // After copying, the dialog shows the counts; it closes with the result
-// so the tab reloads its cards.
+// so the tab reloads its cards (also on a backdrop click or Esc).
+// The shared form dialog look (navy & gold, 13 Nov 2026); opened with
+// panelClass 'form-dialog'. Nothing is typed, so there is no
+// "Discard changes?" question.
 @Component({
   selector: 'app-copy-plans-dialog',
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatSelectModule,
+    MatProgressSpinnerModule,
     TranslatePipe,
   ],
   templateUrl: './copy-plans-dialog.html',
   styleUrl: './copy-plans-dialog.css',
+  host: {
+    // The shared form dialog layout in styles.css (.fd, .fd-head, .fd-body…)
+    class: 'fd',
+  },
 })
 export class CopyPlansDialog {
 
@@ -62,6 +70,7 @@ export class CopyPlansDialog {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly language = inject(Language);
 
   readonly data = inject<CopyPlansData>(MAT_DIALOG_DATA);
 
@@ -80,16 +89,48 @@ export class CopyPlansDialog {
 
   readonly isSubmitting = signal(false);
 
+  // The source shows "required" only after pressing Copy (it starts filled).
+  readonly copyAttempted = signal(false);
+
+  private readonly fromValue = toSignal(this.fromTermId.valueChanges, {
+    initialValue: this.fromTermId.value,
+  });
+
+  readonly showFromError = computed(
+    () => this.copyAttempted() && this.fromValue() === null
+  );
+
   // Set after a successful copy: the dialog then shows the counts.
   readonly result = signal<CopySubjectPlansResult | null>(null);
 
 
-  isArabic(): boolean {
-    return document.documentElement.lang === 'ar';
+  constructor() {
+
+    // A backdrop click or Esc closes like the buttons (with the result).
+    this.dialogRef.disableClose = true;
+
+    this.dialogRef
+      .backdropClick()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.close());
+
+    this.dialogRef
+      .keydownEvents()
+      .pipe(
+        filter(event => event.key === 'Escape'),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(event => {
+        event.preventDefault();
+        this.close();
+      });
   }
 
+
   termLabel(term: TermOption | undefined): string {
-    return term ? getTermLabel(term, this.isArabic()) : '';
+    return term
+      ? getTermLabel(term, this.language.currentDirection() === 'rtl')
+      : '';
   }
 
 
@@ -110,12 +151,13 @@ export class CopyPlansDialog {
 
   copy(): void {
 
-    if (this.fromTermId.invalid) {
-      this.fromTermId.markAsTouched();
+    if (this.isSubmitting() || this.result()) {
       return;
     }
 
-    if (this.isSubmitting()) {
+    if (this.fromTermId.invalid) {
+      this.copyAttempted.set(true);
+      document.getElementById('cp-from')?.focus();
       return;
     }
 
@@ -158,7 +200,13 @@ export class CopyPlansDialog {
   }
 
 
+  // Not while copying (the result would be lost).
   close(): void {
+
+    if (this.isSubmitting()) {
+      return;
+    }
+
     this.dialogRef.close(this.result() ?? undefined);
   }
 }

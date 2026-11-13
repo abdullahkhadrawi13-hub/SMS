@@ -1,233 +1,139 @@
-<!-- Add a subject to a section / edit the subject of a section -->
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-<h2 mat-dialog-title>
-  {{
-    isEditMode
-      ? ('SUBJECTS.ASSIGNMENTS_FORM.EDIT_TITLE' | translate)
-      : ('SUBJECTS.ASSIGNMENTS_FORM.ADD_TITLE' | translate)
-  }}
-</h2>
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode ? 'SUBJECTS.ASSIGNMENTS_FORM.EDIT_TITLE' : 'SUBJECTS.ASSIGNMENTS_FORM.ADD_TITLE') | translate }}
+    </h2>
+
+    <!-- What is fixed: (the subject ·) the class · the section · the term -->
+    <p class="fd-head-sub">
+      @if (isEditMode && data.subjectName) {
+        {{ data.subjectName }} ·
+      }
+      {{ data.className }} · {{ 'SUBJECTS.ASSIGNMENTS_FORM.SECTION_NAME' | translate: { name: data.sectionName } }} · {{ data.termLabel }}
+    </p>
+  </div>
+
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'SUBJECTS.FORMS.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="closing.requestClose()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
 
 
-<mat-dialog-content>
+<form class="fd-form" [formGroup]="assignmentForm" (ngSubmit)="onSubmit()" novalidate>
 
-  <div class="form-content">
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
 
-    <!-- Fixed values (read-only) -->
-    <div class="context-box">
+    <div class="af-fields">
 
-      <div class="context-items">
-
-        @if (isEditMode) {
-          <div class="context-item">
-            <span class="context-label">
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT' | translate }}
-            </span>
-
-            <span class="context-value">{{ data.subjectName }}</span>
-          </div>
-        }
-
-        <div class="context-item">
-          <span class="context-label">
-            {{ 'SUBJECTS.ASSIGNMENTS_FORM.TERM' | translate }}
-          </span>
-
-          <span class="context-value">{{ data.termLabel }}</span>
-        </div>
-
-        <div class="context-item">
-          <span class="context-label">
-            {{ 'SUBJECTS.ASSIGNMENTS_FORM.CLASS' | translate }}
-          </span>
-
-          <span class="context-value">{{ data.className }}</span>
-        </div>
-
-        <div class="context-item">
-          <span class="context-label">
-            {{ 'SUBJECTS.ASSIGNMENTS_FORM.SECTION' | translate }}
-          </span>
-
-          <span class="context-value">{{ data.sectionName }}</span>
-        </div>
-
-      </div>
-
-      @if (isEditMode) {
-        <p class="context-note">
-          <mat-icon>lock</mat-icon>
-
+      <!-- Edit: the current teacher's account is inactive -->
+      @if (isEditMode && data.currentTeacherInactive) {
+        <div class="fd-note warn" role="alert">
+          <mat-icon aria-hidden="true">warning_amber</mat-icon>
           <span>
-            {{ 'SUBJECTS.ASSIGNMENTS_FORM.LOCKED_NOTE' | translate }}
+            {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_INACTIVE' | translate: { name: data.currentTeacherName } }}
           </span>
-        </p>
+        </div>
       }
 
-    </div>
 
-
-    <!-- Edit: the current teacher's account is inactive -->
-    @if (isEditMode && data.currentTeacherInactive) {
-      <div class="message-card warning" role="alert">
-        <mat-icon>warning</mat-icon>
-
-        <span>
-          {{
-            'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_INACTIVE'
-              | translate: { name: data.currentTeacherName }
-          }}
-        </span>
-      </div>
-    }
-
-
-    <form
-      [formGroup]="assignmentForm"
-      class="assignment-form"
-      (ngSubmit)="onSubmit()"
-    >
-
-      <!-- Subject (add mode only) -->
+      <!-- ===== Subject (add mode only) ===== -->
       @if (!isEditMode) {
 
         @if (noSubjects) {
 
-          <div class="message-card info">
-            <mat-icon>warning_amber</mat-icon>
-
-            <span>
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.NO_SUBJECTS' | translate }}
-            </span>
+          <div class="fd-note info">
+            <mat-icon aria-hidden="true">info</mat-icon>
+            <span>{{ 'SUBJECTS.ASSIGNMENTS_FORM.NO_SUBJECTS' | translate }}</span>
           </div>
 
         } @else {
 
-          <mat-form-field appearance="outline">
+          <div class="field">
 
-            <mat-label>
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT' | translate }}
-            </mat-label>
+            <label class="field-label" for="af-subject">{{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT' | translate }}</label>
 
-            <!-- Each subject shows the state of its plan.
-                 A subject without a plan is disabled. -->
-            <mat-select
-              formControlName="subjectId"
-              panelClass="subject-plan-panel"
-            >
+            <!-- Each subject says the state of its plan in its text.
+                 A subject without a plan cannot be chosen (disabled). -->
+            <div class="field-box is-select" [class.is-invalid]="isFieldInvalid('subjectId')">
+              <select
+                id="af-subject"
+                formControlName="subjectId"
+                [attr.aria-invalid]="isFieldInvalid('subjectId')"
+                aria-describedby="af-subject-note"
+              >
+                <option [ngValue]="null" disabled>{{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT_PLACEHOLDER' | translate }}</option>
 
-              <!-- The closed field shows the name only (without the plan tag) -->
-              <mat-select-trigger>
-                {{ selectedSubjectName() }}
-              </mat-select-trigger>
+                @for (option of data.subjects; track option.subject.subjectId) {
+                  <option [ngValue]="option.subject.subjectId" [disabled]="!option.plan">
+                    {{ subjectOptionLabel(option) | translate: subjectOptionParams(option) }}
+                  </option>
+                }
+              </select>
 
-              @for (option of data.subjects; track option.subject.subjectId) {
-                <mat-option
-                  [value]="option.subject.subjectId"
-                  [disabled]="!option.plan"
-                >
-                  <span class="subject-option">
-
-                    <span class="subject-option-name">{{ getSubjectName(option) }}</span>
-
-                    @if (!option.plan) {
-                      <span class="plan-tag bad">
-                        {{ 'SUBJECTS.PLAN_STATUS.NONE' | translate }}
-                      </span>
-                    } @else if (!option.plan.isComplete) {
-                      <span class="plan-tag warn">
-                        {{
-                          'SUBJECTS.ASSIGNMENTS_FORM.PLAN_WEIGHTS'
-                            | translate: { total: formatNumber(option.plan.totalWeight) }
-                        }}
-                      </span>
-                    } @else {
-                      <span class="plan-tag ok">
-                        {{ 'SUBJECTS.ASSIGNMENTS_FORM.PLAN_READY' | translate }}
-                      </span>
-                    }
-
-                  </span>
-                </mat-option>
-              }
-
-            </mat-select>
-
-            <mat-hint>
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT_HINT' | translate }}
-            </mat-hint>
+              <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+            </div>
 
             @if (isFieldInvalid('subjectId')) {
-              <mat-error>
-                {{ 'SUBJECTS.ASSIGNMENTS_FORM.REQUIRED' | translate }}
-              </mat-error>
+              <div class="field-error" id="af-subject-note">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>{{ 'SUBJECTS.FORMS.REQUIRED' | translate }}</span>
+              </div>
+            } @else {
+              <div class="field-help" id="af-subject-note">{{ 'SUBJECTS.ASSIGNMENTS_FORM.SUBJECT_HINT' | translate }}</div>
             }
 
-          </mat-form-field>
-
+          </div>
 
           <!-- The plan of the chosen subject -->
           @if (selectedPlan(); as plan) {
-
             @if (plan.isComplete) {
-              <div class="message-card success">
-                <mat-icon>rule</mat-icon>
-
+              <div class="fd-note info">
+                <mat-icon aria-hidden="true">rule</mat-icon>
                 <span>
-                  {{
-                    'SUBJECTS.ASSIGNMENTS_FORM.PLAN_INFO'
-                      | translate: { mark: formatNumber(plan.passingMark), count: plan.components.length }
-                  }}
+                  {{ 'SUBJECTS.ASSIGNMENTS_FORM.PLAN_INFO' | translate: { mark: formatNumber(plan.passingMark), count: plan.components.length } }}
                 </span>
               </div>
             } @else {
-              <div class="message-card warning">
-                <mat-icon>warning_amber</mat-icon>
-
+              <div class="fd-note warn">
+                <mat-icon aria-hidden="true">warning_amber</mat-icon>
                 <span>
-                  {{
-                    'SUBJECTS.ASSIGNMENTS_FORM.PLAN_INCOMPLETE'
-                      | translate: { total: formatNumber(plan.totalWeight) }
-                  }}
+                  {{ 'SUBJECTS.ASSIGNMENTS_FORM.PLAN_INCOMPLETE' | translate: { total: formatNumber(plan.totalWeight) } }}
                 </span>
               </div>
             }
-
           }
-
 
           <!-- Subjects without a plan: create the plan first -->
           @if (subjectsWithoutPlan().length > 0) {
+            <div class="fd-note info">
+              <mat-icon aria-hidden="true">rule</mat-icon>
+              <span>
+                @if (noSubjectWithPlan) {
+                  {{ 'SUBJECTS.ASSIGNMENTS_FORM.NO_PLANS' | translate }}
+                }
 
-            <div class="message-card info">
-              <mat-icon>warning_amber</mat-icon>
-
-              <div class="message-body">
-                <span>
-                  @if (noSubjectWithPlan) {
-                    {{ 'SUBJECTS.ASSIGNMENTS_FORM.NO_PLANS' | translate }}
-                  }
-
-                  {{
-                    'SUBJECTS.ASSIGNMENTS_FORM.NO_PLAN'
-                      | translate: { names: subjectsWithoutPlanNames(), className: data.className }
-                  }}
-                </span>
+                {{ 'SUBJECTS.ASSIGNMENTS_FORM.NO_PLAN' | translate: { names: subjectsWithoutPlanNames(), className: data.className } }}
 
                 <button
-                  mat-button
                   type="button"
-                  class="message-action"
+                  class="af-note-link"
                   [disabled]="isSubmitting()"
                   (click)="createPlanFirst()"
                 >
-                  <mat-icon>rule</mat-icon>
-
                   {{ 'SUBJECTS.ASSIGNMENTS_FORM.CREATE_PLAN' | translate }}
                 </button>
-              </div>
+              </span>
             </div>
-
           }
 
         }
@@ -235,147 +141,163 @@
       }
 
 
-      <!-- Teacher: combobox searching active teachers in the backend -->
-      <mat-form-field appearance="outline">
+      <!-- ===== Teacher: a search of the active teachers in the backend ===== -->
+      @if (!noSubjects) {
 
-        <mat-label>
-          {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER' | translate }}
-        </mat-label>
+        <div class="field">
 
-        <!-- The search icon turns into a spinner while searching -->
-        @if (teachersLoading()) {
-          <mat-spinner matPrefix diameter="18" class="teacher-prefix teacher-spinner"></mat-spinner>
-        } @else {
-          <mat-icon matPrefix class="teacher-prefix teacher-search-icon">search</mat-icon>
-        }
+          <label class="field-label" for="af-teacher">{{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER' | translate }}</label>
 
-        <input
-          matInput
-          type="text"
-          autocomplete="off"
-          formControlName="teacher"
-          [matAutocomplete]="teacherAuto"
-          [placeholder]="'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_PLACEHOLDER' | translate"
-        />
+          <div class="field-box af-teacher-box" [class.is-invalid]="isFieldInvalid('teacher')">
 
-        @if (hasTeacherValue && !isSubmitting()) {
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="clearTeacher()"
-            [attr.aria-label]="'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_CLEAR' | translate"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        }
-
-        <mat-autocomplete
-          #teacherAuto="matAutocomplete"
-          [displayWith]="displayTeacher"
-          class="teacher-autocomplete-panel"
-        >
-
-          @for (teacher of teacherResults(); track teacher.teacherId) {
-            <mat-option [value]="teacher" class="teacher-option">
-              <span class="teacher-option-content">
-
-                <span class="teacher-avatar" aria-hidden="true">
-                  <mat-icon>person</mat-icon>
-                </span>
-
-                <span class="teacher-text">
-                  <span class="teacher-name">{{ getTeacherName(teacher) }}</span>
-                  <span class="teacher-number"><bdi>{{ teacher.teacherNumber }}</bdi></span>
-                </span>
-
-              </span>
-            </mat-option>
-          }
-
-          <!-- Status rows (not selectable) -->
-          @if (teachersLoading()) {
-            <mat-option disabled class="teacher-status">
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_SEARCHING' | translate }}
-            </mat-option>
-          } @else if (teachersError()) {
-            <mat-option disabled class="teacher-status error">
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_SEARCH_ERROR' | translate }}
-            </mat-option>
-          } @else if (searchedText() && teacherResults().length === 0) {
-            <mat-option disabled class="teacher-status">
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_NO_RESULTS' | translate }}
-            </mat-option>
-          }
-
-        </mat-autocomplete>
-
-        @if (teacherText && teacherText.length < minSearchLength) {
-          <mat-hint>
-            {{
-              'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_MIN_CHARS'
-                | translate: { count: minSearchLength }
-            }}
-          </mat-hint>
-        }
-
-        @if (isFieldInvalid('teacher')) {
-          <mat-error>
-            @if (assignmentForm.controls.teacher.hasError('teacherNotSelected')) {
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_NOT_SELECTED' | translate }}
+            <!-- The search icon turns into a spinner while searching -->
+            @if (teachersLoading()) {
+              <mat-spinner class="af-teacher-spinner" diameter="16" aria-hidden="true" />
             } @else {
-              {{ 'SUBJECTS.ASSIGNMENTS_FORM.REQUIRED' | translate }}
+              <mat-icon class="field-icon" aria-hidden="true">search</mat-icon>
             }
-          </mat-error>
-        }
 
-      </mat-form-field>
+            <input
+              id="af-teacher"
+              type="text"
+              autocomplete="off"
+              formControlName="teacher"
+              [matAutocomplete]="teacherAuto"
+              [placeholder]="'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_PLACEHOLDER' | translate"
+              [attr.aria-invalid]="isFieldInvalid('teacher')"
+              [attr.aria-describedby]="isFieldInvalid('teacher') ? 'af-teacher-error' : null"
+            />
 
-    </form>
+            @if (hasTeacherValue && !isSubmitting()) {
+              <button
+                type="button"
+                class="af-teacher-clear"
+                (click)="clearTeacher()"
+                [attr.aria-label]="'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_CLEAR' | translate"
+              >
+                <mat-icon aria-hidden="true">close</mat-icon>
+              </button>
+            }
+
+          </div>
+
+          <mat-autocomplete
+            #teacherAuto="matAutocomplete"
+            [displayWith]="displayTeacher"
+            class="teacher-autocomplete-panel"
+          >
+            @for (teacher of teacherResults(); track teacher.teacherId) {
+              <mat-option [value]="teacher" class="af-teacher-option">
+                <span class="af-teacher-option-content">
+                  <span class="data-avatar" [attr.data-tone]="avatarTone(teacher)" aria-hidden="true">
+                    {{ teacherInitials(teacher) }}
+                  </span>
+
+                  <span class="af-teacher-text">
+                    <span class="af-teacher-name">{{ getTeacherName(teacher) }}</span>
+                    <span class="af-teacher-number tabular"><bdi>{{ teacher.teacherNumber }}</bdi></span>
+                  </span>
+                </span>
+              </mat-option>
+            }
+
+            <!-- Status rows (not selectable) -->
+            @if (teachersLoading()) {
+              <mat-option disabled class="af-teacher-status">
+                {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_SEARCHING' | translate }}
+              </mat-option>
+            } @else if (teachersError()) {
+              <mat-option disabled class="af-teacher-status is-error">
+                {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_SEARCH_ERROR' | translate }}
+              </mat-option>
+            } @else if (searchedText() && teacherResults().length === 0) {
+              <mat-option disabled class="af-teacher-status">
+                {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_NO_RESULTS' | translate }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+
+          @if (isFieldInvalid('teacher')) {
+            <div class="field-error" id="af-teacher-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (assignmentForm.controls.teacher.hasError('teacherNotSelected')) {
+                  {{ 'SUBJECTS.ASSIGNMENTS_FORM.TEACHER_NOT_SELECTED' | translate }}
+                } @else {
+                  {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                }
+              </span>
+            </div>
+          }
+
+        </div>
+
+      }
 
 
-    <!-- Add: automatic enrollment + fixed fields -->
-    @if (!isEditMode) {
-      <p class="form-note">
-        <mat-icon>info</mat-icon>
+      <!-- Add: automatic enrollment. Edit: what cannot change. -->
+      @if (!isEditMode && !noSubjects) {
+        <div class="fd-note info">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <span>{{ 'SUBJECTS.ASSIGNMENTS_FORM.ADD_NOTE' | translate }}</span>
+        </div>
+      } @else if (isEditMode) {
+        <div class="fd-note info">
+          <mat-icon aria-hidden="true">lock</mat-icon>
+          <span>{{ 'SUBJECTS.ASSIGNMENTS_FORM.LOCKED_NOTE' | translate }}</span>
+        </div>
+      }
 
-        <span>
-          {{ 'SUBJECTS.ASSIGNMENTS_FORM.ADD_NOTE' | translate }}
-        </span>
-      </p>
-    }
+    </div>
 
   </div>
 
-</mat-dialog-content>
 
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
 
-<!-- Dialog actions -->
-<mat-dialog-actions align="end">
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ errorsKey() | translate: { count: invalidCount() } }}
+      }
+    </span>
 
-  <button
-    mat-stroked-button
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="cancel()"
-  >
-    {{ 'SUBJECTS.ASSIGNMENTS_FORM.CANCEL' | translate }}
-  </button>
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="closing.requestClose()"
+    >
+      {{ 'SUBJECTS.ASSIGNMENTS_FORM.CANCEL' | translate }}
+    </button>
 
-  <button
-    mat-flat-button
-    color="primary"
-    type="button"
-    [disabled]="assignmentForm.invalid || noSubjects || noSubjectWithPlan || isSubmitting()"
-    (click)="onSubmit()"
-  >
-    <mat-icon>save</mat-icon>
+    @if (!noSubjects) {
+      <!-- Disabled when no subject has a plan yet (the note above says why) -->
+      <button
+        mat-flat-button
+        type="submit"
+        class="fd-submit"
+        [class.is-busy]="isSubmitting()"
+        [disabled]="noSubjectWithPlan"
+        [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+      >
+        <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
+          {{ isEditMode ? 'save' : 'add' }}
+        </mat-icon>
 
-    {{
-      isSubmitting()
-        ? ('SUBJECTS.ASSIGNMENTS_FORM.SAVING' | translate)
-        : ('SUBJECTS.ASSIGNMENTS_FORM.SAVE' | translate)
-    }}
-  </button>
+        @if (isSubmitting()) {
+          <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+        }
 
-</mat-dialog-actions>
+        {{
+          (isSubmitting()
+            ? 'SUBJECTS.ASSIGNMENTS_FORM.SAVING'
+            : isEditMode ? 'SUBJECTS.ASSIGNMENTS_FORM.SAVE' : 'SUBJECTS.ASSIGNMENTS_FORM.ADD') | translate
+        }}
+      </button>
+    }
+
+  </footer>
+
+</form>

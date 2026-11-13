@@ -1,208 +1,328 @@
-<!-- Add / edit a plan component -->
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-<h2 mat-dialog-title>
-  {{
-    isEditMode
-      ? ('SUBJECTS.PLAN_COMPONENT_FORM.EDIT_TITLE' | translate)
-      : ('SUBJECTS.PLAN_COMPONENT_FORM.ADD_TITLE' | translate)
-  }}
-</h2>
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode ? 'SUBJECTS.PLAN_COMPONENT_FORM.EDIT_TITLE' : 'SUBJECTS.PLAN_COMPONENT_FORM.ADD_TITLE') | translate }}
+    </h2>
 
+    <!-- The plan: subject · class -->
+    <p class="fd-head-sub">{{ planLine() }}</p>
+  </div>
 
-<mat-dialog-content>
-
-  <form
-    [formGroup]="componentForm"
-    class="component-form"
-    (ngSubmit)="onSubmit()"
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'SUBJECTS.FORMS.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="closing.requestClose()"
   >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
 
-    <!-- Type (add mode only; fixed after creation) -->
-    <div class="type-block">
-
-      <span class="field-label">{{ 'SUBJECTS.PLAN_COMPONENT_FORM.TYPE' | translate }}</span>
-
-      <mat-button-toggle-group
-        formControlName="isOpen"
-        class="type-toggle"
-        [attr.aria-label]="'SUBJECTS.PLAN_COMPONENT_FORM.TYPE' | translate"
-      >
-        <mat-button-toggle [value]="false">
-          <mat-icon>push_pin</mat-icon>
-          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED' | translate }}
-        </mat-button-toggle>
-
-        <mat-button-toggle [value]="true">
-          <mat-icon>playlist_add</mat-icon>
-          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OPEN' | translate }}
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-
-      <p class="type-hint">
-        @if (isFixed()) {
-          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED_HINT' | translate }}
-        } @else {
-          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OPEN_HINT' | translate }}
-        }
-
-        @if (isEditMode) {
-          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.TYPE_LOCKED' | translate }}
-        }
-      </p>
-
-    </div>
+</header>
 
 
-    <div class="two-fields">
+<form class="fd-form" [formGroup]="componentForm" (ngSubmit)="onSubmit()" novalidate>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.NAME_AR' | translate }}</mat-label>
-        <input matInput formControlName="nameAr" dir="rtl" [maxlength]="nameMaxLength" />
-        @if (isInvalid(componentForm.controls.nameAr)) {
-          <mat-error>
-            @if (componentForm.controls.nameAr.hasError('required')) {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}
-            } @else if (componentForm.controls.nameAr.hasError('invalidChars')) {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.ARABIC_ONLY' | translate }}
-            } @else if (componentForm.controls.nameAr.hasError('minLetters')) {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MIN_LETTERS_AR' | translate }}
-            }
-          </mat-error>
-        }
-      </mat-form-field>
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.NAME_EN' | translate }}</mat-label>
-        <input matInput formControlName="nameEn" dir="ltr" [maxlength]="nameMaxLength" />
-        @if (isInvalid(componentForm.controls.nameEn)) {
-          <mat-error>
-            @if (componentForm.controls.nameEn.hasError('required')) {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}
-            } @else if (componentForm.controls.nameEn.hasError('invalidChars')) {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.ENGLISH_ONLY' | translate }}
-            } @else if (componentForm.controls.nameEn.hasError('minLetters')) {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MIN_LETTERS_EN' | translate }}
-            }
-          </mat-error>
-        }
-      </mat-form-field>
+    <div class="pc-fields">
 
-    </div>
+      <!-- Type: fixed (one exam per section) or open (the teacher adds).
+           Chosen when adding; it never changes after. -->
+      <div class="field">
 
+        <span class="field-label" id="pc-type-label">{{ 'SUBJECTS.PLAN_COMPONENT_FORM.TYPE' | translate }}</span>
 
-    <div class="three-fields" [class.two]="!isFixed()">
+        <div class="choice-switch pc-type" role="radiogroup" aria-labelledby="pc-type-label" aria-describedby="pc-type-help">
+          <label class="choice-option">
+            <input type="radio" formControlName="isOpen" [value]="false" />
+            <span class="choice-face">
+              <mat-icon aria-hidden="true">push_pin</mat-icon>
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED' | translate }}
+            </span>
+          </label>
 
-      <!-- Weight (up to what is left to reach 100) -->
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT' | translate }}</mat-label>
-        <input matInput type="number" min="0" [max]="remaining" step="any" formControlName="weight" />
-        <span matTextSuffix>%</span>
+          <label class="choice-option">
+            <input type="radio" formControlName="isOpen" [value]="true" />
+            <span class="choice-face">
+              <mat-icon aria-hidden="true">playlist_add</mat-icon>
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OPEN' | translate }}
+            </span>
+          </label>
+        </div>
 
-        <mat-hint>
-          {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REMAINING' | translate: { remaining: remainingLabel } }}
-        </mat-hint>
-
-        @if (isInvalid(componentForm.controls.weight)) {
-          <mat-error>
-            @if (componentForm.controls.weight.hasError('required')) {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}
-            } @else if (componentForm.controls.weight.hasError('overRemaining')) {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OVER_REMAINING' | translate: { remaining: remainingLabel } }}
-            } @else {
-              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT_ERROR' | translate }}
-            }
-          </mat-error>
-        }
-      </mat-form-field>
-
-      <!-- Max mark (fixed components only) -->
-      @if (isFixed()) {
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK' | translate }}</mat-label>
-          <input matInput type="number" min="0" step="any" formControlName="maxMark" />
-
-          @if (isInvalid(componentForm.controls.maxMark)) {
-            <mat-error>
-              @if (componentForm.controls.maxMark.hasError('required')) {
-                {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}
-              } @else {
-                {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK_ERROR' | translate }}
-              }
-            </mat-error>
+        <div class="field-help" id="pc-type-help">
+          @if (isFixed()) {
+            {{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED_HINT' | translate }}
+          } @else {
+            {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OPEN_HINT' | translate }}
           }
-        </mat-form-field>
-      }
 
-      <!-- Order -->
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.ORDER' | translate }}</mat-label>
-        <input matInput type="number" min="0" step="1" formControlName="order" />
-        @if (isInvalid(componentForm.controls.order)) {
-          <mat-error>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.REQUIRED' | translate }}</mat-error>
-        }
-      </mat-form-field>
+          @if (isEditMode) {
+            {{ 'SUBJECTS.PLAN_COMPONENT_FORM.TYPE_LOCKED' | translate }}
+          }
+        </div>
 
-    </div>
-
-
-    <!-- Total of the weights, with this component's weight as it is typed -->
-    <app-plan-weight-bar [weights]="barWeights()"></app-plan-weight-bar>
-
-    @if (weightCapped()) {
-
-      <!-- The weight was cut down so the total stays at 100 -->
-      <div class="message-card warning" role="status">
-        <mat-icon>warning_amber</mat-icon>
-        <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT_LIMIT' | translate }}</span>
       </div>
 
-    }
+
+      <!-- Names -->
+      <div class="fd-grid pc-grid-2">
+
+        <div class="field">
+          <label class="field-label" for="pc-nameAr">{{ 'SUBJECTS.PLAN_COMPONENT_FORM.NAME_AR' | translate }}</label>
+
+          <div class="field-box" [class.is-invalid]="isInvalid('nameAr')">
+            <input
+              id="pc-nameAr"
+              formControlName="nameAr"
+              dir="rtl"
+              autocomplete="off"
+              [maxlength]="nameMaxLength"
+              [attr.aria-invalid]="isInvalid('nameAr')"
+              [attr.aria-describedby]="isInvalid('nameAr') ? 'pc-nameAr-error' : null"
+            />
+          </div>
+
+          @if (isInvalid('nameAr')) {
+            <div class="field-error" id="pc-nameAr-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (componentForm.controls.nameAr.hasError('required')) {
+                  {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                } @else if (componentForm.controls.nameAr.hasError('invalidChars')) {
+                  {{ 'SUBJECTS.PLAN_COMPONENT_FORM.ARABIC_ONLY' | translate }}
+                } @else {
+                  {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MIN_LETTERS_AR' | translate }}
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="pc-nameEn">{{ 'SUBJECTS.PLAN_COMPONENT_FORM.NAME_EN' | translate }}</label>
+
+          <div class="field-box" [class.is-invalid]="isInvalid('nameEn')">
+            <input
+              id="pc-nameEn"
+              formControlName="nameEn"
+              dir="ltr"
+              autocomplete="off"
+              [maxlength]="nameMaxLength"
+              [attr.aria-invalid]="isInvalid('nameEn')"
+              [attr.aria-describedby]="isInvalid('nameEn') ? 'pc-nameEn-error' : null"
+            />
+          </div>
+
+          @if (isInvalid('nameEn')) {
+            <div class="field-error" id="pc-nameEn-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (componentForm.controls.nameEn.hasError('required')) {
+                  {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                } @else if (componentForm.controls.nameEn.hasError('invalidChars')) {
+                  {{ 'SUBJECTS.PLAN_COMPONENT_FORM.ENGLISH_ONLY' | translate }}
+                } @else {
+                  {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MIN_LETTERS_EN' | translate }}
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+      </div>
 
 
-    @if (showMaxMarkNote) {
-      <p class="form-note">
-        <mat-icon>info</mat-icon>
-        <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK_NOTE' | translate }}</span>
-      </p>
-    }
+      <!-- Weight, max mark (fixed only), order -->
+      <div class="fd-grid pc-grid-3">
 
-    @if (!isEditMode && isFixed()) {
-      <p class="form-note">
-        <mat-icon>info</mat-icon>
-        <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED_NOTE' | translate }}</span>
-      </p>
-    }
+        <!-- Weight (up to what is left to reach 100) -->
+        <div class="field">
+          <label class="field-label" for="pc-weight">{{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT' | translate }}</label>
 
-  </form>
+          <div class="field-box" [class.is-invalid]="isInvalid('weight')">
+            <input
+              id="pc-weight"
+              class="tabular"
+              type="number"
+              inputmode="decimal"
+              min="0"
+              step="any"
+              [max]="remaining"
+              formControlName="weight"
+              [attr.aria-invalid]="isInvalid('weight')"
+              aria-describedby="pc-weight-note"
+            />
+            <span class="field-suffix" aria-hidden="true">%</span>
+          </div>
 
-</mat-dialog-content>
+          @if (isInvalid('weight')) {
+            <div class="field-error" id="pc-weight-note">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (componentForm.controls.weight.hasError('required')) {
+                  {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                } @else if (componentForm.controls.weight.hasError('overRemaining')) {
+                  {{ 'SUBJECTS.PLAN_COMPONENT_FORM.OVER_REMAINING' | translate: { remaining: remainingLabel } }}
+                } @else {
+                  {{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT_ERROR' | translate }}
+                }
+              </span>
+            </div>
+          } @else {
+            <div class="field-help" id="pc-weight-note">
+              {{ 'SUBJECTS.PLAN_COMPONENT_FORM.REMAINING' | translate: { remaining: remainingLabel } }}
+            </div>
+          }
+        </div>
+
+        <!-- Max mark: a fixed component only; an open one says the teacher sets it -->
+        <div class="field">
+          <label class="field-label" for="pc-maxMark">{{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK' | translate }}</label>
+
+          @if (isFixed()) {
+            <div class="field-box" [class.is-invalid]="isInvalid('maxMark')">
+              <input
+                id="pc-maxMark"
+                class="tabular"
+                type="number"
+                inputmode="decimal"
+                min="0"
+                step="any"
+                formControlName="maxMark"
+                [attr.aria-invalid]="isInvalid('maxMark')"
+                [attr.aria-describedby]="isInvalid('maxMark') ? 'pc-maxMark-error' : null"
+              />
+            </div>
+
+            @if (isInvalid('maxMark')) {
+              <div class="field-error" id="pc-maxMark-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>
+                  @if (componentForm.controls.maxMark.hasError('required')) {
+                    {{ 'SUBJECTS.FORMS.REQUIRED' | translate }}
+                  } @else {
+                    {{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK_ERROR' | translate }}
+                  }
+                </span>
+              </div>
+            }
+          } @else {
+            <div class="field-box is-readonly">
+              <input
+                id="pc-maxMark"
+                readonly
+                tabindex="-1"
+                [value]="'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK_TEACHER' | translate"
+              />
+            </div>
+          }
+        </div>
+
+        <!-- Order -->
+        <div class="field">
+          <label class="field-label" for="pc-order">{{ 'SUBJECTS.PLAN_COMPONENT_FORM.ORDER' | translate }}</label>
+
+          <div class="field-box" [class.is-invalid]="isInvalid('order')">
+            <input
+              id="pc-order"
+              class="tabular"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              step="1"
+              formControlName="order"
+              [attr.aria-invalid]="isInvalid('order')"
+              [attr.aria-describedby]="isInvalid('order') ? 'pc-order-error' : null"
+            />
+          </div>
+
+          @if (isInvalid('order')) {
+            <div class="field-error" id="pc-order-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>{{ 'SUBJECTS.FORMS.REQUIRED' | translate }}</span>
+            </div>
+          }
+        </div>
+
+      </div>
 
 
-<mat-dialog-actions align="end">
+      <!-- Total of the weights, with this component's weight as it is typed -->
+      <app-plan-weight-bar [weights]="barWeights()"></app-plan-weight-bar>
 
-  <button
-    mat-stroked-button
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="cancel()"
-  >
-    {{ 'SUBJECTS.PLAN_COMPONENT_FORM.CANCEL' | translate }}
-  </button>
+      @if (weightCapped()) {
+        <!-- The weight was cut down so the total stays at 100 -->
+        <div class="fd-note warn" role="status">
+          <mat-icon aria-hidden="true">warning_amber</mat-icon>
+          <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.WEIGHT_LIMIT' | translate }}</span>
+        </div>
+      }
 
-  <button
-    mat-flat-button
-    color="primary"
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="onSubmit()"
-  >
-    <mat-icon>save</mat-icon>
+      @if (showMaxMarkNote) {
+        <div class="fd-note info">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.MAX_MARK_NOTE' | translate }}</span>
+        </div>
+      }
 
-    {{
-      isSubmitting()
-        ? ('SUBJECTS.PLAN_COMPONENT_FORM.SAVING' | translate)
-        : ('SUBJECTS.PLAN_COMPONENT_FORM.SAVE' | translate)
-    }}
-  </button>
+      @if (!isEditMode && isFixed()) {
+        <div class="fd-note info">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <span>{{ 'SUBJECTS.PLAN_COMPONENT_FORM.FIXED_NOTE' | translate }}</span>
+        </div>
+      }
 
-</mat-dialog-actions>
+    </div>
+
+  </div>
+
+
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
+
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ errorsKey() | translate: { count: invalidCount() } }}
+      }
+    </span>
+
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="closing.requestClose()"
+    >
+      {{ 'SUBJECTS.PLAN_COMPONENT_FORM.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="submit"
+      class="fd-submit"
+      [class.is-busy]="isSubmitting()"
+      [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+    >
+      <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
+        {{ isEditMode ? 'save' : 'add' }}
+      </mat-icon>
+
+      @if (isSubmitting()) {
+        <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+      }
+
+      {{
+        (isSubmitting()
+          ? 'SUBJECTS.PLAN_COMPONENT_FORM.SAVING'
+          : isEditMode ? 'SUBJECTS.PLAN_COMPONENT_FORM.SAVE' : 'SUBJECTS.PLAN_COMPONENT_FORM.ADD') | translate
+      }}
+    </button>
+
+  </footer>
+
+</form>

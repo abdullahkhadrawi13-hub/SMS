@@ -1,4 +1,11 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal,
+} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -13,9 +20,8 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -23,6 +29,16 @@ import { SubjectsService } from '../../../../core/services/subjects';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { ActionResult } from '../../../../shared/services/action-result';
 import { SubjectDto, SubjectRequest } from '../../../../core/models/subject';
+import { Language } from '../../../../core/services/language';
+import { requiredTextValidator } from '../../../../shared/utils/form-validators';
+
+import {
+  errorsCountKey,
+  focusFirstInvalid,
+  restartWhenCleared,
+  showFieldError,
+  useDiscardOnClose,
+} from '../../shared/subjects-form-dialog';
 
 
 // Data passed when the dialog is opened.
@@ -32,19 +48,31 @@ export interface SubjectFormData {
 }
 
 
+// The longest subject name.
+const SUBJECT_NAME_MAX_LENGTH = 100;
+
+
+// Add / edit subject dialog (navy & gold, 13 Nov 2026).
+// Works like the class form: fixed header (title, one line, ✕), the two
+// name fields, fixed footer; "Discard changes?" before closing with
+// unsaved changes; on save with errors the first wrong field gets the focus.
+// Opened by the subjects list tab with panelClass 'form-dialog'.
 @Component({
   selector: 'app-subjects-catalog-form',
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     TranslatePipe,
   ],
   templateUrl: './subjects-catalog-form.html',
   styleUrl: './subjects-catalog-form.css',
+  host: {
+    // The shared form dialog layout in styles.css (.fd, .fd-head, .fd-body…)
+    class: 'fd',
+  },
 })
 export class SubjectsCatalogForm {
 
@@ -59,6 +87,10 @@ export class SubjectsCatalogForm {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly language = inject(Language);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  readonly nameMaxLength = SUBJECT_NAME_MAX_LENGTH;
 
   // The subject being edited (undefined = add mode).
   private readonly subject =
@@ -70,6 +102,22 @@ export class SubjectsCatalogForm {
   // true while the request is running (prevents double clicks).
   readonly isSubmitting = signal(false);
 
+  // Edit header line: the subject name in the UI language.
+  readonly subjectName = computed(() => {
+    if (!this.subject) {
+      return '';
+    }
+
+    return this.language.currentDirection() === 'rtl'
+      ? this.subject.subjectAr
+      : this.subject.subjectEn;
+  });
+
+  // "N fields need fixing" next to the buttons, after a save with errors.
+  readonly submitAttempted = signal(false);
+  readonly invalidCount = signal(0);
+  readonly errorsKey = computed(() => errorsCountKey(this.invalidCount()));
+
 
   // Subject form fields and validation rules.
   // The API fields are subjectAr / subjectEn.
@@ -79,8 +127,9 @@ export class SubjectsCatalogForm {
     subjectAr: [
       this.subject?.subjectAr ?? '',
       [
-        Validators.required,
+        requiredTextValidator,
         Validators.minLength(2),
+        Validators.maxLength(SUBJECT_NAME_MAX_LENGTH),
         Validators.pattern(/^[؀-ۿ\s.-]+$/),
       ],
     ],
@@ -89,23 +138,51 @@ export class SubjectsCatalogForm {
     subjectEn: [
       this.subject?.subjectEn ?? '',
       [
-        Validators.required,
+        requiredTextValidator,
         Validators.minLength(2),
+        Validators.maxLength(SUBJECT_NAME_MAX_LENGTH),
         Validators.pattern(/^[A-Za-z\s.-]+$/),
       ],
     ],
   });
 
 
+  // ✕, Cancel, backdrop click and Esc: asks first when something changed.
+  readonly closing = useDiscardOnClose({
+    isDirty: () => this.subjectForm.dirty,
+    isBusy: () => this.isSubmitting(),
+  });
+
+
+  constructor() {
+
+    // Keep the error count up to date while the user fixes the fields.
+    this.subjectForm.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.invalidCount.set(this.countInvalid()));
+
+    restartWhenCleared(
+      [this.subjectForm.controls.subjectAr, this.subjectForm.controls.subjectEn],
+      this.destroyRef
+    );
+  }
+
+
   // Saves the subject: POST /api/subjects or PUT /api/subjects/{id}.
   onSubmit(): void {
 
-    if (this.subjectForm.invalid) {
-      this.subjectForm.markAllAsTouched();
+    // The button keeps its colour while saving, so guard here instead.
+    if (this.isSubmitting()) {
       return;
     }
 
-    if (this.isSubmitting()) {
+    if (this.subjectForm.invalid) {
+      this.subjectForm.markAllAsTouched();
+
+      this.submitAttempted.set(true);
+      this.invalidCount.set(this.countInvalid());
+
+      focusFirstInvalid(this.host);
       return;
     }
 
@@ -160,20 +237,23 @@ export class SubjectsCatalogForm {
   }
 
 
-  // Closes the form without submitting.
-  cancel(): void {
-    this.dialogRef.close();
+  // Fields that are still wrong.
+  private countInvalid(): number {
+    return Object.values(this.subjectForm.controls)
+      .filter(control => control.invalid)
+      .length;
   }
 
 
-  // Checks whether a field is invalid and has been touched.
+  // Wrong characters at once, a too-short name on leaving the field,
+  // an empty one after pressing the button (see showFieldError()).
   isFieldInvalid(
     fieldName: keyof typeof this.subjectForm.controls
   ): boolean {
 
-    const control =
-      this.subjectForm.controls[fieldName];
-
-    return control.invalid && control.touched;
+    return showFieldError(
+      this.subjectForm.controls[fieldName],
+      this.submitAttempted()
+    );
   }
 }

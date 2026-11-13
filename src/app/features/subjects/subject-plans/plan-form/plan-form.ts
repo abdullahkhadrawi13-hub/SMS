@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -11,27 +11,24 @@ import {
 } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { SubjectPlansService } from '../../../../core/services/subject-plans';
 import { ActionResult } from '../../../../shared/services/action-result';
+import { Language } from '../../../../core/services/language';
 import { SubjectDto } from '../../../../core/models/subject';
 import { SubjectPlan } from '../../../../core/models/subject-plan';
 
 import {
-  componentColor,
   DEFAULT_PASSING_MARK,
   formatNumber,
   FULL_WEIGHT,
@@ -46,6 +43,13 @@ import {
   weightValidator,
 } from '../plan-validators';
 import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
+import {
+  errorsCountKey,
+  focusFirstInvalid,
+  restartWhenCleared,
+  showFieldError,
+  useDiscardOnClose,
+} from '../../shared/subjects-form-dialog';
 
 
 // Data passed by the plans tab when the dialog is opened.
@@ -53,7 +57,7 @@ export interface PlanFormData {
   academicTermId: number;
   classId: number;
 
-  // Names shown in the read-only box.
+  // Names shown in the line under the title.
   termLabel: string;
   className: string;
 
@@ -101,22 +105,30 @@ function planComponentsValidator(control: AbstractControl): ValidationErrors | n
 // (POST /api/subjectplans, API Reference section 9).
 // The components are added in the same form, but they are optional:
 // the plan can be saved now and completed later in its details page.
+//
+// The shared form dialog look (navy & gold, 13 Nov 2026), like the class form:
+// "Discard changes?" before closing with unsaved changes, errors shown at the
+// right time (showFieldError), the first wrong field focused on save.
+// Each component is one numbered row: the names on the first line,
+// the type (.choice-switch), weight and max mark on the second.
+// Opened by the plans tab with panelClass 'form-dialog'.
 @Component({
   selector: 'app-plan-form',
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
-    MatButtonToggleModule,
     MatDialogModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
-    MatSelectModule,
+    MatProgressSpinnerModule,
     PlanWeightBar,
     TranslatePipe,
   ],
   templateUrl: './plan-form.html',
   styleUrl: './plan-form.css',
+  host: {
+    // The shared form dialog layout in styles.css (.fd, .fd-head, .fd-body…)
+    class: 'fd',
+  },
 })
 export class PlanForm {
 
@@ -129,15 +141,21 @@ export class PlanForm {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly language = inject(Language);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly data = inject<PlanFormData>(MAT_DIALOG_DATA);
 
   // true while the request is running (prevents double clicks).
   readonly isSubmitting = signal(false);
 
+  // "N fields need fixing" next to the buttons, after a save with errors.
+  readonly submitAttempted = signal(false);
+  readonly invalidCount = signal(0);
+  readonly errorsKey = computed(() => errorsCountKey(this.invalidCount()));
+
   readonly nameMaxLength = COMPONENT_NAME_MAX_LENGTH;
   readonly fullWeight = FULL_WEIGHT;
-  readonly componentColor = componentColor;
 
 
   readonly planForm = this.fb.group({
@@ -185,11 +203,25 @@ export class PlanForm {
   private readonly lastWeights = new WeakMap<ComponentRow, number | null>();
 
 
+  // ✕, Cancel, backdrop click and Esc: asks first when something changed.
+  readonly closing = useDiscardOnClose({
+    isDirty: () => this.planForm.dirty,
+    isBusy: () => this.isSubmitting(),
+  });
+
+
   constructor() {
 
     this.components.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.updateWeights());
+
+    // Keep the error count up to date while the user fixes the fields.
+    this.planForm.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.invalidCount.set(this.countInvalid()));
+
+    restartWhenCleared([this.planForm.controls.passingMark], this.destroyRef);
   }
 
 
@@ -224,6 +256,12 @@ export class PlanForm {
       maxMark: [null as number | null, [Validators.required, maxMarkValidator]],
     });
 
+    // Clearing a field starts it over (its error waits for leaving it again).
+    restartWhenCleared(
+      [row.controls.nameAr, row.controls.nameEn, row.controls.weight, row.controls.maxMark],
+      this.destroyRef
+    );
+
     // A weight can never take the total above 100: it is cut down to what is left.
     row.controls.weight.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -246,12 +284,19 @@ export class PlanForm {
   }
 
 
+  // A new row, with the focus in its Arabic name.
   addComponent(): void {
     this.components.push(this.createComponentRow());
+    this.components.markAsDirty();
+
+    const index = this.components.length - 1;
+
+    setTimeout(() => document.getElementById(`pf-nameAr-${index}`)?.focus());
   }
 
   removeComponent(index: number): void {
     this.components.removeAt(index);
+    this.components.markAsDirty();
 
     // Removing a row frees weight, so the message is no longer true.
     this.weightCapped.set(false);
@@ -339,16 +384,32 @@ export class PlanForm {
   // Helpers
   // =========================
 
-  isArabic(): boolean {
-    return document.documentElement.lang === 'ar';
-  }
-
   getSubjectName(subject: SubjectDto): string {
-    return this.isArabic() ? subject.subjectAr : subject.subjectEn;
+    return this.language.currentDirection() === 'rtl'
+      ? subject.subjectAr
+      : subject.subjectEn;
   }
 
+  // Wrong characters at once, other errors on leaving the field,
+  // an empty field after pressing the button (see showFieldError()).
   isInvalid(control: AbstractControl): boolean {
-    return control.invalid && control.touched;
+    return showFieldError(control, this.submitAttempted());
+  }
+
+  // Fields that are still wrong (the subject, the passing mark,
+  // and every field of every component).
+  private countInvalid(): number {
+
+    const top = [this.planForm.controls.subjectId, this.planForm.controls.passingMark]
+      .filter(control => control.invalid)
+      .length;
+
+    const rows = this.components.controls
+      .flatMap(row => Object.values(row.controls))
+      .filter(control => control.invalid)
+      .length;
+
+    return top + rows;
   }
 
 
@@ -358,12 +419,18 @@ export class PlanForm {
 
   onSubmit(): void {
 
-    if (this.planForm.invalid) {
-      this.planForm.markAllAsTouched();
+    // The button keeps its colour while saving, so guard here instead.
+    if (this.isSubmitting()) {
       return;
     }
 
-    if (this.isSubmitting()) {
+    if (this.planForm.invalid) {
+      this.planForm.markAllAsTouched();
+
+      this.submitAttempted.set(true);
+      this.invalidCount.set(this.countInvalid());
+
+      focusFirstInvalid(this.host);
       return;
     }
 
@@ -424,8 +491,4 @@ export class PlanForm {
       });
   }
 
-
-  cancel(): void {
-    this.dialogRef.close();
-  }
 }

@@ -368,6 +368,155 @@ button:focus-visible,
   }
 }
 
+/* A number field: no browser up / down arrows (they crowd the 36px box). */
+.field-box > input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.field-box > input[type='number']::-webkit-outer-spin-button,
+.field-box > input[type='number']::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+/* Text at the end of the box ("out of 100", "%") */
+.field-suffix {
+  flex: none;
+
+  padding-inline-end: 10px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+
+  white-space: nowrap;
+}
+
+/* ---------- Two-choice switch ----------
+   Two real radio buttons drawn as one 36px control (44px on the phone),
+   for a choice with no right or wrong (a plan component: fixed / open;
+   added 13 Nov 2026). The chosen half is light blue. Attendance has its
+   own green / red switch (record-sheet.css).
+
+   <div class="choice-switch" role="radiogroup" aria-labelledby="…">
+     <label class="choice-option">
+       <input type="radio" formControlName="isOpen" [value]="false" />
+       <span class="choice-face"><mat-icon>push_pin</mat-icon> Fixed</span>
+     </label>
+     <label class="choice-option">…</label>
+   </div> */
+.choice-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  height: var(--h-control);
+  box-sizing: border-box;
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+
+  background: var(--surface);
+
+  overflow: hidden;
+}
+
+.choice-option {
+  position: relative;
+
+  display: flex;
+
+  min-width: 0;
+
+  cursor: pointer;
+}
+
+.choice-option + .choice-option {
+  border-inline-start: 1px solid var(--control);
+}
+
+/* Hidden, but still reached by the keyboard and screen readers */
+.choice-option input {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  opacity: 0;
+
+  cursor: pointer;
+}
+
+.choice-face {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+
+  transition: background-color var(--dur), color var(--dur);
+}
+
+.choice-face .mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+.choice-option:hover .choice-face {
+  background: var(--hover);
+}
+
+.choice-option input:checked + .choice-face {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+/* Keyboard focus: the ring sits inside the half that has the focus */
+.choice-option:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+
+  border-radius: var(--r-pill);
+}
+
+/* Disabled (the type of a component cannot change after it is added):
+   still readable, the chosen half stays marked. */
+.choice-switch:has(input:disabled) {
+  border-color: var(--border);
+
+  background: var(--raised);
+}
+
+.choice-option:has(input:disabled),
+.choice-option input:disabled {
+  cursor: not-allowed;
+}
+
+.choice-option:has(input:disabled):hover .choice-face {
+  background: none;
+}
+
+.choice-option input:disabled:not(:checked) + .choice-face {
+  color: var(--faint);
+}
+
+@media (max-width: 719.98px) {
+  .choice-switch {
+    height: var(--h-touch);
+  }
+}
+
 /* ---------- Dialogs: title and content ----------
    Title: Material puts an empty inline-block ::before in front of the
    text (it sets the baseline). In our templates the text starts on a new
@@ -416,6 +565,16 @@ html {
     height: 100% !important;
     max-height: 100% !important;
   }
+}
+
+/* ---------- Confirm dialog panel ----------
+   The shared confirm dialog (shared/components/confirm-dialog) adds this
+   class to its own panel: 10px corners and the floating shadow, like the
+   form dialogs, but it never fills the phone screen. */
+.confirm-dialog-panel {
+  --mat-dialog-container-shape: var(--r-card);
+  --mat-dialog-container-color: var(--surface);
+  --mat-dialog-container-elevation-shadow: var(--shadow-pop);
 }
 
 /* ---------- Form dialog layout ----------

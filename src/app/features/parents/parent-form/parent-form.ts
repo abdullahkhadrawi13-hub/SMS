@@ -69,9 +69,9 @@ import { Student } from '../../../core/models/student';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import {
-  PlanConfirmData,
-  PlanConfirmDialog
-} from '../../subjects/subject-plans/plan-confirm-dialog/plan-confirm-dialog';
+  ConfirmDialogData,
+  ConfirmDialog
+} from '../../../shared/components/confirm-dialog/confirm-dialog';
 
 import { StudentPicker } from '../student-picker/student-picker';
 import { RelationshipToggle } from '../relationship-toggle/relationship-toggle';
@@ -508,7 +508,7 @@ export class ParentForm {
     this.isConfirmingClose = true;
 
     return this.dialog
-      .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         maxWidth: '95vw',
         data: {
           icon: 'edit_note',

@@ -36,9 +36,9 @@ import {
 } from '../../../subjects/shared/subjects-shared';
 import { PlanWeightBar } from '../../../subjects/subject-plans/plan-weight-bar/plan-weight-bar';
 import {
-  PlanConfirmData,
-  PlanConfirmDialog,
-} from '../../../subjects/subject-plans/plan-confirm-dialog/plan-confirm-dialog';
+  ConfirmDialogData,
+  ConfirmDialog,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
 import { AssessmentFormData, ComponentGroup } from '../assessments';
 import { AssessmentsHeader, PlanStatusBadge } from '../assessments-header/assessments-header';
@@ -399,7 +399,7 @@ export class AssessmentsPage implements OnInit {
     const name = this.isArabic() ? assessment.nameAr : assessment.nameEn;
 
     this.dialog
-      .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         data: {
           icon: 'delete',
           titleKey: 'MY_CLASSES.ASSESSMENTS.DELETE.TITLE',

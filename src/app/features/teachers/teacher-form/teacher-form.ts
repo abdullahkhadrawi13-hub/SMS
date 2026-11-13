@@ -61,9 +61,9 @@ import {
 
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import {
-  PlanConfirmData,
-  PlanConfirmDialog
-} from '../../subjects/subject-plans/plan-confirm-dialog/plan-confirm-dialog';
+  ConfirmDialogData,
+  ConfirmDialog
+} from '../../../shared/components/confirm-dialog/confirm-dialog';
 
 
 // Data passed when the form is opened in edit mode.
@@ -314,7 +314,7 @@ export class TeacherForm {
     this.isConfirmingClose = true;
 
     return this.dialog
-      .open<PlanConfirmDialog, PlanConfirmData, boolean>(PlanConfirmDialog, {
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         maxWidth: '95vw',
         data: {
           icon: 'edit_note',

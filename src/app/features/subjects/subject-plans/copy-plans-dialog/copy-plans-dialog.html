@@ -1,118 +1,139 @@
-<!-- Copy the plans of an earlier term -->
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-<h2 mat-dialog-title>
-  {{ 'SUBJECTS.COPY_PLANS.TITLE' | translate }}
-</h2>
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>{{ 'SUBJECTS.COPY_PLANS.TITLE' | translate }}</h2>
 
-
-<mat-dialog-content>
-
-  <div class="copy-content">
-
-    <p class="copy-subtitle">
-      {{ 'SUBJECTS.COPY_PLANS.SUBTITLE' | translate }}
+    <!-- The target term: the one selected in the plans tab -->
+    <p class="fd-head-sub">
+      {{ 'SUBJECTS.COPY_PLANS.TO_LINE' | translate: { term: termLabel(toTerm) } }}
     </p>
+  </div>
 
-    @if (result(); as done) {
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'SUBJECTS.FORMS.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="close()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
 
-      <!-- Done: the counts -->
-      <div class="message-card success">
-        <mat-icon>check_circle</mat-icon>
+</header>
 
-        <span>
-          {{
-            'SUBJECTS.COPY_PLANS.RESULT'
-              | translate: { copied: done.copiedCount, skipped: done.skippedCount }
-          }}
-        </span>
-      </div>
 
-    } @else if (fromTerms.length === 0) {
+<form class="fd-form" (submit)="$event.preventDefault(); copy()" novalidate>
 
-      <div class="message-card warning">
-        <mat-icon>info</mat-icon>
-        <span>{{ 'SUBJECTS.COPY_PLANS.NO_TERMS' | translate }}</span>
-      </div>
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
 
-    } @else {
+    <div class="cp-content">
 
-      <!-- From -->
-      <mat-form-field appearance="outline">
+      <p class="cp-explain">{{ 'SUBJECTS.COPY_PLANS.SUBTITLE' | translate }}</p>
 
-        <mat-label>{{ 'SUBJECTS.COPY_PLANS.FROM' | translate }}</mat-label>
+      @if (result(); as done) {
 
-        <mat-select [formControl]="fromTermId">
-          @for (term of fromTerms; track term.academicTermId) {
-            <mat-option [value]="term.academicTermId">
-              {{ termLabel(term) }}
-            </mat-option>
+        <!-- Done: the counts -->
+        <div class="fd-note ok" role="status">
+          <mat-icon aria-hidden="true">check_circle</mat-icon>
+          <span>
+            {{ 'SUBJECTS.COPY_PLANS.RESULT' | translate: { copied: done.copiedCount, skipped: done.skippedCount } }}
+          </span>
+        </div>
+
+      } @else if (fromTerms.length === 0) {
+
+        <div class="fd-note info">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <span>{{ 'SUBJECTS.COPY_PLANS.NO_TERMS' | translate }}</span>
+        </div>
+
+      } @else {
+
+        <!-- From -->
+        <div class="field">
+
+          <label class="field-label" for="cp-from">{{ 'SUBJECTS.COPY_PLANS.FROM' | translate }}</label>
+
+          <div class="field-box is-select" [class.is-invalid]="showFromError()">
+            <select
+              id="cp-from"
+              [formControl]="fromTermId"
+              [attr.aria-invalid]="showFromError()"
+              [attr.aria-describedby]="showFromError() ? 'cp-from-error' : null"
+            >
+              <option [ngValue]="null" disabled>{{ 'SUBJECTS.COPY_PLANS.FROM_PLACEHOLDER' | translate }}</option>
+
+              @for (term of fromTerms; track term.academicTermId) {
+                <option [ngValue]="term.academicTermId">{{ termLabel(term) }}</option>
+              }
+            </select>
+
+            <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+          </div>
+
+          @if (showFromError()) {
+            <div class="field-error" id="cp-from-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>{{ 'SUBJECTS.FORMS.REQUIRED' | translate }}</span>
+            </div>
           }
-        </mat-select>
 
-        @if (fromTermId.invalid && fromTermId.touched) {
-          <mat-error>{{ 'SUBJECTS.COPY_PLANS.REQUIRED' | translate }}</mat-error>
-        }
+        </div>
 
-      </mat-form-field>
+        <div class="fd-note info">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <span>{{ 'SUBJECTS.COPY_PLANS.SKIP_NOTE' | translate }}</span>
+        </div>
 
-      <!-- To (the term selected in the tab) -->
-      <div class="context-box">
-        <span class="context-label">{{ 'SUBJECTS.COPY_PLANS.TO' | translate }}</span>
-        <span class="context-value">{{ termLabel(toTerm) }}</span>
-      </div>
+      }
 
-      <p class="form-note">
-        <mat-icon>info</mat-icon>
-        <span>{{ 'SUBJECTS.COPY_PLANS.SKIP_NOTE' | translate }}</span>
-      </p>
-
-    }
+    </div>
 
   </div>
 
-</mat-dialog-content>
 
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
 
-<mat-dialog-actions align="end">
+    <span class="fd-foot-note"></span>
 
-  @if (result() || fromTerms.length === 0) {
+    @if (result() || fromTerms.length === 0) {
 
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      (click)="close()"
-    >
-      {{ 'SUBJECTS.COPY_PLANS.CLOSE' | translate }}
-    </button>
+      <button mat-flat-button type="button" (click)="close()">
+        {{ 'SUBJECTS.COPY_PLANS.CLOSE' | translate }}
+      </button>
 
-  } @else {
+    } @else {
 
-    <button
-      mat-stroked-button
-      type="button"
-      [disabled]="isSubmitting()"
-      (click)="close()"
-    >
-      {{ 'SUBJECTS.COPY_PLANS.CANCEL' | translate }}
-    </button>
+      <button
+        mat-stroked-button
+        type="button"
+        [disabled]="isSubmitting()"
+        (click)="close()"
+      >
+        {{ 'SUBJECTS.COPY_PLANS.CANCEL' | translate }}
+      </button>
 
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      [disabled]="isSubmitting()"
-      (click)="copy()"
-    >
-      <mat-icon>content_copy</mat-icon>
+      <button
+        mat-flat-button
+        type="submit"
+        class="fd-submit"
+        [class.is-busy]="isSubmitting()"
+        [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+      >
+        <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">content_copy</mat-icon>
 
-      {{
-        isSubmitting()
-          ? ('SUBJECTS.COPY_PLANS.COPYING' | translate)
-          : ('SUBJECTS.COPY_PLANS.COPY' | translate)
-      }}
-    </button>
+        @if (isSubmitting()) {
+          <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+        }
 
-  }
+        {{ (isSubmitting() ? 'SUBJECTS.COPY_PLANS.COPYING' : 'SUBJECTS.COPY_PLANS.COPY') | translate }}
+      </button>
 
-</mat-dialog-actions>
+    }
+
+  </footer>
+
+</form>

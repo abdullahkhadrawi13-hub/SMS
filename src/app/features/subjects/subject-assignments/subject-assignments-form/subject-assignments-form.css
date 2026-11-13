@@ -1,418 +1,146 @@
-/* ================================
-   Content
-   ================================ */
+/* Add / edit a subject of a section.
+   The layout (.fd, .fd-head, .fd-body, .fd-foot, .fd-note) and the fields
+   (.field, .field-box…) are the shared ones in styles.css.
+   Only what this form adds is here. */
 
-.form-content {
+.af-fields {
   display: flex;
   flex-direction: column;
 
   gap: 20px;
 
-  padding-top: 8px;
+  padding-block-start: var(--sp-4);
 }
 
-.assignment-form {
-  display: flex;
-  flex-direction: column;
-
-  gap: 12px;
+/* The notes sit in the column gap, not with their own top margin. */
+.af-fields .fd-note {
+  margin-block-start: 0;
 }
 
-.assignment-form mat-form-field {
-  width: 100%;
-}
+/* "Create the plan first": a text link in the note's own colour */
+.af-note-link {
+  padding: 0;
+  border: 0;
 
+  background: none;
+  color: inherit;
 
-/* ================================
-   Teacher Combobox (field)
-   ================================ */
+  font-family: var(--font);
+  font-size: var(--fs-13);
+  font-weight: 600;
 
-/* The search icon and the spinner share the same place (prefix),
-   so the spinner never overlaps the clear button (suffix). */
-.teacher-prefix {
-  margin-inline: 12px 6px;
-}
+  text-decoration: underline;
+  text-underline-offset: 3px;
 
-.teacher-search-icon {
-  color: #9ca3af;
+  cursor: pointer;
 }
 
 
-/* ================================
-   Teacher Combobox (results list)
-   ::ng-deep is needed because the list opens in an overlay,
-   outside this component. The panel class keeps it scoped.
-   ================================ */
+/* ---------- Teacher search ---------- */
 
-::ng-deep .teacher-autocomplete-panel.mat-mdc-autocomplete-panel {
-  --mat-autocomplete-background-color: #ffffff;
-  --mat-autocomplete-container-shape: 12px;
-  --mat-autocomplete-container-elevation-shadow:
-    0 10px 24px rgba(15, 23, 42, 0.1),
-    0 2px 6px rgba(15, 23, 42, 0.06);
-
-  /* Hover / keyboard focus: the light blue used across the site. */
-  --mat-option-hover-state-layer-color: #f3f8ff;
-  --mat-option-focus-state-layer-color: #eaf2ff;
-  --mat-option-selected-state-layer-color: #eaf2ff;
-
-  margin-top: 6px;
-  padding: 6px;
-
-  border: 1px solid #e5e7eb;
+.af-teacher-box {
+  padding-inline-start: 10px;
 }
 
-/* Each result: a rounded row with a small gap between rows. */
-::ng-deep .teacher-autocomplete-panel .teacher-option.mat-mdc-option {
-  min-height: 58px;
-
-  margin-bottom: 4px;
-  padding: 8px 12px;
-
-  border-radius: 8px;
-
-  transition: background-color 0.15s ease;
+.af-teacher-box input {
+  padding-inline-start: var(--sp-2);
 }
 
-::ng-deep .teacher-autocomplete-panel .teacher-option.mat-mdc-option:last-of-type {
-  margin-bottom: 0;
+.af-teacher-spinner {
+  flex: none;
 }
 
-::ng-deep .teacher-autocomplete-panel .teacher-option .mdc-list-item__primary-text {
-  width: 100%;
-  min-width: 0;
-}
+/* The ✕ at the end of the box */
+.af-teacher-clear {
+  flex: none;
 
-::ng-deep .teacher-autocomplete-panel .teacher-option-content {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  min-width: 0;
-}
-
-/* Small soft-blue circle with a person icon. */
-::ng-deep .teacher-autocomplete-panel .teacher-avatar {
-  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 34px;
-  height: 34px;
+  margin-inline-end: var(--sp-1);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-pill);
 
-  border-radius: 50%;
+  background: none;
+  color: var(--muted);
 
-  background: #eaf2ff;
-  color: #2554a4;
-
-  transition: background-color 0.15s ease;
+  cursor: pointer;
 }
 
-::ng-deep .teacher-autocomplete-panel .teacher-avatar mat-icon {
+.af-teacher-clear:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.af-teacher-clear mat-icon {
   width: 18px;
   height: 18px;
-
-  margin: 0;
 
   font-size: 18px;
 }
 
-::ng-deep .teacher-autocomplete-panel .teacher-option:hover .teacher-avatar,
-::ng-deep .teacher-autocomplete-panel .teacher-option.mat-mdc-option-active .teacher-avatar {
-  background: #dbeafe;
-}
-
-/* Two lines: the full name, then the teacher number (small, gray). */
-::ng-deep .teacher-autocomplete-panel .teacher-text {
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-
-  min-width: 0;
-}
-
-::ng-deep .teacher-autocomplete-panel .teacher-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.5;
-
-  color: #111827;
-}
-
-::ng-deep .teacher-autocomplete-panel .teacher-number {
-  font-size: 12px;
-  line-height: 1.4;
-
-  color: #9ca3af;
-}
-
-/* Status rows (searching / no results / error): not selectable. */
-::ng-deep .teacher-autocomplete-panel .teacher-status.mat-mdc-option {
-  min-height: 44px;
-
-  justify-content: center;
-
-  text-align: center;
-}
-
-::ng-deep .teacher-autocomplete-panel .teacher-status .mdc-list-item__primary-text {
-  opacity: 1;
-
-  font-size: 13px;
-
-  color: #6b7280;
-}
-
-::ng-deep .teacher-autocomplete-panel .teacher-status.error .mdc-list-item__primary-text {
-  color: #b91c1c;
-}
-
-
-/* ================================
-   Subject Options (name + plan state)
-   ::ng-deep: the list opens in an overlay; the panel class keeps it scoped.
-   ================================ */
-
-::ng-deep .subject-plan-panel .mdc-list-item__primary-text {
-  width: 100%;
-}
-
-::ng-deep .subject-plan-panel .subject-option {
+/* One result: avatar, name, teacher number under it */
+.af-teacher-option-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
-  gap: 12px;
-
-  width: 100%;
-}
-
-::ng-deep .subject-plan-panel .subject-option-name {
-  min-width: 0;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* A disabled option (no plan) keeps its tag readable. */
-::ng-deep .subject-plan-panel .mat-mdc-option.mdc-list-item--disabled .plan-tag {
-  opacity: 1;
-}
-
-::ng-deep .subject-plan-panel .plan-tag {
-  flex-shrink: 0;
-
-  padding: 2px 8px;
-
-  border-radius: 20px;
-
-  font-size: 11px;
-  font-weight: 600;
-}
-
-::ng-deep .subject-plan-panel .plan-tag.ok {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-::ng-deep .subject-plan-panel .plan-tag.warn {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-::ng-deep .subject-plan-panel .plan-tag.bad {
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-
-/* ================================
-   Fixed Values (read-only box)
-   ================================ */
-
-.context-box {
-  padding: 14px 16px;
-
-  background: #f1f5f9;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-}
-
-.context-items {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 12px 24px;
-}
-
-.context-item {
-  flex: 1 1 auto;
-
-  display: flex;
-  flex-direction: column;
-
-  min-width: 0;
-}
-
-.context-label {
-  font-size: 12px;
-
-  color: #4b5563;
-}
-
-.context-value {
-  font-size: 14px;
-  font-weight: 600;
-
-  color: #111827;
-}
-
-.context-note {
-  display: flex;
-  align-items: center;
-
-  gap: 6px;
-
-  margin: 12px 0 0;
-  padding-top: 10px;
-
-  border-top: 1px solid #e5e7eb;
-
-  font-size: 12px;
-
-  color: #4b5563;
-}
-
-.context-note mat-icon {
-  width: 16px;
-  height: 16px;
-
-  font-size: 16px;
-
-  flex-shrink: 0;
-}
-
-
-/* ================================
-   Messages
-   ================================ */
-
-.message-card {
-  display: flex;
-  align-items: flex-start;
-
-  gap: 8px;
-
-  padding: 10px 14px;
-
-  border-radius: 8px;
-
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.message-card mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-
-  flex-shrink: 0;
-}
-
-.message-card.warning {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-/* The chosen subject's plan is ready. */
-.message-card.success {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-/* Text + a button under it ("Create the plan first"). */
-.message-body {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  gap: 4px;
-
-  min-width: 0;
-}
-
-.message-action {
-  margin-inline-start: -12px;
-}
-
-/* No subjects left to add: amber background with a border,
-   so it is noticed (the gray version was easy to miss). */
-.message-card.info {
-  background: #faeeda;
-  color: #633806;
-  border: 1px solid #fac775;
-}
-
-.form-note {
-  display: flex;
-  align-items: flex-start;
 
   gap: 10px;
 
-  margin: 0;
-
-  font-size: 13px;
-  line-height: 1.6;
-
-  color: #4b5563;
+  padding-block: var(--sp-1);
 }
 
-.form-note mat-icon {
-  width: 20px;
-  height: 20px;
+.af-teacher-text {
+  display: flex;
+  flex-direction: column;
 
-  font-size: 20px;
+  min-width: 0;
 
-  flex-shrink: 0;
+  line-height: 1.4;
+}
 
-  color: #6b7280;
+.af-teacher-name {
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+}
+
+.af-teacher-number {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+.af-teacher-status {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.af-teacher-status.is-error {
+  color: var(--bad-ink);
 }
 
 
-/* ================================
-   Dialog Actions
-   ================================ */
+/* Phone (under 720px) */
+@media (max-width: 719.98px) {
 
-mat-dialog-actions {
-  gap: 8px;
-
-  padding: 16px 24px 20px;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 500px) {
-
-  mat-dialog-content {
-    padding: 16px;
+  .af-fields {
+    gap: var(--sp-4);
   }
 
-  mat-dialog-actions {
-    padding: 12px 16px 16px;
+  .af-note-link {
+    min-height: var(--h-touch);
+  }
+
+  .af-teacher-clear {
+    width: 36px;
+    height: 36px;
   }
 
 }
