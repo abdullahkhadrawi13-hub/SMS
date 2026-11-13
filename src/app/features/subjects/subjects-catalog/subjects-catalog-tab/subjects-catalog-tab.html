@@ -1,36 +1,101 @@
-<!-- Search and Filter -->
-<div class="filters-card">
+<div class="list-area">
 
-  <div class="search-container">
+  <!-- Search and the status filter: on the page background, outside the table card.
+       One row on the computer; on the phone the filter opens under
+       the search ("Filter" button). The list is filtered here, on the loaded subjects. -->
+  <div>
 
-    <!-- Subject Search (Arabic or English name) -->
-    <app-subjects-catalog-search
-      (searchChange)="search.set($event)"
-      (searchSubmit)="search.set($event)"
-    ></app-subjects-catalog-search>
+    <div class="list-toolbar">
 
-    <!-- Subject Filter (status) -->
-    <button
-      mat-stroked-button
-      type="button"
-      (click)="openFilter()"
-    >
-      <mat-icon>filter_list</mat-icon>
-      {{ 'SUBJECTS.CATALOG_TAB.FILTER_BUTTON' | translate }}
-    </button>
+      <div class="list-search-row">
+
+        <app-search-field
+          [(search)]="search"
+          [label]="'SUBJECTS.CATALOG_SEARCH.LABEL' | translate"
+          [placeholder]="'SUBJECTS.CATALOG_SEARCH.PLACEHOLDER' | translate"
+          [clearLabel]="'SUBJECTS.CATALOG_SEARCH.CLEAR' | translate"
+          (searchClear)="search.set('')"
+        ></app-search-field>
+
+        @if (isPhone()) {
+          <button
+            type="button"
+            class="list-filter-toggle"
+            [class.is-active]="filtersOpen() || statusFilter() !== undefined"
+            [attr.aria-expanded]="filtersOpen()"
+            aria-controls="subjects-filters"
+            (click)="filtersOpen.set(!filtersOpen())"
+          >
+            <mat-icon aria-hidden="true">filter_list</mat-icon>
+
+            {{ 'SUBJECTS.CATALOG_FILTER.TOGGLE' | translate }}
+
+            @if (statusFilter() !== undefined) {
+              <span class="list-filter-count">1</span>
+            }
+          </button>
+        }
+
+      </div>
+
+      @if (!isPhone() || filtersOpen()) {
+        <div class="list-filters" id="subjects-filters">
+
+          <!-- Status of the subject -->
+          <select
+            class="filter-select is-wide"
+            [class.is-active]="statusFilter() !== undefined"
+            [attr.aria-label]="'SUBJECTS.CATALOG_FILTER.STATUS' | translate"
+            (change)="onStatusChange($any($event.target).value)"
+          >
+            <option value="" [selected]="statusFilter() === undefined">
+              {{ 'SUBJECTS.CATALOG_FILTER.ALL' | translate }}
+            </option>
+            <option value="true" [selected]="statusFilter() === true">
+              {{ 'SUBJECTS.CATALOG_FILTER.OPTION' | translate: { name: ('SUBJECTS.ACTIVE' | translate) } }}
+            </option>
+            <option value="false" [selected]="statusFilter() === false">
+              {{ 'SUBJECTS.CATALOG_FILTER.OPTION' | translate: { name: ('SUBJECTS.INACTIVE' | translate) } }}
+            </option>
+          </select>
+
+        </div>
+      }
+
+    </div>
+
+    <!-- The number of results: only after a search or a filter.
+         The live region is always there, so a screen reader reads
+         the new number each time it changes. -->
+    <div role="status" aria-live="polite">
+      @if (resultsKey(); as key) {
+        <p class="list-results">
+          <span>{{ key | translate: { count: filteredSubjects().length } }}</span>
+
+          @if (statusFilter() !== undefined) {
+            <span aria-hidden="true">·</span>
+
+            <button type="button" class="list-clear-filters" (click)="statusFilter.set(undefined)">
+              {{ 'SUBJECTS.CATALOG_FILTER.CLEAR_FILTERS' | translate }}
+            </button>
+          }
+        </p>
+      }
+    </div>
 
   </div>
 
-</div>
+  <!-- Subject table (error / loading / table / empty state) -->
+  <app-subjects-catalog-table
+    [subjects]="filteredSubjects()"
+    [isLoading]="isLoading()"
+    [errorMessage]="errorMessage()"
+    [isFiltered]="isFiltered()"
+    [canManage]="canManage()"
+    [isPhone]="isPhone()"
+    (retry)="loadSubjects()"
+    (editSubject)="openEditSubject($event)"
+    (toggleStatus)="toggleSubjectStatus($event)"
+  ></app-subjects-catalog-table>
 
-<!-- Subject Table (error / loading / table / empty state) -->
-<app-subjects-catalog-table
-  [subjects]="filteredSubjects()"
-  [isLoading]="isLoading()"
-  [errorMessage]="errorMessage()"
-  [isFiltered]="isFiltered()"
-  [canManage]="canManage()"
-  (retry)="loadSubjects()"
-  (editSubject)="openEditSubject($event)"
-  (toggleStatus)="toggleSubjectStatus($event)"
-></app-subjects-catalog-table>
+</div>

@@ -1,4 +1,11 @@
-/* The subject assignments tab behaves like a block inside the parent page. */
+/* ================================
+   Subject assignments tab
+   The term / class / section fields, then the section's subjects: 16px apart.
+   ================================ */
+
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-4);
 }

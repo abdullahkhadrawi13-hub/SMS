@@ -5,7 +5,10 @@
     [subtitleKey]="subtitleKey()"
     [showAdd]="canManage() && activeTab() === 'catalog'"
     [showPlanActions]="canManage() && activeTab() === 'plans'"
+    [showAssignmentActions]="canManage() && activeTab() === 'assignments'"
+    [canAddAssignment]="assignmentsTab()?.canAdd() ?? false"
     (addSubject)="openAddSubject()"
+    (addAssignment)="openAddAssignment()"
     (addPlan)="openAddPlan()"
     (copyPlans)="openCopyPlans()"
   ></app-subjects-header>

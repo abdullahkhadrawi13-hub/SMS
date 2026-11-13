@@ -1,20 +1,24 @@
 <div class="weight">
 
-  <div class="weight-top">
-    <span>{{ 'SUBJECTS.PLAN_WEIGHT_BAR.TOTAL_WEIGHT' | translate }}</span>
+  @if (showTotal()) {
+    <div class="weight-top">
+      <span>{{ 'SUBJECTS.PLAN_WEIGHT_BAR.TOTAL_WEIGHT' | translate }}</span>
 
-    <strong [class]="'weight-total ' + state()">
-      <bdi>{{ totalLabel() }} / {{ fullWeight }}</bdi>
-    </strong>
-  </div>
+      <strong [class]="'weight-total ' + state()">
+        <bdi>{{ totalLabel() }} / {{ fullWeight }}</bdi>
+      </strong>
+    </div>
+  }
 
-  <div class="bar" role="presentation">
+  <!-- One gold part per component; what is missing to 100 stays grey -->
+  <div
+    class="bar"
+    [class.over]="state() === 'over'"
+    role="img"
+    [attr.aria-label]="'SUBJECTS.PLAN_WEIGHT_BAR.ARIA' | translate: { total: totalLabel() }"
+  >
     @for (part of parts(); track $index) {
-      <span
-        class="bar-part"
-        [style.width.%]="part.width"
-        [style.background]="part.color"
-      ></span>
+      <span class="bar-part" [style.width.%]="part.width"></span>
     }
   </div>
 

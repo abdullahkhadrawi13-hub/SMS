@@ -1,207 +1,219 @@
 /* ================================
-   Page
+   Plan details page (/subjects/plans/:planId)
+   Two columns: the components card, and the side cards
+   (passing mark, sections); one column on the phone.
+   The table look is shared: styles.css ("Data table").
+   Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
-.plan-details-page {
-  width: 100%;
-
-  box-sizing: border-box;
-}
-
-
-/* ================================
-   Breadcrumb
-   ================================ */
-
-.crumbs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-
-  gap: 4px;
-
-  margin-bottom: 12px;
-
-  font-size: 13px;
-
-  color: #6b7280;
-}
-
-.crumbs a {
-  color: #2554a4;
-
-  text-decoration: none;
-}
-
-.crumbs a:hover {
-  text-decoration: underline;
-}
-
-.crumb-arrow {
-  width: 16px;
-  height: 16px;
-
-  font-size: 16px;
-}
-
-/* The arrow points forward in both languages. */
-:host-context([dir="rtl"]) .crumb-arrow {
-  transform: scaleX(-1);
-}
-
-
-/* ================================
-   Header
-   ================================ */
-
-
-.plan-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  padding: 4px 10px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.plan-badge mat-icon {
-  width: 14px;
-  height: 14px;
-
-  font-size: 14px;
-}
-
-.plan-badge.neutral {
-  background: #f1f5f9;
-  color: #374151;
-}
-
-.plan-badge.ok {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.plan-badge.warn {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.menu-text small {
+:host {
   display: block;
-
-  font-size: 11.5px;
-
-  color: #6b7280;
 }
 
-.danger-item:not([disabled]),
-.danger-item:not([disabled]) mat-icon {
-  color: #b91c1c;
+.plan-page {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-6);
 }
 
 
-/* ================================
-   Notices
-   ================================ */
+/* ---------- Notices (spec: الملاحظات) ---------- */
 
 .notice {
   display: flex;
   align-items: flex-start;
 
-  gap: 10px;
+  gap: var(--sp-2);
 
-  margin-bottom: 14px;
-  padding: 12px 14px;
+  padding: 10px 14px;
 
-  border-radius: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r-control);
 
-  font-size: 13.5px;
+  font-size: var(--fs-13);
   line-height: 1.6;
 }
 
 .notice mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-
   flex-shrink: 0;
-}
 
-.notice.warn {
-  background: #fef3c7;
-  color: #92400e;
+  width: 18px;
+  height: 18px;
+  margin-block-start: 2px;
 
-  border: 1px solid #fcd34d;
+  font-size: 18px;
 }
 
 .notice.info {
-  background: #eaf2ff;
-  color: #1e3a8a;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.notice.warn {
+  border-color: var(--warn-line);
+
+  background: var(--warn-bg);
+  color: var(--warn-ink);
 }
 
 
-/* ================================
-   Layout
-   ================================ */
+/* ---------- Layout ---------- */
 
 .details-grid {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 320px;
 
   align-items: start;
+
+  gap: var(--sp-6);
 }
 
-
-/* ================================
-   Side Card
-   ================================ */
-
-.side-card {
+.side {
   display: flex;
   flex-direction: column;
 
-  gap: 20px;
+  gap: var(--sp-6);
 
-  padding: 18px;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  min-width: 0;
 }
 
-.side-card h2 {
-  margin: 0 0 8px;
 
-  font-size: 13px;
-  font-weight: 500;
+/* ---------- Cards (spec: البطاقات) ---------- */
 
-  color: #6b7280;
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+
+  box-sizing: border-box;
 }
 
-.side-title {
+.card-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+
+  gap: var(--sp-3);
+
+  padding: var(--sp-4) 20px 0;
 }
 
-.side-title h2 {
+.card-head h2 {
+  flex: 1;
+
   margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-.small-icon-button {
-  color: #6b7280;
+.card-head-text {
+  flex: 1;
+  min-width: 0;
 }
+
+.card-head-text p {
+  margin: 4px 0 0;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.card-head-text .add-reason {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+.card-body {
+  padding: var(--sp-4) 20px 20px;
+}
+
+
+/* ---------- Components card ---------- */
+
+.weights {
+  padding: var(--sp-4) 20px;
+}
+
+/* Few columns here: no need for the wide minimum of the list tables. */
+.components-card .data-table table {
+  min-width: 560px;
+}
+
+.components-card .data-table {
+  border-block-start: 1px solid var(--border);
+}
+
+.name-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  line-height: 1.4;
+}
+
+.component-name {
+  font-weight: 600;
+}
+
+.other-name {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+/* Numbers at the end of the cell (spec: الجداول) */
+th.number-cell,
+td.number-cell {
+  text-align: end;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.components-card .data-items {
+  border-block-start: 1px solid var(--border);
+}
+
+.components-card .data-item:last-child {
+  border-block-end: 0;
+}
+
+.card-foot {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 6px;
+
+  margin: 0;
+  padding: var(--sp-3) 20px;
+
+  border-block-start: 1px solid var(--rule);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.card-foot mat-icon {
+  flex-shrink: 0;
+
+  width: 16px;
+  height: 16px;
+  margin-block-start: 3px;
+
+  color: var(--faint);
+
+  font-size: 16px;
+}
+
+
+/* ---------- Passing mark ---------- */
 
 .big-mark {
   display: flex;
@@ -211,44 +223,52 @@
 }
 
 .big-mark strong {
-  font-size: 34px;
+  color: var(--text);
+
+  font-size: var(--fs-28);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-
-  color: #111827;
+  line-height: 1.2;
 }
 
 .big-mark span {
-  color: #6b7280;
+  color: var(--muted);
+
+  font-size: var(--fs-16);
 }
 
 .mark-form {
   display: flex;
   flex-direction: column;
 
-  gap: 8px;
-
-  margin-top: 8px;
+  gap: var(--sp-3);
 }
 
-.mark-form mat-form-field {
-  width: 100%;
+/* "out of 100" inside the field, at its end */
+.mark-suffix {
+  flex-shrink: 0;
+
+  padding-inline-end: 10px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+
+  white-space: nowrap;
 }
 
 .mark-actions {
   display: flex;
   justify-content: flex-end;
 
-  gap: 6px;
+  gap: var(--sp-2);
 }
 
+
+/* ---------- Sections that follow the plan ---------- */
+
 .sections {
-  display: flex;
-  flex-direction: column;
-
-  gap: 8px;
-
-  margin: 0 0 10px;
+  margin: 0;
   padding: 0;
 
   list-style: none;
@@ -260,299 +280,148 @@
 
   gap: 10px;
 
-  padding: 8px 10px;
+  padding-block: var(--sp-2);
 
-  border-radius: 8px;
+  border-block-start: 1px solid var(--rule);
 
-  background: #f8fafc;
-
-  font-size: 13px;
-
-  color: #374151;
+  font-size: var(--fs-14);
 }
 
-.sections li.inactive {
-  opacity: 0.6;
+.sections li:first-child {
+  border-block-start: 0;
+  padding-block-start: 0;
 }
 
-.section-letter {
-  min-width: 28px;
-  height: 28px;
-
-  padding: 0 6px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex-shrink: 0;
-
-  border-radius: 14px;
-
-  background: #eaf2ff;
-  color: #2554a4;
-
-  font-weight: 700;
-
-  box-sizing: border-box;
+.sections li.inactive .section-teacher {
+  color: var(--muted);
 }
 
-.section-text {
+.section-name {
+  min-width: 56px;
+
+  font-weight: 600;
+}
+
+.section-teacher {
   flex: 1;
-
   min-width: 0;
 }
 
-.section-text small {
-  display: block;
+.data-avatar.small {
+  width: 28px;
+  height: 28px;
 
-  font-size: 11.5px;
-
-  color: #6b7280;
+  font-size: var(--fs-11);
 }
 
 .side-empty {
-  margin: 0 0 10px;
+  margin: 0;
 
-  font-size: 13px;
+  color: var(--muted);
 
-  color: #6b7280;
+  font-size: var(--fs-13);
 }
 
-.side-link {
-  font-size: 13px;
-  font-weight: 600;
+.card-link {
+  padding: var(--sp-3) 20px;
 
-  color: #2554a4;
+  border-block-start: 1px solid var(--rule);
+}
+
+/* Text link (spec: الأزرار → رابط نصي) */
+.text-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 2px;
+
+  color: var(--accent-ink);
+
+  font-size: var(--fs-13);
+  font-weight: 600;
 
   text-decoration: none;
 }
 
-.side-link:hover {
+.text-link:hover {
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-
-/* ================================
-   Components Table
-   ================================ */
-
-.table-card {
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  overflow: hidden;
-}
-
-.table-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 12px;
-
-  padding: 14px 18px;
-
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.toolbar-title h2 {
-  margin: 0 0 4px;
+.text-link mat-icon {
+  width: 18px;
+  height: 18px;
 
   font-size: 18px;
-  font-weight: 600;
-
-  color: #111827;
 }
 
-.toolbar-title p {
-  margin: 0;
 
-  font-size: 13px;
+/* ---------- ⋮ menus ---------- */
 
-  color: #6b7280;
-}
-
-.table-wrapper {
-  width: 100%;
-
-  overflow-x: auto;
-}
-
-.table-wrapper table {
-  width: 100%;
-
-  min-width: 620px;
-}
-
-.table-wrapper th {
-  height: 48px;
-
-  padding: 0 16px;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  color: #6b7280;
-
-  background: #f8fafc;
-
-  white-space: nowrap;
-}
-
-.table-wrapper td {
-  height: 60px;
-
-  padding: 0 16px;
-
-  font-size: 14px;
-
-  color: #374151;
-
-  white-space: nowrap;
-}
-
-.table-wrapper td.mat-column-actions,
-.table-wrapper th.mat-column-actions {
-  width: 64px;
-
-  text-align: center;
-}
-
-.name-cell {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  color: #111827;
-}
-
-.name-text small {
+.menu-text small {
   display: block;
 
-  font-size: 12px;
+  color: var(--muted);
 
-  color: #6b7280;
+  font-size: var(--fs-12);
 }
 
-.dot {
-  width: 10px;
-  height: 10px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-}
-
-.type-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  padding: 4px 10px;
-
-  border-radius: 20px;
-
-  background: #f1f5f9;
-  color: #374151;
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.type-badge.open {
-  background: #eaf2ff;
-  color: #2554a4;
-}
-
-.type-badge mat-icon {
-  width: 14px;
-  height: 14px;
-
-  font-size: 14px;
-}
-
-.number-cell {
-  font-variant-numeric: tabular-nums;
-}
-
-.muted {
-  font-size: 13px;
-
-  color: #6b7280;
-}
-
-.table-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 6px;
-
-  padding: 36px 20px;
-
-  text-align: center;
-
-  color: #6b7280;
-}
-
-.table-empty mat-icon {
-  width: 40px;
-  height: 40px;
-
-  font-size: 40px;
-
-  color: #9ca3af;
-}
-
-.table-empty p {
-  margin: 0;
-
-  font-size: 14px;
-}
-
-.table-footer {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  padding: 12px 18px;
-
-  border-top: 1px solid #e5e7eb;
-
-  background: #f8fafc;
-
-  font-size: 13px;
-
-  color: #4b5563;
-}
-
-.table-footer mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-
-  flex-shrink: 0;
-
-  color: #6b7280;
+.danger-item:not([disabled]),
+.danger-item:not([disabled]) mat-icon {
+  color: var(--bad-ink);
 }
 
 
-/* ================================
-   Responsive
-   ================================ */
+/* ---------- Narrow screens: one column ---------- */
 
-@media (max-width: 1050px) {
+@media (max-width: 1099.98px) {
 
   .details-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The side cards side by side under the components, while there is room */
+  .side {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+}
+
+
+/* ---------- Phone (under 720px) ---------- */
+
+@media (max-width: 719.98px) {
+
+  .plan-page,
+  .details-grid,
+  .side {
+    gap: var(--sp-4);
+  }
+
+  .side {
+    display: flex;
+  }
+
+  .card-head,
+  .card-body,
+  .weights,
+  .card-foot,
+  .card-link {
+    padding-inline: var(--sp-4);
+  }
+
+  /* "Add component": full width under the title */
+  .components-card .card-head {
+    flex-wrap: wrap;
+  }
+
+  .components-card .card-head > button {
+    width: 100%;
+  }
+
+  .text-link {
+    min-height: var(--h-touch);
   }
 
 }

@@ -8,23 +8,23 @@ import {
   signal,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+
+import { map } from 'rxjs';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { SubjectsService } from '../../../../core/services/subjects';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { ActionResult } from '../../../../shared/services/action-result';
+import { SearchField } from '../../../../shared/components/search-field/search-field';
+import { pluralKey } from '../../../../shared/utils/plural';
+import { PHONE_QUERY } from '../../../../layouts/dashboard-layout/dashboard-layout';
 
-import { SubjectsCatalogSearch } from '../subjects-catalog-search/subjects-catalog-search';
-import {
-  SubjectFilterValues,
-  SubjectsCatalogFilter,
-} from '../subjects-catalog-filter/subjects-catalog-filter';
 import { SubjectsCatalogTable } from '../subjects-catalog-table/subjects-catalog-table';
 import {
   SubjectFormData,
@@ -35,13 +35,15 @@ import { SubjectDto } from '../../../../core/models/subject';
 
 // The "Subjects list" tab: every school subject (SMS API Reference, section 6).
 // GET /api/subjects has no search or status filter,
-// so the search and the filter are applied here, on the loaded list.
+// so the search and the filter are applied here, on the loaded list,
+// straight away (no Apply button, no filter dialog).
+// The search and the status list sit on the page background above the table,
+// like the students and teachers lists (styles.css: "List page").
 @Component({
   selector: 'app-subjects-catalog-tab',
   imports: [
-    SubjectsCatalogSearch,
+    SearchField,
     SubjectsCatalogTable,
-    MatButtonModule,
     MatIconModule,
     MatDialogModule,
     TranslatePipe,
@@ -81,6 +83,27 @@ export class SubjectsCatalogTab implements OnInit {
   readonly isFiltered = computed(
     () => this.search().trim() !== '' || this.statusFilter() !== undefined
   );
+
+  // "3 subjects match the search": only after a search or a filter,
+  // with the right Arabic plural form.
+  readonly resultsKey = computed(() =>
+    this.isFiltered() && !this.isLoading() && !this.errorMessage()
+      ? pluralKey('SUBJECTS.CATALOG_FILTER.MATCHING', this.filteredSubjects().length)
+      : null
+  );
+
+
+  // ===== Phone: the filter opens under the search =====
+
+  // Under 720px: the status list hides behind a "Filter" button,
+  // and the table becomes a two-line list.
+  readonly isPhone = toSignal(
+    inject(BreakpointObserver).observe(PHONE_QUERY).pipe(map(r => r.matches)),
+    { initialValue: false }
+  );
+
+  readonly filtersOpen = signal(false);
+
 
   // The subjects shown in the table after the search and the filter.
   readonly filteredSubjects = computed(() => {
@@ -149,28 +172,9 @@ export class SubjectsCatalogTab implements OnInit {
   }
 
 
-  // Opens the subject filter dialog and applies the selected status.
-  openFilter(): void {
-
-    const current: SubjectFilterValues = {
-      isActive: this.statusFilter() ?? null,
-    };
-
-    this.dialog
-      .open(SubjectsCatalogFilter, {
-        width: '420px',
-        data: current,
-      })
-      .afterClosed()
-      .subscribe((result?: SubjectFilterValues) => {
-
-        // Ignore the result when the dialog is cancelled or closed.
-        if (!result) {
-          return;
-        }
-
-        this.statusFilter.set(result.isActive ?? undefined);
-      });
+  // The status list: "" = all, "true" = active, "false" = inactive.
+  onStatusChange(value: string): void {
+    this.statusFilter.set(value === '' ? undefined : value === 'true');
   }
 
 

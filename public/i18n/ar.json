@@ -1034,7 +1034,8 @@
       "SUBTITLE_ASSIGNMENTS": "مواد كل شعبة ومعلموها حسب الفصل الدراسي",
       "SUBTITLE_CATALOG": "كل المواد التي تدرّسها المدرسة",
       "ADD_PLAN": "خطة جديدة",
-      "COPY_PLANS": "نسخ من فصل سابق"
+      "COPY_PLANS": "نسخ من فصل سابق",
+      "ADD_ASSIGNMENT": "إضافة مادة للشعبة"
     },
     "TABS": {
       "PLANS": "خطط المواد",
@@ -1044,19 +1045,22 @@
     "CATALOG_SEARCH": {
       "LABEL": "بحث",
       "PLACEHOLDER": "البحث باسم المادة",
-      "CLEAR": "مسح البحث",
-      "SUBMIT": "بحث"
-    },
-    "CATALOG_TAB": {
-      "FILTER_BUTTON": "فلتر"
+      "CLEAR": "مسح البحث"
     },
     "CATALOG_FILTER": {
-      "TITLE": "تصفية المواد الدراسية",
       "STATUS": "الحالة",
-      "ALL": "الكل",
-      "CLEAR": "مسح",
-      "CANCEL": "إلغاء",
-      "APPLY": "تطبيق"
+      "ALL": "الحالة: الكل",
+      "TOGGLE": "تصفية",
+      "OPTION": "الحالة: {{name}}",
+      "CLEAR_FILTERS": "مسح الفلاتر",
+      "MATCHING": {
+        "ZERO": "لا توجد مواد تطابق البحث",
+        "ONE": "مادة واحدة تطابق البحث",
+        "TWO": "مادتان تطابقان البحث",
+        "FEW": "{{count}} مواد تطابق البحث",
+        "MANY": "{{count}} مادةً تطابق البحث",
+        "OTHER": "{{count}} مادة تطابق البحث"
+      }
     },
     "ACTIVE": "فعال",
     "INACTIVE": "غير فعال",
@@ -1072,7 +1076,10 @@
       "EMPTY": "لا توجد مواد دراسية",
       "NO_RESULTS": "لا توجد مادة مطابقة للبحث أو الفلتر",
       "LOADING": "جاري تحميل المواد...",
-      "RETRY": "إعادة المحاولة"
+      "RETRY": "إعادة المحاولة",
+      "NO_RESULTS_DESCRIPTION": "جرّب كلمة أخرى، أو امسح الفلاتر.",
+      "EMPTY_DESCRIPTION": "أضف أول مادة من زر «إضافة مادة».",
+      "ACTIONS_FOR": "إجراءات {{name}}"
     },
     "CATALOG_FORM": {
       "TITLE": "إضافة مادة دراسية",
@@ -1095,13 +1102,12 @@
       "TERM": "الفصل الدراسي",
       "CLASS": "الصف",
       "SECTION": "الشعبة",
-      "CURRENT": "(الحالي)"
+      "CURRENT": "(الحالي)",
+      "CLASS_PLACEHOLDER": "اختر الصف",
+      "SECTION_PLACEHOLDER": "اختر الشعبة",
+      "SECTION_NEEDS_CLASS": "اختر صفًا أولًا"
     },
     "ASSIGNMENTS_TABLE": {
-      "TITLE": "مواد {{className}} — شعبة {{sectionName}}",
-      "TOTAL": "المواد",
-      "ADD": "إضافة مادة للشعبة",
-      "ADD_FIRST": "إضافة أول مادة",
       "SUBJECT": "المادة",
       "TEACHER": "المعلم",
       "STATUS": "الحالة",
@@ -1118,11 +1124,11 @@
       "EMPTY_TITLE": "لا توجد مواد لهذه الشعبة بعد",
       "EMPTY_MESSAGE": "أضف المواد التي تُدرَّس في {{className}} — شعبة {{sectionName}} خلال {{termName}} وحدّد معلم كل مادة.",
       "EMPTY_MESSAGE_READONLY": "لم تُضف مواد لهذه الشعبة في هذا الفصل الدراسي.",
-      "PLAN": "الخطة",
-      "PLAN_WEIGHTS": "الأوزان {{total}} من 100",
+      "PLAN_WEIGHTS": "أوزان الخطة {{total}} من 100",
       "VIEW_PLAN": "عرض خطة المادة",
       "MISSING": "لهذه المواد خطة في هذا الصف لكن بلا معلم في شعبة {{sectionName}}: {{names}}. سيُعدّ طلاب الشعبة ناقصي العلامات فيها عند الترحيل.",
-      "ASSIGN_TEACHER": "إسناد معلم"
+      "ASSIGN_TEACHER": "إسناد معلم",
+      "ACTIONS_FOR": "إجراءات {{name}}"
     },
     "ASSIGNMENTS_FORM": {
       "ADD_TITLE": "إضافة مادة للشعبة",
@@ -1165,7 +1171,6 @@
     },
     "PLANS_TAB": {
       "RETRY": "إعادة المحاولة",
-      "TITLE": "خطط {{className}}",
       "COUNT_SUBJECTS": "المواد",
       "COUNT_READY": "جاهزة",
       "COUNT_INCOMPLETE": "أوزان ناقصة",
@@ -1192,7 +1197,8 @@
       "COMPLETE": "إكمال"
     },
     "PLAN_WEIGHT_BAR": {
-      "TOTAL_WEIGHT": "مجموع الأوزان"
+      "TOTAL_WEIGHT": "مجموع الأوزان",
+      "ARIA": "مجموع الأوزان {{total}} من 100"
     },
     "PLAN_FORM": {
       "TITLE": "خطة مادة جديدة",
@@ -1236,12 +1242,10 @@
     "PLAN_DETAILS": {
       "RETRY": "إعادة المحاولة",
       "ACTIONS": "الإجراءات",
-      "BREADCRUMB": "مسار الصفحة",
       "TITLE": "خطة {{subject}}",
       "LOADING": "جاري تحميل الخطة...",
       "NOT_FOUND_TITLE": "الخطة غير موجودة",
       "NOT_FOUND_MESSAGE": "ربما حُذفت هذه الخطة، أو أن الرابط غير صحيح.",
-      "BACK": "العودة إلى خطط المواد",
       "UNLOCK": "فتح القفل",
       "LOCK": "قفل الخطة",
       "MORE": "المزيد",
@@ -1275,7 +1279,12 @@
       "SAVE": "حفظ",
       "CANCEL": "إلغاء",
       "OUT_OF": "من 100",
-      "PASSING_MARK_ERROR": "علامة النجاح يجب أن تكون أكبر من 0 ولا تتجاوز 100"
+      "PASSING_MARK_ERROR": "علامة النجاح يجب أن تكون أكبر من 0 ولا تتجاوز 100",
+      "BACK_TO_PLANS": "خطط المواد",
+      "OUT_OF_MAX": "من {{max}}",
+      "WEIGHT_VALUE": "الوزن {{weight}}%",
+      "ACTIONS_FOR": "إجراءات {{name}}",
+      "SECTION_NAME": "شعبة {{name}}"
     },
     "PLAN_COMPONENT_FORM": {
       "ADD_TITLE": "إضافة بند",

@@ -1,497 +1,161 @@
-/* The table component behaves like a block inside the parent. */
+/* ================================
+   Subject assignments (one section)
+   The table look is shared: styles.css ("Data table").
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
 :host {
   display: block;
 }
 
-
-/* ================================
-   Table Card
-   ================================ */
-
-.table-card {
-  width: 100%;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  overflow: hidden;
-
-  box-sizing: border-box;
-}
-
-
-/* ================================
-   Toolbar
-   ================================ */
-
-.table-toolbar {
+/* The note, the table card and the hint: 16px apart. */
+.assignments {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
 
-  gap: 16px;
-
-  padding: 16px 20px;
-
-  border-bottom: 1px solid #e5e7eb;
+  gap: var(--sp-4);
 }
 
-.toolbar-title h2 {
-  margin: 0 0 4px;
+
+/* ---------- "No teacher" note (spec: الملاحظات → تنبيه) ---------- */
+
+.missing-note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--sp-2);
+
+  padding: 10px 14px;
+
+  border: 1px solid var(--warn-line);
+  border-radius: var(--r-control);
+
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+.missing-note mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+  margin-block-start: 2px;
 
   font-size: 18px;
+}
+
+.missing-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* "Assign a teacher": a text link in the note's own colour */
+.missing-link {
+  flex-shrink: 0;
+
+  padding: 0;
+  border: 0;
+
+  background: none;
+  color: inherit;
+
+  font-family: var(--font);
+  font-size: var(--fs-13);
   font-weight: 600;
 
-  color: #111827;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  cursor: pointer;
 }
 
-.toolbar-title p {
-  margin: 0;
-
-  color: #6b7280;
-
-  font-size: 13px;
+.missing-link:disabled {
+  cursor: progress;
 }
 
-.toolbar-counters {
+
+/* ---------- Cells ---------- */
+
+.subject-cell {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
-.counter {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 6px;
-
-  padding: 6px 12px;
-
-  border-radius: 20px;
-
-  font-size: 13px;
+.subject-name {
   font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.counter.total {
-  background: #f1f5f9;
-  color: #374151;
-}
-
-.counter.active {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.counter.inactive {
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.add-button {
-  min-height: 44px;
-
-  margin-inline-start: 8px;
-}
-
-
-/* ================================
-   Material Table
-   ================================ */
-
-.table-wrapper {
-  width: 100%;
-
-  overflow-x: auto;
-}
-
-.table-wrapper table {
-  width: 100%;
-
-  min-width: 900px;
-}
-
-.table-wrapper th {
-  height: 52px;
-
-  padding: 0 16px;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  color: #6b7280;
-
-  background: #f8fafc;
-
-  white-space: nowrap;
-}
-
-.table-wrapper td {
-  height: 64px;
-
-  padding: 0 16px;
-
-  font-size: 14px;
-
-  color: #374151;
-
-  white-space: nowrap;
-}
-
-.table-wrapper tr.mat-mdc-row:hover {
-  background: #f8fafc;
-}
-
-.table-wrapper td.mat-column-actions,
-.table-wrapper th.mat-column-actions {
-  width: 76px;
-
-  text-align: center;
-}
-
-.table-wrapper td.mat-column-actions button {
-  color: #6b7280;
-}
-
-
-/* ================================
-   Subject
-   ================================ */
-
-.subject-name-cell {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  min-width: 180px;
-
-  color: #111827;
-}
-
-.subject-icon {
-  width: 36px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 8px;
-
-  background: #f1f5f9;
-}
-
-.subject-icon mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-
-  color: #64748b;
-}
-
-
-/* ================================
-   Teacher
-   ================================ */
-
-.teacher-cell {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  min-width: 240px;
-}
-
-.teacher-avatar {
-  width: 36px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #f1f5f9;
-}
-
-.teacher-avatar mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-
-  color: #64748b;
 }
 
 .teacher-text {
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
-
   min-width: 0;
+
+  line-height: 1.4;
 }
 
 .teacher-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.teacher-details {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-
-  gap: 8px;
-
-  font-size: 12px;
-
-  color: #6b7280;
-}
-
-.warning-badge {
-  padding: 2px 8px;
-
-  border-radius: 20px;
-
-  background: #fef3c7;
-  color: #92400e;
-
   font-weight: 600;
 }
 
-
-/* ================================
-   Subject Plan
-   ================================ */
-
-/* The whole cell opens the plan: a badge + a short line. */
-.plan-link {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 10px;
-
-  padding: 4px 6px;
-  margin-inline-start: -6px;
-
-  border: 0;
-  border-radius: 8px;
-
-  background: transparent;
-
-  font: inherit;
-
-  cursor: pointer;
-
-  transition: background 0.15s ease;
-}
-
-.plan-link:hover {
-  background: #f1f5f9;
-}
-
-.plan-link:focus-visible {
-  outline: 2px solid #2554a4;
-  outline-offset: 2px;
-}
-
-.plan-meta {
-  font-size: 12px;
-
-  color: #6b7280;
-}
-
-.plan-link:hover .plan-meta {
-  color: #2554a4;
-}
-
-.muted {
-  color: #6b7280;
-}
-
-
-/* ================================
-   Plan / Status Badges
-   ================================ */
-
-.plan-badge {
-  display: inline-flex;
-  align-items: center;
+.teacher-sub {
+  display: flex;
+  flex-wrap: wrap;
 
   gap: 6px;
 
-  padding: 6px 10px;
+  color: var(--faint);
 
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.plan-badge mat-icon {
-  width: 14px;
-  height: 14px;
-
-  font-size: 14px;
-}
-
-.plan-badge.neutral {
-  background: #f1f5f9;
-  color: #374151;
-}
-
-.plan-badge.ok {
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.plan-badge.warn {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.plan-badge.bad {
-  background: #fef2f2;
-  color: #991b1b;
+  font-size: var(--fs-12);
 }
 
 
-/* ================================
-   Subjects With a Plan but No Teacher
-   ================================ */
+/* ---------- Hint under the card ---------- */
 
-.missing-line {
+.assignments-hint {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
 
-  gap: 10px;
+  gap: 6px;
 
-  padding: 12px 20px;
+  margin: 0;
 
-  border-top: 1px solid #fcd34d;
+  color: var(--muted);
 
-  background: #fef3c7;
-
-  font-size: 13px;
-  line-height: 1.6;
-
-  color: #92400e;
+  font-size: var(--fs-13);
 }
 
-.missing-line > mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-
-  flex-shrink: 0;
-}
-
-.missing-text {
-  flex: 1;
-
-  min-width: 220px;
-}
-
-.missing-button {
-  flex-shrink: 0;
-}
-
-
-/* ================================
-   Footer Hint
-   ================================ */
-
-.table-footer {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  padding: 14px 20px;
-
-  border-top: 1px solid #e5e7eb;
-
-  background: #f8fafc;
-
-  font-size: 13px;
-
-  color: #4b5563;
-}
-
-.table-footer mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-
+.assignments-hint mat-icon {
   flex-shrink: 0;
 
-  color: #6b7280;
+  width: 16px;
+  height: 16px;
+  margin-block-start: 3px;
+
+  color: var(--faint);
+
+  font-size: 16px;
 }
 
 
-/* ================================
-   Responsive
-   ================================ */
+/* ---------- Phone (under 720px) ---------- */
 
-@media (max-width: 650px) {
+@media (max-width: 719.98px) {
 
-  .add-button {
-    width: 100%;
-
-    margin-inline-start: 0;
+  .missing-note {
+    flex-wrap: wrap;
   }
 
-}
+  /* "Assign a teacher": 44px to touch, on its own line */
+  .missing-link {
+    min-height: var(--h-touch);
+    margin-inline-start: 26px;
+  }
 
-
-/* ================================
-   Refreshing (reload while data is shown)
-   ================================ */
-
-/* So the refresh bar can sit on top of the card. */
-.table-card {
-  position: relative;
-}
-
-/* Thin bar on the top edge; absolute, so the card height never changes. */
-.refresh-bar {
-  position: absolute;
-
-  top: 0;
-  left: 0;
-  right: 0;
-
-  z-index: 2;
-}
-
-.toolbar-counters, .table-wrapper {
-  transition: opacity 0.15s ease;
-}
-
-/* Old data fades a little and cannot be clicked until the new data arrives. */
-.table-card.is-refreshing .toolbar-counters, .table-card.is-refreshing .table-wrapper {
-  opacity: 0.55;
-
-  pointer-events: none;
 }

@@ -1,58 +1,36 @@
-/* The selector component behaves like a block inside the parent. */
+/* ================================
+   Term / Class / Section
+   Fields on the page background, above the tab's content.
+   The field look is shared: styles.css ("Form fields").
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
 :host {
   display: block;
 }
 
-
-/* ================================
-   Selector Card
-   ================================ */
-
-.selector-card {
-  padding: 20px;
-  margin-bottom: 20px;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  box-sizing: border-box;
-}
-
 .selector-fields {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* The term is longer ("First Term · 2026/2027 (Current)"): a wider first field. */
+  grid-template-columns: minmax(0, 320px) repeat(2, minmax(0, 240px));
 
   align-items: start;
 
-  gap: 16px;
+  gap: var(--sp-3) var(--sp-4);
 }
 
-/* Plans tab: term and class only. */
 .selector-fields.two-fields {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.selector-fields mat-form-field {
-  width: 100%;
-}
-
-/* Small spinner inside a field while its list is loading. */
-.selector-fields mat-spinner {
-  margin-inline-end: 12px;
+  grid-template-columns: minmax(0, 320px) minmax(0, 240px);
 }
 
 
-/* ================================
-   Responsive
-   ================================ */
+/* ---------- Phone (under 720px): one field per line ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 719.98px) {
 
   .selector-fields,
   .selector-fields.two-fields {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
 }

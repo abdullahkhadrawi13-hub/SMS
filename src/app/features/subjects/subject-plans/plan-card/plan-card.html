@@ -3,10 +3,6 @@
   <!-- Subject, passing mark, state -->
   <div class="card-head">
 
-    <div class="subject-icon">
-      <mat-icon>menu_book</mat-icon>
-    </div>
-
     <div class="head-text">
       <h3>{{ subjectName() }}</h3>
 
@@ -15,17 +11,16 @@
       </span>
     </div>
 
-    <span class="plan-badge {{ badge().cssClass }}">
-      <mat-icon>{{ badge().icon }}</mat-icon>
+    <app-status-badge [tone]="badge().tone" [icon]="plan().isLocked ? 'lock' : null">
       {{ badge().labelKey | translate }}
-    </span>
+    </app-status-badge>
 
   </div>
 
 
   <div class="card-body">
 
-    <app-plan-weight-bar [weights]="weights()"></app-plan-weight-bar>
+    <app-plan-weight-bar [weights]="weights()" [showTotal]="false"></app-plan-weight-bar>
 
     <!-- Components -->
     @if (components().length > 0) {
@@ -33,8 +28,6 @@
       <ul class="components">
         @for (item of components(); track item.component.subjectPlanComponentId) {
           <li>
-            <span class="dot" [style.background]="item.color"></span>
-
             <span class="component-name">
               {{ item.name }}
 
@@ -64,7 +57,7 @@
     <!-- Incomplete: marks cannot be entered yet -->
     @if (!plan().isComplete) {
       <div class="card-warning">
-        <mat-icon>info</mat-icon>
+        <mat-icon aria-hidden="true">info</mat-icon>
 
         <span>
           {{ 'SUBJECTS.PLAN_CARD.INCOMPLETE_HINT' | translate: { remaining: remainingWeight() } }}
@@ -80,20 +73,17 @@
 
     <div class="foot-meta">
 
-      <span>
-        <mat-icon>groups</mat-icon>
-        {{ 'SUBJECTS.PLAN_CARD.SECTIONS' | translate: { count: plan().assignmentCount } }}
-      </span>
+      <span>{{ 'SUBJECTS.PLAN_CARD.SECTIONS' | translate: { count: plan().assignmentCount } }}</span>
 
       @if (plan().hasGrades) {
-        <span>
-          <mat-icon>edit_note</mat-icon>
-          {{ 'SUBJECTS.PLAN_CARD.HAS_GRADES' | translate }}
-        </span>
+        <span aria-hidden="true">·</span>
+        <span>{{ 'SUBJECTS.PLAN_CARD.HAS_GRADES' | translate }}</span>
       } @else if (plan().assignmentCount === 0 && canManage()) {
+        <span aria-hidden="true">·</span>
+
         <button
           type="button"
-          class="link-button"
+          class="text-link"
           (click)="assignTeacher.emit()"
         >
           {{ 'SUBJECTS.PLAN_CARD.ASSIGN_TEACHER' | translate }}
@@ -103,8 +93,7 @@
     </div>
 
     <a
-      mat-button
-      class="open-button"
+      class="text-link open-link"
       [routerLink]="['/subjects/plans', plan().subjectPlanId]"
     >
       {{
@@ -113,7 +102,7 @@
           : ('SUBJECTS.PLAN_CARD.OPEN_PLAN' | translate)
       }}
 
-      <mat-icon iconPositionEnd class="direction-arrow">chevron_right</mat-icon>
+      <mat-icon class="flip" aria-hidden="true">chevron_right</mat-icon>
     </a>
 
   </div>

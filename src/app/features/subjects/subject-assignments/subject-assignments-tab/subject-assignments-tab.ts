@@ -29,7 +29,6 @@ import { SubjectPlan } from '../../../../core/models/subject-plan';
 
 import {
   SubjectAssignmentRow,
-  SubjectAssignmentsCounts,
   SubjectOption,
   teacherOptionFromAssignment,
 } from '../../shared/subjects-shared';
@@ -60,7 +59,7 @@ import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 //
 // The subject plans of the selected class are loaded too
 // (GET /api/subjectplans?academicTermId=&classId=), for:
-//   - the "Plan" column of the table
+//   - the warning next to a subject whose plan weights are under 100
 //   - the subjects that have a plan but no teacher in this section
 //   - the plan state of each subject in the add form
 //     (a subject without a plan cannot be added: the backend answers 400)
@@ -216,17 +215,11 @@ export class SubjectAssignmentsTab {
       .sort((a, b) => a.subjectName.localeCompare(b.subjectName));
   });
 
-  readonly counts = computed<SubjectAssignmentsCounts>(() => {
-
-    const rows = this.rows();
-    const active = rows.filter(r => r.assignment.isActive).length;
-
-    return {
-      total: rows.length,
-      active,
-      inactive: rows.length - active,
-    };
-  });
+  // The page header's "Add subject to section" button can be used:
+  // a section is chosen and the add dialog is not being prepared.
+  readonly canAdd = computed(
+    () => this.hasSelection() && !this.openingForm()
+  );
 
   readonly selectedSectionName = computed(() => {
 
@@ -398,7 +391,7 @@ export class SubjectAssignmentsTab {
 
 
   // GET /api/subjectplans?academicTermId=...&classId=...
-  // A failure only empties the "Plan" column (the table still works).
+  // A failure only hides the plan warnings (the table still works).
   private loadPlans(): void {
 
     const termId = this.selection.termId();

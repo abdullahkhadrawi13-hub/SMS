@@ -79,6 +79,7 @@ export class SubjectsPage implements OnInit {
 
   // The tabs the header buttons talk to.
   private readonly plansTab = viewChild(SubjectPlansTab);
+  readonly assignmentsTab = viewChild(SubjectAssignmentsTab);
   private readonly subjectsCatalogTab = viewChild(SubjectsCatalogTab);
 
 
@@ -133,6 +134,11 @@ export class SubjectsPage implements OnInit {
   // Header "Add subject" button (subjects list tab only).
   openAddSubject(): void {
     this.subjectsCatalogTab()?.openAddSubject();
+  }
+
+  // Header "Add subject to section" button (assignments tab only).
+  openAddAssignment(): void {
+    this.assignmentsTab()?.openAddAssignment();
   }
 
   // Header "New plan" button (plans tab only).

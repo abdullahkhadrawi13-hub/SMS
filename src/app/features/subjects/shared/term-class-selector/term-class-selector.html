@@ -1,94 +1,131 @@
-<!-- Term / Class / Section -->
-<div class="selector-card">
+<!-- Term / Class / Section: fields on the page background, above the content
+     (the shared field look of styles.css, like the attendance record tab). -->
+<div class="selector-fields" [class.two-fields]="!showSection()">
 
-  <div class="selector-fields" [class.two-fields]="!showSection()">
+  <!-- Academic term (the current term is selected by default) -->
+  <div class="field">
 
-    <!-- Academic term (the current term is selected by default) -->
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <label class="field-label" for="subjects-term">
+      {{ 'SUBJECTS.TERM_CLASS_SELECTOR.TERM' | translate }}
+    </label>
 
-      <mat-label>
-        {{ 'SUBJECTS.TERM_CLASS_SELECTOR.TERM' | translate }}
-      </mat-label>
+    <div class="field-box is-select">
 
-      <mat-select
-        [value]="termId()"
+      <select
+        id="subjects-term"
         [disabled]="termsLoading()"
-        (selectionChange)="termChange.emit($event.value)"
+        (change)="onTermSelect($any($event.target).value)"
       >
 
         @for (term of terms(); track term.academicTermId) {
-          <mat-option [value]="term.academicTermId">
+          <option
+            [value]="term.academicTermId"
+            [selected]="termId() === term.academicTermId"
+          >
             {{ getTermLabel(term) }}
-
             @if (term.isCurrent) {
               {{ 'SUBJECTS.TERM_CLASS_SELECTOR.CURRENT' | translate }}
             }
-          </mat-option>
+          </option>
         }
 
-      </mat-select>
+      </select>
 
       @if (termsLoading()) {
-        <mat-spinner matSuffix diameter="18"></mat-spinner>
+        <mat-spinner class="field-spinner" diameter="16" aria-hidden="true" />
+      } @else {
+        <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
       }
 
-    </mat-form-field>
-
-
-    <!-- Class (Active only) -->
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-      <mat-label>
-        {{ 'SUBJECTS.TERM_CLASS_SELECTOR.CLASS' | translate }}
-      </mat-label>
-
-      <mat-select
-        [value]="classId()"
-        (selectionChange)="classChange.emit($event.value)"
-      >
-
-        @for (c of classes(); track c.schoolClassId) {
-          <mat-option [value]="c.schoolClassId">
-            {{ getClassName(c) }}
-          </mat-option>
-        }
-
-      </mat-select>
-
-    </mat-form-field>
-
-
-    <!-- Section (disabled until a class is chosen) -->
-    @if (showSection()) {
-
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-
-        <mat-label>
-          {{ 'SUBJECTS.TERM_CLASS_SELECTOR.SECTION' | translate }}
-        </mat-label>
-
-        <mat-select
-          [value]="sectionId()"
-          [disabled]="classId() === null || sectionsLoading()"
-          (selectionChange)="sectionChange.emit($event.value)"
-        >
-
-          @for (s of sections(); track s.sectionId) {
-            <mat-option [value]="s.sectionId">
-              {{ getSectionName(s) }}
-            </mat-option>
-          }
-
-        </mat-select>
-
-        @if (sectionsLoading()) {
-          <mat-spinner matSuffix diameter="18"></mat-spinner>
-        }
-
-      </mat-form-field>
-
-    }
+    </div>
 
   </div>
+
+
+  <!-- Class (Active only) -->
+  <div class="field">
+
+    <label class="field-label" for="subjects-class">
+      {{ 'SUBJECTS.TERM_CLASS_SELECTOR.CLASS' | translate }}
+    </label>
+
+    <div class="field-box is-select">
+
+      <select
+        id="subjects-class"
+        [disabled]="termsLoading()"
+        (change)="onClassSelect($any($event.target).value)"
+      >
+
+        <option value="" disabled [selected]="classId() === null">
+          {{ 'SUBJECTS.TERM_CLASS_SELECTOR.CLASS_PLACEHOLDER' | translate }}
+        </option>
+
+        @for (c of classes(); track c.schoolClassId) {
+          <option
+            [value]="c.schoolClassId"
+            [selected]="classId() === c.schoolClassId"
+          >
+            {{ getClassName(c) }}
+          </option>
+        }
+
+      </select>
+
+      <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+
+    </div>
+
+  </div>
+
+
+  <!-- Section (disabled until a class is chosen; its text says why) -->
+  @if (showSection()) {
+
+    <div class="field">
+
+      <label class="field-label" for="subjects-section">
+        {{ 'SUBJECTS.TERM_CLASS_SELECTOR.SECTION' | translate }}
+      </label>
+
+      <div class="field-box is-select">
+
+        <select
+          id="subjects-section"
+          [disabled]="classId() === null || sectionsLoading()"
+          (change)="onSectionSelect($any($event.target).value)"
+        >
+
+          <option value="" disabled [selected]="sectionId() === null">
+            {{
+              (classId() === null
+                ? 'SUBJECTS.TERM_CLASS_SELECTOR.SECTION_NEEDS_CLASS'
+                : 'SUBJECTS.TERM_CLASS_SELECTOR.SECTION_PLACEHOLDER'
+              ) | translate
+            }}
+          </option>
+
+          @for (s of sections(); track s.sectionId) {
+            <option
+              [value]="s.sectionId"
+              [selected]="sectionId() === s.sectionId"
+            >
+              {{ getSectionName(s) }}
+            </option>
+          }
+
+        </select>
+
+        @if (sectionsLoading()) {
+          <mat-spinner class="field-spinner" diameter="16" aria-hidden="true" />
+        } @else {
+          <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+        }
+
+      </div>
+
+    </div>
+
+  }
 
 </div>

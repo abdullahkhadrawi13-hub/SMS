@@ -1,4 +1,4 @@
-<!-- Term / Class (shared with the assignments tab) -->
+<!-- Term / Class (shared with the assignments tab), on the page background -->
 <app-term-class-selector
   [terms]="selection.terms()"
   [termsLoading]="selection.isLoading()"
@@ -64,47 +64,37 @@
       <mat-progress-bar class="refresh-bar" mode="indeterminate"></mat-progress-bar>
     }
 
-    <!-- Title + counters -->
-    <div class="plans-toolbar">
+    <!-- One quiet line of counters (no coloured chips) -->
+    <p class="plans-summary" role="status">
 
-      <div class="toolbar-title">
-        <h2>
-          {{ 'SUBJECTS.PLANS_TAB.TITLE' | translate: { className: selection.selectedClassName() } }}
-        </h2>
+      <span>
+        {{ 'SUBJECTS.PLANS_TAB.COUNT_SUBJECTS' | translate }}
+        <strong>{{ counts().total }}</strong>
+      </span>
 
-        <p>{{ selection.selectedTermLabel() }}</p>
-      </div>
+      <span>
+        <i class="dot ok" aria-hidden="true"></i>
+        {{ 'SUBJECTS.PLANS_TAB.COUNT_READY' | translate }}
+        <strong>{{ counts().ready }}</strong>
+      </span>
 
-      <div class="toolbar-counters">
-
-        <span class="counter total">
-          {{ 'SUBJECTS.PLANS_TAB.COUNT_SUBJECTS' | translate }}
-          <strong>{{ counts().total }}</strong>
+      @if (counts().incomplete > 0) {
+        <span>
+          <i class="dot warn" aria-hidden="true"></i>
+          {{ 'SUBJECTS.PLANS_TAB.COUNT_INCOMPLETE' | translate }}
+          <strong>{{ counts().incomplete }}</strong>
         </span>
+      }
 
-        <span class="counter ok">
-          {{ 'SUBJECTS.PLANS_TAB.COUNT_READY' | translate }}
-          <strong>{{ counts().ready }}</strong>
+      @if (counts().withoutPlan > 0) {
+        <span>
+          <i class="dot none" aria-hidden="true"></i>
+          {{ 'SUBJECTS.PLANS_TAB.COUNT_NO_PLAN' | translate }}
+          <strong>{{ counts().withoutPlan }}</strong>
         </span>
+      }
 
-        @if (counts().incomplete > 0) {
-          <span class="counter warn">
-            {{ 'SUBJECTS.PLANS_TAB.COUNT_INCOMPLETE' | translate }}
-            <strong>{{ counts().incomplete }}</strong>
-          </span>
-        }
-
-        @if (counts().withoutPlan > 0) {
-          <span class="counter bad">
-            {{ 'SUBJECTS.PLANS_TAB.COUNT_NO_PLAN' | translate }}
-            <strong>{{ counts().withoutPlan }}</strong>
-          </span>
-        }
-
-      </div>
-
-    </div>
-
+    </p>
 
     <!-- One card per plan, then one per subject without a plan -->
     <div class="plans-grid">
@@ -118,12 +108,7 @@
       }
 
       @for (subject of subjectsWithoutPlan(); track subject.subjectId) {
-
         <div class="empty-plan">
-
-          <div class="empty-icon">
-            <mat-icon>post_add</mat-icon>
-          </div>
 
           <h3>{{ isArabic() ? subject.subjectAr : subject.subjectEn }}</h3>
 
@@ -137,12 +122,12 @@
               (click)="openCreatePlan(subject.subjectId)"
             >
               <mat-icon>add</mat-icon>
+
               {{ 'SUBJECTS.PLANS_TAB.CREATE_PLAN' | translate }}
             </button>
           }
 
         </div>
-
       }
 
     </div>

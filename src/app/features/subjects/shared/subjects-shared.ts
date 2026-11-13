@@ -2,6 +2,7 @@ import { SubjectDto } from '../../../core/models/subject';
 import { SubjectPlan } from '../../../core/models/subject-plan';
 import { TeacherListDto } from '../../../core/models/teacher';
 import { TeacherAssignment } from '../../../core/models/teacher-assignment';
+import { StatusBadgeTone } from '../../../shared/components/status-badge/status-badge';
 
 
 // =========================
@@ -50,14 +51,6 @@ export interface SubjectAssignmentRow {
 }
 
 
-// Counters shown above the section subjects table.
-export interface SubjectAssignmentsCounts {
-  total: number;
-  active: number;
-  inactive: number;
-}
-
-
 // =========================
 // Subject plans
 // =========================
@@ -79,14 +72,15 @@ export function getPlanStatus(plan: SubjectPlan): PlanStatus {
 }
 
 
-// The badge of each state: icon + translation key + CSS class.
+// The badge of each state: icon + translation key + CSS class,
+// and the colour of the shared app-status-badge (tone).
 export const PLAN_STATUS_BADGE: Record<
   PlanStatus,
-  { icon: string; labelKey: string; cssClass: string }
+  { icon: string; labelKey: string; cssClass: string; tone: StatusBadgeTone }
 > = {
-  locked: { icon: 'lock', labelKey: 'SUBJECTS.PLAN_STATUS.LOCKED', cssClass: 'neutral' },
-  ready: { icon: 'check_circle', labelKey: 'SUBJECTS.PLAN_STATUS.READY', cssClass: 'ok' },
-  incomplete: { icon: 'warning_amber', labelKey: 'SUBJECTS.PLAN_STATUS.INCOMPLETE', cssClass: 'warn' },
+  locked: { icon: 'lock', labelKey: 'SUBJECTS.PLAN_STATUS.LOCKED', cssClass: 'neutral', tone: 'neutral' },
+  ready: { icon: 'check_circle', labelKey: 'SUBJECTS.PLAN_STATUS.READY', cssClass: 'ok', tone: 'ok' },
+  incomplete: { icon: 'warning_amber', labelKey: 'SUBJECTS.PLAN_STATUS.INCOMPLETE', cssClass: 'warn', tone: 'warn' },
 };
 
 
@@ -96,7 +90,9 @@ export const FULL_WEIGHT = 100;
 // The default passing mark of a new plan.
 export const DEFAULT_PASSING_MARK = 50;
 
-// The colors of the plan components, in their order (dots and weight bar).
+// The colors of the plan components, in their order.
+// Still used by the dots of the plan form and the teacher's assessments page;
+// the weight bar itself is gold (one gold part per component).
 // After the last one the colors start again.
 const COMPONENT_COLORS = [
   '#5b8def', // soft blue
@@ -208,4 +204,22 @@ export function getTermLabel(
   return term.yearName
     ? `${name} · ${term.yearName}`
     : name;
+}
+
+// Two initials from a full name, for an avatar, the same way as
+// getInitials() of shared/utils/person-name: first + family name letters,
+// joined with a zero-width non-joiner so Arabic letters stay apart.
+// (The teacher's name comes with an assignment as one string.)
+export function nameInitials(fullName: string): string {
+
+  const words = (fullName ?? '').trim().split(/\s+/).filter(Boolean);
+
+  if (words.length === 0) {
+    return '';
+  }
+
+  const first = words[0].charAt(0);
+  const last = words.length > 1 ? words[words.length - 1].charAt(0) : '';
+
+  return [first, last].filter(Boolean).join('\u200c').toUpperCase();
 }

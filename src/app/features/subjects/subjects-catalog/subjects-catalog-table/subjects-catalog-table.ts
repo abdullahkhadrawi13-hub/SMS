@@ -1,4 +1,5 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,13 +10,17 @@ import { MatTableModule } from '@angular/material/table';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { SubjectDto } from '../../../../core/models/subject';
+import { Language } from '../../../../core/services/language';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 
+// The general subjects list: a table on the computer, two-line items on the phone.
+// The look is the shared "Data table" in styles.css (.data-card, .data-table…).
 @Component({
   selector: 'app-subjects-catalog-table',
   imports: [
+    NgTemplateOutlet,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
@@ -29,6 +34,12 @@ import { StatusBadge } from '../../../../shared/components/status-badge/status-b
   styleUrl: './subjects-catalog-table.css',
 })
 export class SubjectsCatalogTable {
+
+  private readonly language = inject(Language);
+
+  readonly isArabic = computed(
+    () => this.language.currentDirection() === 'rtl'
+  );
 
   // ===== Inputs (all data is owned and loaded by the parent) =====
 
@@ -44,6 +55,9 @@ export class SubjectsCatalogTable {
 
   // Shows the actions column: edit and activate / deactivate (Admin only).
   readonly canManage = input(false);
+
+  // Under 720px: a two-line list instead of the table.
+  readonly isPhone = input(false);
 
   // ===== Loading modes =====
 

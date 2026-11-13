@@ -12,9 +12,26 @@
       type="button"
       (click)="addSubject.emit()"
     >
-      <mat-icon>menu_book</mat-icon>
+      <mat-icon>add</mat-icon>
 
       {{ 'SUBJECTS.HEADER.ADD' | translate }}
+    </button>
+  }
+
+  <!-- Add a subject to the chosen section (Admin only, subject assignments tab).
+       Disabled until a section is chosen (the tab's message says so). -->
+  @if (showAssignmentActions()) {
+    <button
+      actions
+      mat-flat-button
+      color="primary"
+      type="button"
+      [disabled]="!canAddAssignment()"
+      (click)="addAssignment.emit()"
+    >
+      <mat-icon>add</mat-icon>
+
+      {{ 'SUBJECTS.HEADER.ADD_ASSIGNMENT' | translate }}
     </button>
   }
 
