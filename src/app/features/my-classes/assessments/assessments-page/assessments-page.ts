@@ -389,8 +389,10 @@ export class AssessmentsPage implements OnInit {
     this.dialog
       .open<AssessmentForm, AssessmentFormData, Assessment>(AssessmentForm, {
         data,
-        width: '520px',
+        width: '560px',
         maxWidth: '95vw',
+        maxHeight: '90vh',
+        panelClass: 'form-dialog',
       })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))

@@ -19,13 +19,14 @@
   gap: var(--sp-6);
 }
 
-/* Cards keep their own height (align start): a card with 4 subjects
-   does not stretch the card next to it. */
+/* The cards in a row take the same height (align stretch), so their
+   edges line up and no gap stays under a shorter card. The subjects sit
+   side by side inside a card, so a second subject rarely makes it taller. */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
 
-  align-items: start;
+  align-items: stretch;
 
   gap: var(--sp-6);
 }

@@ -1,5 +1,7 @@
 <!-- One quiet card per class + section (spec: البطاقات).
-     Every subject is shown: the card grows with its subjects. -->
+     The subjects are small buttons side by side (decided 13 Nov 2026):
+     a second subject takes room in width, not height, so the cards
+     in a row keep the same height. Each button opens its assessments. -->
 <article class="class-card">
 
   <!-- Head: class · section, and the number of subjects at the end -->
@@ -18,42 +20,26 @@
   </div>
 
 
-  <!-- One line per subject: the whole line opens its assessments -->
+  <!-- One button per subject. The plan state is a small icon at the start
+       (no icon when there is no plan yet); the link's name says it too. -->
   <ul class="subjects">
 
-    @for (line of lines(); track line.subject.assignment.teacherAssignmentId) {
+    @for (chip of chips(); track chip.subject.assignment.teacherAssignmentId) {
 
       <li>
         <a
-          class="subject-line"
-          [routerLink]="['/my-classes', line.subject.assignment.teacherAssignmentId, 'assessments']"
+          class="subject-chip"
+          [class.no-plan]="chip.status === 'none'"
+          [routerLink]="['/my-classes', chip.subject.assignment.teacherAssignmentId, 'assessments']"
+          [attr.aria-label]="'MY_CLASSES.CARD.SUBJECT_ARIA' | translate: { subject: chip.subject.subjectName, status: (chip.statusKey | translate) }"
+          [attr.title]="chip.statusKey | translate"
         >
 
-          <span class="subject-text">
+          @if (chip.icon) {
+            <mat-icon class="state-icon" [attr.data-status]="chip.status" aria-hidden="true">{{ chip.icon }}</mat-icon>
+          }
 
-            <span class="subject-name">{{ line.subject.subjectName }}</span>
-
-            <!-- The passing mark comes from the subject plan -->
-            <span class="subject-meta">
-              @if (line.subject.plan; as plan) {
-                {{ 'MY_CLASSES.CARD.PASSING_MARK' | translate: { mark: formatNumber(plan.passingMark) } }}
-              } @else {
-                {{ 'MY_CLASSES.CARD.NO_PLAN' | translate }}
-              }
-            </span>
-
-            <!-- Phone: the badge goes under the name (no room at the end of the line) -->
-            <ng-container
-              [ngTemplateOutlet]="planBadge"
-              [ngTemplateOutletContext]="{ $implicit: line.badge, phone: true }"
-            />
-
-          </span>
-
-          <ng-container
-            [ngTemplateOutlet]="planBadge"
-            [ngTemplateOutletContext]="{ $implicit: line.badge, phone: false }"
-          />
+          <span class="subject-name">{{ chip.subject.subjectName }}</span>
 
           <mat-icon class="arrow flip" aria-hidden="true">chevron_right</mat-icon>
 
@@ -65,16 +51,3 @@
   </ul>
 
 </article>
-
-
-<!-- The plan state: the same badge (words and colour) the Admin sees -->
-<ng-template #planBadge let-badge let-phone="phone">
-  <app-status-badge
-    [class.badge-phone]="phone"
-    [class.badge-end]="!phone"
-    [tone]="badge.tone"
-    [icon]="badge.icon"
-  >
-    {{ badge.labelKey | translate }}
-  </app-status-badge>
-</ng-template>

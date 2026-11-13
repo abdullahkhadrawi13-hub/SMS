@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -14,9 +14,8 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -33,6 +32,13 @@ import {
   MAX_MARK_LIMIT,
   maxMarkValidator,
 } from '../../../subjects/subject-plans/plan-validators';
+import {
+  errorsCountKey,
+  focusFirstInvalid,
+  restartWhenCleared,
+  showFieldError,
+  useDiscardOnClose,
+} from '../../../subjects/shared/subjects-form-dialog';
 import { AssessmentFormData } from '../assessments';
 
 
@@ -41,19 +47,28 @@ import { AssessmentFormData } from '../assessments';
 // The order is not shown: a new assessment goes after the last one,
 // and an edited one keeps its place.
 // Both requests return the assessment; the dialog closes with it.
+//
+// The shared form dialog look (navy & gold, 13 Nov 2026), like the class
+// and plan component forms: a plain dialog (not in the URL) that asks
+// "Discard changes?" before closing with unsaved changes, errors shown at
+// the right time (showFieldError), the first wrong field focused on save.
+// Opened by the assessments page with panelClass 'form-dialog'.
 @Component({
   selector: 'app-assessment-form',
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
+    MatProgressSpinnerModule,
     TranslatePipe,
   ],
   templateUrl: './assessment-form.html',
   styleUrl: './assessment-form.css',
+  host: {
+    // The shared form dialog layout in styles.css (.fd, .fd-head, .fd-body…)
+    class: 'fd',
+  },
 })
 export class AssessmentForm {
 
@@ -66,12 +81,18 @@ export class AssessmentForm {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly data = inject<AssessmentFormData>(MAT_DIALOG_DATA);
 
   readonly isEditMode = this.data.mode === 'edit';
 
   readonly isSubmitting = signal(false);
+
+  // "N fields need fixing" next to the buttons, after a save with errors.
+  readonly submitAttempted = signal(false);
+  readonly invalidCount = signal(0);
+  readonly errorsKey = computed(() => errorsCountKey(this.invalidCount()));
 
   readonly nameMaxLength = COMPONENT_NAME_MAX_LENGTH;
 
@@ -101,19 +122,53 @@ export class AssessmentForm {
   });
 
 
-  isInvalid(control: AbstractControl): boolean {
-    return control.invalid && control.touched;
+  // ✕, Cancel, backdrop click and Esc: asks first when something changed.
+  readonly closing = useDiscardOnClose({
+    isDirty: () => this.assessmentForm.dirty,
+    isBusy: () => this.isSubmitting(),
+  });
+
+
+  constructor() {
+
+    // Keep the error count up to date while the user fixes the fields.
+    this.assessmentForm.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.invalidCount.set(this.countInvalid()));
+
+    const c = this.assessmentForm.controls;
+    restartWhenCleared([c.nameAr, c.nameEn, c.maxMark], this.destroyRef);
+  }
+
+
+  // Wrong characters at once, other errors on leaving the field,
+  // an empty field after pressing the button (see showFieldError()).
+  isInvalid(name: keyof typeof this.assessmentForm.controls): boolean {
+    return showFieldError(this.assessmentForm.controls[name], this.submitAttempted());
+  }
+
+
+  private countInvalid(): number {
+    return Object.values(this.assessmentForm.controls)
+      .filter((control: AbstractControl) => control.invalid)
+      .length;
   }
 
 
   onSubmit(): void {
 
-    if (this.assessmentForm.invalid) {
-      this.assessmentForm.markAllAsTouched();
+    // The button keeps its colour while saving, so guard here instead.
+    if (this.isSubmitting()) {
       return;
     }
 
-    if (this.isSubmitting()) {
+    if (this.assessmentForm.invalid) {
+      this.assessmentForm.markAllAsTouched();
+
+      this.submitAttempted.set(true);
+      this.invalidCount.set(this.countInvalid());
+
+      focusFirstInvalid(this.host);
       return;
     }
 
@@ -178,8 +233,4 @@ export class AssessmentForm {
       });
   }
 
-
-  cancel(): void {
-    this.dialogRef.close();
-  }
 }
