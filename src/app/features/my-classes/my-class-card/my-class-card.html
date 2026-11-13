@@ -1,102 +1,80 @@
-<div
-  class="class-card"
-  [style.--card-main]="color().main"
-  [style.--card-soft]="color().soft"
-  [style.--card-dark]="color().dark"
->
+<!-- One quiet card per class + section (spec: البطاقات).
+     Every subject is shown: the card grows with its subjects. -->
+<article class="class-card">
 
-  <!-- Card header (colored): class, section under it, number of subjects -->
-  <div class="card-header">
+  <!-- Head: class · section, and the number of subjects at the end -->
+  <div class="card-head">
 
-    <div class="class-icon">
-      <mat-icon>school</mat-icon>
-    </div>
+    <h2>
+      {{ group().className }}
+      <span class="sep" aria-hidden="true">·</span>
+      {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: group().sectionName } }}
+    </h2>
 
-    <div class="class-info">
-
-      <h3>{{ group().className }}</h3>
-
-      <span class="section-name">
-        <mat-icon>groups</mat-icon>
-        {{ 'MY_CLASSES.CARD.SECTION' | translate: { name: group().sectionName } }}
-      </span>
-
-    </div>
-
-    <!-- Number of subjects (the full text shows on hover) -->
-    <span
-      class="subjects-badge"
-      [title]="'MY_CLASSES.CARD.SUBJECTS_COUNT' | translate: { count: group().subjects.length }"
-    >
-      <mat-icon>menu_book</mat-icon>
-      {{ group().subjects.length }}
+    <span class="count">
+      {{ subjectsCountKey() | translate: { count: group().subjects.length } }}
     </span>
 
   </div>
 
 
-  <!-- One line per subject (the first ones only, the card has a fixed height) -->
-  <div class="subjects-list">
+  <!-- One line per subject: the whole line opens its assessments -->
+  <ul class="subjects">
 
-    @for (line of visibleSubjects(); track line.assignment.teacherAssignmentId) {
+    @for (line of lines(); track line.subject.assignment.teacherAssignmentId) {
 
-      <!-- The whole line opens the assessments of this subject -->
-      <a
-        class="subject-line"
-        [routerLink]="['/my-classes', line.assignment.teacherAssignmentId, 'assessments']"
-      >
+      <li>
+        <a
+          class="subject-line"
+          [routerLink]="['/my-classes', line.subject.assignment.teacherAssignmentId, 'assessments']"
+        >
 
-        <span class="subject-dot"></span>
+          <span class="subject-text">
 
-        <div class="subject-info">
+            <span class="subject-name">{{ line.subject.subjectName }}</span>
 
-          <span class="subject-name">{{ line.subjectName }}</span>
+            <!-- The passing mark comes from the subject plan -->
+            <span class="subject-meta">
+              @if (line.subject.plan; as plan) {
+                {{ 'MY_CLASSES.CARD.PASSING_MARK' | translate: { mark: formatNumber(plan.passingMark) } }}
+              } @else {
+                {{ 'MY_CLASSES.CARD.NO_PLAN' | translate }}
+              }
+            </span>
 
-          <!-- The passing mark comes from the subject plan -->
-          <span class="passing-mark">
-            @if (line.plan) {
-              {{ 'MY_CLASSES.CARD.PASSING_MARK' | translate: { mark: line.plan.passingMark } }}
-            } @else {
-              {{ 'MY_CLASSES.CARD.NO_PLAN' | translate }}
-            }
+            <!-- Phone: the badge goes under the name (no room at the end of the line) -->
+            <ng-container
+              [ngTemplateOutlet]="planBadge"
+              [ngTemplateOutletContext]="{ $implicit: line.badge, phone: true }"
+            />
+
           </span>
 
-        </div>
+          <ng-container
+            [ngTemplateOutlet]="planBadge"
+            [ngTemplateOutletContext]="{ $implicit: line.badge, phone: false }"
+          />
 
-        <!-- The plan's lock (the plan is set by the administration) -->
-        @if (line.plan) {
-          <span
-            class="structure-badge"
-            [class.locked]="line.plan.isLocked"
-          >
-            <mat-icon>
-              {{ line.plan.isLocked ? 'lock' : 'lock_open' }}
-            </mat-icon>
+          <mat-icon class="arrow flip" aria-hidden="true">chevron_right</mat-icon>
 
-            {{
-              line.plan.isLocked
-                ? ('MY_CLASSES.CARD.LOCKED' | translate)
-                : ('MY_CLASSES.CARD.UNLOCKED' | translate)
-            }}
-          </span>
-        }
-
-        <mat-icon class="line-arrow">chevron_right</mat-icon>
-
-      </a>
+        </a>
+      </li>
 
     }
 
-  </div>
+  </ul>
+
+</article>
 
 
-  <!-- The subjects that do not fit in the card -->
-  @if (hiddenSubjectsCount() > 0) {
-
-    <div class="more-subjects">
-      {{ 'MY_CLASSES.CARD.MORE_SUBJECTS' | translate: { count: hiddenSubjectsCount() } }}
-    </div>
-
-  }
-
-</div>
+<!-- The plan state: the same badge (words and colour) the Admin sees -->
+<ng-template #planBadge let-badge let-phone="phone">
+  <app-status-badge
+    [class.badge-phone]="phone"
+    [class.badge-end]="!phone"
+    [tone]="badge.tone"
+    [icon]="badge.icon"
+  >
+    {{ badge.labelKey | translate }}
+  </app-status-badge>
+</ng-template>

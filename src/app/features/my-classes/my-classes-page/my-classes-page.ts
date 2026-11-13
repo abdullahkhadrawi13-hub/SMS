@@ -9,9 +9,6 @@ import {
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../core/services/api-message';
@@ -42,8 +39,6 @@ import { StateCard } from '../../../shared/components/state-card/state-card';
   imports: [
     MyClassesStats,
     MyClassCard,
-    MatButtonModule,
-    MatIconModule,
     TranslatePipe,
     PageHeader,
     StateCard,
@@ -127,6 +122,7 @@ export class MyClassesPage implements OnInit {
 
     return {
       sectionsCount: this.groups().length,
+      classesCount: new Set(assignments.map(a => a.classId)).size,
       subjectsCount: new Set(assignments.map(a => a.subjectId)).size,
       lockedCount: assignments.filter(a => this.findPlan(a)?.isLocked).length,
       totalAssignments: assignments.length,
@@ -134,7 +130,8 @@ export class MyClassesPage implements OnInit {
   });
 
 
-  // The term name comes from the assignments (the teacher cannot read the terms list).
+  // The term name comes from the assignments (the teacher cannot read the terms list,
+  // so the navbar shows no term for the teacher: the page header line says it).
   readonly termName = computed(() => {
 
     const first = this.assignments()[0];

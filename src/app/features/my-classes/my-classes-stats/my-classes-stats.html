@@ -1,68 +1,41 @@
-<div class="statistics">
+<!-- The numbers above the cards: one card split by thin lines
+     (spec: البطاقات → الأرقام المجمّعة), no icons. -->
+<section class="stats" [attr.aria-label]="'MY_CLASSES.STATS.TITLE' | translate">
 
   <!-- Sections -->
-  <div class="stat-card">
-
-    <div class="stat-icon">
-      <mat-icon>groups</mat-icon>
-    </div>
-
-    <div class="stat-info">
-      <h3>
-        {{ 'MY_CLASSES.STATS.SECTIONS' | translate }}
-      </h3>
-
-      <div class="stat-value">
-        <span>{{ stats().sectionsCount }}</span>
-      </div>
-    </div>
-
+  <div class="stat">
+    <span class="stat-label">{{ 'MY_CLASSES.STATS.SECTIONS' | translate }}</span>
+    <span class="stat-value">{{ stats().sectionsCount }}</span>
+    <span class="stat-note">
+      {{ countKey('MY_CLASSES.STATS.IN_CLASSES', stats().classesCount) | translate: { count: stats().classesCount } }}
+    </span>
   </div>
 
   <!-- Subjects -->
-  <div class="stat-card">
-
-    <div class="stat-icon">
-      <mat-icon>menu_book</mat-icon>
-    </div>
-
-    <div class="stat-info">
-      <h3>
-        {{ 'MY_CLASSES.STATS.SUBJECTS' | translate }}
-      </h3>
-
-      <div class="stat-value">
-        <span>{{ stats().subjectsCount }}</span>
-      </div>
-    </div>
-
+  <div class="stat">
+    <span class="stat-label">{{ 'MY_CLASSES.STATS.SUBJECTS' | translate }}</span>
+    <span class="stat-value">{{ stats().subjectsCount }}</span>
+    <span class="stat-note">
+      {{ countKey('MY_CLASSES.STATS.ASSIGNMENTS', stats().totalAssignments) | translate: { count: stats().totalAssignments } }}
+    </span>
   </div>
 
-  <!-- Locked assessment structures -->
-  <div class="stat-card">
+  <!-- Locked plans, with a gold progress bar -->
+  <div class="stat">
+    <span class="stat-label">{{ 'MY_CLASSES.STATS.LOCKED' | translate }}</span>
 
-    <div class="stat-icon">
-      <mat-icon>lock</mat-icon>
-    </div>
+    <span class="stat-value">
+      {{ stats().lockedCount }}
+      <small>{{ 'MY_CLASSES.STATS.OF_TOTAL' | translate: { total: stats().totalAssignments } }}</small>
+    </span>
 
-    <div class="stat-info">
-      <h3>
-        {{ 'MY_CLASSES.STATS.LOCKED' | translate }}
-      </h3>
-
-      <div class="stat-value">
-        <span>{{ stats().lockedCount }}</span>
-
-        <small>
-          {{ 'MY_CLASSES.STATS.OF_TOTAL' | translate: { total: stats().totalAssignments } }}
-        </small>
-      </div>
-
-      <div class="progress-track">
-        <div class="progress-bar" [style.width.%]="lockedProgress()"></div>
-      </div>
-    </div>
-
+    <span
+      class="progress"
+      role="img"
+      [attr.aria-label]="'MY_CLASSES.STATS.LOCKED_ARIA' | translate: { count: stats().lockedCount, total: stats().totalAssignments }"
+    >
+      <span class="progress-fill" [style.width.%]="lockedProgress()"></span>
+    </span>
   </div>
 
-</div>
+</section>

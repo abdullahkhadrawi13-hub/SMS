@@ -1,79 +1,47 @@
 /* ================================
-   My Classes Page
+   My classes page (/my-classes, the teacher)
+   The numbers, then one quiet card per class + section.
+   Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
-.my-classes-page {
-  width: 100%;
-  box-sizing: border-box;
+:host {
+  display: block;
 }
 
-
-/* ================================
-   Page Header
-   ================================ */
-
-
-.term-name {
-  color: #374151;
-  font-weight: 600;
+.sep {
+  margin-inline: 6px;
 }
 
-.dot {
-  margin: 0 6px;
+.my-classes {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-6);
 }
 
-
-/* ================================
-   Cards Grid
-   ================================ */
-
+/* Cards keep their own height (align start): a card with 4 subjects
+   does not stretch the card next to it. */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
+
+  align-items: start;
+
+  gap: var(--sp-6);
 }
 
 
-/* ================================
-   Hint
-   ================================ */
+/* ---------- Phone: one column ---------- */
 
-.page-hint {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+@media (max-width: 719.98px) {
 
-  margin-top: 20px;
-  padding: 14px 20px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  background: #f8fafc;
-
-  font-size: 13px;
-  color: #4b5563;
-}
-
-.page-hint mat-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-  flex-shrink: 0;
-  color: #6b7280;
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-
-  
+  .my-classes,
+  .cards-grid {
+    gap: var(--sp-4);
+  }
 
   .cards-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
 }

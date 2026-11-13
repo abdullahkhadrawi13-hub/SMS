@@ -1,79 +1,63 @@
-<div class="my-classes-page">
-
-  <!-- Page Header -->
-  <app-page-header [title]="'MY_CLASSES.HEADER.TITLE' | translate">
-    <span subtitle>
-      @if (termName()) {
-        <span class="term-name">{{ termName() }}</span>
-        <span class="dot">·</span>
-      }
-
-      {{ 'MY_CLASSES.HEADER.SUBTITLE' | translate }}
-    </span>
-  </app-page-header>
+<!-- Header: the page name, and one line under it.
+     The term is in this line (not in the navbar): the teacher cannot read the terms list. -->
+<app-page-header [title]="'MY_CLASSES.HEADER.TITLE' | translate">
+  <span subtitle>
+    @if (termName()) {
+      {{ termName() }}
+      <span class="sep" aria-hidden="true">·</span>
+    }
+    {{ 'MY_CLASSES.HEADER.SUBTITLE' | translate }}
+  </span>
+</app-page-header>
 
 
-  <!-- Error -->
-  @if (errorMessage()) {
+<!-- Error -->
+@if (errorMessage()) {
 
-    <app-state-card
-      type="error"
-      [message]="errorMessage() | translate"
-      (retry)="loadMyClasses()"
-    />
+  <app-state-card
+    type="error"
+    [message]="errorMessage() | translate"
+    (retry)="loadMyClasses()"
+  />
 
-  }
+}
 
-  <!-- Loading -->
-  @else if (isLoading()) {
+<!-- Loading -->
+@else if (isLoading()) {
 
-    <app-state-card
-      type="loading"
-      [message]="'MY_CLASSES.PAGE.LOADING' | translate"
-    />
+  <app-state-card
+    type="loading"
+    [message]="'MY_CLASSES.PAGE.LOADING' | translate"
+  />
 
-  }
+}
 
-  <!-- No assignments in the current term -->
-  @else if (groups().length === 0) {
+<!-- No assignments in the current term -->
+@else if (groups().length === 0) {
 
-    <app-state-card
-      type="empty"
-      icon="co_present"
-      [title]="'MY_CLASSES.PAGE.EMPTY_TITLE' | translate"
-      [message]="'MY_CLASSES.PAGE.EMPTY_MESSAGE' | translate"
-    />
+  <app-state-card
+    type="empty"
+    icon="co_present"
+    [title]="'MY_CLASSES.PAGE.EMPTY_TITLE' | translate"
+    [message]="'MY_CLASSES.PAGE.EMPTY_MESSAGE' | translate"
+  />
 
-  }
+}
 
-  @else {
+@else {
 
-    <!-- Statistics -->
-    <app-my-classes-stats [stats]="stats()"></app-my-classes-stats>
+  <div class="my-classes">
+
+    <!-- The numbers -->
+    <app-my-classes-stats [stats]="stats()" />
 
     <!-- One card per class + section -->
     <div class="cards-grid">
-
-      @for (group of groups(); track group.classId + '-' + group.sectionId; let i = $index) {
-        <app-my-class-card
-          [group]="group"
-          [colorIndex]="i"
-        ></app-my-class-card>
+      @for (group of groups(); track group.classId + '-' + group.sectionId) {
+        <app-my-class-card [group]="group" />
       }
-
     </div>
 
-    <!-- Hint -->
-    <div class="page-hint">
+  </div>
 
-      <mat-icon>info</mat-icon>
-
-      <span>
-        {{ 'MY_CLASSES.PAGE.HINT' | translate }}
-      </span>
-
-    </div>
-
-  }
-
-</div>
+}

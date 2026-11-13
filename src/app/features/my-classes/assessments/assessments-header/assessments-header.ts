@@ -1,43 +1,35 @@
 import { Component, input } from '@angular/core';
 
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
 import { TranslatePipe } from '@ngx-translate/core';
+
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+
+import { MyPlanBadge } from '../../my-classes-shared';
 
 
-// The badge of the plan state (icon + translation key + CSS class),
-// the same badge the Admin sees in the subject plan page.
-export interface PlanStatusBadge {
-  icon: string;
-  labelKey: string;
-  cssClass: string;
-}
-
-
-// The header of the assessments page: the subject, its class and section,
-// the term, and the plan's passing mark and state.
+// The header of the assessments page: the "My classes" back link, the subject,
+// the plan state badge (the same badge the Admin sees), and class · section · term.
+// The passing mark is in the plan card under the header.
 // Display only: the page passes every value in the current language.
 @Component({
   selector: 'app-assessments-header',
   imports: [
-    MatIconModule,
-    MatTooltipModule,
     TranslatePipe,
     PageHeader,
+    StatusBadge,
   ],
   templateUrl: './assessments-header.html',
   styleUrl: './assessments-header.css',
 })
 export class AssessmentsHeader {
 
-  readonly subjectName = input.required<string>();
-  readonly className = input.required<string>();
-  readonly sectionName = input.required<string>();
+  // Empty while the assignment is loading (the title is then "Assessments").
+  readonly subjectName = input('');
+  readonly className = input('');
+  readonly sectionName = input('');
   readonly termName = input('');
 
-  // null while there is no plan.
-  readonly passingMark = input<string | null>(null);
-  readonly planBadge = input<PlanStatusBadge | null>(null);
+  // null while loading, or when the page cannot show the plan.
+  readonly planBadge = input<MyPlanBadge | null>(null);
 }
