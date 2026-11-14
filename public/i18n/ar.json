@@ -231,38 +231,169 @@
       "WEEK_VALUE": "{{week}} من {{total}}",
       "CLOSE_NOTE": "بعد اعتماد العلامات في نهاية الفصل، أغلقها من صفحة السنوات والفصول قبل ترحيل الطلاب.",
       "YEARS_LINK": "السنوات والفصول الدراسية"
+    },
+
+    "TEACHER": {
+      "SUBTITLE": "علاماتك هذا الفصل، وما يحتاج انتباهك، والفصل الحالي.",
+      "SUBTITLE_OFFICER": "حضور اليوم، وعلاماتك هذا الفصل، وما يحتاج انتباهك.",
+      "ENTER_GRADES": "إدخال العلامات",
+      "GRADES": {
+        "TITLE": "علاماتي هذا الفصل",
+        "SECTIONS": {
+          "ZERO": "لا شعب",
+          "ONE": "شعبة واحدة",
+          "TWO": "شعبتان",
+          "FEW": "{{count}} شعب",
+          "MANY": "{{count}} شعبة",
+          "OTHER": "{{count}} شعبة"
+        },
+        "EMPTY": "لا توجد مواد مسندة إليك في هذا الفصل.",
+        "HEAD_SECTION": "الشعبة والمادة",
+        "HEAD_DONE": "طلاب علاماتهم كاملة",
+        "HEAD_STATE": "الحالة",
+        "DONE": {
+          "ZERO": "لا طلاب في الشعبة",
+          "ONE": "{{done}} من طالب واحد",
+          "TWO": "{{done}} من طالبين",
+          "FEW": "{{done}} من {{count}} طلاب",
+          "MANY": "{{done}} من {{count}} طالبًا",
+          "OTHER": "{{done}} من {{count}} طالب"
+        },
+        "PLAN_INCOMPLETE": "الخطة غير مكتملة، لا يمكن إدخال العلامات بعد",
+        "STATE_COMPLETE": "مكتملة",
+        "STATE_MISSING": "ناقصة",
+        "STATE_WAITING": "بانتظار الخطة",
+        "OPEN_SHEET": "فتح الكشف",
+        "MY_CLASSES": "صفوفي"
+      },
+      "NUMBERS": {
+        "SECTIONS": "شعبي",
+        "IN_CLASSES": {
+          "ZERO": "بلا صفوف",
+          "ONE": "في صف واحد",
+          "TWO": "في صفّين",
+          "FEW": "في {{count}} صفوف",
+          "MANY": "في {{count}} صفًا",
+          "OTHER": "في {{count}} صف"
+        },
+        "SUBJECTS": "موادي",
+        "STUDENTS": "طلابي",
+        "STUDENTS_CAPTION": "في كل شعبي",
+        "ASSESSMENTS": "التقييمات",
+        "ASSESSMENTS_CAPTION": "في خططي"
+      },
+      "NOTICES": {
+        "MISSING": {
+          "ZERO": "لا علامات ناقصة",
+          "ONE": "شعبة فيها علامات ناقصة",
+          "TWO": "شعبتان فيهما علامات ناقصة",
+          "FEW": "{{count}} شعب فيها علامات ناقصة",
+          "MANY": "{{count}} شعبة فيها علامات ناقصة",
+          "OTHER": "{{count}} شعبة فيها علامات ناقصة"
+        },
+        "MISSING_LINE": {
+          "ZERO": "{{name}}: لا طلاب",
+          "ONE": "{{name}}: طالب واحد",
+          "TWO": "{{name}}: طالبان",
+          "FEW": "{{name}}: {{count}} طلاب",
+          "MANY": "{{name}}: {{count}} طالبًا",
+          "OTHER": "{{name}}: {{count}} طالب"
+        },
+        "PLAN_ONE": "خطة {{name}} غير مكتملة",
+        "PLANS": {
+          "ZERO": "كل الخطط مكتملة",
+          "ONE": "خطة غير مكتملة",
+          "TWO": "خطتان غير مكتملتين",
+          "FEW": "{{count}} خطط غير مكتملة",
+          "MANY": "{{count}} خطة غير مكتملة",
+          "OTHER": "{{count}} خطة غير مكتملة"
+        },
+        "PLAN_LINE": "مجموع الأوزان أقل من 100%، والإدارة هي التي تكملها"
+      }
+    },
+    "STUDENT": {
+      "SUBTITLE": "علاماتك هذا الفصل، ومعلوماتك، والفصل الحالي.",
+      "GRADES": {
+        "TITLE": "علاماتي هذا الفصل",
+        "SUBJECTS": {
+          "ZERO": "لا مواد",
+          "ONE": "مادة واحدة",
+          "TWO": "مادتان",
+          "FEW": "{{count}} مواد",
+          "MANY": "{{count}} مادة",
+          "OTHER": "{{count}} مادة"
+        },
+        "EMPTY": "لا توجد مواد لك في هذا الفصل بعد.",
+        "HEAD_SUBJECT": "المادة",
+        "HEAD_ENTERED": "التقييمات المُدخلة",
+        "HEAD_TOTAL": "المجموع",
+        "HEAD_RESULT": "النتيجة",
+        "ENTERED": {
+          "ZERO": "لا تقييمات بعد",
+          "ONE": "{{entered}} من تقييم واحد",
+          "TWO": "{{entered}} من تقييمين",
+          "FEW": "{{entered}} من {{count}} تقييمات",
+          "MANY": "{{entered}} من {{count}} تقييمًا",
+          "OTHER": "{{entered}} من {{count}} تقييم"
+        },
+        "NO_TOTAL": "لا مجموع قبل إدخال كل التقييمات",
+        "PASSED": "ناجح",
+        "FAILED": "راسب",
+        "INCOMPLETE": "غير مكتمل",
+        "ALL": "كل علاماتي"
+      },
+      "INFO": {
+        "TITLE": "معلوماتي",
+        "NUMBER": "الرقم المدرسي",
+        "CLASS": "الصف والشعبة",
+        "STATUS": "وضع الطالب"
+      },
+      "NUMBERS": {
+        "SUBJECTS": "المواد",
+        "SUBJECTS_CAPTION": "في {{term}}",
+        "PASSED": "ناجح",
+        "PASSED_CAPTION": "كل تقييماتها مُدخلة",
+        "FAILED": "راسب",
+        "FAILED_NONE": "لا مواد",
+        "ABSENT": "أيام الغياب",
+        "ABSENT_LAST": "آخرها {{date}}",
+        "ABSENT_NONE": "لا غياب هذا الفصل"
+      }
+    },
+    "PARENT": {
+      "SUBTITLE": "علامات أبنائك وحضورهم هذا الفصل.",
+      "CHILDREN": "أبنائي",
+      "NO_CHILDREN": "لا يوجد أبناء مرتبطون بحسابك. تواصل مع إدارة المدرسة.",
+      "ABSENT_TODAY": "غياب اليوم",
+      "CHILD_GRADES": "علامات {{name}}",
+      "NUMBERS": {
+        "ARIA": "أرقام الفصل الحالي",
+        "PASSED": "ناجح",
+        "OF_SUBJECTS": {
+          "ZERO": "لا مواد",
+          "ONE": "من مادة واحدة",
+          "TWO": "من مادتين",
+          "FEW": "من {{count}} مواد",
+          "MANY": "من {{count}} مادة",
+          "OTHER": "من {{count}} مادة"
+        },
+        "FAILED": "راسب",
+        "FAILED_NONE": "لا مواد",
+        "INCOMPLETE": "غير مكتمل",
+        "INCOMPLETE_CAPTION": "تقييمات لم تُدخل بعد",
+        "ABSENT": "أيام الغياب",
+        "ABSENT_CAPTION": "هذا الفصل"
+      },
+      "NOTICES": {
+        "ABSENT": "غياب {{name}} اليوم",
+        "ABSENT_LINE": "مسجّل في كشف حضور اليوم",
+        "FAILED": "{{name}} · {{subject}} دون علامة النجاح",
+        "FAILED_LINE": "{{total}} من 100، وعلامة النجاح {{passing}}",
+        "GRADES": "العلامات"
+      }
     }
   },
 
-  "TEACHER_DASHBOARD": {
-    "WELCOME": "مرحبًا بعودتك،",
-    "SUBTITLE": "نظرة عامة على أنشطتك التعليمية",
-    "MY_CLASSES": "صفوفي",
-    "MY_SECTIONS": "شُعبي",
-    "MY_SUBJECTS": "موادي",
-    "STUDENTS": "الطلاب",
-    "GRADES": "العلامات",
-    "TIMETABLE": "الجدول الدراسي"
-  },
-  "STUDENT_DASHBOARD": {
-    "WELCOME": "مرحبًا بعودتك،",
-    "SUBTITLE": "نظرة عامة على معلوماتك الأكاديمية",
-    "PROFILE": "الملف الشخصي",
-    "SUBJECTS": "المواد",
-    "GRADES": "العلامات",
-    "ATTENDANCE": "الحضور",
-    "TIMETABLE": "الجدول الدراسي",
-    "ACADEMIC_INFORMATION": "المعلومات الأكاديمية"
-  },
-  "PARENT_DASHBOARD": {
-    "WELCOME": "مرحبًا بعودتك،",
-    "SUBTITLE": "نظرة عامة على المعلومات الأكاديمية لأبنائك",
-    "CHILDREN": "الأبناء",
-    "GRADES": "العلامات",
-    "ATTENDANCE": "الحضور",
-    "ACADEMIC_INFORMATION": "المعلومات الأكاديمية",
-    "TIMETABLE": "الجدول الدراسي"
-  },
   "STUDENTS": {
     "TITLE": "إدارة الطلاب",
     "SUBTITLE": "حسابات الطلاب وصفوفهم وشعبهم.",

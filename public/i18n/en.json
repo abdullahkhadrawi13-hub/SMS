@@ -231,38 +231,169 @@
       "WEEK_VALUE": "{{week}} of {{total}}",
       "CLOSE_NOTE": "Once the grades are approved at the end of the term, close them from Academic years before the student rollover.",
       "YEARS_LINK": "Academic years and terms"
+    },
+
+    "TEACHER": {
+      "SUBTITLE": "Your grades this term, what needs your attention, and the current term.",
+      "SUBTITLE_OFFICER": "Today's attendance, your grades this term, and what needs your attention.",
+      "ENTER_GRADES": "Enter grades",
+      "GRADES": {
+        "TITLE": "My grades this term",
+        "SECTIONS": {
+          "ZERO": "No sections",
+          "ONE": "1 section",
+          "TWO": "2 sections",
+          "FEW": "{{count}} sections",
+          "MANY": "{{count}} sections",
+          "OTHER": "{{count}} sections"
+        },
+        "EMPTY": "No subjects are assigned to you this term.",
+        "HEAD_SECTION": "Section and subject",
+        "HEAD_DONE": "Students with all marks",
+        "HEAD_STATE": "State",
+        "DONE": {
+          "ZERO": "No students in the section",
+          "ONE": "{{done}} of 1 student",
+          "TWO": "{{done}} of 2 students",
+          "FEW": "{{done}} of {{count}} students",
+          "MANY": "{{done}} of {{count}} students",
+          "OTHER": "{{done}} of {{count}} students"
+        },
+        "PLAN_INCOMPLETE": "The plan is incomplete, marks cannot be entered yet",
+        "STATE_COMPLETE": "Complete",
+        "STATE_MISSING": "Missing marks",
+        "STATE_WAITING": "Waiting for plan",
+        "OPEN_SHEET": "Open sheet",
+        "MY_CLASSES": "My classes"
+      },
+      "NUMBERS": {
+        "SECTIONS": "My sections",
+        "IN_CLASSES": {
+          "ZERO": "No classes",
+          "ONE": "In 1 class",
+          "TWO": "In 2 classes",
+          "FEW": "In {{count}} classes",
+          "MANY": "In {{count}} classes",
+          "OTHER": "In {{count}} classes"
+        },
+        "SUBJECTS": "My subjects",
+        "STUDENTS": "My students",
+        "STUDENTS_CAPTION": "In all my sections",
+        "ASSESSMENTS": "Assessments",
+        "ASSESSMENTS_CAPTION": "In my plans"
+      },
+      "NOTICES": {
+        "MISSING": {
+          "ZERO": "No missing marks",
+          "ONE": "1 section has missing marks",
+          "TWO": "2 sections have missing marks",
+          "FEW": "{{count}} sections have missing marks",
+          "MANY": "{{count}} sections have missing marks",
+          "OTHER": "{{count}} sections have missing marks"
+        },
+        "MISSING_LINE": {
+          "ZERO": "{{name}}: no students",
+          "ONE": "{{name}}: 1 student",
+          "TWO": "{{name}}: 2 students",
+          "FEW": "{{name}}: {{count}} students",
+          "MANY": "{{name}}: {{count}} students",
+          "OTHER": "{{name}}: {{count}} students"
+        },
+        "PLAN_ONE": "The {{name}} plan is incomplete",
+        "PLANS": {
+          "ZERO": "Every plan is complete",
+          "ONE": "1 plan is incomplete",
+          "TWO": "2 plans are incomplete",
+          "FEW": "{{count}} plans are incomplete",
+          "MANY": "{{count}} plans are incomplete",
+          "OTHER": "{{count}} plans are incomplete"
+        },
+        "PLAN_LINE": "The weights add up to less than 100%; the administration completes it"
+      }
+    },
+    "STUDENT": {
+      "SUBTITLE": "Your grades this term, your information, and the current term.",
+      "GRADES": {
+        "TITLE": "My grades this term",
+        "SUBJECTS": {
+          "ZERO": "No subjects",
+          "ONE": "1 subject",
+          "TWO": "2 subjects",
+          "FEW": "{{count}} subjects",
+          "MANY": "{{count}} subjects",
+          "OTHER": "{{count}} subjects"
+        },
+        "EMPTY": "You have no subjects this term yet.",
+        "HEAD_SUBJECT": "Subject",
+        "HEAD_ENTERED": "Assessments entered",
+        "HEAD_TOTAL": "Total",
+        "HEAD_RESULT": "Result",
+        "ENTERED": {
+          "ZERO": "No assessments yet",
+          "ONE": "{{entered}} of 1 assessment",
+          "TWO": "{{entered}} of 2 assessments",
+          "FEW": "{{entered}} of {{count}} assessments",
+          "MANY": "{{entered}} of {{count}} assessments",
+          "OTHER": "{{entered}} of {{count}} assessments"
+        },
+        "NO_TOTAL": "No total until every assessment is entered",
+        "PASSED": "Passed",
+        "FAILED": "Failed",
+        "INCOMPLETE": "Incomplete",
+        "ALL": "All my grades"
+      },
+      "INFO": {
+        "TITLE": "My information",
+        "NUMBER": "Student number",
+        "CLASS": "Class and section",
+        "STATUS": "Student status"
+      },
+      "NUMBERS": {
+        "SUBJECTS": "Subjects",
+        "SUBJECTS_CAPTION": "In the {{term}}",
+        "PASSED": "Passed",
+        "PASSED_CAPTION": "Every assessment entered",
+        "FAILED": "Failed",
+        "FAILED_NONE": "None",
+        "ABSENT": "Days absent",
+        "ABSENT_LAST": "Latest on {{date}}",
+        "ABSENT_NONE": "No absences this term"
+      }
+    },
+    "PARENT": {
+      "SUBTITLE": "Your children's grades and attendance this term.",
+      "CHILDREN": "My children",
+      "NO_CHILDREN": "No children are linked to your account. Contact the school administration.",
+      "ABSENT_TODAY": "Absent today",
+      "CHILD_GRADES": "{{name}}'s grades",
+      "NUMBERS": {
+        "ARIA": "Current term numbers",
+        "PASSED": "Passed",
+        "OF_SUBJECTS": {
+          "ZERO": "No subjects",
+          "ONE": "Of 1 subject",
+          "TWO": "Of 2 subjects",
+          "FEW": "Of {{count}} subjects",
+          "MANY": "Of {{count}} subjects",
+          "OTHER": "Of {{count}} subjects"
+        },
+        "FAILED": "Failed",
+        "FAILED_NONE": "None",
+        "INCOMPLETE": "Incomplete",
+        "INCOMPLETE_CAPTION": "Marks not entered yet",
+        "ABSENT": "Days absent",
+        "ABSENT_CAPTION": "This term"
+      },
+      "NOTICES": {
+        "ABSENT": "{{name}} is absent today",
+        "ABSENT_LINE": "Marked on today's attendance sheet",
+        "FAILED": "{{name}} · {{subject}} below the passing mark",
+        "FAILED_LINE": "{{total}} of 100; the passing mark is {{passing}}",
+        "GRADES": "Grades"
+      }
     }
   },
 
-  "TEACHER_DASHBOARD": {
-    "WELCOME": "Welcome back,",
-    "SUBTITLE": "Overview of your teaching activities",
-    "MY_CLASSES": "My Classes",
-    "MY_SECTIONS": "My Sections",
-    "MY_SUBJECTS": "My Subjects",
-    "STUDENTS": "Students",
-    "GRADES": "Grades",
-    "TIMETABLE": "Timetable"
-  },
-  "STUDENT_DASHBOARD": {
-    "WELCOME": "Welcome back,",
-    "SUBTITLE": "Overview of your academic information",
-    "PROFILE": "Profile",
-    "SUBJECTS": "Subjects",
-    "GRADES": "Grades",
-    "ATTENDANCE": "Attendance",
-    "TIMETABLE": "Timetable",
-    "ACADEMIC_INFORMATION": "Academic Information"
-  },
-  "PARENT_DASHBOARD": {
-    "WELCOME": "Welcome back,",
-    "SUBTITLE": "Overview of your children's academic information",
-    "CHILDREN": "Children",
-    "GRADES": "Grades",
-    "ATTENDANCE": "Attendance",
-    "ACADEMIC_INFORMATION": "Academic Information",
-    "TIMETABLE": "Timetable"
-  },
 
   "STUDENTS": {
     "TITLE": "Student Management",

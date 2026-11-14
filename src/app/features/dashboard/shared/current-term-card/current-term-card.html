@@ -43,8 +43,10 @@
   </div>
 
   <!-- No action until the dashboard is connected to the backend -->
-  <div class="card-foot">
-    <button type="button" class="text-link">{{ 'DASHBOARD.TERM.YEARS_LINK' | translate }}</button>
-  </div>
+  @if (showYearsLink()) {
+    <div class="card-foot">
+      <button type="button" class="text-link">{{ 'DASHBOARD.TERM.YEARS_LINK' | translate }}</button>
+    </div>
+  }
 
 </section>

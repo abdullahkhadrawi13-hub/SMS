@@ -1,0 +1,48 @@
+<section class="card" aria-labelledby="notices-title">
+
+  <div class="card-head">
+    <h2 id="notices-title">{{ 'DASHBOARD.ATTENTION.TITLE' | translate }}</h2>
+  </div>
+
+  <div class="card-body">
+
+    @if (notices().length === 0) {
+
+      <p class="all-clear">
+        <mat-icon class="icon ok" aria-hidden="true">check_circle</mat-icon>
+        {{ 'DASHBOARD.ATTENTION.ALL_CLEAR' | translate }}
+      </p>
+
+    } @else {
+
+      <ul class="items">
+        @for (notice of notices(); track notice.id) {
+          <li class="item">
+            <mat-icon class="icon" [class]="notice.tone" aria-hidden="true">{{ icons[notice.tone] }}</mat-icon>
+
+            <div class="item-text">
+              <span class="item-title">{{ notice.titleKey | translate: notice.titleParams }}</span>
+              <span class="item-line">
+                @for (part of notice.parts; track $index) {
+                  @if (!$first) { · }
+                  @if (part.key) {
+                    {{ part.key | translate: part.params }}
+                  } @else {
+                    {{ part.text }}
+                  }
+                }
+              </span>
+            </div>
+
+            @if (notice.linkKey) {
+              <button type="button" class="text-link">{{ notice.linkKey | translate }}</button>
+            }
+          </li>
+        }
+      </ul>
+
+    }
+
+  </div>
+
+</section>

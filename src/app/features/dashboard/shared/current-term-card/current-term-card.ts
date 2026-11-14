@@ -16,12 +16,14 @@ import { DashboardTerm } from '../dashboard.models';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 
-// "الفصل الحالي" on the Admin and AssistantPrincipal dashboards:
+// "الفصل الحالي" on every role dashboard:
 // the term and its dates, the week of the term, and whether its grades
 // are open or closed (areGradesClosed).
 //
 // isAdmin: only the Admin sees the reminder to close the grades
 // (closing them is an Admin action on the academic years page).
+// showYearsLink: the "السنوات والفصول الدراسية" link at the bottom. Off for
+// the Teacher, Student and Parent, who cannot open the Settings pages.
 @Component({
   selector: 'app-current-term-card',
   imports: [
@@ -38,6 +40,7 @@ export class CurrentTermCard {
 
   readonly data = input.required<DashboardTerm>();
   readonly isAdmin = input(false);
+  readonly showYearsLink = input(true);
 
   private readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'

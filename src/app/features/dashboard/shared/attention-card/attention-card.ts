@@ -6,7 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Language } from '../../../../core/services/language';
 import { pluralKey } from '../../../../shared/utils/plural';
 
-import { DashboardAttention, DashboardSectionRef } from '../dashboard.models';
+import { DashboardAttention } from '../dashboard.models';
+import { groupSectionsByClass, sectionName } from '../dashboard-names';
 
 
 // "يحتاج انتباهك" on the Admin and AssistantPrincipal dashboards:
@@ -43,13 +44,13 @@ export class AttentionCard {
 
   // "السابع ب · التاسع ج · العاشر أ، ب، ج" / "Grade 7 B · Grade 9 C · Grade 10 A, B, C"
   readonly notStartedList = computed(() =>
-    this.groupByClass(this.data().notStartedSections)
+    groupSectionsByClass(this.data().notStartedSections, this.isArabic())
   );
 
   // "الثامن ج: 15 من 19 طالبًا", one line per partial section.
   readonly partialLines = computed(() =>
     this.data().partialSections.map(section => ({
-      name: this.sectionName(section),
+      name: sectionName(section, this.isArabic()),
       recorded: section.recordedCount,
       total: section.studentCount,
     }))
@@ -74,31 +75,4 @@ export class AttentionCard {
       && data.incompletePlansCount === 0
       && data.attendanceOfficer !== null;
   });
-
-
-  // "الثامن ج" / "Grade 8 C"
-  private sectionName(section: DashboardSectionRef): string {
-    return this.isArabic()
-      ? `${section.classNameAr} ${section.sectionNameAr}`
-      : `${section.classNameEn} ${section.sectionNameEn}`;
-  }
-
-  // The sections of one class together, the classes joined by " · ".
-  private groupByClass(sections: DashboardSectionRef[]): string {
-    const isArabic = this.isArabic();
-    const groups = new Map<string, string[]>();
-
-    for (const section of sections) {
-      const className = isArabic ? section.classNameAr : section.classNameEn;
-      const sectionName = isArabic ? section.sectionNameAr : section.sectionNameEn;
-
-      groups.set(className, [...(groups.get(className) ?? []), sectionName]);
-    }
-
-    const separator = isArabic ? '، ' : ', ';
-
-    return [...groups.entries()]
-      .map(([className, names]) => `${className} ${names.join(separator)}`)
-      .join(' · ');
-  }
 }

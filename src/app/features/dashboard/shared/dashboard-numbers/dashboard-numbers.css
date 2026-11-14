@@ -1,0 +1,99 @@
+/* ================================
+   Dashboard · a numbers strip (Teacher, Student, Parent)
+   One card split by 1px lines, no icons (spec: الأرقام المجمّعة).
+   The same look as dashboard-stats (the Admin strip).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 4), minmax(0, 1fr));
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  min-width: 0;
+
+  padding: var(--sp-4) 20px;
+}
+
+.stat + .stat {
+  border-inline-start: 1px solid var(--rule);
+}
+
+.stat-label {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: var(--fs-24);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.stat-value.bad {
+  color: var(--bad-ink);
+}
+
+.stat-caption {
+  min-block-size: 1.6em;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+
+/* Inside a card (the Parent dashboard's child cards) */
+.stats.embedded {
+  border: 0;
+  border-block-start: 1px solid var(--rule);
+  border-radius: 0;
+}
+
+.stats.embedded .stat {
+  padding-block: var(--sp-3);
+}
+
+.stats.embedded .stat-value {
+  font-size: var(--fs-20);
+}
+
+
+/* Phone: a 2 × 2 grid */
+@media (max-width: 719.98px) {
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  /* the first of each line has no start line */
+  .stat:nth-child(odd) {
+    border-inline-start: 0;
+  }
+
+  /* the lines after the first have a line above them */
+  .stat:nth-child(n + 3) {
+    border-block-start: 1px solid var(--rule);
+  }
+}

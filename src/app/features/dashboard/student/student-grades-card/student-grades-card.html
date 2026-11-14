@@ -1,0 +1,53 @@
+<section class="card" aria-labelledby="student-grades-title">
+
+  <div class="card-head">
+    <h2 id="student-grades-title">{{ 'DASHBOARD.STUDENT.GRADES.TITLE' | translate }}</h2>
+
+    <span class="card-meta">
+      {{ pluralKey('DASHBOARD.STUDENT.GRADES.SUBJECTS', subjects().length) | translate: { count: subjects().length } }}
+    </span>
+  </div>
+
+  @if (lines().length === 0) {
+
+    <p class="empty">{{ 'DASHBOARD.STUDENT.GRADES.EMPTY' | translate }}</p>
+
+  } @else {
+
+    <div class="grades-head" aria-hidden="true">
+      <span>{{ 'DASHBOARD.STUDENT.GRADES.HEAD_SUBJECT' | translate }}</span>
+      <span>{{ 'DASHBOARD.STUDENT.GRADES.HEAD_ENTERED' | translate }}</span>
+      <span class="end">{{ 'DASHBOARD.STUDENT.GRADES.HEAD_TOTAL' | translate }}</span>
+      <span>{{ 'DASHBOARD.STUDENT.GRADES.HEAD_RESULT' | translate }}</span>
+    </div>
+
+    <ul class="lines">
+      @for (line of lines(); track line.id) {
+        <li class="line">
+          <span class="line-name">{{ line.name }}</span>
+
+          <span class="line-entered tabular">{{ line.enteredKey | translate: line.enteredParams }}</span>
+
+          <span class="line-total tabular">
+            @if (line.total !== null) {
+              {{ line.total }} <small>/ 100</small>
+            } @else {
+              <span class="missing" [attr.aria-label]="'DASHBOARD.STUDENT.GRADES.NO_TOTAL' | translate">—</span>
+            }
+          </span>
+
+          <span class="line-result">
+            <span class="result-badge" [class]="line.result">{{ line.resultKey | translate }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+
+  }
+
+  <!-- No action until the dashboard is connected to the backend -->
+  <div class="card-foot">
+    <button type="button" class="text-link">{{ 'DASHBOARD.STUDENT.GRADES.ALL' | translate }}</button>
+  </div>
+
+</section>
