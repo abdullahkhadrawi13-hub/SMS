@@ -1,0 +1,111 @@
+<section class="card" aria-labelledby="today-attendance-title">
+
+  <div class="card-head">
+    <h2 id="today-attendance-title">{{ 'DASHBOARD.TODAY.TITLE' | translate }}</h2>
+
+    <span class="card-meta">
+      {{ 'DASHBOARD.TODAY.UPDATED' | translate: { time: updatedTime() } }}
+
+      <!-- No action until the dashboard is connected to the backend -->
+      <button
+        mat-icon-button
+        type="button"
+        class="refresh"
+        [attr.aria-label]="'DASHBOARD.TODAY.REFRESH' | translate"
+      >
+        <mat-icon aria-hidden="true">refresh</mat-icon>
+      </button>
+    </span>
+  </div>
+
+
+  <div class="card-body">
+
+    <!-- The three numbers of the day -->
+    <div class="today-numbers">
+
+      <div class="number">
+        <span class="label">{{ 'DASHBOARD.TODAY.COMPLETE_LABEL' | translate }}</span>
+        <span class="big tabular">
+          {{ data().sectionsComplete }}
+          <small>{{ 'DASHBOARD.TODAY.OF' | translate: { total: data().sectionsTotal } }}</small>
+        </span>
+        <div
+          class="progress"
+          role="img"
+          [attr.aria-label]="'DASHBOARD.TODAY.PROGRESS_ARIA' | translate: { done: data().sectionsComplete, total: data().sectionsTotal }"
+        >
+          <span class="progress-fill" [style.inline-size.%]="completePercent()"></span>
+        </div>
+        <span class="caption">
+          {{ pluralKey('DASHBOARD.TODAY.PARTIAL', data().sectionsPartial) | translate: { count: data().sectionsPartial } }}
+          ·
+          {{ pluralKey('DASHBOARD.TODAY.NOT_STARTED', data().sectionsNotStarted) | translate: { count: data().sectionsNotStarted } }}
+        </span>
+      </div>
+
+      <div class="number">
+        <span class="label">{{ 'DASHBOARD.TODAY.ABSENT_LABEL' | translate }}</span>
+        <span class="big tabular">{{ data().absentCount }}</span>
+        <span class="caption">{{ 'DASHBOARD.TODAY.ABSENT_CAPTION' | translate }}</span>
+      </div>
+
+      <div class="number">
+        <span class="label">{{ 'DASHBOARD.TODAY.RATE_LABEL' | translate }}</span>
+        <span class="big tabular">
+          @if (attendanceRate(); as rate) {
+            {{ rate }}
+          } @else {
+            <span class="missing">—</span>
+          }
+        </span>
+        <span class="caption">
+          {{ 'DASHBOARD.TODAY.RATE_CAPTION' | translate: { present: data().presentCount, recorded: data().recordedCount } }}
+        </span>
+      </div>
+
+    </div>
+
+
+    <!-- The sections map -->
+    <div class="legend" aria-hidden="true">
+      <span><i class="swatch complete"></i>{{ 'DASHBOARD.TODAY.LEGEND.COMPLETE' | translate }}</span>
+      <span><i class="swatch partial"></i>{{ 'DASHBOARD.TODAY.LEGEND.PARTIAL' | translate }}</span>
+      <span><i class="swatch notStarted"></i>{{ 'DASHBOARD.TODAY.LEGEND.NOT_STARTED' | translate }}</span>
+    </div>
+
+    <ul
+      class="map"
+      [style.--map-lines]="mapLines()"
+      [attr.aria-label]="'DASHBOARD.TODAY.MAP_ARIA' | translate">
+      @for (row of rows(); track row.id) {
+        <li class="map-row">
+          <span class="map-class">{{ row.className }}</span>
+
+          @for (cell of row.cells; track cell.id) {
+            <!-- No action until the dashboard is connected to the backend
+                 (then: the attendance sheet of this section) -->
+            <button
+              type="button"
+              class="map-cell"
+              [class]="cell.state"
+              [attr.aria-label]="cell.ariaClass + ': ' + (cell.captionKey | translate: cell.captionParams)"
+            >
+              <span class="map-letter">{{ cell.letter }}</span>
+              <small class="tabular">{{ cell.captionKey | translate: cell.captionParams }}</small>
+            </button>
+          }
+        </li>
+      }
+    </ul>
+
+  </div>
+
+
+  <!-- No action until the dashboard is connected to the backend -->
+  <div class="card-foot">
+    <button type="button" class="text-link">{{ 'DASHBOARD.TODAY.ABSENTEES' | translate }}</button>
+    <button mat-stroked-button type="button">{{ 'DASHBOARD.TODAY.DAILY_SUMMARY' | translate }}</button>
+  </div>
+
+</section>

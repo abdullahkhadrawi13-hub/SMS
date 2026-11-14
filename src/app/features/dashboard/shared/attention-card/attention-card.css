@@ -1,0 +1,157 @@
+/* ================================
+   Dashboard · "needs your attention" card
+   Spec: البطاقات · لوحة التحكم (العمود الجانبي).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+}
+
+.card-head {
+  padding: var(--sp-4) 20px 0;
+}
+
+.card-head h2 {
+  margin: 0;
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.card-body {
+  padding: var(--sp-4) 20px 20px;
+}
+
+
+/* ===== The list ===== */
+
+.items {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--sp-3);
+
+  padding-block: var(--sp-3);
+
+  border-block-end: 1px solid var(--rule);
+}
+
+.item:first-child {
+  padding-block-start: 0;
+}
+
+.item:last-child {
+  padding-block-end: 0;
+
+  border-block-end: 0;
+}
+
+.icon {
+  flex-shrink: 0;
+
+  inline-size: 18px;
+  block-size: 18px;
+  margin-block-start: 3px;
+
+  font-size: 18px;
+}
+
+.icon.warn { color: var(--warn-ink); }
+.icon.info { color: var(--accent-ink); }
+.icon.ok   { color: var(--ok-ink); }
+
+.item-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  min-width: 0;
+
+  font-size: var(--fs-14);
+}
+
+.item-title {
+  font-weight: 600;
+}
+
+.item-line {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.all-clear {
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--sp-3);
+
+  margin: 0;
+
+  color: var(--muted);
+  font-size: var(--fs-14);
+}
+
+
+/* ===== The text links ===== */
+
+.text-link {
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+
+  background: none;
+  color: var(--accent-ink);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.text-link:focus-visible {
+  border-radius: 2px;
+
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* ===== Phone ===== */
+
+@media (max-width: 719.98px) {
+
+  .card-head,
+  .card-body {
+    padding-inline: var(--sp-4);
+  }
+
+  .text-link {
+    min-block-size: 44px;
+  }
+}

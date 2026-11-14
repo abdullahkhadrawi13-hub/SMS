@@ -1,36 +1,42 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-import { User } from '../../../../core/services/user';
-import { Language } from '../../../../core/services/language';
-import { getShortName } from '../../../../shared/utils/person-name';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
+import { TodayAttendanceCard } from '../../shared/today-attendance-card/today-attendance-card';
+import { DashboardStats } from '../../shared/dashboard-stats/dashboard-stats';
+import { AttentionCard } from '../../shared/attention-card/attention-card';
+import { CurrentTermCard } from '../../shared/current-term-card/current-term-card';
+import { DashboardData } from '../../shared/dashboard.models';
+import { DASHBOARD_SAMPLE_DATA } from '../../shared/dashboard-sample-data';
+
+
+// The Admin dashboard (spec: "SMS — مواصفات تصميم الكحلي والذهبي" → لوحة التحكم):
+// main column  = today's attendance with the sections map, then the numbers strip;
+// side column  = needs your attention, then the current term.
+//
+// TEMPORARY: the numbers come from dashboard-sample-data.ts until the
+// backend endpoints are ready; then a service replaces DASHBOARD_SAMPLE_DATA
+// and the "sample data" note is removed. The buttons have no action yet.
 @Component({
   selector: 'app-admin-dashboard',
   imports: [
     TranslatePipe,
-    MatIconModule
+    MatButtonModule,
+    MatIconModule,
+    PageHeader,
+    TodayAttendanceCard,
+    DashboardStats,
+    AttentionCard,
+    CurrentTermCard,
   ],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css'
 })
 export class AdminDashboard {
 
-  private userService = inject(User);
-  private languageService = inject(Language);
-
-  // First name + family name for the welcome: "محمد العمري" / "Mohammad Al-Omari"
-  // (the same name as the navbar, from shared/utils/person-name.ts).
-  get adminName(): string {
-    const user = this.userService.getUser();
-
-    if (!user) {
-      return '';
-    }
-
-    const isArabic = this.languageService.getCurrentLanguage() === 'ar';
-
-    return getShortName(user, isArabic);
-  }
+  readonly data: DashboardData = DASHBOARD_SAMPLE_DATA;
 }

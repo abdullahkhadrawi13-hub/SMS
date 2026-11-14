@@ -1,0 +1,33 @@
+<section class="stats" [attr.aria-label]="'DASHBOARD.STATS.ARIA' | translate">
+
+  <div class="stat">
+    <span class="stat-label">{{ 'DASHBOARD.STATS.STUDENTS' | translate }}</span>
+    <span class="stat-value tabular">{{ data().activeStudents }}</span>
+    <span class="stat-caption">
+      {{ pluralKey('DASHBOARD.STATS.IN_SECTIONS', data().activeSections) | translate: { count: data().activeSections } }}
+    </span>
+  </div>
+
+  <div class="stat">
+    <span class="stat-label">{{ 'DASHBOARD.STATS.TEACHERS' | translate }}</span>
+    <span class="stat-value tabular">{{ data().activeTeachers }}</span>
+    <span class="stat-caption">{{ 'DASHBOARD.STATS.TEACHERS_CAPTION' | translate }}</span>
+  </div>
+
+  <div class="stat">
+    <span class="stat-label">{{ 'DASHBOARD.STATS.PARENTS' | translate }}</span>
+    <span class="stat-value tabular">{{ data().linkedParents }}</span>
+    <span class="stat-caption">{{ 'DASHBOARD.STATS.PARENTS_CAPTION' | translate }}</span>
+  </div>
+
+  <div class="stat">
+    <span class="stat-label">{{ 'DASHBOARD.STATS.CLASSES' | translate }}</span>
+    <span class="stat-value tabular">{{ data().activeClasses }}</span>
+    <span class="stat-caption">
+      @if (classRange(); as range) {
+        {{ 'DASHBOARD.STATS.CLASSES_CAPTION' | translate: range }}
+      }
+    </span>
+  </div>
+
+</section>

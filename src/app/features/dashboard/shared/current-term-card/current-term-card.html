@@ -1,0 +1,50 @@
+<section class="card" aria-labelledby="current-term-title">
+
+  <div class="card-head">
+    <h2 id="current-term-title">{{ 'DASHBOARD.TERM.TITLE' | translate }}</h2>
+
+    <app-status-badge [tone]="data().areGradesClosed ? 'neutral' : 'ok'">
+      {{ (data().areGradesClosed ? 'DASHBOARD.TERM.GRADES_CLOSED' : 'DASHBOARD.TERM.GRADES_OPEN') | translate }}
+    </app-status-badge>
+  </div>
+
+  <div class="card-body">
+
+    <dl class="facts">
+      <dt>{{ 'DASHBOARD.TERM.TERM' | translate }}</dt>
+      <dd>{{ termName() }} · <span class="tabular">{{ data().yearName }}</span></dd>
+
+      <dt>{{ 'DASHBOARD.TERM.FROM' | translate }}</dt>
+      <dd class="tabular">{{ startDate() }}</dd>
+
+      <dt>{{ 'DASHBOARD.TERM.TO' | translate }}</dt>
+      <dd class="tabular">{{ endDate() }}</dd>
+
+      <dt>{{ 'DASHBOARD.TERM.WEEK' | translate }}</dt>
+      <dd class="tabular">{{ 'DASHBOARD.TERM.WEEK_VALUE' | translate: { week: week().current, total: week().total } }}</dd>
+    </dl>
+
+    <div
+      class="progress"
+      role="img"
+      [attr.aria-label]="'DASHBOARD.TERM.WEEK_VALUE' | translate: { week: week().current, total: week().total }"
+    >
+      <span class="progress-fill" [style.inline-size.%]="week().percent"></span>
+    </div>
+
+    <!-- Closing the grades is an Admin action (academic years page) -->
+    @if (isAdmin() && !data().areGradesClosed) {
+      <p class="notice warn">
+        <mat-icon aria-hidden="true">info</mat-icon>
+        <span>{{ 'DASHBOARD.TERM.CLOSE_NOTE' | translate }}</span>
+      </p>
+    }
+
+  </div>
+
+  <!-- No action until the dashboard is connected to the backend -->
+  <div class="card-foot">
+    <button type="button" class="text-link">{{ 'DASHBOARD.TERM.YEARS_LINK' | translate }}</button>
+  </div>
+
+</section>
