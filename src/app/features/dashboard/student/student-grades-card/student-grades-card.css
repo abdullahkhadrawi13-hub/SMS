@@ -1,0 +1,227 @@
+/* ================================
+   Student dashboard · "my grades this term" card
+   Spec: البطاقات · الجداول · كشف العلامات (المجموع).
+   Four columns on the computer (subject, assessments, total, result);
+   on the phone each line has two rows.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+
+  --grades-columns: minmax(140px, 1.4fr) minmax(120px, 1fr) 96px 112px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--sp-3);
+
+  padding: var(--sp-4) 20px 0;
+}
+
+.card-head h2 {
+  margin: 0;
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.card-meta {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--sp-4) 20px 20px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-14);
+}
+
+
+/* ===== The column heads (like a table head: 12px/600, a line under it) ===== */
+
+.grades-head {
+  display: grid;
+  grid-template-columns: var(--grades-columns);
+
+  gap: var(--sp-4);
+
+  margin-block-start: var(--sp-3);
+  padding: 10px 20px var(--sp-2);
+
+  border-block-end: 1px solid var(--border);
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+}
+
+
+/* ===== The lines ===== */
+
+.lines {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: var(--grades-columns);
+  align-items: center;
+
+  gap: var(--sp-2) var(--sp-4);
+
+  box-sizing: border-box;
+  min-block-size: var(--row);
+  padding: var(--sp-2) 20px;
+
+  transition: background-color 150ms ease;
+}
+
+.line + .line {
+  border-block-start: 1px solid var(--rule);
+}
+
+.line:hover {
+  background: var(--hover);
+}
+
+.line-name {
+  min-width: 0;
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+}
+
+.line-entered {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+/* Numbers at the end of their cell (spec: الجداول → الأرقام) */
+.end,
+.line-total {
+  text-align: end;
+}
+
+.line-total {
+  font-size: var(--fs-16);
+  font-weight: 700;
+}
+
+.line-total small {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-weight: 400;
+}
+
+.missing {
+  color: var(--faint);
+
+  font-weight: 400;
+}
+
+
+/* ===== Foot ===== */
+
+.card-foot {
+  display: flex;
+  align-items: center;
+
+  padding: var(--sp-3) 20px;
+
+  border-block-start: 1px solid var(--rule);
+}
+
+
+/* ===== The text links ===== */
+
+.text-link {
+  padding: 0;
+
+  border: 0;
+
+  background: none;
+  color: var(--accent-ink);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.text-link:focus-visible {
+  border-radius: 2px;
+
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* ===== Phone: two rows per line ===== */
+
+@media (max-width: 719.98px) {
+
+  .card-head,
+  .card-foot {
+    padding-inline: var(--sp-4);
+  }
+
+  .card-head {
+    flex-wrap: wrap;
+  }
+
+  .grades-head {
+    display: none;
+  }
+
+  .lines {
+    margin-block-start: var(--sp-3);
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .line {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name    total"
+      "entered result";
+
+    padding-inline: var(--sp-4);
+  }
+
+  .line-name    { grid-area: name; }
+  .line-total   { grid-area: total; }
+  .line-entered { grid-area: entered; }
+  .line-result  { grid-area: result; justify-self: end; }
+
+  .text-link {
+    min-block-size: 44px;
+  }
+}

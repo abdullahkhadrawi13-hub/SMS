@@ -1,22 +1,33 @@
+import { StudentStatus } from '../../../core/models/student';
+
 import {
   DashboardData,
   DashboardMapClass,
   DashboardMapSection,
   DashboardSectionRef,
+  ParentDashboardData,
   SectionAttendanceState,
+  StudentDashboardData,
+  TeacherDashboardData,
 } from './dashboard.models';
 
 
 // ===================================================================
-// TEMPORARY: sample data for the Admin and AssistantPrincipal dashboards.
+// TEMPORARY: sample data for the role dashboards.
 //
-// The backend endpoints for the dashboard are not ready yet, so the
+// The backend endpoints for the dashboards are not ready yet, so the
 // dashboards show these numbers, with a "sample data" note on the page.
 //
 // When the endpoints are ready:
-//   1. a dashboard service builds DashboardData from the API,
-//   2. the two dashboards read it from the service instead,
-//   3. this file and the SAMPLE_NOTE on both pages are deleted.
+//   1. a dashboard service builds the same shapes from the API,
+//   2. the dashboards read them from the service instead,
+//   3. this file and the SAMPLE_NOTE on the pages are deleted.
+//
+// Admin and AssistantPrincipal: DASHBOARD_SAMPLE_DATA.
+// Teacher: TEACHER_DASHBOARD_SAMPLE_DATA (+ today's attendance from
+//          DASHBOARD_SAMPLE_DATA when the teacher is the attendance officer).
+// Student: STUDENT_DASHBOARD_SAMPLE_DATA.  Parent: PARENT_DASHBOARD_SAMPLE_DATA.
+// The current term card of every dashboard: DASHBOARD_SAMPLE_DATA.term.
 //
 // The numbers agree with each other (the map, the totals and the
 // "needs your attention" list come from the same sections below).
@@ -164,4 +175,92 @@ export const DASHBOARD_SAMPLE_DATA: DashboardData = {
     endDate: '2027-01-14',
     areGradesClosed: false,
   },
+};
+
+
+// ===================================================================
+// Teacher: Mathematics in five sections of Grade 8 and Grade 9.
+// Grade 8 C has an incomplete plan (no marks yet).
+// ===================================================================
+
+export const TEACHER_DASHBOARD_SAMPLE_DATA: TeacherDashboardData = {
+  classCount: 2,
+  rows: [
+    { teacherAssignmentId: 1, classNameAr: 'الثامن', classNameEn: 'Grade 8', sectionNameAr: 'أ', sectionNameEn: 'A',
+      subjectNameAr: 'الرياضيات', subjectNameEn: 'Mathematics',
+      isPlanComplete: true, studentCount: 20, completeCount: 20, assessmentCount: 4 },
+    { teacherAssignmentId: 2, classNameAr: 'الثامن', classNameEn: 'Grade 8', sectionNameAr: 'ب', sectionNameEn: 'B',
+      subjectNameAr: 'الرياضيات', subjectNameEn: 'Mathematics',
+      isPlanComplete: true, studentCount: 19, completeCount: 14, assessmentCount: 4 },
+    { teacherAssignmentId: 3, classNameAr: 'الثامن', classNameEn: 'Grade 8', sectionNameAr: 'ج', sectionNameEn: 'C',
+      subjectNameAr: 'الرياضيات', subjectNameEn: 'Mathematics',
+      isPlanComplete: false, studentCount: 19, completeCount: 0, assessmentCount: 3 },
+    { teacherAssignmentId: 4, classNameAr: 'التاسع', classNameEn: 'Grade 9', sectionNameAr: 'أ', sectionNameEn: 'A',
+      subjectNameAr: 'الرياضيات', subjectNameEn: 'Mathematics',
+      isPlanComplete: true, studentCount: 21, completeCount: 21, assessmentCount: 4 },
+    { teacherAssignmentId: 5, classNameAr: 'التاسع', classNameEn: 'Grade 9', sectionNameAr: 'ب', sectionNameEn: 'B',
+      subjectNameAr: 'الرياضيات', subjectNameEn: 'Mathematics',
+      isPlanComplete: true, studentCount: 20, completeCount: 9, assessmentCount: 4 },
+  ],
+};
+
+
+// ===================================================================
+// Student: Grade 8 B, eight subjects (5 passed, 1 failed, 2 incomplete).
+// ===================================================================
+
+export const STUDENT_DASHBOARD_SAMPLE_DATA: StudentDashboardData = {
+  info: {
+    studentNumber: '2026000154',
+    classNameAr: 'الثامن',
+    classNameEn: 'Grade 8',
+    sectionNameAr: 'ب',
+    sectionNameEn: 'B',
+    studentStatus: StudentStatus.Active,
+  },
+  subjects: [
+    { subjectId: 1, nameAr: 'اللغة العربية', nameEn: 'Arabic', enteredCount: 4, assessmentCount: 4, total: 88, passingMark: 50, result: 'passed' },
+    { subjectId: 2, nameAr: 'اللغة الإنجليزية', nameEn: 'English', enteredCount: 4, assessmentCount: 4, total: 79, passingMark: 50, result: 'passed' },
+    { subjectId: 3, nameAr: 'الرياضيات', nameEn: 'Mathematics', enteredCount: 3, assessmentCount: 4, total: null, passingMark: 50, result: 'incomplete' },
+    { subjectId: 4, nameAr: 'العلوم', nameEn: 'Science', enteredCount: 4, assessmentCount: 4, total: 47, passingMark: 50, result: 'failed' },
+    { subjectId: 5, nameAr: 'التربية الإسلامية', nameEn: 'Islamic Education', enteredCount: 3, assessmentCount: 3, total: 92, passingMark: 50, result: 'passed' },
+    { subjectId: 6, nameAr: 'الدراسات الاجتماعية', nameEn: 'Social Studies', enteredCount: 2, assessmentCount: 3, total: null, passingMark: 50, result: 'incomplete' },
+    { subjectId: 7, nameAr: 'الحاسوب', nameEn: 'Computer', enteredCount: 3, assessmentCount: 3, total: 95, passingMark: 50, result: 'passed' },
+    { subjectId: 8, nameAr: 'التربية الفنية', nameEn: 'Art', enteredCount: 2, assessmentCount: 2, total: 90, passingMark: 50, result: 'passed' },
+  ],
+  absentDays: 3,
+  lastAbsentDate: '2026-11-10',
+};
+
+
+// ===================================================================
+// Parent: two children. Karim (the same student as above) is absent
+// today and fails Science; Sara has nothing to worry about.
+// ===================================================================
+
+export const PARENT_DASHBOARD_SAMPLE_DATA: ParentDashboardData = {
+  children: [
+    {
+      studentId: 154,
+      studentNumber: '2026000154',
+      firstNameAr: 'كريم', fatherNameAr: 'سامي', grandFatherNameAr: 'يوسف', familyNameAr: 'الخطيب',
+      firstNameEn: 'Karim', fatherNameEn: 'Sami', grandFatherNameEn: 'Yousef', familyNameEn: 'Al-Khatib',
+      classNameAr: 'الثامن', classNameEn: 'Grade 8', sectionNameAr: 'ب', sectionNameEn: 'B',
+      subjectCount: 8, passedCount: 5, failedCount: 1, incompleteCount: 2,
+      failedSubjects: [{ nameAr: 'العلوم', nameEn: 'Science', total: 47, passingMark: 50 }],
+      absentDays: 3,
+      isAbsentToday: true,
+    },
+    {
+      studentId: 71,
+      studentNumber: '2026000071',
+      firstNameAr: 'سارة', fatherNameAr: 'سامي', grandFatherNameAr: 'يوسف', familyNameAr: 'الخطيب',
+      firstNameEn: 'Sara', fatherNameEn: 'Sami', grandFatherNameEn: 'Yousef', familyNameEn: 'Al-Khatib',
+      classNameAr: 'الرابع', classNameEn: 'Grade 4', sectionNameAr: 'أ', sectionNameEn: 'A',
+      subjectCount: 7, passedCount: 6, failedCount: 0, incompleteCount: 1,
+      failedSubjects: [],
+      absentDays: 0,
+      isAbsentToday: false,
+    },
+  ],
 };

@@ -1,0 +1,64 @@
+/* ================================
+   Student dashboard · "my information" card
+   Spec: البطاقات. The same facts list as the current term card.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+}
+
+.card-head {
+  padding: var(--sp-4) 20px 0;
+}
+
+.card-head h2 {
+  margin: 0;
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.card-body {
+  padding: var(--sp-4) 20px 20px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+
+  gap: var(--sp-2) var(--sp-4);
+
+  margin: 0;
+
+  font-size: var(--fs-14);
+}
+
+.facts dt {
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+
+  font-weight: 600;
+}
+
+
+/* Phone */
+@media (max-width: 719.98px) {
+
+  .card-head,
+  .card-body {
+    padding-inline: var(--sp-4);
+  }
+}

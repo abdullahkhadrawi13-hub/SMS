@@ -1,0 +1,273 @@
+/* ================================
+   Teacher dashboard · "my grades this term" card
+   Spec: البطاقات · الجداول · الشارات · شريط التقدّم.
+   Four columns on the computer (section, progress, state, link);
+   on the phone each line has two rows.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+
+  --grades-columns: minmax(120px, 1fr) minmax(140px, 1.4fr) 128px 88px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--sp-3);
+
+  padding: var(--sp-4) 20px 0;
+}
+
+.card-head h2 {
+  margin: 0;
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.card-meta {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--sp-4) 20px 20px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-14);
+}
+
+
+/* ===== The column heads (like a table head: 12px/600, a line under it) ===== */
+
+.grades-head {
+  display: grid;
+  grid-template-columns: var(--grades-columns);
+
+  gap: var(--sp-4);
+
+  margin-block-start: var(--sp-3);
+  padding: 10px 20px var(--sp-2);
+
+  border-block-end: 1px solid var(--border);
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+}
+
+
+/* ===== The lines ===== */
+
+.lines {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: var(--grades-columns);
+  align-items: center;
+
+  gap: var(--sp-2) var(--sp-4);
+
+  box-sizing: border-box;
+  min-block-size: var(--row);
+  padding: var(--sp-2) 20px;
+
+  transition: background-color 150ms ease;
+}
+
+.line + .line {
+  border-block-start: 1px solid var(--rule);
+}
+
+.line:hover {
+  background: var(--hover);
+}
+
+.line-name {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.line-section {
+  font-size: var(--fs-14);
+  font-weight: 600;
+}
+
+.line-subject {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.line-progress {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-1);
+
+  min-width: 0;
+}
+
+.progress {
+  overflow: hidden;
+
+  block-size: 8px;
+
+  border-radius: 999px;
+
+  background: var(--track);
+}
+
+.progress-fill {
+  display: block;
+
+  block-size: 100%;
+
+  border-radius: 999px;
+
+  background: var(--mark);
+}
+
+.line-done {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+.line-blocked {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 6px;
+
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.line-blocked mat-icon {
+  flex-shrink: 0;
+
+  inline-size: 18px;
+  block-size: 18px;
+
+  color: var(--warn-ink);
+
+  font-size: 18px;
+}
+
+.line-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+/* ===== Foot ===== */
+
+.card-foot {
+  display: flex;
+  align-items: center;
+
+  padding: var(--sp-3) 20px;
+
+  border-block-start: 1px solid var(--rule);
+}
+
+
+/* ===== The text links ===== */
+
+.text-link {
+  padding: 0;
+
+  border: 0;
+
+  background: none;
+  color: var(--accent-ink);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.text-link:focus-visible {
+  border-radius: 2px;
+
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* ===== Phone: two rows per line ===== */
+
+@media (max-width: 719.98px) {
+
+  .card-head,
+  .card-foot {
+    padding-inline: var(--sp-4);
+  }
+
+  .card-head {
+    flex-wrap: wrap;
+  }
+
+  .grades-head {
+    display: none;
+  }
+
+  .lines {
+    margin-block-start: var(--sp-3);
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .line {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name   state"
+      "detail action";
+
+    padding-inline: var(--sp-4);
+  }
+
+  .line-name     { grid-area: name; }
+  .line-state    { grid-area: state; }
+  .line-progress,
+  .line-blocked  { grid-area: detail; }
+  .line-action   { grid-area: action; }
+
+  .text-link {
+    min-block-size: 44px;
+  }
+}

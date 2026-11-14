@@ -1,0 +1,20 @@
+<section class="card" aria-labelledby="student-info-title">
+
+  <div class="card-head">
+    <h2 id="student-info-title">{{ 'DASHBOARD.STUDENT.INFO.TITLE' | translate }}</h2>
+  </div>
+
+  <div class="card-body">
+    <dl class="facts">
+      <dt>{{ 'DASHBOARD.STUDENT.INFO.NUMBER' | translate }}</dt>
+      <dd class="tabular">{{ info().studentNumber }}</dd>
+
+      <dt>{{ 'DASHBOARD.STUDENT.INFO.CLASS' | translate }}</dt>
+      <dd>{{ classAndSection() }}</dd>
+
+      <dt>{{ 'DASHBOARD.STUDENT.INFO.STATUS' | translate }}</dt>
+      <dd><app-student-status [status]="info().studentStatus" /></dd>
+    </dl>
+  </div>
+
+</section>

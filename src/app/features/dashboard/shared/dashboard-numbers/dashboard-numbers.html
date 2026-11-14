@@ -1,0 +1,20 @@
+<section
+  class="stats"
+  [class.embedded]="embedded()"
+  [style.--columns]="items().length"
+  [attr.aria-label]="ariaKey() | translate"
+>
+  @for (item of items(); track item.labelKey) {
+    <div class="stat">
+      <span class="stat-label">{{ item.labelKey | translate }}</span>
+      <span class="stat-value tabular" [class.bad]="item.isBad">{{ item.value }}</span>
+      <span class="stat-caption">
+        @if (item.captionKey) {
+          {{ item.captionKey | translate: item.captionParams }}
+        } @else {
+          {{ item.captionText }}
+        }
+      </span>
+    </div>
+  }
+</section>

@@ -1,0 +1,75 @@
+<section class="card" aria-labelledby="teacher-grades-title">
+
+  <div class="card-head">
+    <h2 id="teacher-grades-title">{{ 'DASHBOARD.TEACHER.GRADES.TITLE' | translate }}</h2>
+
+    <span class="card-meta">
+      {{ pluralKey('DASHBOARD.TEACHER.GRADES.SECTIONS', rows().length) | translate: { count: rows().length } }}
+      · {{ subjects() }}
+    </span>
+  </div>
+
+  @if (lines().length === 0) {
+
+    <p class="empty">{{ 'DASHBOARD.TEACHER.GRADES.EMPTY' | translate }}</p>
+
+  } @else {
+
+    <div class="grades-head" aria-hidden="true">
+      <span>{{ 'DASHBOARD.TEACHER.GRADES.HEAD_SECTION' | translate }}</span>
+      <span>{{ 'DASHBOARD.TEACHER.GRADES.HEAD_DONE' | translate }}</span>
+      <span>{{ 'DASHBOARD.TEACHER.GRADES.HEAD_STATE' | translate }}</span>
+      <span></span>
+    </div>
+
+    <ul class="lines">
+      @for (line of lines(); track line.id) {
+        <li class="line">
+
+          <div class="line-name">
+            <span class="line-section">{{ line.section }}</span>
+            <span class="line-subject">{{ line.subject }}</span>
+          </div>
+
+          @if (line.isPlanComplete) {
+            <div class="line-progress">
+              <div
+                class="progress"
+                role="img"
+                [attr.aria-label]="line.doneKey | translate: line.doneParams"
+              >
+                <span class="progress-fill" [style.inline-size.%]="line.percent"></span>
+              </div>
+              <span class="line-done tabular">{{ line.doneKey | translate: line.doneParams }}</span>
+            </div>
+          } @else {
+            <p class="line-blocked">
+              <mat-icon aria-hidden="true">warning_amber</mat-icon>
+              <span>{{ 'DASHBOARD.TEACHER.GRADES.PLAN_INCOMPLETE' | translate }}</span>
+            </p>
+          }
+
+          <span class="line-state">
+            <app-status-badge [tone]="line.tone">{{ line.stateKey | translate }}</app-status-badge>
+          </span>
+
+          <!-- No action until the dashboard is connected to the backend
+               (then: the grade sheet of this section and subject) -->
+          <span class="line-action">
+            @if (line.isPlanComplete) {
+              <button type="button" class="text-link">{{ 'DASHBOARD.TEACHER.GRADES.OPEN_SHEET' | translate }}</button>
+            }
+          </span>
+
+        </li>
+      }
+    </ul>
+
+  }
+
+  <!-- No action until the dashboard is connected to the backend -->
+  <div class="card-foot">
+    <button type="button" class="text-link">{{ 'DASHBOARD.TEACHER.GRADES.MY_CLASSES' | translate }}</button>
+  </div>
+
+</section>

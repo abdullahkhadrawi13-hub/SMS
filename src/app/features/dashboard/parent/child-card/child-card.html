@@ -1,0 +1,29 @@
+<section class="card" [attr.aria-label]="name()">
+
+  <div class="child-head">
+    <span class="data-avatar child-avatar" [attr.data-tone]="avatarTone()" aria-hidden="true">{{ initials() }}</span>
+
+    <div class="child-who">
+      <span class="child-name">{{ name() }}</span>
+      <span class="child-placement tabular">{{ placement() }}</span>
+    </div>
+
+    @if (child().isAbsentToday) {
+      <app-status-badge tone="bad">{{ 'DASHBOARD.PARENT.ABSENT_TODAY' | translate }}</app-status-badge>
+    }
+  </div>
+
+  <app-dashboard-numbers
+    [items]="numbers()"
+    [embedded]="true"
+    ariaKey="DASHBOARD.PARENT.NUMBERS.ARIA"
+  />
+
+  <!-- No action until the dashboard is connected to the backend -->
+  <div class="card-foot">
+    <button type="button" class="text-link">
+      {{ 'DASHBOARD.PARENT.CHILD_GRADES' | translate: { name: firstName() } }}
+    </button>
+  </div>
+
+</section>

@@ -1,124 +1,31 @@
-<div class="parent-dashboard">
+<app-page-header
+  [title]="'DASHBOARD.TITLE' | translate"
+  [subtitle]="'DASHBOARD.PARENT.SUBTITLE' | translate"
+/>
 
-  <!-- Header -->
-  <section class="dashboard-header">
 
-    <h1>
-      {{ 'PARENT_DASHBOARD.WELCOME' | translate }}
-      {{ parentName }}
-    </h1>
+<!-- TEMPORARY: removed together with dashboard-sample-data.ts -->
+<p class="sample-note" role="note">
+  <mat-icon aria-hidden="true">info</mat-icon>
+  <span>{{ 'DASHBOARD.SAMPLE_NOTE' | translate }}</span>
+</p>
 
-    <p>
-      {{ 'PARENT_DASHBOARD.SUBTITLE' | translate }}
-    </p>
 
+<div class="dashboard">
+
+  <section class="dashboard-main children" aria-labelledby="children-title">
+    <h2 id="children-title" class="section-title">{{ 'DASHBOARD.PARENT.CHILDREN' | translate }}</h2>
+
+    @for (child of data.children; track child.studentId) {
+      <app-child-card [child]="child" />
+    } @empty {
+      <p class="section-empty">{{ 'DASHBOARD.PARENT.NO_CHILDREN' | translate }}</p>
+    }
   </section>
 
-
-  <!-- Parent Information -->
-  <section class="dashboard-statistics">
-
-    <!-- Children -->
-    <div class="dashboard-card">
-
-      <div class="card-icon">
-        <mat-icon>family_restroom</mat-icon>
-      </div>
-
-      <div class="card-content">
-
-        <h2>
-          {{ 'PARENT_DASHBOARD.CHILDREN' | translate }}
-        </h2>
-
-        <span>--</span>
-
-      </div>
-
-    </div>
-
-
-    <!-- Grades -->
-    <div class="dashboard-card">
-
-      <div class="card-icon">
-        <mat-icon>assessment</mat-icon>
-      </div>
-
-      <div class="card-content">
-
-        <h2>
-          {{ 'PARENT_DASHBOARD.GRADES' | translate }}
-        </h2>
-
-        <span>--</span>
-
-      </div>
-
-    </div>
-
-
-    <!-- Attendance -->
-    <div class="dashboard-card">
-
-      <div class="card-icon">
-        <mat-icon>event_available</mat-icon>
-      </div>
-
-      <div class="card-content">
-
-        <h2>
-          {{ 'PARENT_DASHBOARD.ATTENDANCE' | translate }}
-        </h2>
-
-        <span>--</span>
-
-      </div>
-
-    </div>
-
-
-    <!-- Academic Information -->
-    <div class="dashboard-card">
-
-      <div class="card-icon">
-        <mat-icon>school</mat-icon>
-      </div>
-
-      <div class="card-content">
-
-        <h2>
-          {{ 'PARENT_DASHBOARD.ACADEMIC_INFORMATION' | translate }}
-        </h2>
-
-        <span>--</span>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- Timetable -->
-  <section class="dashboard-section">
-
-    <div class="section-header">
-
-      <h2>
-        {{ 'PARENT_DASHBOARD.TIMETABLE' | translate }}
-      </h2>
-
-      <mat-icon>calendar_month</mat-icon>
-
-    </div>
-
-    <div class="section-content">
-
-      <span>--</span>
-
-    </div>
-
-  </section>
+  <div class="dashboard-side">
+    <app-notices-card [notices]="notices()" />
+    <app-current-term-card [data]="term" [showYearsLink]="false" />
+  </div>
 
 </div>
