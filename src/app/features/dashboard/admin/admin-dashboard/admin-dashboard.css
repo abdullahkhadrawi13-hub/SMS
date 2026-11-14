@@ -1,305 +1,87 @@
-.admin-dashboard {
-  width: 100%;
-  box-sizing: border-box;
+/* ================================
+   Admin dashboard · the page layout
+   A flexible main column and a 360px side column, 24px apart
+   (spec: الإطار العام → لوحة التحكم). One column on the phone.
+   The cards keep their own styles (features/dashboard/shared/).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
 }
 
-/* =========================
-   Dashboard Header
-========================= */
-
-.dashboard-header {
-  margin-bottom: 24px;
-}
-
-.dashboard-header h1 {
-  margin: 0 0 8px;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.dashboard-header p {
-  margin: 0;
-  color: #6b7280;
-  font-size: 15px;
-}
-
-
-/* =========================
-   Statistics
-========================= */
-
-.statistics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 20px;
-  min-height: 120px;
-  box-sizing: border-box;
-
+/* TEMPORARY: the "sample data" note (spec: الملاحظات · معلومة) */
+.sample-note {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: flex-start;
 
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  gap: var(--sp-2);
+
+  margin: 0 0 var(--sp-6);
+  padding: 10px 14px;
+
+  border-radius: var(--r-control);
+
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
 }
 
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-}
+.sample-note mat-icon {
+  flex-shrink: 0;
 
-.stat-card h3 {
-  margin: 0;
-  color: #6b7280;
-  font-size: 14px;
-  font-weight: 500;
-}
+  inline-size: 18px;
+  block-size: 18px;
+  margin-block-start: 2px;
 
-.stat-card span {
-  font-size: 30px;
-  font-weight: 700;
-}
-
-
-/* =========================
-   Dashboard Content
-========================= */
-
-.dashboard-content {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.dashboard-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.dashboard-card h2 {
-  margin: 0 0 20px;
   font-size: 18px;
-  font-weight: 600;
 }
 
-
-/* =========================
-   Attendance
-========================= */
-
-.attendance-summary {
+.dashboard {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  align-items: start;
+
+  gap: var(--sp-6);
 }
 
-.attendance-summary div {
-  padding: 16px;
-  border-radius: 10px;
-  background: #f8fafc;
-
+.dashboard-main,
+.dashboard-side {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
 
-.attendance-summary span {
-  color: #6b7280;
-  font-size: 13px;
-}
+  gap: var(--sp-6);
 
-.attendance-summary strong {
-  font-size: 24px;
+  min-width: 0;
 }
 
 
-/* =========================
-   Quick Actions
-========================= */
+/* Narrow computer screens: the side column goes under the main one */
+@media (max-width: 1099.98px) {
 
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.quick-actions button {
-  min-height: 48px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #ffffff;
-  cursor: pointer;
-
-  font-size: 14px;
-  font-weight: 500;
-
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.quick-actions button:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-}
-
-
-/* =========================
-   Recent Activity
-========================= */
-
-.recent-activity p {
-  margin: 0;
-  color: #6b7280;
-  font-size: 14px;
-}
-
-
-/* =========================
-   Responsive
-========================= */
-
-@media (max-width: 1100px) {
-  .statistics {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .dashboard-content {
-    grid-template-columns: 1fr;
+  .dashboard {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 
-@media (max-width: 650px) {
+/* Phone */
+@media (max-width: 719.98px) {
 
-  .statistics {
-    grid-template-columns: 1fr;
+  .sample-note {
+    margin-block-end: var(--sp-4);
   }
 
-  .attendance-summary {
-    grid-template-columns: 1fr;
+  .dashboard,
+  .dashboard-main,
+  .dashboard-side {
+    gap: var(--sp-4);
   }
 
-  .quick-actions {
-    grid-template-columns: 1fr;
+  /* Only the primary button stays in the header on the phone */
+  .add-student {
+    display: none;
   }
-
-  .dashboard-header h1 {
-    font-size: 24px;
-  }
-}
-
-/* =========================
-   Stat Card
-========================= */
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: #f1f5f9;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stat-icon mat-icon {
-  font-size: 25px;
-  width: 25px;
-  height: 25px;
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.stat-info h3 {
-  margin: 0;
-}
-
-.stat-info span {
-  font-size: 28px;
-  font-weight: 700;
-}
-
-
-/* =========================
-   Card Header
-========================= */
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.card-header h2 {
-  margin: 0;
-}
-
-.card-header mat-icon {
-  font-size: 22px;
-  width: 22px;
-  height: 22px;
-}
-
-
-/* =========================
-   Attendance
-========================= */
-
-.attendance-item {
-  padding: 16px;
-  border-radius: 10px;
-  background: #f8fafc;
-
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.attendance-item span {
-  color: #6b7280;
-  font-size: 13px;
-}
-
-.attendance-item strong {
-  font-size: 24px;
-}
-
-
-/* =========================
-   Quick Actions
-========================= */
-
-.quick-actions button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.quick-actions button mat-icon {
-  font-size: 19px;
-  width: 19px;
-  height: 19px;
 }

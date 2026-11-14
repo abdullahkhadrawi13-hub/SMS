@@ -1,121 +1,32 @@
-<div class="assistant-principal-dashboard">
-  <!-- Header -->
-  <section class="dashboard-header">
-    <h1>
-      {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.WELCOME' | translate }}
-      {{ assistantPrincipalName }}
-    </h1>
+<app-page-header
+  [title]="'DASHBOARD.TITLE' | translate"
+  [subtitle]="'DASHBOARD.SUBTITLE' | translate"
+>
+  <!-- No action until the dashboard is connected to the backend -->
+  <button actions mat-flat-button type="button">
+    <mat-icon>fact_check</mat-icon>
+    {{ 'DASHBOARD.RECORD_ATTENDANCE' | translate }}
+  </button>
+</app-page-header>
 
-    <p>
-      {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.SUBTITLE' | translate }}
-    </p>
-  </section>
 
-  <!-- Main Information -->
-  <section class="dashboard-statistics">
-    <!-- Students -->
-    <div class="dashboard-card">
-      <div class="card-icon">
-        <mat-icon>school</mat-icon>
-      </div>
+<!-- TEMPORARY: removed together with dashboard-sample-data.ts -->
+<p class="sample-note" role="note">
+  <mat-icon aria-hidden="true">info</mat-icon>
+  <span>{{ 'DASHBOARD.SAMPLE_NOTE' | translate }}</span>
+</p>
 
-      <div class="card-content">
-        <h2>
-          {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.STUDENTS' | translate }}
-        </h2>
 
-        <span>--</span>
-      </div>
-    </div>
+<div class="dashboard">
 
-    <!-- Teachers -->
-    <div class="dashboard-card">
-      <div class="card-icon">
-        <mat-icon>person</mat-icon>
-      </div>
+  <div class="dashboard-main">
+    <app-today-attendance-card [data]="data.today" />
+    <app-dashboard-stats [data]="data.stats" />
+  </div>
 
-      <div class="card-content">
-        <h2>
-          {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.TEACHERS' | translate }}
-        </h2>
+  <div class="dashboard-side">
+    <app-attention-card [data]="data.attention" [isAdmin]="false" />
+    <app-current-term-card [data]="data.term" [isAdmin]="false" />
+  </div>
 
-        <span>--</span>
-      </div>
-    </div>
-
-    <!-- Classes -->
-    <div class="dashboard-card">
-      <div class="card-icon">
-        <mat-icon>meeting_room</mat-icon>
-      </div>
-
-      <div class="card-content">
-        <h2>
-          {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.CLASSES' | translate }}
-        </h2>
-
-        <span>--</span>
-      </div>
-    </div>
-
-    <!-- Sections -->
-    <div class="dashboard-card">
-      <div class="card-icon">
-        <mat-icon>groups</mat-icon>
-      </div>
-
-      <div class="card-content">
-        <h2>
-          {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.SECTIONS' | translate }}
-        </h2>
-
-        <span>--</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Attendance Statistics -->
-  <section class="dashboard-section">
-    <div class="section-header">
-      <h2>
-        {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.ATTENDANCE_STATISTICS' | translate }}
-      </h2>
-
-      <mat-icon>event_available</mat-icon>
-    </div>
-
-    <div class="section-content">
-      <span>--</span>
-    </div>
-  </section>
-
-  <!-- Results -->
-  <section class="dashboard-section">
-    <div class="section-header">
-      <h2>
-        {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.RESULTS' | translate }}
-      </h2>
-
-      <mat-icon>assessment</mat-icon>
-    </div>
-
-    <div class="section-content">
-      <span>--</span>
-    </div>
-  </section>
-
-  <!-- Administrative Information -->
-  <section class="dashboard-section">
-    <div class="section-header">
-      <h2>
-        {{ 'ASSISTANT_PRINCIPAL_DASHBOARD.ADMINISTRATIVE_INFORMATION' | translate }}
-      </h2>
-
-      <mat-icon>info</mat-icon>
-    </div>
-
-    <div class="section-content">
-      <span>--</span>
-    </div>
-  </section>
 </div>

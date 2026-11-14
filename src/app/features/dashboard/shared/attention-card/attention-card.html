@@ -1,0 +1,98 @@
+<section class="card" aria-labelledby="attention-title">
+
+  <div class="card-head">
+    <h2 id="attention-title">{{ 'DASHBOARD.ATTENTION.TITLE' | translate }}</h2>
+  </div>
+
+  <div class="card-body">
+
+    @if (isAllClear()) {
+
+      <p class="all-clear">
+        <mat-icon class="icon ok" aria-hidden="true">check_circle</mat-icon>
+        {{ 'DASHBOARD.ATTENTION.ALL_CLEAR' | translate }}
+      </p>
+
+    } @else {
+
+      <!-- The links have no action until the dashboard is connected to the backend -->
+      <ul class="items">
+
+        <!-- Sections that have not started today's attendance -->
+        @if (data().notStartedSections.length > 0) {
+          <li class="item">
+            <mat-icon class="icon warn" aria-hidden="true">warning_amber</mat-icon>
+            <div class="item-text">
+              <span class="item-title">
+                {{ pluralKey('DASHBOARD.ATTENTION.NOT_STARTED', data().notStartedSections.length) | translate: { count: data().notStartedSections.length } }}
+              </span>
+              <span class="item-line">{{ notStartedList() }}</span>
+            </div>
+            <button type="button" class="text-link">{{ 'DASHBOARD.ATTENTION.RECORD_NOW' | translate }}</button>
+          </li>
+        }
+
+        <!-- Sections recorded partly -->
+        @if (partialLines().length > 0) {
+          <li class="item">
+            <mat-icon class="icon warn" aria-hidden="true">warning_amber</mat-icon>
+            <div class="item-text">
+              <span class="item-title">
+                {{ pluralKey('DASHBOARD.ATTENTION.PARTIAL', partialLines().length) | translate: { count: partialLines().length } }}
+              </span>
+              @for (line of partialLines(); track line.name) {
+                <span class="item-line tabular">
+                  {{ 'DASHBOARD.ATTENTION.PARTIAL_LINE' | translate: line }}
+                </span>
+              }
+            </div>
+            <button type="button" class="text-link">{{ 'DASHBOARD.ATTENTION.COMPLETE' | translate }}</button>
+          </li>
+        }
+
+        <!-- Subject plans under 100%: teachers cannot enter marks -->
+        @if (data().incompletePlansCount > 0) {
+          <li class="item">
+            <mat-icon class="icon info" aria-hidden="true">info</mat-icon>
+            <div class="item-text">
+              <span class="item-title">
+                {{ pluralKey('DASHBOARD.ATTENTION.PLANS', data().incompletePlansCount) | translate: { count: data().incompletePlansCount } }}
+              </span>
+              <span class="item-line">{{ 'DASHBOARD.ATTENTION.PLANS_LINE' | translate }}</span>
+            </div>
+            <button type="button" class="text-link">
+              {{ (isAdmin() ? 'DASHBOARD.ATTENTION.REVIEW_PLANS' : 'DASHBOARD.ATTENTION.VIEW_PLANS') | translate }}
+            </button>
+          </li>
+        }
+
+        <!-- The attendance officer (changing it: Admin only) -->
+        <li class="item">
+          @if (officerName(); as name) {
+            <mat-icon class="icon ok" aria-hidden="true">check_circle</mat-icon>
+            <div class="item-text">
+              <span class="item-title">{{ 'DASHBOARD.ATTENTION.OFFICER' | translate: { name: name } }}</span>
+              <span class="item-line">{{ 'DASHBOARD.ATTENTION.OFFICER_LINE' | translate }}</span>
+            </div>
+            @if (isAdmin()) {
+              <button type="button" class="text-link">{{ 'DASHBOARD.ATTENTION.CHANGE' | translate }}</button>
+            }
+          } @else {
+            <mat-icon class="icon warn" aria-hidden="true">warning_amber</mat-icon>
+            <div class="item-text">
+              <span class="item-title">{{ 'DASHBOARD.ATTENTION.NO_OFFICER' | translate }}</span>
+              <span class="item-line">{{ 'DASHBOARD.ATTENTION.NO_OFFICER_LINE' | translate }}</span>
+            </div>
+            @if (isAdmin()) {
+              <button type="button" class="text-link">{{ 'DASHBOARD.ATTENTION.SET_OFFICER' | translate }}</button>
+            }
+          }
+        </li>
+
+      </ul>
+
+    }
+
+  </div>
+
+</section>

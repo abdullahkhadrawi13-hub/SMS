@@ -114,37 +114,126 @@
     "EDIT_NOTE": "To change your name or phone number, contact the school administration."
   },
 
-  "ADMIN_DASHBOARD": {
-    "TITLE": "Admin Dashboard",
-    "WELCOME": "Welcome back,",
-    "SUBTITLE": "Here's what's happening in your school today.",
-    "TOTAL_STUDENTS": "Total Students",
-    "TOTAL_TEACHERS": "Total Teachers",
-    "TOTAL_PARENTS": "Total Parents",
-    "TOTAL_CLASSES": "Total Classes",
-    "ATTENDANCE_OVERVIEW": "Attendance Overview",
-    "PRESENT": "Present",
-    "ABSENT": "Absent",
-    "ATTENDANCE_RATE": "Attendance Rate",
-    "QUICK_ACTIONS": "Quick Actions",
-    "STUDENTS": "Students",
-    "TEACHERS": "Teachers",
-    "PARENTS": "Parents",
-    "REPORTS": "Reports",
-    "RECENT_ACTIVITY": "Recent Activity",
-    "NO_RECENT_ACTIVITY": "No recent activity"
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "SUBTITLE": "Today's attendance, what needs your attention, and the current term.",
+    "ADD_STUDENT": "Add Student",
+    "RECORD_ATTENDANCE": "Record attendance",
+    "SAMPLE_NOTE": "Sample data for display only. It is replaced by the real numbers when the dashboard is connected to the backend.",
+    "TODAY": {
+      "TITLE": "Today's attendance",
+      "UPDATED": "Updated {{time}}",
+      "REFRESH": "Refresh today's attendance",
+      "COMPLETE_LABEL": "Sections that finished attendance",
+      "OF": "of {{total}}",
+      "PROGRESS_ARIA": "{{done}} of {{total}} sections finished attendance",
+      "PARTIAL": {
+        "ZERO": "No partial sections",
+        "ONE": "1 partial section",
+        "TWO": "2 partial sections",
+        "FEW": "{{count}} partial sections",
+        "MANY": "{{count}} partial sections",
+        "OTHER": "{{count}} partial sections"
+      },
+      "NOT_STARTED": {
+        "ZERO": "every section started",
+        "ONE": "1 not started",
+        "TWO": "2 not started",
+        "FEW": "{{count}} not started",
+        "MANY": "{{count}} not started",
+        "OTHER": "{{count}} not started"
+      },
+      "ABSENT_LABEL": "Absent today",
+      "ABSENT_CAPTION": "In the sections that recorded",
+      "RATE_LABEL": "Attendance rate",
+      "RATE_CAPTION": "{{present}} present of {{recorded}} recorded",
+      "LEGEND": {
+        "COMPLETE": "Complete",
+        "PARTIAL": "Partial",
+        "NOT_STARTED": "Not started"
+      },
+      "MAP_ARIA": "Today's attendance in each section",
+      "CELL": {
+        "ABSENT": "{{count}} absent",
+        "NONE_ABSENT": "None absent",
+        "PARTIAL": "{{recorded}} of {{total}}",
+        "NOT_STARTED": "Not started"
+      },
+      "ABSENTEES": "Absentees and parent phone numbers",
+      "DAILY_SUMMARY": "Daily summary"
+    },
+    "STATS": {
+      "ARIA": "Current term numbers",
+      "STUDENTS": "Active students",
+      "IN_SECTIONS": {
+        "ZERO": "No sections",
+        "ONE": "In 1 section",
+        "TWO": "In 2 sections",
+        "FEW": "In {{count}} sections",
+        "MANY": "In {{count}} sections",
+        "OTHER": "In {{count}} sections"
+      },
+      "TEACHERS": "Teachers",
+      "TEACHERS_CAPTION": "Active accounts",
+      "PARENTS": "Parents",
+      "PARENTS_CAPTION": "Linked to students",
+      "CLASSES": "Classes",
+      "CLASSES_CAPTION": "{{first}} to {{last}}"
+    },
+    "ATTENTION": {
+      "TITLE": "Needs your attention",
+      "ALL_CLEAR": "Nothing needs your attention right now.",
+      "NOT_STARTED": {
+        "ZERO": "Every section started attendance",
+        "ONE": "1 section has not started attendance",
+        "TWO": "2 sections have not started attendance",
+        "FEW": "{{count}} sections have not started attendance",
+        "MANY": "{{count}} sections have not started attendance",
+        "OTHER": "{{count}} sections have not started attendance"
+      },
+      "RECORD_NOW": "Record now",
+      "PARTIAL": {
+        "ZERO": "No section recorded partly",
+        "ONE": "1 section recorded partly",
+        "TWO": "2 sections recorded partly",
+        "FEW": "{{count}} sections recorded partly",
+        "MANY": "{{count}} sections recorded partly",
+        "OTHER": "{{count}} sections recorded partly"
+      },
+      "PARTIAL_LINE": "{{name}}: {{recorded}} of {{total}} students",
+      "COMPLETE": "Complete",
+      "PLANS": {
+        "ZERO": "Every subject plan is complete",
+        "ONE": "1 subject plan is incomplete",
+        "TWO": "2 subject plans are incomplete",
+        "FEW": "{{count}} subject plans are incomplete",
+        "MANY": "{{count}} subject plans are incomplete",
+        "OTHER": "{{count}} subject plans are incomplete"
+      },
+      "PLANS_LINE": "The weights add up to less than 100%, so teachers cannot enter grades",
+      "REVIEW_PLANS": "Review plans",
+      "VIEW_PLANS": "View plans",
+      "OFFICER": "Attendance officer: {{name}}",
+      "OFFICER_LINE": "Records today's attendance only",
+      "NO_OFFICER": "No attendance officer is set",
+      "NO_OFFICER_LINE": "Only the Admin and the Assistant Principal record attendance now",
+      "CHANGE": "Change",
+      "SET_OFFICER": "Set"
+    },
+    "TERM": {
+      "TITLE": "Current term",
+      "GRADES_OPEN": "Grades open",
+      "GRADES_CLOSED": "Grades closed",
+      "TERM": "Term",
+      "FROM": "From",
+      "TO": "To",
+      "WEEK": "Week",
+      "WEEK_VALUE": "{{week}} of {{total}}",
+      "CLOSE_NOTE": "Once the grades are approved at the end of the term, close them from Academic years before the student rollover.",
+      "YEARS_LINK": "Academic years and terms"
+    }
   },
-  "ASSISTANT_PRINCIPAL_DASHBOARD": {
-    "WELCOME": "Welcome back,",
-    "SUBTITLE": "Overview of school activities",
-    "STUDENTS": "Students",
-    "TEACHERS": "Teachers",
-    "CLASSES": "Classes",
-    "SECTIONS": "Sections",
-    "ATTENDANCE_STATISTICS": "Attendance Statistics",
-    "RESULTS": "Results",
-    "ADMINISTRATIVE_INFORMATION": "Administrative Information"
-  },
+
   "TEACHER_DASHBOARD": {
     "WELCOME": "Welcome back,",
     "SUBTITLE": "Overview of your teaching activities",

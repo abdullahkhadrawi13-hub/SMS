@@ -114,37 +114,126 @@
     "EDIT_NOTE": "لتعديل الاسم أو رقم الهاتف تواصل مع إدارة المدرسة."
   },
 
-  "ADMIN_DASHBOARD": {
-    "TITLE": "لوحة تحكم المدير",
-    "WELCOME": "مرحبًا بعودتك،",
-    "SUBTITLE": "إليك ملخصًا لما يحدث في مدرستك اليوم.",
-    "TOTAL_STUDENTS": "إجمالي الطلاب",
-    "TOTAL_TEACHERS": "إجمالي المعلمين",
-    "TOTAL_PARENTS": "إجمالي أولياء الأمور",
-    "TOTAL_CLASSES": "إجمالي الصفوف",
-    "ATTENDANCE_OVERVIEW": "ملخص الحضور",
-    "PRESENT": "الحاضرون",
-    "ABSENT": "الغائبون",
-    "ATTENDANCE_RATE": "نسبة الحضور",
-    "QUICK_ACTIONS": "إجراءات سريعة",
-    "STUDENTS": "الطلاب",
-    "TEACHERS": "المعلمون",
-    "PARENTS": "أولياء الأمور",
-    "REPORTS": "التقارير",
-    "RECENT_ACTIVITY": "آخر النشاطات",
-    "NO_RECENT_ACTIVITY": "لا توجد نشاطات حديثة"
+  "DASHBOARD": {
+    "TITLE": "لوحة التحكم",
+    "SUBTITLE": "حضور اليوم، وما يحتاج انتباهك، والفصل الحالي.",
+    "ADD_STUDENT": "إضافة طالب",
+    "RECORD_ATTENDANCE": "تسجيل الحضور",
+    "SAMPLE_NOTE": "بيانات تجريبية للعرض فقط. تُستبدل بالأرقام الحقيقية عند ربط اللوحة بالـ backend.",
+    "TODAY": {
+      "TITLE": "حضور اليوم",
+      "UPDATED": "آخر تحديث {{time}}",
+      "REFRESH": "تحديث حضور اليوم",
+      "COMPLETE_LABEL": "شعب أكملت تسجيل الحضور",
+      "OF": "من {{total}}",
+      "PROGRESS_ARIA": "{{done}} من {{total}} شعبة أكملت تسجيل الحضور",
+      "PARTIAL": {
+        "ZERO": "لا توجد شعب جزئية",
+        "ONE": "شعبة واحدة جزئية",
+        "TWO": "شعبتان جزئيتان",
+        "FEW": "{{count}} شعب جزئية",
+        "MANY": "{{count}} شعبة جزئية",
+        "OTHER": "{{count}} شعبة جزئية"
+      },
+      "NOT_STARTED": {
+        "ZERO": "كل الشعب بدأت",
+        "ONE": "شعبة واحدة لم تبدأ",
+        "TWO": "شعبتان لم تبدآ",
+        "FEW": "{{count}} شعب لم تبدأ",
+        "MANY": "{{count}} شعبة لم تبدأ",
+        "OTHER": "{{count}} شعبة لم تبدأ"
+      },
+      "ABSENT_LABEL": "الغائبون اليوم",
+      "ABSENT_CAPTION": "في الشعب التي سجّلت",
+      "RATE_LABEL": "نسبة الحضور",
+      "RATE_CAPTION": "{{present}} حاضرًا من {{recorded}} سُجّلوا",
+      "LEGEND": {
+        "COMPLETE": "مكتملة",
+        "PARTIAL": "جزئية",
+        "NOT_STARTED": "لم تبدأ"
+      },
+      "MAP_ARIA": "حضور اليوم في كل شعبة",
+      "CELL": {
+        "ABSENT": "غياب {{count}}",
+        "NONE_ABSENT": "بلا غياب",
+        "PARTIAL": "{{recorded}} من {{total}}",
+        "NOT_STARTED": "لم تبدأ"
+      },
+      "ABSENTEES": "قائمة الغائبين وأرقام أولياء الأمور",
+      "DAILY_SUMMARY": "الملخص اليومي"
+    },
+    "STATS": {
+      "ARIA": "أرقام الفصل الحالي",
+      "STUDENTS": "الطلاب الفاعلون",
+      "IN_SECTIONS": {
+        "ZERO": "لا توجد شعب",
+        "ONE": "في شعبة واحدة",
+        "TWO": "في شعبتين",
+        "FEW": "في {{count}} شعب",
+        "MANY": "في {{count}} شعبة",
+        "OTHER": "في {{count}} شعبة"
+      },
+      "TEACHERS": "المعلمون",
+      "TEACHERS_CAPTION": "حسابات فعّالة",
+      "PARENTS": "أولياء الأمور",
+      "PARENTS_CAPTION": "مرتبطون بطلاب",
+      "CLASSES": "الصفوف",
+      "CLASSES_CAPTION": "{{first}} إلى {{last}}"
+    },
+    "ATTENTION": {
+      "TITLE": "يحتاج انتباهك",
+      "ALL_CLEAR": "لا شيء يحتاج انتباهك الآن.",
+      "NOT_STARTED": {
+        "ZERO": "كل الشعب بدأت تسجيل الحضور",
+        "ONE": "شعبة واحدة لم تبدأ تسجيل الحضور",
+        "TWO": "شعبتان لم تبدآ تسجيل الحضور",
+        "FEW": "{{count}} شعب لم تبدأ تسجيل الحضور",
+        "MANY": "{{count}} شعبة لم تبدأ تسجيل الحضور",
+        "OTHER": "{{count}} شعبة لم تبدأ تسجيل الحضور"
+      },
+      "RECORD_NOW": "سجّل الآن",
+      "PARTIAL": {
+        "ZERO": "لا توجد شعب سُجّلت جزئيًا",
+        "ONE": "شعبة سُجّلت جزئيًا",
+        "TWO": "شعبتان سُجّلتا جزئيًا",
+        "FEW": "{{count}} شعب سُجّلت جزئيًا",
+        "MANY": "{{count}} شعبة سُجّلت جزئيًا",
+        "OTHER": "{{count}} شعبة سُجّلت جزئيًا"
+      },
+      "PARTIAL_LINE": "{{name}}: {{recorded}} من {{total}} طالبًا",
+      "COMPLETE": "أكمل",
+      "PLANS": {
+        "ZERO": "كل الخطط الدراسية مكتملة",
+        "ONE": "خطة دراسية واحدة غير مكتملة",
+        "TWO": "خطتان دراسيتان غير مكتملتين",
+        "FEW": "{{count}} خطط دراسية غير مكتملة",
+        "MANY": "{{count}} خطة دراسية غير مكتملة",
+        "OTHER": "{{count}} خطة دراسية غير مكتملة"
+      },
+      "PLANS_LINE": "مجموع الأوزان أقل من 100%، فلا يستطيع المعلم إدخال العلامات",
+      "REVIEW_PLANS": "راجع الخطط",
+      "VIEW_PLANS": "عرض الخطط",
+      "OFFICER": "مسؤول الحضور: {{name}}",
+      "OFFICER_LINE": "يسجّل حضور اليوم فقط",
+      "NO_OFFICER": "لم يُحدَّد مسؤول للحضور",
+      "NO_OFFICER_LINE": "المدير ومساعده فقط يسجّلون الحضور الآن",
+      "CHANGE": "تغيير",
+      "SET_OFFICER": "تحديد"
+    },
+    "TERM": {
+      "TITLE": "الفصل الحالي",
+      "GRADES_OPEN": "العلامات مفتوحة",
+      "GRADES_CLOSED": "العلامات مغلقة",
+      "TERM": "الفصل",
+      "FROM": "من",
+      "TO": "إلى",
+      "WEEK": "الأسبوع",
+      "WEEK_VALUE": "{{week}} من {{total}}",
+      "CLOSE_NOTE": "بعد اعتماد العلامات في نهاية الفصل، أغلقها من صفحة السنوات والفصول قبل ترحيل الطلاب.",
+      "YEARS_LINK": "السنوات والفصول الدراسية"
+    }
   },
-  "ASSISTANT_PRINCIPAL_DASHBOARD": {
-    "WELCOME": "مرحبًا بعودتك،",
-    "SUBTITLE": "نظرة عامة على أنشطة المدرسة",
-    "STUDENTS": "الطلاب",
-    "TEACHERS": "المعلمون",
-    "CLASSES": "الصفوف",
-    "SECTIONS": "الشُعب",
-    "ATTENDANCE_STATISTICS": "إحصائيات الحضور",
-    "RESULTS": "النتائج",
-    "ADMINISTRATIVE_INFORMATION": "المعلومات الإدارية"
-  },
+
   "TEACHER_DASHBOARD": {
     "WELCOME": "مرحبًا بعودتك،",
     "SUBTITLE": "نظرة عامة على أنشطتك التعليمية",
