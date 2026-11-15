@@ -8,21 +8,20 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Permissions } from '../../../core/services/permissions';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 
-// Colors available for the icon of an option.
-// Each color is defined in settings-page.css (.color-...).
-type SettingsOptionColor = 'blue' | 'green' | 'orange' | 'purple' | 'red';
-
 // One option of the settings list.
 // Each option opens a sub-route of /settings.
 interface SettingsOption {
   title: string;
   description: string;
   icon: string;
-  color: SettingsOptionColor;
   route: string;
 
   // Who sees the option (from the Permissions service).
   visible: Signal<boolean>;
+
+  // True when the user can open the option but not change anything
+  // (the AssistantPrincipal on the academic years): a "View only" badge.
+  readOnly?: Signal<boolean>;
 }
 
 @Component({
@@ -50,16 +49,15 @@ export class SettingsPage {
       title: 'SETTINGS.OPTIONS.ACADEMIC_YEARS.TITLE',
       description: 'SETTINGS.OPTIONS.ACADEMIC_YEARS.DESCRIPTION',
       icon: 'calendar_month',
-      color: 'blue',
       route: 'academic-years',
-      visible: this.permissions.canViewAcademicYears
+      visible: this.permissions.canViewAcademicYears,
+      readOnly: computed(() => !this.permissions.canManageAcademicYears())
     },
 
     {
       title: 'SETTINGS.OPTIONS.ATTENDANCE_OFFICER.TITLE',
       description: 'SETTINGS.OPTIONS.ATTENDANCE_OFFICER.DESCRIPTION',
       icon: 'how_to_reg',
-      color: 'orange',
       route: 'attendance-officer',
       visible: this.permissions.canManageAttendanceOfficer
     },
@@ -68,7 +66,6 @@ export class SettingsPage {
       title: 'SETTINGS.OPTIONS.ROLLOVER.TITLE',
       description: 'SETTINGS.OPTIONS.ROLLOVER.DESCRIPTION',
       icon: 'move_up',
-      color: 'purple',
       route: 'rollover',
       visible: this.permissions.canManageRollover
     }

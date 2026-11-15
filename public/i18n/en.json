@@ -1840,16 +1840,17 @@
   "SETTINGS": {
     "HEADER": {
       "TITLE": "Settings",
-      "SUBTITLE": "Manage the general school settings"
+      "SUBTITLE": "General school settings: years and terms, the attendance officer and student rollover."
     },
     "OPTIONS": {
+      "READ_ONLY": "View only",
       "ACADEMIC_YEARS": {
         "TITLE": "Academic Years & Terms",
-        "DESCRIPTION": "Manage academic years, the terms of each year and the current year"
+        "DESCRIPTION": "Manage academic years, the terms of each year and the current term"
       },
       "ATTENDANCE_OFFICER": {
         "TITLE": "Attendance Officer",
-        "DESCRIPTION": "Choose the teacher responsible for following up attendance"
+        "DESCRIPTION": "Choose the teacher who records the daily attendance"
       },
       "ROLLOVER": {
         "TITLE": "Student Rollover",
@@ -2007,7 +2008,7 @@
     "HEADER": {
       "BACK": "Settings",
       "TITLE": "Attendance Officer",
-      "SUBTITLE": "Choose the teacher responsible for recording daily attendance"
+      "SUBTITLE": "The teacher who records students' attendance every day."
     },
     "STATE": {
       "LOADING": "Loading attendance officer...",
@@ -2016,23 +2017,26 @@
     "CURRENT": {
       "TITLE": "Current officer",
       "BADGE": "Attendance officer",
-      "EMPTY_TITLE": "No attendance officer assigned yet",
-      "EMPTY_TEXT": "Search for a teacher below to assign one.",
+      "EMPTY_TITLE": "No attendance officer yet",
+      "EMPTY_TEXT": "Search for a teacher below, choose one, then press “Set as officer”.",
       "NOTE": "The attendance officer records today's attendance only and sees today's summary. The Admin and the Assistant Principal can always record and edit attendance."
     },
     "LIST": {
-      "TITLE": "Active teachers",
-      "SUBTITLE": "Select a teacher to make them the attendance officer",
+      "TITLE": "Choose a new officer",
+      "SUBTITLE": "Search by name or number, then choose one teacher.",
       "SEARCH_LABEL": "Search",
-      "SEARCH_PLACEHOLDER": "Name, number or phone...",
+      "SEARCH_PLACEHOLDER": "Search by name or teacher number",
       "SEARCH_CLEAR": "Clear search",
       "CURRENT_TAG": "Current officer",
-      "NO_RESULTS": "No teacher matches your search",
-      "SEARCH_HINT": "Search for a teacher to see the results"
+      "NO_RESULTS": "No active teacher matches the search",
+      "NO_RESULTS_TEXT": "Try another word or the teacher number.",
+      "HINT_TITLE": "Search for a teacher",
+      "HINT_TEXT": "Active teachers appear once you type in the search."
     },
     "SAVE_BAR": {
-      "SELECTED": "New attendance officer",
-      "CANCEL": "Cancel",
+      "SELECTED": "Selected teacher",
+      "HINT": "Will become the attendance officer instead of the current one after saving.",
+      "CANCEL": "Undo",
       "SAVE": "Set as officer",
       "SAVING": "Saving..."
     },

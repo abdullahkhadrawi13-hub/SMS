@@ -1,266 +1,180 @@
-/* The list component behaves like a block inside the parent page. */
+/* ================================
+   Teachers List
+   The card, avatar, second line and paginator come from
+   the shared Data table in styles.css; only the radio rows are here.
+   ================================ */
+
 :host {
   display: block;
 }
 
 
-/* ================================
-   Teacher Rows
-   ================================ */
-
-.teacher-rows {
-  display: flex;
-  flex-direction: column;
-
-  gap: 8px;
+/* The last row has no line: the card border (or the paginator) closes it. */
+.teacher-rows li:last-child .teacher-row {
+  border-bottom: 0;
 }
 
+/* One row = one button (role="radio"). */
 .teacher-row {
   width: 100%;
+  min-height: 56px;
+
+  box-sizing: border-box;
+  padding: var(--sp-2) var(--sp-4);
 
   display: flex;
   align-items: center;
 
-  gap: 14px;
-
-  padding: 12px 16px;
+  gap: var(--sp-3);
 
   /* Reset of the default button look. */
-  font: inherit;
-  color: inherit;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+
+  background: transparent;
+  color: var(--text);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
   text-align: start;
 
   cursor: pointer;
 
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-
-  box-sizing: border-box;
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+  transition: background-color var(--dur);
 }
 
-/* Hover: a very light blue, like the options of the settings list.
-   :focus-visible gives the same look when using the keyboard (Tab). */
-.teacher-row:hover:not(:disabled),
-.teacher-row:focus-visible {
-  background: #f3f8ff;
-
-  border-color: #bfdbfe;
+.teacher-row:hover:not(:disabled) {
+  background: var(--hover);
 }
 
+/* The keyboard ring sits inside the card (the card hides what overflows). */
 .teacher-row:focus-visible {
-  outline: 2px solid #2554a4;
-  outline-offset: 2px;
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* Selected (not saved yet): light blue, like an active filter. */
+.teacher-row.is-selected,
+.teacher-row.is-selected:hover {
+  background: var(--accent-soft);
+}
+
+/* The current officer: shown, but cannot be selected. */
+.teacher-row.is-current {
+  cursor: default;
+}
+
+/* Saving: the other rows cannot be clicked. */
+.teacher-row:disabled:not(.is-current) {
+  cursor: not-allowed;
 }
 
 
 /* ================================
-   Radio Circle
+   Radio circle
    ================================ */
 
 .row-radio {
-  flex-shrink: 0;
-
   width: 18px;
   height: 18px;
 
-  border: 2px solid #9ca3af;
-  border-radius: 50%;
+  flex-shrink: 0;
 
   box-sizing: border-box;
 
-  transition: border 0.2s ease;
-}
-
-
-/* ================================
-   Name + Details
-   ================================ */
-
-.row-text {
-  flex: 1;
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-}
-
-.row-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.5;
-
-  color: #111827;
-}
-
-.row-details {
   display: flex;
   align-items: center;
+  justify-content: center;
 
-  gap: 8px;
+  background: var(--surface);
 
-  font-size: 12px;
-  line-height: 1.5;
+  border: 2px solid var(--control);
+  border-radius: 50%;
 
-  color: #6b7280;
+  transition: border-color var(--dur);
 }
 
-.details-dot {
-  width: 4px;
-  height: 4px;
+.teacher-row.is-selected .row-radio {
+  border-color: var(--accent);
+}
+
+.teacher-row.is-selected .row-radio::after {
+  content: '';
+
+  width: 8px;
+  height: 8px;
 
   border-radius: 50%;
 
-  background: #9ca3af;
+  background: var(--accent);
+}
+
+.teacher-row.is-current .row-radio {
+  border-color: var(--border);
+
+  background: var(--raised);
 }
 
 
 /* ================================
-   Selected Row (chosen, not saved yet)
+   Text
    ================================ */
 
-.teacher-row.selected {
-  background: #f3f8ff;
+.row-name {
+  overflow: hidden;
 
-  border-color: #2554a4;
+  font-weight: 600;
+  line-height: 1.4;
 
-  /* A second line inside the border makes it look 2px thick
-     without moving the content of the row. */
-  box-shadow: inset 0 0 0 1px #2554a4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.teacher-row.selected .row-radio {
-  border: 5px solid #2554a4;
-}
-
-.teacher-row.selected .row-name {
-  color: #1e3a8a;
+.row-details {
+  font-variant-numeric: tabular-nums;
 }
 
 
-/* ================================
-   Current Officer Row
-   ================================ */
-
-.teacher-row.current {
-  cursor: default;
-
-  background: #f9fafb;
-}
-
-.teacher-row.current .row-radio {
-  border-color: #d1d5db;
-}
-
-.teacher-row.current .row-name {
-  color: #6b7280;
-}
-
+/* "Current officer": a grey badge (like "Inactive"). */
 .row-tag {
+  height: 24px;
+
   flex-shrink: 0;
 
-  padding: 4px 10px;
+  box-sizing: border-box;
+  padding: 0 10px;
 
-  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
 
-  font-size: 12px;
+  background: var(--raised);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+
+  color: var(--muted);
+
+  font-size: var(--fs-12);
   font-weight: 600;
 
   white-space: nowrap;
-
-  background: #fef3c7;
-  color: #92400e;
-}
-
-/* Rows that cannot be clicked while saving. */
-.teacher-row:disabled:not(.current) {
-  cursor: default;
-
-  opacity: 0.6;
 }
 
 
 /* ================================
-   Pagination
+   Phone: 44px touch targets
    ================================ */
 
-.list-paginator {
-  margin-top: 8px;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-}
-
-
-/* ================================
-   Reduced Motion
-   ================================ */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .teacher-row,
-  .row-radio {
-    transition: none;
-  }
-
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
+@media (max-width: 719.98px) {
 
   .teacher-row {
-    flex-wrap: wrap;
+    min-height: 64px;
 
-    padding: 12px;
+    padding-inline: var(--sp-3);
   }
 
-}
+  .row-name {
+    white-space: normal;
+  }
 
-
-/* ================================
-   Refreshing (reload while data is shown)
-   ================================ */
-
-/* So the refresh bar can sit on top of the card. */
-.list-body {
-  position: relative;
-}
-
-/* Thin bar on the top edge; absolute, so the card height never changes. */
-.refresh-bar {
-  position: absolute;
-
-  top: 0;
-  left: 0;
-  right: 0;
-
-  z-index: 2;
-}
-
-.teacher-rows {
-  transition: opacity 0.15s ease;
-}
-
-/* Old data fades a little and cannot be clicked until the new data arrives. */
-.list-body.is-refreshing .teacher-rows {
-  opacity: 0.55;
-
-  pointer-events: none;
 }

@@ -4,7 +4,8 @@
   <app-state-card
     type="empty"
     icon="person_search"
-    [message]="'ATTENDANCE_OFFICER.LIST.SEARCH_HINT' | translate"
+    [title]="'ATTENDANCE_OFFICER.LIST.HINT_TITLE' | translate"
+    [message]="'ATTENDANCE_OFFICER.LIST.HINT_TEXT' | translate"
   />
 
 }
@@ -36,7 +37,8 @@
   <app-state-card
     type="empty"
     icon="search_off"
-    [message]="'ATTENDANCE_OFFICER.LIST.NO_RESULTS' | translate"
+    [title]="'ATTENDANCE_OFFICER.LIST.NO_RESULTS' | translate"
+    [message]="'ATTENDANCE_OFFICER.LIST.NO_RESULTS_TEXT' | translate"
   />
 
 }
@@ -44,91 +46,102 @@
 <!-- Teachers: only one can be selected (radio group) -->
 @else {
 
-  <!-- Rows + paginator: stay on the screen while the next page loads -->
-  <div class="list-body" [class.is-refreshing]="isRefreshing()">
+  <!-- The shared table card (styles.css → Data table):
+       the rows stay on the screen while the next page loads. -->
+  <div class="data-card" [class.is-refreshing]="isRefreshing()">
 
-    <!-- Reload indicator: sits on top of the content without taking any height -->
-    @if (isRefreshing()) {
-      <mat-progress-bar
-        class="refresh-bar"
-        mode="indeterminate"
-      ></mat-progress-bar>
-    }
+    <div class="data-card-body">
 
-    <div
-      class="teacher-rows"
-      role="radiogroup"
-      [attr.aria-label]="'ATTENDANCE_OFFICER.LIST.TITLE' | translate"
-    >
+      <!-- Reload indicator: sits on the top edge without taking any height -->
+      @if (isRefreshing()) {
+        <mat-progress-bar
+          class="data-refresh"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      }
 
-      @for (teacher of teachers(); track teacher.teacherId) {
+      <ul
+        class="data-items teacher-rows"
+        role="radiogroup"
+        [attr.aria-label]="'ATTENDANCE_OFFICER.LIST.TITLE' | translate"
+      >
 
-        <!-- The whole row is one button.
-             selected: the teacher chosen by the Admin.
-             current : the teacher who is already the officer. -->
-        <button
-          type="button"
-          class="teacher-row"
-          role="radio"
-          [class.selected]="teacher.teacherId === selectedId()"
-          [class.current]="teacher.teacherId === officerId()"
-          [attr.aria-checked]="teacher.teacherId === selectedId()"
-          [disabled]="disabled() || teacher.teacherId === officerId()"
-          (click)="onSelect(teacher)"
+        @for (row of rows(); track row.teacher.teacherId) {
+
+          @let isCurrent = row.teacher.teacherId === officerId();
+          @let isSelected = row.teacher.teacherId === selectedId();
+
+          <li>
+
+            <!-- The whole row is one button.
+                 selected: the teacher chosen by the Admin.
+                 current : the teacher who is already the officer. -->
+            <button
+              type="button"
+              class="teacher-row"
+              role="radio"
+              [class.is-selected]="isSelected"
+              [class.is-current]="isCurrent"
+              [attr.aria-checked]="isSelected"
+              [disabled]="disabled() || isCurrent"
+              (click)="onSelect(row.teacher)"
+            >
+
+              <!-- Radio circle -->
+              <span class="row-radio" aria-hidden="true"></span>
+
+              <span
+                class="data-avatar"
+                [attr.data-tone]="row.avatarTone"
+                aria-hidden="true"
+              >{{ row.initials }}</span>
+
+              <!-- Name + Number · Phone -->
+              <span class="data-item-text">
+
+                <span class="row-name">{{ row.name }}</span>
+
+                <span class="data-item-line2 row-details">
+                  <span>{{ row.teacher.teacherNumber }}</span>
+                  <span aria-hidden="true">·</span>
+                  <!-- dir="ltr" keeps the phone number readable in Arabic. -->
+                  <span dir="ltr">{{ row.teacher.phoneNumber }}</span>
+                </span>
+
+              </span>
+
+              <!-- Badge of the current officer -->
+              @if (isCurrent) {
+                <span class="row-tag">
+                  {{ 'ATTENDANCE_OFFICER.LIST.CURRENT_TAG' | translate }}
+                </span>
+              }
+
+            </button>
+
+          </li>
+
+        }
+
+      </ul>
+
+      <!-- Pagination: shown only when the teachers need more than one page. -->
+      @if (totalCount() > pageSize()) {
+
+        <mat-paginator
+          [length]="totalCount()"
+          [pageIndex]="pageNumber() - 1"
+          [pageSize]="pageSize()"
+          [hidePageSize]="true"
+          [disabled]="disabled() || isLoading()"
+          (page)="pageChange.emit($event)"
+          [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
         >
-
-          <!-- Radio circle -->
-          <span class="row-radio"></span>
-
-          <!-- Name + Number + Phone -->
-          <span class="row-text">
-
-            <span class="row-name">
-              {{ getTeacherName(teacher) }}
-            </span>
-
-            <span class="row-details">
-
-              <span>{{ teacher.teacherNumber }}</span>
-
-              <span class="details-dot"></span>
-
-              <!-- dir="ltr" keeps the phone number readable in Arabic. -->
-              <span dir="ltr">{{ teacher.phoneNumber }}</span>
-
-            </span>
-
-          </span>
-
-          <!-- Tag of the current officer -->
-          @if (teacher.teacherId === officerId()) {
-            <span class="row-tag">
-              {{ 'ATTENDANCE_OFFICER.LIST.CURRENT_TAG' | translate }}
-            </span>
-          }
-
-        </button>
+        </mat-paginator>
 
       }
 
     </div>
-
-    <!-- Pagination: shown only when the teachers need more than one page. -->
-    @if (totalCount() > pageSize()) {
-
-      <mat-paginator
-        class="list-paginator"
-        [length]="totalCount()"
-        [pageIndex]="pageNumber() - 1"
-        [pageSize]="pageSize()"
-        [hidePageSize]="true"
-        [disabled]="disabled() || isLoading()"
-        (page)="pageChange.emit($event)"
-        [attr.aria-label]="'TEACHERS.TABLE.PAGINATION' | translate"
-      >
-      </mat-paginator>
-
-    }
 
   </div>
 

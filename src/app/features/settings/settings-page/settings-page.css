@@ -1,69 +1,27 @@
 /* ================================
    Settings Page
+   Spec: البطاقات + الحالات (hover: background only, no scale).
    ================================ */
 
-.settings-page {
-  width: 100%;
-  box-sizing: border-box;
+/* One card, one row per option, a light line between the rows. */
+.settings-card {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  overflow: hidden;
 }
-
-
-/* ================================
-   Settings List
-   ================================ */
 
 .settings-list {
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
 
-  gap: 12px;
-
-  /* A little wide, but not the full width of the screen */
-  max-width: 1600px;
+  list-style: none;
 }
 
-
-/* ================================
-   Option Colors
-   Each color has 5 shades:
-     --icon        : icon color
-     --icon-hover  : lighter icon color on hover
-     --tint        : icon background
-     --tint-hover  : very light background of the option on hover
-     --border-hover: border of the option on hover
-   To add a new color: copy one block and change the values.
-   ================================ */
-
-.color-blue {
-  --icon: #2554a4;
-  --icon-hover: #3b82f6;
-  --tint: #dbeafe;
-  --tint-hover: #f3f8ff;
-  --border-hover: #bfdbfe;
-}
-
-.color-green {
-  --icon: #047857;
-  --icon-hover: #10b981;
-  --tint: #d1fae5;
-  --tint-hover: #f0fdf7;
-  --border-hover: #a7f3d0;
-}
-
-.color-orange {
-  --icon: #b45309;
-  --icon-hover: #f59e0b;
-  --tint: #fef3c7;
-  --tint-hover: #fffbeb;
-  --border-hover: #fde68a;
-}
-
-.color-purple {
-  --icon: #6d28d9;
-  --icon-hover: #8b5cf6;
-  --tint: #ede9fe;
-  --tint-hover: #f8f6ff;
-  --border-hover: #ddd6fe;
+.settings-list li + li {
+  border-top: 1px solid var(--rule);
 }
 
 
@@ -72,176 +30,138 @@
    ================================ */
 
 .settings-option {
+  min-height: 72px;
+
+  box-sizing: border-box;
+  padding: 14px 20px;
+
   display: flex;
   align-items: center;
 
-  gap: 16px;
+  gap: var(--sp-4);
 
-  padding: 16px 20px;
-
-  color: inherit;
+  color: var(--text);
   text-decoration: none;
 
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: background-color var(--dur);
 }
 
-/* Hover: the option grows a little and takes
-   a very light shade of its own color.
-   :focus-visible gives the same look when using the keyboard (Tab). */
-.settings-option:hover,
+.settings-option:hover {
+  background: var(--hover);
+}
+
+/* The keyboard ring sits inside the card (the card hides what overflows). */
 .settings-option:focus-visible {
-  transform: scale(1.015);
-
-  background: var(--tint-hover);
-
-  border-color: var(--border-hover);
-
-  box-shadow: 0 6px 18px rgba(32, 45, 73, 0.10);
-}
-
-.settings-option:focus-visible {
-  outline: 2px solid var(--icon);
-  outline-offset: 2px;
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 
-/* ================================
-   Option Icon
-   ================================ */
-
+/* Icon: 40px square, the same quiet colour for every option. */
 .option-icon {
+  width: 40px;
+  height: 40px;
+
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 46px;
-  height: 46px;
+  background: var(--raised);
 
-  color: var(--icon);
+  border: 1px solid var(--border);
+  border-radius: var(--r-control);
 
-  background: var(--tint);
-
-  border-radius: 10px;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
+  color: var(--muted);
 }
 
-/* On hover the icon color becomes lighter,
-   on a white background. */
-.settings-option:hover .option-icon,
-.settings-option:focus-visible .option-icon {
-  color: var(--icon-hover);
+.option-icon mat-icon {
+  width: 20px;
+  height: 20px;
 
-  background: #ffffff;
+  font-size: 20px;
 }
 
 
-/* ================================
-   Option Text
-   ================================ */
-
+/* Title + Description */
 .option-text {
   flex: 1;
   min-width: 0;
 
   display: flex;
   flex-direction: column;
-
-  gap: 4px;
 }
 
 .option-title {
-  font-size: 16px;
+  font-size: var(--fs-14);
   font-weight: 600;
   line-height: 1.4;
-
-  color: #111827;
 }
 
 .option-description {
-  font-size: 13px;
+  font-size: var(--fs-13);
   line-height: 1.5;
 
-  color: #6b7280;
+  color: var(--muted);
 }
 
 
-/* ================================
-   Option Arrow
-   ================================ */
+/* "View only" */
+.option-badge {
+  height: 24px;
 
+  flex-shrink: 0;
+
+  box-sizing: border-box;
+  padding: 0 10px;
+
+  display: inline-flex;
+  align-items: center;
+
+  background: var(--raised);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+
+  color: var(--muted);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+/* Arrow */
 .option-arrow {
   flex-shrink: 0;
 
-  color: #9ca3af;
+  width: 20px;
+  height: 20px;
 
-  transition:
-    transform 0.2s ease,
-    color 0.2s ease;
+  font-size: 20px;
+
+  color: var(--faint);
+
+  transition: color var(--dur);
 }
 
-.settings-option:hover .option-arrow,
-.settings-option:focus-visible .option-arrow {
-  color: var(--icon-hover);
-
-  transform: translateX(4px);
-}
-
-/* Arabic (RTL): the arrow points to the left
-   and moves to the left on hover. */
-:host-context([dir='rtl']) .option-arrow {
-  transform: scaleX(-1);
-}
-
-:host-context([dir='rtl']) .settings-option:hover .option-arrow,
-:host-context([dir='rtl']) .settings-option:focus-visible .option-arrow {
-  transform: scaleX(-1) translateX(4px);
-}
-
-
-/* Users who turned off animations in their system
-   still get the color change, without the movement. */
-@media (prefers-reduced-motion: reduce) {
-
-  .settings-option,
-  .option-icon,
-  .option-arrow {
-    transition: none;
-  }
-
-  .settings-option:hover,
-  .settings-option:focus-visible {
-    transform: none;
-  }
-
+.settings-option:hover .option-arrow {
+  color: var(--text);
 }
 
 
 /* ================================
-   Responsive
+   Phone
    ================================ */
 
-@media (max-width: 650px) {
-
-  
+@media (max-width: 719.98px) {
 
   .settings-option {
-    gap: 12px;
+    padding: 12px var(--sp-4);
 
-    padding: 14px 16px;
+    gap: var(--sp-3);
   }
 
 }

@@ -6,41 +6,54 @@
     [subtitle]="'SETTINGS.HEADER.SUBTITLE' | translate"
   />
 
-  <!-- Settings Options -->
-  <nav class="settings-list">
+  <!-- Settings Options: one card, one row per option -->
+  <nav
+    class="settings-card"
+    [attr.aria-label]="'SETTINGS.HEADER.TITLE' | translate"
+  >
 
-    @for (option of options(); track option.route) {
+    <ul class="settings-list">
 
-      <!-- The whole option is one link to its sub-route.
-           color-... gives the option its own color. -->
-      <a
-        class="settings-option"
-        [class]="'color-' + option.color"
-        [routerLink]="option.route"
-      >
+      @for (option of options(); track option.route) {
 
-        <!-- Icon -->
-        <span class="option-icon">
-          <mat-icon>{{ option.icon }}</mat-icon>
-        </span>
+        <li>
 
-        <!-- Title + Description -->
-        <span class="option-text">
-          <span class="option-title">
-            {{ option.title | translate }}
-          </span>
+          <!-- The whole row is one link to its sub-route. -->
+          <a class="settings-option" [routerLink]="option.route">
 
-          <span class="option-description">
-            {{ option.description | translate }}
-          </span>
-        </span>
+            <!-- Icon (one quiet colour for every option) -->
+            <span class="option-icon" aria-hidden="true">
+              <mat-icon>{{ option.icon }}</mat-icon>
+            </span>
 
-        <!-- Arrow (flipped automatically in Arabic) -->
-        <mat-icon class="option-arrow">chevron_right</mat-icon>
+            <!-- Title + Description -->
+            <span class="option-text">
+              <span class="option-title">
+                {{ option.title | translate }}
+              </span>
 
-      </a>
+              <span class="option-description">
+                {{ option.description | translate }}
+              </span>
+            </span>
 
-    }
+            <!-- "View only" (the AssistantPrincipal on the academic years) -->
+            @if (option.readOnly?.()) {
+              <span class="option-badge">
+                {{ 'SETTINGS.OPTIONS.READ_ONLY' | translate }}
+              </span>
+            }
+
+            <!-- Arrow: .flip turns it in Arabic -->
+            <mat-icon class="option-arrow flip" aria-hidden="true">chevron_right</mat-icon>
+
+          </a>
+
+        </li>
+
+      }
+
+    </ul>
 
   </nav>
 
