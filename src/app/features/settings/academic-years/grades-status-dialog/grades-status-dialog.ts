@@ -71,6 +71,12 @@ export class GradesStatusDialog {
     'ACADEMIC_YEARS.GRADES_DIALOG.BLOCKED.PLACEMENTS'
   ];
 
+  constructor() {
+    // 10px corners and the floating shadow (styles.css: "Confirm dialog panel"),
+    // the same panel as the shared confirm dialog.
+    this.dialogRef.addPanelClass('confirm-dialog-panel');
+  }
+
   confirm(): void {
     this.dialogRef.close(true);
   }

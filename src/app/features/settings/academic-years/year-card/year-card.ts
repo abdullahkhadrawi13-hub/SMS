@@ -1,4 +1,5 @@
 import { Component, computed, inject, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -25,12 +26,22 @@ import {
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
 // One academic year: a header that opens / closes the card,
-// and the table of its terms.
+// and the table of its terms (a two-line list on the phone).
 // All data is loaded by the parent page; the card only shows it
 // and tells the parent what the user clicked.
+//
+// Navy & gold (15 Nov 2026):
+//   - the shared card and table look (.data-card, .data-table in styles.css)
+//   - one status badge per term: current (green), active (outlined green)
+//     or inactive (grey); the current term also has the gold dot
+//   - the grades are text with a lock, not a second badge
+//   - "Set as current term" is the first item of the term's ⋮ menu
+//     (it was a column of its own, mostly "—")
+//   - on the phone "Add term" moves into the year's ⋮ menu
 @Component({
   selector: 'app-year-card',
   imports: [
+    NgTemplateOutlet,
     MatButtonModule,
     MatDividerModule,
     MatIconModule,
@@ -62,6 +73,9 @@ export class YearCard {
   // id of the term with a request running (disables the term actions).
   readonly busyTermId = input<number | null>(null);
 
+  // Under 720px: the terms become a two-line list (from the page).
+  readonly isPhone = input(false);
+
   // ===== Outputs =====
 
   readonly toggle = output<void>();
@@ -86,14 +100,25 @@ export class YearCard {
   // The grades column (open / closed) is shown to everyone.
   readonly displayedColumns = computed(() =>
     this.canManage()
-      ? ['number', 'name', 'period', 'status', 'grades', 'current', 'actions']
-      : ['number', 'name', 'period', 'status', 'grades', 'current']
+      ? ['number', 'name', 'period', 'status', 'grades', 'actions']
+      : ['number', 'name', 'period', 'status', 'grades']
   );
 
   // id used by aria-controls on the open / close button.
-  readonly tableId = computed(
+  readonly bodyId = computed(
     () => `year-terms-${this.view().year.academicYearId}`
   );
+
+  // "لا فصول بعد" / "فصل واحد" / "فصلان" / "3 فصول" under the year name.
+  readonly termsCountKey = computed(() => {
+    const count = this.view().terms.length;
+
+    if (count === 0) return 'ACADEMIC_YEARS.YEAR_CARD.TERMS_COUNT.NONE';
+    if (count === 1) return 'ACADEMIC_YEARS.YEAR_CARD.TERMS_COUNT.ONE';
+    if (count === 2) return 'ACADEMIC_YEARS.YEAR_CARD.TERMS_COUNT.TWO';
+
+    return 'ACADEMIC_YEARS.YEAR_CARD.TERMS_COUNT.FEW';
+  });
 
   readonly yearRange = computed(() => {
     const { year } = this.view();

@@ -1,120 +1,131 @@
-@if (term(); as currentTerm) {
+<!-- The current term of the school: a plain white card (navy & gold, 15 Nov 2026) -->
+<section class="ct-card" aria-labelledby="ct-title">
 
-  <!-- The current term -->
-  <section
-    class="banner"
-    [attr.aria-label]="'ACADEMIC_YEARS.BANNER.LABEL' | translate"
-  >
+  <header class="ct-head">
 
-    <div class="banner-main">
+    <h2 id="ct-title">
+      {{ 'ACADEMIC_YEARS.BANNER.LABEL' | translate }}
+    </h2>
 
-      <div class="banner-icon">
-        <mat-icon>event_available</mat-icon>
-      </div>
-
-      <div class="banner-text">
-
-        <span class="banner-label">
-          {{ 'ACADEMIC_YEARS.BANNER.LABEL' | translate }}
-        </span>
-
-        <span class="banner-title">
-          {{ termName() }}
-
-          @if (year(); as currentYear) {
-            · <span dir="ltr">{{ currentYear.yearName }}</span>
-          }
-        </span>
-
-        <span class="banner-dates">
-          {{ dateRange() }}
-        </span>
-
-      </div>
-
-    </div>
-
-    <!-- Days and progress bar -->
-    @if (progress(); as p) {
-
-      <div class="banner-progress">
-
-        <div class="progress-labels">
-
-          @switch (p.phase) {
-
-            @case ('running') {
-              <span>
-                {{ 'ACADEMIC_YEARS.BANNER.ELAPSED' | translate: { count: p.elapsed } }}
-              </span>
-
-              <span>
-                {{ 'ACADEMIC_YEARS.BANNER.REMAINING' | translate: { count: p.remaining } }}
-              </span>
-            }
-
-            @case ('not-started') {
-              <span>
-                {{ 'ACADEMIC_YEARS.BANNER.NOT_STARTED' | translate: { count: p.untilStart } }}
-              </span>
-            }
-
-            @case ('ended') {
-              <span>
-                {{ 'ACADEMIC_YEARS.BANNER.ENDED' | translate }}
-              </span>
-            }
-
-          }
-
-        </div>
-
-        <div
-          class="progress-track"
-          role="progressbar"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          [attr.aria-valuenow]="p.percent"
-        >
-          <div
-            class="progress-fill"
-            [style.width.%]="p.percent"
-          ></div>
-        </div>
-
-      </div>
-
+    @if (term()) {
+      <span class="ct-meta">
+        {{ 'ACADEMIC_YEARS.BANNER.META' | translate }}
+      </span>
     }
 
-  </section>
+  </header>
 
-} @else {
 
-  <!-- No current term yet -->
-  <section class="banner banner-empty">
+  @if (term(); as currentTerm) {
 
-    <div class="banner-main">
+    <div class="ct-body">
 
-      <div class="banner-icon">
-        <mat-icon>event_busy</mat-icon>
+      <!-- Name · year, then the dates and the number of days -->
+      <div class="ct-main">
+
+        <p class="ct-name">
+          <span class="ct-dot" aria-hidden="true"></span>
+
+          <span>
+            {{ termName() }}
+
+            @if (year(); as currentYear) {
+              · <span class="tabular" dir="ltr">{{ currentYear.yearName }}</span>
+            }
+          </span>
+        </p>
+
+        <p class="ct-dates tabular">
+          {{ dateRange() }}
+
+          @if (progress(); as p) {
+            · {{ 'ACADEMIC_YEARS.TERMS_TABLE.DAYS' | translate: { count: p.total } }}
+          }
+        </p>
+
       </div>
 
-      <div class="banner-text">
 
-        <span class="banner-title">
+      <!-- Days passed / left and the gold progress bar -->
+      @if (progress(); as p) {
+
+        <div class="ct-progress">
+
+          <div class="ct-labels tabular">
+
+            @switch (p.phase) {
+
+              @case ('running') {
+                <span>
+                  {{ 'ACADEMIC_YEARS.BANNER.ELAPSED' | translate: { count: p.elapsed } }}
+                </span>
+
+                <span>
+                  {{ 'ACADEMIC_YEARS.BANNER.REMAINING' | translate: { count: p.remaining } }}
+                </span>
+              }
+
+              @case ('not-started') {
+                <span>
+                  {{ 'ACADEMIC_YEARS.BANNER.NOT_STARTED' | translate: { count: p.untilStart } }}
+                </span>
+              }
+
+              @case ('ended') {
+                <span>
+                  {{ 'ACADEMIC_YEARS.BANNER.ENDED' | translate }}
+                </span>
+              }
+
+            }
+
+          </div>
+
+          <div
+            class="ct-track"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="p.percent"
+            [attr.aria-label]="'ACADEMIC_YEARS.BANNER.PROGRESS' | translate"
+          >
+            <div
+              class="ct-fill"
+              [style.width.%]="p.percent"
+            ></div>
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  } @else {
+
+    <!-- No current term yet -->
+    <div class="ct-body ct-none">
+
+      <span class="ct-none-icon" aria-hidden="true">
+        <mat-icon>event_busy</mat-icon>
+      </span>
+
+      <div>
+        <p class="ct-none-title">
           {{ 'ACADEMIC_YEARS.BANNER.NONE_TITLE' | translate }}
-        </span>
+        </p>
 
-        @if (canManage()) {
-          <span class="banner-dates">
-            {{ 'ACADEMIC_YEARS.BANNER.NONE_HINT' | translate }}
-          </span>
-        }
-
+        <p class="ct-none-hint">
+          {{
+            (canManage()
+              ? 'ACADEMIC_YEARS.BANNER.NONE_HINT'
+              : 'ACADEMIC_YEARS.BANNER.NONE_HINT_READ_ONLY') | translate
+          }}
+        </p>
       </div>
 
     </div>
 
-  </section>
+  }
 
-}
+</section>

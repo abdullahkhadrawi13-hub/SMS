@@ -1,5 +1,6 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 
@@ -47,12 +48,19 @@ import {
   GradesStatusDialogData
 } from '../grades-status-dialog/grades-status-dialog';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
+import { PHONE_QUERY } from '../../../../layouts/dashboard-layout/dashboard-layout';
 
 // /settings/academic-years
 // The academic years of the school, each with its terms, and the current term.
 // Admin: add / edit years and terms, activate / deactivate a term,
 // set the current term, close / open a term's grades.
 // AssistantPrincipal: read only (sees whether each term's grades are closed).
+//
+// Navy & gold (15 Nov 2026): a white current-term card, then the year cards
+// with the shared table look (a two-line list on the phone). The forms use
+// the shared form dialog (panelClass 'form-dialog', full screen on the
+// phone) and ask "Discard changes?" before closing; the confirmations use
+// the confirm dialog look.
 @Component({
   selector: 'app-academic-years-page',
   imports: [
@@ -81,6 +89,11 @@ export class AcademicYearsPage {
   private readonly language = inject(Language);
   private readonly permissions = inject(Permissions);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly breakpoints = inject(BreakpointObserver);
+
+  // true when the screen is narrower than 720px (same as the layout):
+  // the year cards show their terms as a two-line list.
+  readonly isPhone = signal(this.breakpoints.isMatched(PHONE_QUERY));
 
   // Only the Admin can change years and terms.
   // The Assistant Principal can only read (the backend answers 403 on writes).
@@ -131,6 +144,11 @@ export class AcademicYearsPage {
   private hasLoadedOnce = false;
 
   constructor() {
+    this.breakpoints
+      .observe(PHONE_QUERY)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(result => this.isPhone.set(result.matches));
+
     this.loadData();
   }
 
@@ -258,6 +276,11 @@ export class AcademicYearsPage {
       .open<YearForm, YearFormData, YearFormResult>(YearForm, {
         width: '520px',
         maxWidth: '95vw',
+        maxHeight: '90vh',
+
+        // Shared form panel (styles.css): full screen on the phone
+        panelClass: 'form-dialog',
+
         direction: this.language.currentDirection(),
         data
       })
@@ -287,8 +310,13 @@ export class AcademicYearsPage {
   private openTermForm(data: TermFormData): void {
     this.dialog
       .open<TermForm, TermFormData, TermFormResult>(TermForm, {
-        width: '540px',
+        width: '600px',
         maxWidth: '95vw',
+        maxHeight: '90vh',
+
+        // Shared form panel (styles.css): full screen on the phone
+        panelClass: 'form-dialog',
+
         direction: this.language.currentDirection(),
         data
       })
@@ -383,7 +411,6 @@ export class AcademicYearsPage {
 
     this.dialog
       .open<SetCurrentDialog, SetCurrentDialogData, boolean>(SetCurrentDialog, {
-        width: '480px',
         maxWidth: '95vw',
         direction: this.language.currentDirection(),
         data
@@ -469,7 +496,6 @@ export class AcademicYearsPage {
 
     this.dialog
       .open<GradesStatusDialog, GradesStatusDialogData, boolean>(GradesStatusDialog, {
-        width: '480px',
         maxWidth: '95vw',
         direction: this.language.currentDirection(),
         data: { term, year: view.year, action }

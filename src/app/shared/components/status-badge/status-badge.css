@@ -69,6 +69,13 @@ mat-icon {
   color: var(--warn-ink);
 }
 
+/* Outlined green: white, a light green border, green text
+   (an active term; the current term keeps the filled green). */
+:host([data-tone='ok'][data-outlined]) {
+  background: var(--surface);
+  border-color: var(--ok-line);
+}
+
 /* Grey with a thin border, so it still reads as a badge on white */
 :host([data-tone='neutral']) {
   background: var(--raised);

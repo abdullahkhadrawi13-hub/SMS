@@ -3,14 +3,12 @@
   <!-- Page Header (with the back link to Settings) -->
   <app-page-header
     [title]="'ACADEMIC_YEARS.HEADER.TITLE' | translate"
-    [subtitle]="(canManage()
-      ? 'ACADEMIC_YEARS.HEADER.SUBTITLE'
-      : 'ACADEMIC_YEARS.HEADER.SUBTITLE_READ_ONLY') | translate"
+    [subtitle]="'ACADEMIC_YEARS.HEADER.SUBTITLE' | translate"
     backLink="/settings"
     [backLabel]="'ACADEMIC_YEARS.HEADER.BACK' | translate"
   >
 
-    <!-- Add year (Admin only) -->
+    <!-- Add year (Admin only): the page's one primary button -->
     @if (canManage()) {
       <button
         actions
@@ -18,7 +16,7 @@
         type="button"
         (click)="openAddYear()"
       >
-        <mat-icon>add</mat-icon>
+        <mat-icon aria-hidden="true">add</mat-icon>
 
         {{ 'ACADEMIC_YEARS.HEADER.ADD_YEAR' | translate }}
       </button>
@@ -70,29 +68,38 @@
 
       @if (years().length > 0) {
 
-        <!-- One card per year, newest first -->
-        <div class="years-list">
+        <section class="years-section" aria-labelledby="years-title">
 
-          @for (view of years(); track view.year.academicYearId) {
+          <h2 id="years-title" class="section-title">
+            {{ 'ACADEMIC_YEARS.YEARS_TITLE' | translate }}
+          </h2>
 
-            <app-year-card
-              [view]="view"
-              [expanded]="isExpanded(view.year.academicYearId)"
-              [canManage]="canManage()"
-              [busyTermId]="busyTermId()"
-              (toggle)="toggleYear(view.year.academicYearId)"
-              (editYear)="openEditYear(view.year)"
-              (addTerm)="openAddTerm(view)"
-              (editTerm)="openEditTerm(view, $event)"
-              (toggleTermStatus)="toggleTermStatus($event)"
-              (setCurrentTerm)="confirmSetCurrent(view, $event)"
-              (closeGrades)="confirmGradesStatus(view, $event, 'close')"
-              (openGrades)="confirmGradesStatus(view, $event, 'open')"
-            />
+          <!-- One card per year, newest first -->
+          <div class="years-list">
 
-          }
+            @for (view of years(); track view.year.academicYearId) {
 
-        </div>
+              <app-year-card
+                [view]="view"
+                [expanded]="isExpanded(view.year.academicYearId)"
+                [canManage]="canManage()"
+                [busyTermId]="busyTermId()"
+                [isPhone]="isPhone()"
+                (toggle)="toggleYear(view.year.academicYearId)"
+                (editYear)="openEditYear(view.year)"
+                (addTerm)="openAddTerm(view)"
+                (editTerm)="openEditTerm(view, $event)"
+                (toggleTermStatus)="toggleTermStatus($event)"
+                (setCurrentTerm)="confirmSetCurrent(view, $event)"
+                (closeGrades)="confirmGradesStatus(view, $event, 'close')"
+                (openGrades)="confirmGradesStatus(view, $event, 'open')"
+              />
+
+            }
+
+          </div>
+
+        </section>
 
       } @else {
 
@@ -109,7 +116,7 @@
               type="button"
               (click)="openAddYear()"
             >
-              <mat-icon>add</mat-icon>
+              <mat-icon aria-hidden="true">add</mat-icon>
 
               {{ 'ACADEMIC_YEARS.HEADER.ADD_YEAR' | translate }}
             </button>

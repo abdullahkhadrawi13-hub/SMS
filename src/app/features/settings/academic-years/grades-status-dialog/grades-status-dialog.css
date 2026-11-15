@@ -1,17 +1,30 @@
-/* Same layout as set-current-dialog.
-   Closing: grey (the "Closed" chip). Opening: green (the "Open" chip). */
+/* ==========================================================
+   Close / open a term's grades (navy & gold, 15 Nov 2026)
+   The look of the shared confirm dialog: an icon in a yellow circle,
+   the title, the text, what closing stops (a short list) and a note,
+   then Cancel (secondary) and the navy confirm button.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
 
 .confirm {
-  max-width: 480px;
-
-  padding-top: 20px;
+  width: 460px;
+  max-width: 100%;
 }
 
-.confirm-icon {
-  width: 48px;
-  height: 48px;
+.confirm-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 
-  margin: 0 24px;
+  gap: var(--sp-3);
+
+  padding: var(--sp-6) var(--sp-6) var(--sp-2);
+}
+
+/* Yellow circle: a change the whole school feels, not a destructive one */
+.confirm-icon {
+  width: 44px;
+  height: 44px;
 
   display: flex;
   align-items: center;
@@ -19,151 +32,158 @@
 
   border-radius: 50%;
 
-  background: #eef2f7;
-  color: #334155;
-}
-
-.confirm.opening .confirm-icon {
-  background: #f0fdf4;
-  color: #166534;
+  background: var(--warn-bg);
+  color: var(--warn-ink);
 }
 
 .confirm-icon mat-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 
-  font-size: 24px;
+  font-size: 22px;
 }
 
-mat-dialog-content p {
-  margin: 0 0 12px;
-
-  font-size: 14px;
-  line-height: 1.8;
-
-  color: #374151;
-}
-
-
-/* =========================
-   Closing: what is blocked
-   ========================= */
-
-.blocked-list {
-  margin: 0 0 12px;
+/* The Material class in the selector wins over Material's own title rules. */
+.confirm h2.mat-mdc-dialog-title {
+  margin: 0;
   padding: 0;
 
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  color: var(--text);
 
-  gap: 6px 14px;
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.confirm h2.mat-mdc-dialog-title::before {
+  display: none;
+}
+
+.confirm .mat-mdc-dialog-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-3);
+
+  margin: 0;
+  padding: 0;
+}
+
+.confirm p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  line-height: 1.7;
+}
+
+.confirm .mat-mdc-dialog-actions {
+  justify-content: flex-end;
+
+  gap: var(--sp-2);
+
+  min-height: 0;
+  padding: var(--sp-4) var(--sp-6) 20px;
+}
+
+
+/* ---------- Notes (the same look as .fd-note in styles.css) ---------- */
+
+.note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--sp-2);
+
+  padding: 10px 14px;
+
+  border-radius: var(--r-control);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+.note mat-icon {
+  flex: none;
+
+  width: 18px;
+  height: 18px;
+
+  margin-block-start: 2px;
+
+  font-size: 18px;
+}
+
+.note.info {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.note.warn {
+  border: 1px solid var(--warn-line);
+
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+
+
+/* ---------- What closing stops ---------- */
+
+.blocked-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  margin: 0;
+  padding: 0;
 
   list-style: none;
+
+  color: var(--text);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
 }
 
 .blocked-list li {
   display: flex;
   align-items: center;
 
-  gap: 6px;
-
-  font-size: 13px;
-
-  color: #374151;
+  gap: var(--sp-2);
 }
 
 .blocked-list mat-icon {
+  flex-shrink: 0;
+
   width: 16px;
   height: 16px;
 
-  flex-shrink: 0;
-
   font-size: 16px;
 
-  color: #9ca3af;
+  color: var(--bad-ink);
 }
 
 
-/* =========================
-   Info / Warning Boxes
-   ========================= */
+/* ---------- Phone (under 720px): the buttons share the width ---------- */
 
-.info-box,
-.warning-box {
-  display: flex;
-  align-items: flex-start;
+@media (max-width: 719.98px) {
 
-  gap: 10px;
+  .confirm-body {
+    padding: 20px var(--sp-4) var(--sp-2);
+  }
 
-  padding: 10px 12px;
+  .confirm .mat-mdc-dialog-actions {
+    padding: var(--sp-4);
+  }
 
-  border-radius: 10px;
-}
-
-.info-box mat-icon,
-.warning-box mat-icon {
-  width: 20px;
-  height: 20px;
-
-  flex-shrink: 0;
-
-  font-size: 20px;
-}
-
-.info-box span,
-.warning-box span {
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.info-box {
-  background: #e6f1fb;
-  color: #0c447c;
-}
-
-.warning-box {
-  border: 1px solid #fde68a;
-
-  background: #fffbeb;
-}
-
-.warning-box mat-icon {
-  color: #b45309;
-}
-
-.warning-box span {
-  color: #78350f;
-}
-
-
-/* =========================
-   Actions
-   ========================= */
-
-.confirm-button {
-  --mat-button-filled-container-color: #334155;
-  --mat-button-filled-label-text-color: #ffffff;
-}
-
-.confirm.opening .confirm-button {
-  --mat-button-filled-container-color: #15803d;
-}
-
-mat-dialog-actions {
-  gap: 8px;
-
-  padding: 16px 24px 20px;
-}
-
-
-/* =========================
-   Responsive
-   ========================= */
-
-@media (max-width: 480px) {
-
-  .blocked-list {
-    grid-template-columns: 1fr;
+  .confirm .mat-mdc-dialog-actions .mat-mdc-button-base {
+    flex: 1;
+    height: var(--h-touch);
   }
 
 }

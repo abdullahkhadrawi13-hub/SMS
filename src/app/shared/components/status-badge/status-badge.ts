@@ -28,6 +28,9 @@ export type StatusBadgeTone = 'ok' | 'bad' | 'warn' | 'neutral' | 'gold';
 //
 // - tone: the colour (see StatusBadgeTone). Default 'neutral'.
 // - icon: optional Material Symbol, shown instead of the dot.
+// - outlined: white with a coloured border, for the quieter of two states
+//   of the same kind (an active term next to the green "current term";
+//   added 15 Nov 2026). Only the 'ok' tone has an outlined look.
 // - The text is the content, already translated.
 //
 // Colours: src/tokens.css only (--ok-bg, --ok-ink, ...).
@@ -38,9 +41,11 @@ export type StatusBadgeTone = 'ok' | 'bad' | 'warn' | 'neutral' | 'gold';
   styleUrl: './status-badge.css',
   host: {
     '[attr.data-tone]': 'tone()',
+    '[attr.data-outlined]': 'outlined() ? "" : null',
   },
 })
 export class StatusBadge {
   readonly tone = input<StatusBadgeTone>('neutral');
   readonly icon = input<string | null>(null);
+  readonly outlined = input(false);
 }

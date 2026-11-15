@@ -1,4 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { MatDateFormats } from '@angular/material/core';
 
 import { AcademicYear } from '../../../core/models/academic-year';
 import { AcademicTerm } from '../../../core/models/academic-term';
@@ -94,6 +95,22 @@ export function getDateLocale(isArabic: boolean): string {
   return isArabic ? DATE_LOCALE_AR : DATE_LOCALE_EN;
 }
 
+// The date fields of the year and term forms show the date with the month
+// name ("1 أيلول 2026"), the same as the page (15 Nov 2026). The input is
+// read-only (the date is picked from the calendar), so nothing is parsed.
+//   providers: [provideNativeDateAdapter(LONG_DATE_FORMATS)]
+export const LONG_DATE_FORMATS: MatDateFormats = {
+  parse: {
+    dateInput: null
+  },
+  display: {
+    dateInput: { day: 'numeric', month: 'long', year: 'numeric' },
+    monthYearLabel: { year: 'numeric', month: 'short' },
+    dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
+    monthYearA11yLabel: { year: 'numeric', month: 'long' }
+  }
+};
+
 // API date ("2025-09-01T00:00:00" or "2025-09-01") -> local Date at midnight.
 // Only the date part is read, so the time zone never moves the day.
 export function fromApiDate(value: string): Date {
@@ -140,6 +157,15 @@ export function countDays(start: Date, end: Date): number {
 // =====================================================
 // Form validation
 // =====================================================
+
+// "حقل واحد يحتاج تصحيحًا" / "حقلان…" / "3 حقول…" in a form's footer,
+// after pressing Add / Save with errors (the year and term forms).
+export function errorsCountKey(count: number): string {
+  if (count === 1) return 'ACADEMIC_YEARS.ERRORS_COUNT.ONE';
+  if (count === 2) return 'ACADEMIC_YEARS.ERRORS_COUNT.TWO';
+
+  return 'ACADEMIC_YEARS.ERRORS_COUNT.FEW';
+}
 
 // The end date must be after the start date (the backend checks it too).
 // Put it on the end date control; getStart reads the start date control.
