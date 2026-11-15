@@ -1,16 +1,30 @@
-/* Same layout as plan-confirm-dialog, in the teal of the current term. */
+/* ==========================================================
+   Set the current term (navy & gold, 15 Nov 2026)
+   The look of the shared confirm dialog: an icon in a yellow circle,
+   the title, the text and a yellow note, then Cancel (secondary) and
+   the navy confirm button.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
 
 .confirm {
-  max-width: 480px;
-
-  padding-top: 20px;
+  width: 460px;
+  max-width: 100%;
 }
 
-.confirm-icon {
-  width: 48px;
-  height: 48px;
+.confirm-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 
-  margin: 0 24px;
+  gap: var(--sp-3);
+
+  padding: var(--sp-6) var(--sp-6) var(--sp-2);
+}
+
+/* Yellow circle: a change the whole school feels, not a destructive one */
+.confirm-icon {
+  width: 44px;
+  height: 44px;
 
   display: flex;
   align-items: center;
@@ -18,76 +32,120 @@
 
   border-radius: 50%;
 
-  background: #ccfbf1;
-  color: #0f766e;
+  background: var(--warn-bg);
+  color: var(--warn-ink);
 }
 
 .confirm-icon mat-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 
-  font-size: 24px;
+  font-size: 22px;
 }
 
-mat-dialog-content p {
-  margin: 0 0 12px;
+/* The Material class in the selector wins over Material's own title rules. */
+.confirm h2.mat-mdc-dialog-title {
+  margin: 0;
+  padding: 0;
 
-  font-size: 14px;
-  line-height: 1.8;
+  color: var(--text);
 
-  color: #374151;
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.confirm h2.mat-mdc-dialog-title::before {
+  display: none;
+}
+
+.confirm .mat-mdc-dialog-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--sp-3);
+
+  margin: 0;
+  padding: 0;
+}
+
+.confirm p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  line-height: 1.7;
+}
+
+.confirm .mat-mdc-dialog-actions {
+  justify-content: flex-end;
+
+  gap: var(--sp-2);
+
+  min-height: 0;
+  padding: var(--sp-4) var(--sp-6) 20px;
 }
 
 
-/* =========================
-   Warning Box
-   ========================= */
+/* ---------- Notes (the same look as .fd-note in styles.css) ---------- */
 
-.warning-box {
+.note {
   display: flex;
   align-items: flex-start;
 
-  gap: 10px;
+  gap: var(--sp-2);
 
-  padding: 10px 12px;
+  padding: 10px 14px;
 
-  border: 1px solid #fde68a;
-  border-radius: 10px;
+  border-radius: var(--r-control);
 
-  background: #fffbeb;
+  font-size: var(--fs-13);
+  line-height: 1.6;
 }
 
-.warning-box mat-icon {
-  width: 20px;
-  height: 20px;
+.note mat-icon {
+  flex: none;
 
-  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
 
-  font-size: 20px;
+  margin-block-start: 2px;
 
-  color: #b45309;
+  font-size: 18px;
 }
 
-.warning-box span {
-  font-size: 13px;
-  line-height: 1.7;
+.note.info {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
 
-  color: #78350f;
+.note.warn {
+  border: 1px solid var(--warn-line);
+
+  background: var(--warn-bg);
+  color: var(--warn-ink);
 }
 
 
-/* =========================
-   Actions
-   ========================= */
+/* ---------- Phone (under 720px): the buttons share the width ---------- */
 
-/* Confirm: the teal of the current term. */
-.confirm-button {
-  --mat-button-filled-container-color: #0f5f5a;
-  --mat-button-filled-label-text-color: #ffffff;
-}
+@media (max-width: 719.98px) {
 
-mat-dialog-actions {
-  gap: 8px;
+  .confirm-body {
+    padding: 20px var(--sp-4) var(--sp-2);
+  }
 
-  padding: 16px 24px 20px;
+  .confirm .mat-mdc-dialog-actions {
+    padding: var(--sp-4);
+  }
+
+  .confirm .mat-mdc-dialog-actions .mat-mdc-button-base {
+    flex: 1;
+    height: var(--h-touch);
+  }
+
 }

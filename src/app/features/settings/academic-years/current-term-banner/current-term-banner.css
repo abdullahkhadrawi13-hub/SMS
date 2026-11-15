@@ -1,172 +1,217 @@
+/* ==========================================================
+   Current term (navy & gold, 15 Nov 2026)
+   A plain white card (spec: "البطاقات"): the term name with the gold dot
+   of the navbar's term badge, its dates, and a gold progress bar
+   (spec: "شريط التقدّم": 8px, round, --track, filled with --mark).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 :host {
   display: block;
 }
 
+.ct-card {
+  background: var(--surface);
 
-/* ================================
-   Banner (deep teal, not navy)
-   ================================ */
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+}
 
-.banner {
+
+/* ---------- Header ---------- */
+
+.ct-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+
+  gap: var(--sp-1) var(--sp-3);
+
+  padding: var(--sp-4) 20px 0;
+}
+
+.ct-head h2 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ct-meta {
+  margin-inline-start: auto;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+
+/* ---------- Body ---------- */
+
+.ct-body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 20px 28px;
+  gap: var(--sp-4) 40px;
 
-  padding: 20px 22px;
-
-  border-radius: 14px;
-
-  background: #0f5f5a;
-  color: #ffffff;
-
-  box-sizing: border-box;
+  padding: var(--sp-4) 20px 20px;
 }
 
-.banner-main {
-  display: flex;
-  align-items: center;
-
-  gap: 14px;
-
-  flex: 1 1 320px;
+.ct-main {
+  flex: 1 1 280px;
   min-width: 0;
 }
 
-.banner-icon {
-  width: 48px;
-  height: 48px;
+.ct-name {
+  display: flex;
+  align-items: center;
 
+  gap: var(--sp-2);
+
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.ct-dot {
   flex-shrink: 0;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: var(--mark);
+}
+
+.ct-dates {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ---------- Progress ---------- */
+
+.ct-progress {
+  flex: 1 1 360px;
+  min-width: 0;
+}
+
+.ct-labels {
+  display: flex;
+  justify-content: space-between;
+
+  gap: var(--sp-3);
+
+  margin-block-end: 6px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+.ct-track {
+  height: 8px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: var(--track);
+}
+
+/* A block element starts at inline-start by itself,
+   so the bar fills from the right in Arabic and from the left in English. */
+.ct-fill {
+  height: 100%;
+
+  border-radius: 999px;
+
+  background: var(--mark);
+}
+
+
+/* ---------- No current term ---------- */
+
+.ct-none {
+  flex-wrap: nowrap;
+
+  gap: var(--sp-3);
+}
+
+.ct-none-icon {
+  flex-shrink: 0;
+
+  width: 40px;
+  height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 12px;
+  border: 1px dashed var(--control);
+  border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.14);
+  color: var(--faint);
 }
 
-.banner-icon mat-icon {
-  width: 26px;
-  height: 26px;
+.ct-none-icon mat-icon {
+  width: 20px;
+  height: 20px;
 
-  font-size: 26px;
-
-  color: #99f6e4;
-}
-
-.banner-text {
-  display: flex;
-  flex-direction: column;
-
-  gap: 4px;
-
-  min-width: 0;
-}
-
-.banner-label {
-  font-size: 13px;
-
-  color: #ccfbf1;
-}
-
-.banner-title {
   font-size: 20px;
-  font-weight: 700;
 }
 
-.banner-dates {
-  font-size: 13px;
+.ct-none-title {
+  margin: 0;
 
-  color: #e6fffa;
+  color: var(--text);
+
+  font-weight: 600;
+  line-height: 1.4;
 }
 
+.ct-none-hint {
+  margin: 0;
 
-/* ================================
-   Progress
-   ================================ */
+  color: var(--muted);
 
-.banner-progress {
-  flex: 1 1 300px;
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 8px;
-}
-
-.progress-labels {
-  display: flex;
-  justify-content: space-between;
-
-  gap: 12px;
-
-  font-size: 13px;
-
-  color: #e6fffa;
-}
-
-.progress-track {
-  height: 8px;
-
-  border-radius: 4px;
-
-  background: rgba(255, 255, 255, 0.18);
-
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-
-  border-radius: 4px;
-
-  background: #5eead4;
-
-  transition: width 0.3s ease;
+  font-size: var(--fs-13);
 }
 
 
-/* ================================
-   No current term
-   ================================ */
+/* ---------- Phone (under 720px) ---------- */
 
-.banner-empty {
-  background: #ffffff;
-  color: #111827;
+@media (max-width: 719.98px) {
 
-  border: 1px dashed #5eead4;
-}
+  .ct-head {
+    padding: var(--sp-4) var(--sp-4) 0;
+  }
 
-.banner-empty .banner-icon {
-  background: #f0fdfa;
-}
+  /* The line about what depends on the term goes on the phone */
+  .ct-meta {
+    display: none;
+  }
 
-.banner-empty .banner-icon mat-icon {
-  color: #0f766e;
-}
+  .ct-body {
+    gap: var(--sp-4);
 
-.banner-empty .banner-title {
-  font-size: 17px;
-}
-
-.banner-empty .banner-dates {
-  color: #6b7280;
-}
-
-
-/* ================================
-   Reduced Motion
-   ================================ */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .progress-fill {
-    transition: none;
+    padding: var(--sp-4);
   }
 
 }

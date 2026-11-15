@@ -1,163 +1,212 @@
-<h2 mat-dialog-title>
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-  {{
-    isEditMode
-      ? ('ACADEMIC_YEARS.YEAR_FORM.EDIT_TITLE' | translate)
-      : ('ACADEMIC_YEARS.YEAR_FORM.ADD_TITLE' | translate)
-  }}
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode ? 'ACADEMIC_YEARS.YEAR_FORM.EDIT_TITLE' : 'ACADEMIC_YEARS.YEAR_FORM.ADD_TITLE') | translate }}
+    </h2>
 
-</h2>
+    @if (data.year; as year) {
+      <p class="fd-head-sub tabular" dir="ltr">{{ year.yearName }}</p>
+    } @else {
+      <p class="fd-head-sub explain">
+        {{ 'ACADEMIC_YEARS.YEAR_FORM.CURRENT_NOTE' | translate }}
+      </p>
+    }
+  </div>
+
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'ACADEMIC_YEARS.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="requestClose()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
 
 
-<mat-dialog-content>
+<form class="fd-form" [formGroup]="yearForm" (ngSubmit)="submit()" novalidate>
 
-  <form
-    id="year-form"
-    [formGroup]="yearForm"
-    class="year-form"
-    (ngSubmit)="submit()"
-    novalidate>
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
 
-    <div class="dates-row">
+    <div class="yf-fields">
 
-      <!-- Start date -->
-      <mat-form-field appearance="outline">
+      <div class="fd-grid yf-dates">
 
-        <mat-label>
-          {{ 'ACADEMIC_YEARS.YEAR_FORM.START_DATE' | translate }}
-        </mat-label>
+        <!-- Start date -->
+        <div class="field">
+          <label class="field-label" for="yf-startDate">{{ 'ACADEMIC_YEARS.YEAR_FORM.START_DATE' | translate }}</label>
 
-        <input
-          matInput
-          readonly
-          formControlName="startDate"
-          [matDatepicker]="startPicker"
-          (click)="startPicker.open()">
+          <div class="field-box is-date" [class.is-invalid]="isFieldInvalid('startDate')">
+            <input
+              id="yf-startDate"
+              data-field="startDate"
+              readonly
+              formControlName="startDate"
+              [matDatepicker]="startPicker"
+              [placeholder]="'ACADEMIC_YEARS.PICK_DATE' | translate"
+              [attr.aria-invalid]="isFieldInvalid('startDate')"
+              [attr.aria-describedby]="describedBy('startDate')"
+              (click)="startPicker.open()"
+            />
 
-        <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <button
+              type="button"
+              class="field-date-button"
+              [attr.aria-label]="'ACADEMIC_YEARS.OPEN_CALENDAR' | translate"
+              (click)="startPicker.open()"
+            >
+              <mat-icon aria-hidden="true">calendar_today</mat-icon>
+            </button>
 
-        <mat-datepicker #startPicker></mat-datepicker>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </div>
 
-        @if (isFieldInvalid('startDate')) {
-          <mat-error>
-            {{ 'ACADEMIC_YEARS.YEAR_FORM.VALIDATION.START_REQUIRED' | translate }}
-          </mat-error>
+          @if (isFieldInvalid('startDate')) {
+            <div class="field-error" id="yf-startDate-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>{{ 'ACADEMIC_YEARS.VALIDATION.DATE_REQUIRED' | translate }}</span>
+            </div>
+          }
+        </div>
+
+
+        <!-- End date (the calendar starts the day after the start date) -->
+        <div class="field">
+          <label class="field-label" for="yf-endDate">{{ 'ACADEMIC_YEARS.YEAR_FORM.END_DATE' | translate }}</label>
+
+          <div class="field-box is-date" [class.is-invalid]="isFieldInvalid('endDate')">
+            <input
+              id="yf-endDate"
+              data-field="endDate"
+              readonly
+              formControlName="endDate"
+              [matDatepicker]="endPicker"
+              [min]="nextDay(minEndDate())"
+              [placeholder]="'ACADEMIC_YEARS.PICK_DATE' | translate"
+              [attr.aria-invalid]="isFieldInvalid('endDate')"
+              [attr.aria-describedby]="describedBy('endDate')"
+              (click)="endPicker.open()"
+            />
+
+            <button
+              type="button"
+              class="field-date-button"
+              [attr.aria-label]="'ACADEMIC_YEARS.OPEN_CALENDAR' | translate"
+              (click)="endPicker.open()"
+            >
+              <mat-icon aria-hidden="true">calendar_today</mat-icon>
+            </button>
+
+            <mat-datepicker #endPicker></mat-datepicker>
+          </div>
+
+          @if (isFieldInvalid('endDate')) {
+            <div class="field-error" id="yf-endDate-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (yearForm.controls.endDate.hasError('required')) {
+                  {{ 'ACADEMIC_YEARS.VALIDATION.DATE_REQUIRED' | translate }}
+                } @else {
+                  {{ 'ACADEMIC_YEARS.VALIDATION.END_BEFORE_START' | translate }}
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+      </div>
+
+
+      <!-- Year name -->
+      <div class="field">
+        <label class="field-label" for="yf-yearName">{{ 'ACADEMIC_YEARS.YEAR_FORM.YEAR_NAME' | translate }}</label>
+
+        <div class="field-box yf-name-box" [class.is-invalid]="isFieldInvalid('yearName')">
+          <input
+            id="yf-yearName"
+            data-field="yearName"
+            class="tabular"
+            formControlName="yearName"
+            inputmode="numeric"
+            [maxlength]="nameMaxLength"
+            [attr.aria-invalid]="isFieldInvalid('yearName')"
+            [attr.aria-describedby]="describedBy('yearName', true)"
+            (input)="onYearNameInput($event)"
+            dir="ltr"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- The help and the error use the same line under the field. -->
+        @if (isFieldInvalid('yearName')) {
+          <div class="field-error" id="yf-yearName-error">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              @if (yearForm.controls.yearName.hasError('required')) {
+                {{ 'ACADEMIC_YEARS.VALIDATION.REQUIRED' | translate }}
+              } @else {
+                {{ 'ACADEMIC_YEARS.YEAR_FORM.VALIDATION.NAME_FORMAT' | translate }}
+              }
+            </span>
+          </div>
+        } @else {
+          <div class="field-help" id="yf-yearName-help">{{ 'ACADEMIC_YEARS.YEAR_FORM.YEAR_NAME_HINT' | translate }}</div>
         }
-
-      </mat-form-field>
-
-
-      <!-- End date -->
-      <mat-form-field appearance="outline">
-
-        <mat-label>
-          {{ 'ACADEMIC_YEARS.YEAR_FORM.END_DATE' | translate }}
-        </mat-label>
-
-        <input
-          matInput
-          readonly
-          formControlName="endDate"
-          [matDatepicker]="endPicker"
-          [min]="nextDay(minEndDate())"
-          (click)="endPicker.open()">
-
-        <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
-
-        <mat-datepicker #endPicker></mat-datepicker>
-
-        @if (isFieldInvalid('endDate')) {
-          <mat-error>
-            @if (yearForm.controls.endDate.hasError('required')) {
-              {{ 'ACADEMIC_YEARS.YEAR_FORM.VALIDATION.END_REQUIRED' | translate }}
-            } @else {
-              {{ 'ACADEMIC_YEARS.YEAR_FORM.VALIDATION.END_BEFORE_START' | translate }}
-            }
-          </mat-error>
-        }
-
-      </mat-form-field>
+      </div>
 
     </div>
 
+  </div>
 
-    <!-- Year name -->
-    <mat-form-field appearance="outline">
 
-      <mat-label>
-        {{ 'ACADEMIC_YEARS.YEAR_FORM.YEAR_NAME' | translate }}
-      </mat-label>
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
 
-      <input
-        matInput
-        type="text"
-        formControlName="yearName"
-        dir="ltr"
-        autocomplete="off">
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ errorsCountKey(invalidCount()) | translate: { count: invalidCount() } }}
+      }
+    </span>
 
-      <!-- The hint and the error use the same one-line space under the field. -->
-      @if (isFieldInvalid('yearName')) {
-        <mat-error>
-          @if (yearForm.controls.yearName.hasError('required')) {
-            {{ 'ACADEMIC_YEARS.YEAR_FORM.VALIDATION.NAME_REQUIRED' | translate }}
-          } @else {
-            {{ 'ACADEMIC_YEARS.YEAR_FORM.VALIDATION.NAME_FORMAT' | translate }}
-          }
-        </mat-error>
-      } @else {
-        <mat-hint>
-          {{ 'ACADEMIC_YEARS.YEAR_FORM.YEAR_NAME_HINT' | translate }}
-        </mat-hint>
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="requestClose()"
+    >
+      {{ 'ACADEMIC_YEARS.YEAR_FORM.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      type="submit"
+      class="fd-submit"
+      [class.is-busy]="isSubmitting()"
+      [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+    >
+      <!-- The icon stays outside @if so mat-button can place it;
+           while saving it is hidden and the spinner shows instead. -->
+      <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
+        {{ isEditMode ? 'save' : 'add' }}
+      </mat-icon>
+
+      @if (isSubmitting()) {
+        <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
       }
 
-    </mat-form-field>
+      {{
+        (isSubmitting()
+          ? 'ACADEMIC_YEARS.YEAR_FORM.SAVING'
+          : isEditMode ? 'ACADEMIC_YEARS.YEAR_FORM.SAVE' : 'ACADEMIC_YEARS.YEAR_FORM.ADD') | translate
+      }}
+    </button>
 
+  </footer>
 
-    <!-- Adding a year does not make it current -->
-    @if (!isEditMode) {
-      <div class="info-box">
-
-        <mat-icon>info</mat-icon>
-
-        <p>
-          {{ 'ACADEMIC_YEARS.YEAR_FORM.CURRENT_NOTE' | translate }}
-        </p>
-
-      </div>
-    }
-
-  </form>
-
-</mat-dialog-content>
-
-
-<mat-dialog-actions align="end">
-
-  <button
-    mat-stroked-button
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="cancel()">
-
-    {{ 'ACADEMIC_YEARS.YEAR_FORM.CANCEL' | translate }}
-
-  </button>
-
-
-  <button
-    mat-flat-button
-    type="submit"
-    form="year-form"
-    [disabled]="isSubmitting()">
-
-    {{
-      isSubmitting()
-        ? ('ACADEMIC_YEARS.YEAR_FORM.SAVING' | translate)
-        : isEditMode
-          ? ('ACADEMIC_YEARS.YEAR_FORM.SAVE' | translate)
-          : ('ACADEMIC_YEARS.YEAR_FORM.ADD' | translate)
-    }}
-
-  </button>
-
-</mat-dialog-actions>
+</form>

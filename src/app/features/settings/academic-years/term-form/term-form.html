@@ -1,293 +1,355 @@
-<h2 mat-dialog-title>
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head">
 
-  {{
-    isEditMode
-      ? ('ACADEMIC_YEARS.TERM_FORM.EDIT_TITLE' | translate)
-      : ('ACADEMIC_YEARS.TERM_FORM.ADD_TITLE' | translate)
-  }}
+  <div class="fd-head-text">
+    <h2 mat-dialog-title>
+      {{ (isEditMode ? 'ACADEMIC_YEARS.TERM_FORM.EDIT_TITLE' : 'ACADEMIC_YEARS.TERM_FORM.ADD_TITLE') | translate }}
+    </h2>
 
-</h2>
+    <!-- The year comes from the card: shown, not editable -->
+    <p class="fd-head-sub tabular">
+      {{ 'ACADEMIC_YEARS.TERM_FORM.YEAR' | translate }}
+      <span dir="ltr">{{ data.year.yearName }}</span>
+      · {{ yearRange() }}
+    </p>
+  </div>
+
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'ACADEMIC_YEARS.CLOSE' | translate"
+    [disabled]="isSubmitting()"
+    (click)="requestClose()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
 
 
-<mat-dialog-content>
+<form class="fd-form" [formGroup]="termForm" (ngSubmit)="submit()" novalidate>
 
-  <!-- The year comes from the card: shown, not editable -->
-  <div class="year-box">
+  <!-- ================= Body ================= -->
+  <div class="fd-body">
 
-    <div class="year-box-head">
+    <!-- ===== The term: number and both names ===== -->
+    <section class="fd-section" aria-labelledby="tf-term-title">
 
-      <span class="year-box-icon">
-        <mat-icon>calendar_month</mat-icon>
-      </span>
+      <div class="fd-section-head">
+        <h3 id="tf-term-title">{{ 'ACADEMIC_YEARS.TERM_FORM.SECTION_TERM' | translate }}</h3>
+      </div>
 
-      <span class="year-box-text">
-        <span class="year-box-label">
-          {{ 'ACADEMIC_YEARS.TERM_FORM.YEAR' | translate }}
-        </span>
+      <div class="fd-grid tf-term-grid">
 
-        <span class="year-box-name" dir="ltr">
-          {{ data.year.yearName }}
-        </span>
-      </span>
+        <!-- Term number -->
+        <div class="field">
+          <label class="field-label" for="tf-termNumber">{{ 'ACADEMIC_YEARS.TERM_FORM.NUMBER' | translate }}</label>
 
-      <span class="year-box-range">
-        {{ yearRange() }}
-      </span>
+          <div class="field-box" [class.is-invalid]="isFieldInvalid('termNumber')">
+            <input
+              id="tf-termNumber"
+              data-field="termNumber"
+              class="tabular"
+              formControlName="termNumber"
+              inputmode="numeric"
+              [maxlength]="numberMaxDigits"
+              [attr.aria-invalid]="isFieldInvalid('termNumber')"
+              [attr.aria-describedby]="describedBy('termNumber')"
+              [attr.cdkFocusInitial]="isEditMode ? null : ''"
+              (input)="onNumberInput($event)"
+              dir="ltr"
+              autocomplete="off"
+            />
+          </div>
 
-    </div>
-
-    <!-- The other terms of the year, to help avoid overlapping dates -->
-    @if (otherTerms().length > 0) {
-      <div class="year-box-terms">
-
-        <span>
-          {{ 'ACADEMIC_YEARS.TERM_FORM.OTHER_TERMS' | translate }}
-        </span>
-
-        <ul>
-          @for (other of otherTerms(); track other.id) {
-            <li>
-              <strong>{{ other.name }}:</strong> {{ other.range }}
-            </li>
+          @if (isFieldInvalid('termNumber')) {
+            <div class="field-error" id="tf-termNumber-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (termForm.controls.termNumber.hasError('required')) {
+                  {{ 'ACADEMIC_YEARS.VALIDATION.REQUIRED' | translate }}
+                } @else {
+                  {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.NUMBER_INVALID' | translate }}
+                }
+              </span>
+            </div>
           }
-        </ul>
+        </div>
+
+
+        <!-- Arabic name -->
+        <div class="field">
+          <label class="field-label" for="tf-nameAr">{{ 'ACADEMIC_YEARS.TERM_FORM.NAME_AR' | translate }}</label>
+
+          <div class="field-box" [class.is-invalid]="isFieldInvalid('nameAr')">
+            <input
+              id="tf-nameAr"
+              data-field="nameAr"
+              formControlName="nameAr"
+              [maxlength]="nameMaxLength"
+              [attr.aria-invalid]="isFieldInvalid('nameAr')"
+              [attr.aria-describedby]="describedBy('nameAr')"
+              dir="rtl"
+              autocomplete="off"
+            />
+          </div>
+
+          @if (isFieldInvalid('nameAr')) {
+            <div class="field-error" id="tf-nameAr-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (termForm.controls.nameAr.hasError('required')) {
+                  {{ 'ACADEMIC_YEARS.VALIDATION.REQUIRED' | translate }}
+                } @else {
+                  {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.ARABIC_ONLY' | translate }}
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+
+        <!-- English name -->
+        <div class="field">
+          <label class="field-label" for="tf-nameEn">{{ 'ACADEMIC_YEARS.TERM_FORM.NAME_EN' | translate }}</label>
+
+          <div class="field-box" [class.is-invalid]="isFieldInvalid('nameEn')">
+            <input
+              id="tf-nameEn"
+              data-field="nameEn"
+              formControlName="nameEn"
+              [maxlength]="nameMaxLength"
+              [attr.aria-invalid]="isFieldInvalid('nameEn')"
+              [attr.aria-describedby]="describedBy('nameEn')"
+              dir="ltr"
+              autocomplete="off"
+            />
+          </div>
+
+          @if (isFieldInvalid('nameEn')) {
+            <div class="field-error" id="tf-nameEn-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (termForm.controls.nameEn.hasError('required')) {
+                  {{ 'ACADEMIC_YEARS.VALIDATION.REQUIRED' | translate }}
+                } @else {
+                  {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.ENGLISH_ONLY' | translate }}
+                }
+              </span>
+            </div>
+          }
+        </div>
 
       </div>
-    } @else {
-      <p class="year-box-empty">
-        {{ 'ACADEMIC_YEARS.TERM_FORM.NO_OTHER_TERMS' | translate }}
-      </p>
-    }
+
+    </section>
+
+
+    <!-- ===== The period: two dates, then the year's other terms ===== -->
+    <section class="fd-section" aria-labelledby="tf-period-title">
+
+      <div class="fd-section-head">
+        <h3 id="tf-period-title">{{ 'ACADEMIC_YEARS.TERM_FORM.SECTION_PERIOD' | translate }}</h3>
+        <span class="fd-section-hint">· {{ 'ACADEMIC_YEARS.TERM_FORM.DATES_HINT' | translate }}</span>
+      </div>
+
+      <div class="fd-grid tf-dates">
+
+        <!-- Start date -->
+        <div class="field">
+          <label class="field-label" for="tf-startDate">{{ 'ACADEMIC_YEARS.TERM_FORM.START_DATE' | translate }}</label>
+
+          <div class="field-box is-date" [class.is-invalid]="isFieldInvalid('startDate')">
+            <input
+              id="tf-startDate"
+              data-field="startDate"
+              readonly
+              formControlName="startDate"
+              [matDatepicker]="startPicker"
+              [placeholder]="'ACADEMIC_YEARS.PICK_DATE' | translate"
+              [attr.aria-invalid]="isFieldInvalid('startDate')"
+              [attr.aria-describedby]="describedBy('startDate')"
+              (click)="startPicker.open()"
+            />
+
+            <button
+              type="button"
+              class="field-date-button"
+              [attr.aria-label]="'ACADEMIC_YEARS.OPEN_CALENDAR' | translate"
+              (click)="startPicker.open()"
+            >
+              <mat-icon aria-hidden="true">calendar_today</mat-icon>
+            </button>
+
+            <mat-datepicker #startPicker></mat-datepicker>
+          </div>
+
+          @if (isFieldInvalid('startDate')) {
+            <div class="field-error" id="tf-startDate-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>{{ 'ACADEMIC_YEARS.VALIDATION.DATE_REQUIRED' | translate }}</span>
+            </div>
+          }
+        </div>
+
+
+        <!-- End date (the calendar starts the day after the start date) -->
+        <div class="field">
+          <label class="field-label" for="tf-endDate">{{ 'ACADEMIC_YEARS.TERM_FORM.END_DATE' | translate }}</label>
+
+          <div class="field-box is-date" [class.is-invalid]="isFieldInvalid('endDate')">
+            <input
+              id="tf-endDate"
+              data-field="endDate"
+              readonly
+              formControlName="endDate"
+              [matDatepicker]="endPicker"
+              [min]="nextDay(minEndDate())"
+              [placeholder]="'ACADEMIC_YEARS.PICK_DATE' | translate"
+              [attr.aria-invalid]="isFieldInvalid('endDate')"
+              [attr.aria-describedby]="describedBy('endDate')"
+              (click)="endPicker.open()"
+            />
+
+            <button
+              type="button"
+              class="field-date-button"
+              [attr.aria-label]="'ACADEMIC_YEARS.OPEN_CALENDAR' | translate"
+              (click)="endPicker.open()"
+            >
+              <mat-icon aria-hidden="true">calendar_today</mat-icon>
+            </button>
+
+            <mat-datepicker #endPicker></mat-datepicker>
+          </div>
+
+          @if (isFieldInvalid('endDate')) {
+            <div class="field-error" id="tf-endDate-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>
+                @if (termForm.controls.endDate.hasError('required')) {
+                  {{ 'ACADEMIC_YEARS.VALIDATION.DATE_REQUIRED' | translate }}
+                } @else {
+                  {{ 'ACADEMIC_YEARS.VALIDATION.END_BEFORE_START' | translate }}
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+      </div>
+
+
+      <!-- The other terms of the year, to help avoid overlapping dates -->
+      <div class="tf-others">
+
+        <p class="tf-others-title">
+          {{ 'ACADEMIC_YEARS.TERM_FORM.OTHER_TERMS' | translate }}
+        </p>
+
+        @if (otherTerms().length > 0) {
+          <ul class="tf-others-list tabular">
+            @for (other of otherTerms(); track other.id) {
+              <li>
+                <mat-icon aria-hidden="true">date_range</mat-icon>
+                <strong>{{ other.name }}</strong>
+                <span>{{ other.range }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="tf-others-empty">
+            {{ 'ACADEMIC_YEARS.TERM_FORM.NO_OTHER_TERMS' | translate }}
+          </p>
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- ===== Status: the "Active term" switch ===== -->
+    <section class="fd-section" aria-labelledby="tf-status-title">
+
+      <div class="fd-section-head">
+        <h3 id="tf-status-title">{{ 'ACADEMIC_YEARS.TERM_FORM.SECTION_STATUS' | translate }}</h3>
+      </div>
+
+      <div class="tf-active">
+
+        <mat-slide-toggle
+          formControlName="isActive"
+          aria-describedby="tf-active-help"
+        >
+          <span class="tf-active-label">{{ 'ACADEMIC_YEARS.TERM_FORM.ACTIVE' | translate }}</span>
+        </mat-slide-toggle>
+
+        <p class="field-help" id="tf-active-help">
+          {{
+            (isCurrentTerm
+              ? 'ACADEMIC_YEARS.TERM_FORM.ACTIVE_LOCKED_HINT'
+              : 'ACADEMIC_YEARS.TERM_FORM.ACTIVE_HINT') | translate
+          }}
+        </p>
+
+      </div>
+
+      @if (isEditMode) {
+        <p class="tf-year-lock">
+          <mat-icon aria-hidden="true">lock</mat-icon>
+
+          <span>{{ 'ACADEMIC_YEARS.TERM_FORM.YEAR_LOCKED' | translate }}</span>
+        </p>
+      }
+
+    </section>
 
   </div>
 
 
-  <form
-    id="term-form"
-    [formGroup]="termForm"
-    class="term-form"
-    (ngSubmit)="submit()"
-    novalidate>
+  <!-- ================= Footer (fixed) ================= -->
+  <footer class="fd-foot">
 
-    <div class="number-name-row">
+    <span class="fd-foot-note" aria-live="polite">
+      @if (submitAttempted() && invalidCount() > 0) {
+        <mat-icon aria-hidden="true">error</mat-icon>
+        {{ errorsCountKey(invalidCount()) | translate: { count: invalidCount() } }}
+      }
+    </span>
 
-      <!-- Term number -->
-      <mat-form-field appearance="outline">
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="requestClose()"
+    >
+      {{ 'ACADEMIC_YEARS.TERM_FORM.CANCEL' | translate }}
+    </button>
 
-        <mat-label>
-          {{ 'ACADEMIC_YEARS.TERM_FORM.NUMBER' | translate }}
-        </mat-label>
+    <button
+      mat-flat-button
+      type="submit"
+      class="fd-submit"
+      [class.is-busy]="isSubmitting()"
+      [attr.aria-disabled]="isSubmitting() ? 'true' : null"
+    >
+      <!-- The icon stays outside @if so mat-button can place it;
+           while saving it is hidden and the spinner shows instead. -->
+      <mat-icon aria-hidden="true" [class.fd-hidden]="isSubmitting()">
+        {{ isEditMode ? 'save' : 'add' }}
+      </mat-icon>
 
-        <input
-          matInput
-          type="number"
-          min="1"
-          step="1"
-          inputmode="numeric"
-          formControlName="termNumber"
-          dir="ltr">
-
-        @if (isFieldInvalid('termNumber')) {
-          <mat-error>
-            @if (termForm.controls.termNumber.hasError('required')) {
-              {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.NUMBER_REQUIRED' | translate }}
-            } @else {
-              {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.NUMBER_INVALID' | translate }}
-            }
-          </mat-error>
-        }
-
-      </mat-form-field>
-
-
-      <!-- Arabic name -->
-      <mat-form-field appearance="outline">
-
-        <mat-label>
-          {{ 'ACADEMIC_YEARS.TERM_FORM.NAME_AR' | translate }}
-        </mat-label>
-
-        <input
-          matInput
-          type="text"
-          formControlName="nameAr"
-          [maxlength]="nameMaxLength"
-          dir="rtl"
-          autocomplete="off">
-
-        @if (isFieldInvalid('nameAr')) {
-          <mat-error>
-            @if (termForm.controls.nameAr.hasError('required')) {
-              {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.NAME_AR_REQUIRED' | translate }}
-            } @else if (termForm.controls.nameAr.hasError('pattern')) {
-              {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.ARABIC_ONLY' | translate }}
-            } @else {
-              {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
-            }
-          </mat-error>
-        }
-
-      </mat-form-field>
-
-    </div>
-
-
-    <!-- English name -->
-    <mat-form-field appearance="outline">
-
-      <mat-label>
-        {{ 'ACADEMIC_YEARS.TERM_FORM.NAME_EN' | translate }}
-      </mat-label>
-
-      <input
-        matInput
-        type="text"
-        formControlName="nameEn"
-        [maxlength]="nameMaxLength"
-        dir="ltr"
-        autocomplete="off">
-
-      @if (isFieldInvalid('nameEn')) {
-        <mat-error>
-          @if (termForm.controls.nameEn.hasError('required')) {
-            {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.NAME_EN_REQUIRED' | translate }}
-          } @else if (termForm.controls.nameEn.hasError('pattern')) {
-            {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.ENGLISH_ONLY' | translate }}
-          } @else {
-            {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.NAME_MAX_LENGTH' | translate }}
-          }
-        </mat-error>
+      @if (isSubmitting()) {
+        <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
       }
 
-    </mat-form-field>
+      {{
+        (isSubmitting()
+          ? 'ACADEMIC_YEARS.TERM_FORM.SAVING'
+          : isEditMode ? 'ACADEMIC_YEARS.TERM_FORM.SAVE' : 'ACADEMIC_YEARS.TERM_FORM.ADD') | translate
+      }}
+    </button>
 
+  </footer>
 
-    <div class="dates-row">
-
-      <!-- Start date -->
-      <mat-form-field appearance="outline">
-
-        <mat-label>
-          {{ 'ACADEMIC_YEARS.TERM_FORM.START_DATE' | translate }}
-        </mat-label>
-
-        <input
-          matInput
-          readonly
-          formControlName="startDate"
-          [matDatepicker]="startPicker"
-          (click)="startPicker.open()">
-
-        <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
-
-        <mat-datepicker #startPicker></mat-datepicker>
-
-        @if (isFieldInvalid('startDate')) {
-          <mat-error>
-            {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.START_REQUIRED' | translate }}
-          </mat-error>
-        }
-
-      </mat-form-field>
-
-
-      <!-- End date -->
-      <mat-form-field appearance="outline">
-
-        <mat-label>
-          {{ 'ACADEMIC_YEARS.TERM_FORM.END_DATE' | translate }}
-        </mat-label>
-
-        <input
-          matInput
-          readonly
-          formControlName="endDate"
-          [matDatepicker]="endPicker"
-          [min]="nextDay(minEndDate())"
-          (click)="endPicker.open()">
-
-        <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
-
-        <mat-datepicker #endPicker></mat-datepicker>
-
-        @if (isFieldInvalid('endDate')) {
-          <mat-error>
-            @if (termForm.controls.endDate.hasError('required')) {
-              {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.END_REQUIRED' | translate }}
-            } @else {
-              {{ 'ACADEMIC_YEARS.TERM_FORM.VALIDATION.END_BEFORE_START' | translate }}
-            }
-          </mat-error>
-        }
-
-      </mat-form-field>
-
-    </div>
-
-    <p class="dates-hint">
-      {{ 'ACADEMIC_YEARS.TERM_FORM.DATES_HINT' | translate }}
-    </p>
-
-
-    <!-- Active (same box as "graduation class" in the classes form) -->
-    <div class="active-field">
-
-      <mat-slide-toggle formControlName="isActive">
-        {{ 'ACADEMIC_YEARS.TERM_FORM.ACTIVE' | translate }}
-      </mat-slide-toggle>
-
-      <p class="active-hint">
-        {{
-          isCurrentTerm
-            ? ('ACADEMIC_YEARS.TERM_FORM.ACTIVE_LOCKED_HINT' | translate)
-            : ('ACADEMIC_YEARS.TERM_FORM.ACTIVE_HINT' | translate)
-        }}
-      </p>
-
-    </div>
-
-    @if (isEditMode) {
-      <p class="year-lock-note">
-        <mat-icon>lock</mat-icon>
-
-        <span>
-          {{ 'ACADEMIC_YEARS.TERM_FORM.YEAR_LOCKED' | translate }}
-        </span>
-      </p>
-    }
-
-  </form>
-
-</mat-dialog-content>
-
-
-<mat-dialog-actions align="end">
-
-  <button
-    mat-stroked-button
-    type="button"
-    [disabled]="isSubmitting()"
-    (click)="cancel()">
-
-    {{ 'ACADEMIC_YEARS.TERM_FORM.CANCEL' | translate }}
-
-  </button>
-
-
-  <button
-    mat-flat-button
-    type="submit"
-    form="term-form"
-    [disabled]="isSubmitting()">
-
-    {{
-      isSubmitting()
-        ? ('ACADEMIC_YEARS.TERM_FORM.SAVING' | translate)
-        : isEditMode
-          ? ('ACADEMIC_YEARS.TERM_FORM.SAVE' | translate)
-          : ('ACADEMIC_YEARS.TERM_FORM.ADD' | translate)
-    }}
-
-  </button>
-
-</mat-dialog-actions>
+</form>

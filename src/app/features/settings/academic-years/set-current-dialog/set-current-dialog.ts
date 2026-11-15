@@ -73,6 +73,12 @@ export class SetCurrentDialog {
     return `${name} · ${year.yearName}`;
   }
 
+  constructor() {
+    // 10px corners and the floating shadow (styles.css: "Confirm dialog panel"),
+    // the same panel as the shared confirm dialog.
+    this.dialogRef.addPanelClass('confirm-dialog-panel');
+  }
+
   confirm(): void {
     this.dialogRef.close(true);
   }

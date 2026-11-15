@@ -1,34 +1,19 @@
+/* ==========================================================
+   Year card (navy & gold, 15 Nov 2026)
+   The card, the table and the phone list are the shared ones in
+   styles.css (.data-card, .data-table, .data-items). Only what the
+   year card adds is here: the header that opens / closes it, the
+   term name with the gold dot, the grades text and the empty state.
+   No shadow, no lift on hover (spec: "البطاقات").
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 :host {
   display: block;
 }
 
-
-/* ================================
-   Card
-   ================================ */
-
-.year-card {
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-
-  overflow: hidden;
-
-  transition: box-shadow 0.2s ease;
-}
-
-.year-card:hover {
-  box-shadow: 0 6px 18px rgba(32, 45, 73, 0.08);
-}
-
-/* The current year: a light teal border and header. */
-.year-card.is-current {
-  border-color: #99f6e4;
-}
-
-.year-card.is-current .year-head {
-  background: #f6fefc;
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 
@@ -37,98 +22,73 @@
    ================================ */
 
 .year-head {
-  min-height: 72px;
+  min-height: 68px;
 
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
 
-  gap: 12px;
-
-  padding: 14px 18px;
+  gap: var(--sp-3);
 
   box-sizing: border-box;
+  padding-block: var(--sp-3);
+  padding-inline: 20px var(--sp-3);
 }
 
 .year-head.is-open {
-  border-bottom: 1px solid #eef0f3;
+  border-bottom: 1px solid var(--border);
 }
 
 .year-toggle {
-  flex: 1 1 320px;
+  flex: 1;
   min-width: 0;
 
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: var(--sp-3);
 
-  padding: 0;
+  padding: var(--sp-1) 0;
 
   border: 0;
-  background: transparent;
+  border-radius: var(--r-control);
+
+  background: none;
+
+  color: inherit;
 
   font: inherit;
-  color: inherit;
   text-align: start;
 
   cursor: pointer;
 }
 
-.year-toggle:focus-visible {
-  outline: 2px solid #2554a4;
-  outline-offset: 4px;
-  border-radius: 8px;
-}
-
+/* Up / down: not a direction, so it does not flip in Arabic */
 .chevron {
   flex-shrink: 0;
 
-  color: #6b7280;
+  width: 20px;
+  height: 20px;
 
-  transition: transform 0.2s ease;
+  font-size: 20px;
+
+  color: var(--faint);
+
+  transition: transform var(--dur) ease;
 }
 
 .year-head.is-open .chevron {
   transform: rotate(180deg);
 }
 
-.year-icon {
-  width: 40px;
-  height: 40px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #f1f5f9;
-  color: #64748b;
-}
-
-.year-card.is-current .year-icon {
-  background: #ccfbf1;
-  color: #0f766e;
-}
-
-.year-icon mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
+.year-toggle:hover .chevron {
+  color: var(--text);
 }
 
 .year-text {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
-
-  gap: 3px;
-
-  min-width: 0;
 }
 
 .year-title-row {
@@ -136,225 +96,185 @@
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .year-name {
-  font-size: 18px;
+  color: var(--text);
+
+  font-size: var(--fs-16);
   font-weight: 700;
-
-  color: #111827;
-
-  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
 }
 
 .year-meta {
-  font-size: 13px;
+  color: var(--muted);
 
-  color: #6b7280;
+  font-size: var(--fs-13);
+  line-height: 1.5;
 }
 
-
-/* ================================
-   Year Actions
-   ================================ */
-
 .year-actions {
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
 
-  gap: 6px;
+  gap: var(--sp-2);
 }
 
-.add-term-button {
-  border-radius: 18px;
-}
-
-.year-actions > button[mat-icon-button] {
-  color: #6b7280;
+.year-menu-button {
+  color: var(--muted);
 }
 
 
 /* ================================
-   Terms Table
+   Terms table (on top of the shared .data-table)
    ================================ */
 
-.table-wrapper {
-  width: 100%;
-
-  overflow-x: auto;
+/* Fewer columns than a people list, so a smaller minimum width */
+.year-card .data-table table {
+  min-width: 760px;
 }
 
-.table-wrapper table {
-  width: 100%;
-  min-width: 980px;
+.year-card .data-table td.mat-column-number,
+.year-card .data-table th.mat-column-number {
+  width: 56px;
 }
 
-.table-wrapper th {
-  height: 48px;
-
-  padding: 0 16px;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  color: #6b7280;
-  background: #f8fafc;
-
-  white-space: nowrap;
-}
-
-.table-wrapper td {
-  height: 68px;
-
-  padding: 0 16px;
-
-  font-size: 14px;
-
-  color: #374151;
-
-  white-space: nowrap;
-}
-
-.table-wrapper tr.mat-mdc-row:hover {
-  background: #f8fafc;
-}
-
-/* The current term row: a very light teal. */
-.table-wrapper tr.current-row,
-.table-wrapper tr.current-row:hover {
-  background: #f0fdfa;
-}
-
-/* No paginator under the table, so the last row needs no bottom line. */
-.table-wrapper tr.mat-mdc-row:last-child td {
-  border-bottom: none;
-}
-
-.table-wrapper td.mat-column-number {
-  width: 64px;
-}
-
-.table-wrapper td.mat-column-actions {
-  width: 64px;
-
-  text-align: center;
-}
-
-.table-wrapper td.mat-column-actions button {
-  color: #6b7280;
-}
-
-
-/* ================================
-   Cells
-   ================================ */
-
-.term-number {
-  width: 32px;
-  height: 32px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  font-size: 14px;
-  font-weight: 700;
-
-  background: #f1f5f9;
-  color: #475569;
-}
-
-.current-row .term-number {
-  background: #0f5f5a;
-  color: #ffffff;
+.year-card .data-table td.mat-column-actions,
+.year-card .data-table th.mat-column-actions {
+  width: 56px;
 }
 
 .two-lines {
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
+  line-height: 1.4;
+}
+
+.line-2 {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+.term-name-cell {
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-2);
 }
 
 .term-name {
+  color: var(--text);
+
   font-weight: 600;
-
-  color: #111827;
 }
 
-.term-second-name,
-.term-days {
-  font-size: 12px;
+/* The gold dot of the current term (same as the navbar's term badge).
+   Every row keeps its space, so the names line up. */
+.term-dot {
+  flex-shrink: 0;
 
-  color: #6b7280;
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
 }
 
-.no-value {
-  color: #c0c6cf;
+.term-dot.is-current {
+  background: var(--mark);
 }
 
 
-/* ================================
-   Current Term
-   ================================ */
+/* ---------- Grades: text with a lock ---------- */
 
-.set-current-button mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
-
-.set-current-button {
-  height: 32px;
-
+.grades {
   display: inline-flex;
   align-items: center;
 
   gap: 6px;
 
-  padding: 0 12px;
+  color: var(--muted);
 
-  border: 1px dashed #5eead4;
-  border-radius: 16px;
+  font-size: var(--fs-13);
+  line-height: 1.4;
+}
 
-  background: #ffffff;
-  color: #0f766e;
+.grades mat-icon {
+  flex-shrink: 0;
 
-  font: inherit;
-  font-size: 12px;
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+
+  color: var(--faint);
+}
+
+.grades.is-closed {
+  color: var(--text);
+
   font-weight: 600;
-
-  cursor: pointer;
-
-  transition: background 0.2s ease;
 }
 
-.set-current-button:hover:not(:disabled),
-.set-current-button:focus-visible {
-  background: #f0fdfa;
-
-  border-style: solid;
+.grades.is-closed mat-icon {
+  color: var(--muted);
 }
 
-.set-current-button:focus-visible {
-  outline: 2px solid #0f766e;
-  outline-offset: 2px;
+/* The rollover text has a tooltip: keep the focus ring visible */
+.grades[tabindex]:focus-visible {
+  border-radius: 4px;
 }
 
-.set-current-button:disabled {
-  opacity: 0.5;
+.grades-wrap {
+  display: flex;
+  flex-direction: column;
+}
 
-  cursor: default;
+/* Under the lock text, lined up with the words (16px icon + 6px gap) */
+.grades-date {
+  padding-inline-start: 22px;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  line-height: 1.4;
+}
+
+/* Phone: the date goes on the same line, after "·" */
+.grades-wrap.inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.grades-wrap.inline .grades-date {
+  padding-inline-start: 0;
+}
+
+.grades-wrap.inline .grades-date::before {
+  content: '· ';
 }
 
 
-/* ================================
-   Menu: "Deactivate" locked on the current term
-   ================================ */
+/* ---------- A request running on a term ---------- */
+
+.row-spinner {
+  width: 40px;
+  height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ---------- Menu: a locked item with its reason under it ---------- */
 
 .locked-text {
   display: flex;
@@ -366,7 +286,22 @@
 }
 
 .locked-text small {
-  font-size: 12px;
+  font-size: var(--fs-12);
+}
+
+
+/* ================================
+   Phone list (on top of the shared .data-items)
+   ================================ */
+
+.year-card .data-item {
+  align-items: flex-start;
+
+  padding-inline: var(--sp-4) var(--sp-1);
+}
+
+.year-card .data-item-text {
+  gap: var(--sp-1);
 }
 
 
@@ -375,36 +310,56 @@
    ================================ */
 
 .empty-terms {
-  min-height: 150px;
-
-  padding: 20px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 
-  gap: 10px;
+  padding: 28px 20px var(--sp-6);
 
   text-align: center;
-
-  color: #6b7280;
 }
 
 .empty-terms mat-icon {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
 
-  font-size: 38px;
+  font-size: 40px;
 
-  color: #9ca3af;
+  color: var(--state-icon);
 }
 
-.empty-terms p {
-  margin: 0;
+.empty-title {
+  margin: 6px 0 0;
 
-  font-size: 14px;
-  font-weight: 500;
+  color: var(--text);
+
+  font-weight: 600;
+}
+
+.empty-hint {
+  max-width: 420px;
+
+  margin: 2px 0 var(--sp-3);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+
+/* ================================
+   Phone (under 720px)
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .year-head {
+    min-height: 60px;
+
+    padding-block: var(--sp-2);
+    padding-inline: var(--sp-4) var(--sp-1);
+  }
+
 }
 
 
@@ -414,29 +369,8 @@
 
 @media (prefers-reduced-motion: reduce) {
 
-  .year-card,
-  .chevron,
-  .set-current-button {
+  .chevron {
     transition: none;
-  }
-
-}
-
-
-/* ================================
-   Responsive
-   ================================ */
-
-@media (max-width: 650px) {
-
-  .year-head {
-    padding: 12px 14px;
-  }
-
-  .year-actions {
-    width: 100%;
-
-    justify-content: flex-end;
   }
 
 }

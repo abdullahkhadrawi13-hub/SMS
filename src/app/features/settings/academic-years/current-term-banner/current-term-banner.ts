@@ -13,7 +13,9 @@ import { countDays, formatLongDate, fromApiDate } from '../academic-years';
 // Where today is inside the current term.
 type TermPhase = 'not-started' | 'running' | 'ended';
 
-// The current term of the school, at the top of the page.
+// The current term of the school, at the top of the page: a plain white
+// card with the term, its dates and a gold progress bar (navy & gold,
+// 15 Nov 2026; it was a dark teal banner before).
 // The days and the progress bar are worked out here from the term dates
 // (they do not come from the API).
 @Component({
@@ -33,7 +35,8 @@ export class CurrentTermBanner {
   readonly term = input<AcademicTerm | null>(null);
   readonly year = input<AcademicYear | null>(null);
 
-  // Admin: the "no current term" message says how to set one.
+  // Admin: the "no current term" message says how to set one;
+  // read-only users are told the system admin sets it.
   readonly canManage = input(false);
 
   private readonly isArabic = computed(
@@ -95,6 +98,7 @@ export class CurrentTermBanner {
 
     return {
       phase,
+      total,
       elapsed,
       remaining: total - elapsed,
       // Days until the term starts (only used when it has not started).
