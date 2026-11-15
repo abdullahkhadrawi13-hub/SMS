@@ -1,0 +1,141 @@
+/* ==========================================================
+   Rollover step bar (navy & gold, 15 Nov 2026)
+   Sticky on the host, like the shared save-bar: it stays at the bottom
+   of the screen while the step is scrolled, and sits at its end when
+   the step is short. White with a border; the shadow only because it
+   floats above the content (spec: "الحدود والظلال").
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
+:host {
+  display: block;
+
+  position: sticky;
+  bottom: var(--sp-4);
+  z-index: 3;
+
+  margin-block-start: var(--sp-6);
+}
+
+.step-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2) var(--sp-3);
+
+  padding-block: 10px;
+  padding-inline: 20px var(--sp-3);
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  box-shadow: var(--shadow-pop);
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Note
+   ================================ */
+
+.step-bar-note {
+  flex: 1;
+  min-width: 220px;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  line-height: 1.5;
+}
+
+.step-bar-note mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+.step-bar-note[data-tone='warn'] {
+  color: var(--warn-ink);
+
+  font-weight: 600;
+}
+
+.step-bar-note[data-tone='ok'] {
+  color: var(--ok-ink);
+
+  font-weight: 600;
+}
+
+.step-bar-text {
+  min-width: 0;
+}
+
+
+/* ================================
+   Actions
+   ================================ */
+
+.step-bar-actions {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-2);
+}
+
+
+/* ================================
+   Phone (under 720px)
+   Full width, stuck to the bottom of the screen, no corners;
+   the note on its own line, the buttons share the width (44px).
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  /* The page has 16px padding on the phone (dashboard-layout):
+     the bar steps over it to reach both edges and the bottom. */
+  :host {
+    bottom: 0;
+
+    margin-inline: calc(var(--sp-4) * -1);
+    margin-block-end: calc(var(--sp-4) * -1);
+  }
+
+  .step-bar {
+    padding: var(--sp-2) var(--sp-4) var(--sp-3);
+
+    border-inline: 0;
+    border-bottom: 0;
+    border-radius: 0;
+  }
+
+  .step-bar-note {
+    flex-basis: 100%;
+  }
+
+  .step-bar-actions {
+    flex: 1;
+  }
+
+  .step-bar-actions ::ng-deep > * {
+    flex: 1;
+
+    height: var(--h-touch);
+  }
+
+}

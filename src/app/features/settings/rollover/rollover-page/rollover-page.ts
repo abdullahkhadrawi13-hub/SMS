@@ -1,13 +1,24 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  Injector,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+  viewChild
+} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { forkJoin, Subscription } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatStepperModule } from '@angular/material/stepper';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -16,13 +27,17 @@ import { AcademicTerm } from '../../../../core/models/academic-term';
 import { AcademicYear } from '../../../../core/models/academic-year';
 import {
   RolloverPreview as RolloverPreviewData,
-  RolloverResult as RolloverResultData
+  RolloverResult as RolloverResultData,
+  RolloverSuggestion
 } from '../../../../core/models/rollover';
 import { AcademicTermsService } from '../../../../core/services/academic-terms';
 import { AcademicYearsService } from '../../../../core/services/academic-years';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { Language } from '../../../../core/services/language';
 import { RolloverService } from '../../../../core/services/rollover';
+import { ActionResult } from '../../../../shared/services/action-result';
+import { pluralKey } from '../../../../shared/utils/plural';
+import { PHONE_QUERY } from '../../../../layouts/dashboard-layout/dashboard-layout';
 
 import {
   buildDecisions,
@@ -43,6 +58,11 @@ import {
 } from '../rollover-confirm/rollover-confirm';
 import { RolloverResult } from '../rollover-result/rollover-result';
 import { RolloverThreshold } from '../rollover-threshold/rollover-threshold';
+import { RolloverStepBar, StepBarTone } from '../rollover-step-bar/rollover-step-bar';
+import {
+  GradesStatusDialog,
+  GradesStatusDialogData
+} from '../../academic-years/grades-status-dialog/grades-status-dialog';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 
@@ -51,9 +71,26 @@ import { StateCard } from '../../../../shared/components/state-card/state-card';
 const LOCK_MINUTES = 5;
 
 
+// The steps of a rollover. A same-year rollover has no "terms" step.
+type RolloverStepKey = 'preview' | 'terms' | 'confirm';
+
+interface RolloverStepView {
+  key: RolloverStepKey;
+  labelKey: string;
+}
+
+// The note at the start of a step bar.
+interface StepNote {
+  icon: string;
+  tone: StepBarTone;
+  key: string;
+  count?: number;
+}
+
+
 // /settings/rollover (Admin only)
 // Moves the students of an earlier term into the current term
-// (API Reference, section 13), in the steps of a stepper:
+// (API Reference, section 13), in steps (navy & gold, 15 Nov 2026):
 //   1. Preview: the backend's suggestion for every student; the Admin
 //      decides promote / repeat (new year) and must decide NeedsDecision.
 //      For a new year, the rule behind "Repeat" (failed subjects) can be
@@ -63,6 +100,12 @@ const LOCK_MINUTES = 5;
 // This page holds the state and talks to the API; the steps only show it.
 // One exception: the rule card (RolloverThreshold) saves its own setting
 // (PUT /api/schoolsettings/promotion) and only tells the page it was saved.
+//
+// The steps header is the page's own (not mat-stepper): a finished step
+// shows ✓ and can be clicked to go back; a step not reached yet shows
+// only its number, with no hover and no ✓, even when it is already
+// ready (feedback of 22 Oct 2026). Each step ends with the sticky step bar,
+// so "Next" is always in reach.
 @Component({
   selector: 'app-rollover-page',
   imports: [
@@ -71,7 +114,6 @@ const LOCK_MINUTES = 5;
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
-    MatStepperModule,
     TranslatePipe,
 
     RolloverRoute,
@@ -80,6 +122,7 @@ const LOCK_MINUTES = 5;
     RolloverConfirm,
     RolloverResult,
     RolloverThreshold,
+    RolloverStepBar,
     PageHeader,
     StateCard,
   ],
@@ -93,7 +136,15 @@ export class RolloverPage {
   private readonly rolloverService = inject(RolloverService);
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly language = inject(Language);
+  private readonly actionResult = inject(ActionResult);
+  private readonly dialog = inject(MatDialog);
+  private readonly breakpoints = inject(BreakpointObserver);
+  private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
+
+  // true when the screen is narrower than 720px (same as the layout):
+  // the tables become two-line lists.
+  readonly isPhone = signal(this.breakpoints.isMatched(PHONE_QUERY));
 
 
   // ===== Years and terms (for the "From term" list) =====
@@ -125,8 +176,21 @@ export class RolloverPage {
   // The Admin's decisions (studentId -> promote / repeat / null).
   readonly decisions = signal<RolloverDecisions>({});
 
-  // The step shown in the stepper.
+  // The step shown (an index in steps()).
   readonly stepIndex = signal(0);
+
+  // The filter of step 1 (null = all students). Kept here, so the step
+  // bar's "Show" link can choose "Needs a decision".
+  readonly filter = signal<RolloverSuggestion | null>(null);
+
+  // The rule card is being edited: "Next" waits until it is saved or
+  // cancelled, so "Save" is the screen's one primary button.
+  readonly isEditingRule = signal(false);
+
+  // Step 2: the term whose grades are being closed from this page.
+  readonly closingTermId = signal<number | null>(null);
+
+  private readonly stepsNav = viewChild<ElementRef<HTMLElement>>('stepsNav');
 
   // The running preview request (a newer one cancels it).
   private previewRequest?: Subscription;
@@ -145,7 +209,7 @@ export class RolloverPage {
   // After 429 (5 wrong passwords): no new attempt for a few minutes.
   readonly isLocked = signal(false);
 
-  // The answer of POST /api/rollover; replaces the stepper.
+  // The answer of POST /api/rollover; replaces the steps.
   readonly result = signal<RolloverResultData | null>(null);
 
 
@@ -182,6 +246,73 @@ export class RolloverPage {
     this.isPreviewLoading() && this.preview() === null
   );
 
+  // The steps of this preview: three for a new year, two in the same year.
+  readonly steps = computed<RolloverStepView[]>(() => {
+    if (this.preview()?.isNewYear) {
+      return [
+        { key: 'preview', labelKey: 'ROLLOVER.STEPS.PREVIEW' },
+        { key: 'terms',   labelKey: 'ROLLOVER.STEPS.TERMS' },
+        { key: 'confirm', labelKey: 'ROLLOVER.STEPS.CONFIRM' }
+      ];
+    }
+
+    return [
+      { key: 'preview', labelKey: 'ROLLOVER.STEPS.PREVIEW_SAME_YEAR' },
+      { key: 'confirm', labelKey: 'ROLLOVER.STEPS.CONFIRM' }
+    ];
+  });
+
+  readonly currentStep = computed<RolloverStepKey>(() => {
+    const steps = this.steps();
+
+    return steps[Math.min(this.stepIndex(), steps.length - 1)].key;
+  });
+
+  // Step 1 can be left when every decision is made and the rule card
+  // is not being edited.
+  readonly canLeavePreview = computed(() =>
+    this.isPreviewDone() && !this.isEditingRule() && !this.isPreviewLoading()
+  );
+
+  // The note of step 1's bar.
+  readonly previewNote = computed<StepNote>(() => {
+    const preview = this.preview();
+    const pending = this.tally().pending;
+
+    if (!preview?.isNewYear) {
+      return { icon: 'info', tone: 'muted', key: 'ROLLOVER.PREVIEW.SAME_YEAR_NOTE' };
+    }
+
+    if (this.isEditingRule()) {
+      return { icon: 'edit', tone: 'muted', key: 'ROLLOVER.PREVIEW.EDITING_RULE' };
+    }
+
+    if (pending > 0) {
+      return {
+        icon: 'error',
+        tone: 'warn',
+        key: pluralKey('ROLLOVER.PREVIEW.PENDING', pending),
+        count: pending
+      };
+    }
+
+    return { icon: 'check_circle', tone: 'ok', key: 'ROLLOVER.PREVIEW.ALL_DECIDED' };
+  });
+
+  // The note of step 2's bar.
+  readonly termsNote = computed<StepNote>(() => {
+    const open = this.preview()?.openTerms.length ?? 0;
+
+    return open === 0
+      ? { icon: 'check_circle', tone: 'ok', key: 'ROLLOVER.TERMS.READY' }
+      : {
+          icon: 'lock_open',
+          tone: 'warn',
+          key: pluralKey('ROLLOVER.TERMS.OPEN_COUNT', open),
+          count: open
+        };
+  });
+
   // The terms of the old year (step 2), by termNumber.
   readonly fromYearTerms = computed(() => {
     const sourceTerm = this.terms().find(term =>
@@ -212,6 +343,11 @@ export class RolloverPage {
 
 
   constructor() {
+    this.breakpoints
+      .observe(PHONE_QUERY)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(result => this.isPhone.set(result.matches));
+
     this.loadData();
   }
 
@@ -311,6 +447,7 @@ export class RolloverPage {
 
           if (!keepState) {
             this.stepIndex.set(0);
+            this.filter.set(null);
             this.clearRunErrors();
           }
 
@@ -352,9 +489,163 @@ export class RolloverPage {
     this.loadPreview();
   }
 
+  onFilterChange(filter: RolloverSuggestion | null): void {
+    this.filter.set(filter);
+  }
+
+  // Step 1's bar: "Show" the students still waiting for a decision.
+  showPending(): void {
+    this.filter.set(RolloverSuggestion.NeedsDecision);
+
+    this.scrollTo('rollover-preview');
+  }
+
+
+  // =========================
+  // Steps
+  // =========================
+
+  next(): void {
+    const step = this.currentStep();
+
+    if (step === 'preview' && !this.canLeavePreview()) {
+      return;
+    }
+
+    if (step === 'terms' && (!this.isTermsDone() || this.isPreviewLoading())) {
+      return;
+    }
+
+    this.goToStep(this.stepIndex() + 1);
+  }
+
+  previous(): void {
+    this.goToStep(this.stepIndex() - 1);
+  }
+
+  // A finished step in the header: back to it. Never forward.
+  goToStep(index: number): void {
+
+    const last = this.steps().length - 1;
+
+    if (index < 0 || index > last || this.isRunning()) {
+      return;
+    }
+
+    if (index > this.stepIndex() + 1) {
+      return;
+    }
+
+    this.stepIndex.set(index);
+
+    // The new step starts at the top of the screen.
+    afterNextRender(
+      () => this.stepsNav()?.nativeElement.scrollIntoView({ block: 'start' }),
+      { injector: this.injector }
+    );
+  }
+
+  private scrollTo(id: string): void {
+    afterNextRender(
+      () => document.getElementById(id)?.scrollIntoView({ block: 'start' }),
+      { injector: this.injector }
+    );
+  }
+
   // Step 2: the Admin closed terms on the academic years page.
   recheckTerms(): void {
     this.loadPreview(true);
+  }
+
+  // Step 2: "Close grades" on an open term of the old year.
+  // The same question as the academic years page (GradesStatusDialog),
+  // then PATCH /api/academicterms/{id}/grades/close.
+  confirmCloseTerm(termId: number): void {
+
+    if (this.closingTermId() !== null) {
+      return;
+    }
+
+    const term = this.terms().find(item => item.academicTermId === termId);
+    const year = this.years().find(item => item.academicYearId === term?.academicYearId);
+
+    if (!term || !year) {
+      return;
+    }
+
+    this.dialog
+      .open<GradesStatusDialog, GradesStatusDialogData, boolean>(GradesStatusDialog, {
+        maxWidth: '95vw',
+        direction: this.language.currentDirection(),
+        data: { term, year, action: 'close' }
+      })
+      .afterClosed()
+      .subscribe(confirmed => {
+        if (confirmed) {
+          this.closeTermGrades(term);
+        }
+      });
+  }
+
+  // After closing: the terms again (for the closing date), then the
+  // preview again (its openTerms list decides whether "Next" is enabled).
+  private closeTermGrades(term: AcademicTerm): void {
+
+    this.closingTermId.set(term.academicTermId);
+
+    this.termsService
+      .closeGrades(term.academicTermId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+
+          if (!response.success) {
+            this.closingTermId.set(null);
+            this.actionResult.show('error', this.apiMessageService.getMessage(response));
+            return;
+          }
+
+          this.closingTermId.set(null);
+
+          this.actionResult.show('success', this.apiMessageService.getMessage(response));
+
+          this.reloadTerms();
+
+          // While it loads, the close buttons and "Check again" wait.
+          this.loadPreview(true);
+        },
+
+        error: (error: HttpErrorResponse) => {
+
+          this.closingTermId.set(null);
+
+          // 401: the interceptor already logged the Admin out.
+          if (error.status === 401) {
+            return;
+          }
+
+          console.error('Failed to close the term grades:', error);
+
+          this.actionResult.show('error', this.apiMessageService.getErrorMessage(error));
+        }
+      });
+  }
+
+  // GET /api/academicterms again (quietly: the page stays as it is).
+  private reloadTerms(): void {
+    this.termsService
+      .getAcademicTerms()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.terms.set(response.data);
+          }
+        },
+
+        error: (error: HttpErrorResponse) =>
+          console.error('Failed to reload the academic terms:', error)
+      });
   }
 
   // After the result: a fresh preview (the moved students come back

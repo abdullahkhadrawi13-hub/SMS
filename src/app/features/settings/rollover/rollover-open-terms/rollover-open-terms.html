@@ -1,8 +1,21 @@
-<div class="open-terms">
+<!-- Step 2: close the old year's grades (navy & gold, 15 Nov 2026).
+     .data-card / .data-table / .data-items: the shared look (styles.css). -->
+<section class="data-card terms-card">
+
+  <!-- Header -->
+  <div class="terms-head">
+    <h2 class="terms-title">
+      {{ 'ROLLOVER.TERMS.TITLE' | translate: { year: fromYearName() } }}
+    </h2>
+
+    <span class="terms-meta">
+      {{ 'ROLLOVER.TERMS.META' | translate }}
+    </span>
+  </div>
 
   <!-- Why the terms must be closed -->
-  <div class="info-box">
-    <mat-icon>info</mat-icon>
+  <div class="terms-info">
+    <mat-icon aria-hidden="true">info</mat-icon>
 
     <span>
       {{ 'ROLLOVER.TERMS.INFO' | translate: { year: fromYearName() } }}
@@ -11,68 +24,169 @@
 
 
   <!-- The terms of the old year -->
-  <div class="term-list">
+  @if (!isPhone()) {
 
-    @for (row of rows(); track row.academicTermId) {
+    <div class="data-table">
 
-      <div class="term-row">
+      <table>
 
-        <span class="term-name">
-          {{ row.name }} · <bdi dir="ltr">{{ fromYearName() }}</bdi>
-        </span>
+        <thead>
+          <tr>
+            <th>{{ 'ROLLOVER.TERMS.COLUMNS.TERM' | translate }}</th>
+            <th>{{ 'ROLLOVER.TERMS.COLUMNS.PERIOD' | translate }}</th>
+            <th>{{ 'ROLLOVER.TERMS.COLUMNS.GRADES' | translate }}</th>
+            <th class="actions-col">
+              <span class="visually-hidden">{{ 'ROLLOVER.TERMS.COLUMNS.ACTIONS' | translate }}</span>
+            </th>
+          </tr>
+        </thead>
 
-        @if (row.isOpen) {
-          <app-status-badge tone="ok" icon="lock_open">
-            {{ 'ROLLOVER.TERMS.OPEN' | translate }}
-          </app-status-badge>
-        } @else {
-          <app-status-badge tone="neutral" icon="event_busy">
-            {{ 'ROLLOVER.TERMS.CLOSED' | translate }}
-          </app-status-badge>
-        }
+        <tbody>
 
-      </div>
+          @for (row of rows(); track row.academicTermId) {
 
-    }
+            <tr>
 
-  </div>
+              <td>
+                <span class="two-lines">
+                  <span class="term-name">{{ row.name }}</span>
+                  @if (row.otherName) {
+                    <span class="line-2">{{ row.otherName }}</span>
+                  }
+                </span>
+              </td>
 
+              <td class="tabular">{{ row.period || '—' }}</td>
 
-  @if (openTerms().length > 0) {
+              <td>
+                <ng-container [ngTemplateOutlet]="gradesStatus" [ngTemplateOutletContext]="{ $implicit: row }" />
+              </td>
 
-    <!-- Close them on the academic years page, then check again -->
-    <div class="actions">
+              <td class="actions-col">
+                @if (row.isOpen) {
+                  <ng-container [ngTemplateOutlet]="closeButton" [ngTemplateOutletContext]="{ $implicit: row }" />
+                }
+              </td>
 
-      <a
-        mat-stroked-button
-        routerLink="/settings/academic-years"
-      >
-        <mat-icon>calendar_month</mat-icon>
-        {{ 'ROLLOVER.TERMS.GO_TO_TERMS' | translate }}
-      </a>
+            </tr>
 
-      <button
-        mat-button
-        type="button"
-        [disabled]="isChecking()"
-        (click)="recheck.emit()"
-      >
-        <mat-icon>refresh</mat-icon>
-        {{ 'ROLLOVER.TERMS.RECHECK' | translate }}
-      </button>
+          }
+
+        </tbody>
+
+      </table>
 
     </div>
 
   } @else {
 
-    <div class="all-closed">
-      <mat-icon>task_alt</mat-icon>
+    <ul class="data-items">
 
-      <strong>{{ 'ROLLOVER.TERMS.ALL_CLOSED_TITLE' | translate }}</strong>
+      @for (row of rows(); track row.academicTermId) {
 
-      <span>{{ 'ROLLOVER.TERMS.ALL_CLOSED_TEXT' | translate }}</span>
-    </div>
+        <li class="data-item term-item">
+
+          <div class="data-item-text">
+
+            <div class="data-item-line1">
+              <span class="term-name">{{ row.name }}</span>
+            </div>
+
+            @if (row.period) {
+              <div class="data-item-line2 tabular">{{ row.period }}</div>
+            }
+
+            <div class="data-item-line2">
+              <ng-container [ngTemplateOutlet]="gradesStatus" [ngTemplateOutletContext]="{ $implicit: row }" />
+            </div>
+
+            @if (row.isOpen) {
+              <div class="item-action">
+                <ng-container [ngTemplateOutlet]="closeButton" [ngTemplateOutletContext]="{ $implicit: row }" />
+              </div>
+            }
+
+          </div>
+
+        </li>
+
+      }
+
+    </ul>
 
   }
 
-</div>
+
+  <!-- Or close them on the academic years page, then check again -->
+  <div class="terms-foot">
+
+    <span>{{ 'ROLLOVER.TERMS.OR_GO' | translate }}</span>
+
+    <a class="text-link" routerLink="/settings/academic-years">
+      {{ 'ROLLOVER.TERMS.GO_TO_TERMS' | translate }}
+    </a>
+
+    <span aria-hidden="true">·</span>
+
+    <button
+      type="button"
+      class="text-link"
+      [disabled]="isChecking()"
+      (click)="recheck.emit()"
+    >
+      <mat-icon aria-hidden="true">refresh</mat-icon>
+      {{ 'ROLLOVER.TERMS.RECHECK' | translate }}
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- Grades: text with a lock, like the academic years page -->
+<ng-template #gradesStatus let-row>
+  @if (row.isOpen) {
+    <span class="grades is-open">
+      <mat-icon aria-hidden="true">lock_open</mat-icon>
+      {{ 'ROLLOVER.TERMS.OPEN' | translate }}
+    </span>
+  } @else {
+    <span class="grades-wrap" [class.inline]="isPhone()">
+      <span class="grades is-closed">
+        <mat-icon aria-hidden="true">lock</mat-icon>
+        {{ 'ROLLOVER.TERMS.CLOSED' | translate }}
+      </span>
+
+      @if (row.closedAt) {
+        <span class="grades-date">
+          {{ 'ROLLOVER.TERMS.CLOSED_ON' | translate: { date: row.closedAt } }}
+        </span>
+      }
+    </span>
+  }
+</ng-template>
+
+
+<!-- Close this term's grades (asks first) -->
+<ng-template #closeButton let-row>
+  @let busy = closingTermId() === row.academicTermId;
+
+  <button
+    mat-stroked-button
+    type="button"
+    class="close-button"
+    [class.is-busy]="busy"
+    [attr.aria-disabled]="busy ? 'true' : null"
+    [disabled]="!busy && (closingTermId() !== null || isChecking())"
+    (click)="busy || closeTerm.emit(row.academicTermId)"
+  >
+    <!-- The icon stays outside @if so mat-button can place it -->
+    <mat-icon aria-hidden="true" [class.is-hidden]="busy">lock</mat-icon>
+
+    @if (busy) {
+      <mat-spinner diameter="18" aria-hidden="true" />
+    }
+
+    {{ (busy ? 'ROLLOVER.TERMS.CLOSING' : 'ROLLOVER.TERMS.CLOSE') | translate }}
+  </button>
+</ng-template>

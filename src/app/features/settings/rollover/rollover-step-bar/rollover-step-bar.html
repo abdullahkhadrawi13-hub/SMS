@@ -1,0 +1,21 @@
+<div class="step-bar">
+
+  <!-- The note: why "Next" is disabled, or what happens next -->
+  <p class="step-bar-note" [attr.data-tone]="tone()">
+
+    @if (icon(); as name) {
+      <mat-icon aria-hidden="true">{{ name }}</mat-icon>
+    }
+
+    <span class="step-bar-text">
+      <ng-content select="[note]" />
+    </span>
+
+  </p>
+
+  <!-- The step's buttons, the primary one last -->
+  <div class="step-bar-actions">
+    <ng-content select="[actions]" />
+  </div>
+
+</div>

@@ -1,4 +1,16 @@
-import { Component, DestroyRef, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  computed,
+  inject,
+  Injector,
+  input,
+  output,
+  signal,
+  viewChild
+} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -10,13 +22,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ApiMessageService } from '../../../../core/services/api-message';
+import { Language } from '../../../../core/services/language';
 import { SchoolSettingsService } from '../../../../core/services/school-settings';
 import { ActionResult } from '../../../../shared/services/action-result';
 
 import {
-  RolloverThresholdDialog,
-  RolloverThresholdDialogData
-} from '../rollover-threshold-dialog/rollover-threshold-dialog';
+  ConfirmDialog,
+  ConfirmDialogData
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
 
 // The limits of the setting (API Reference, section 12).
@@ -26,11 +39,14 @@ const MAX_VALUE = 50;
 
 // Step 1 (new year only): the rule behind the "Repeat" suggestion,
 // "Repeat is suggested for students who failed N subjects or more".
-// Shows the rule as a card; "Edit rule" turns the card into a small editor.
+// Shows the rule as a card; "Edit rule" turns the card into a small editor
+// (navy & gold, 15 Nov 2026). While the editor is open the page keeps
+// "Next" disabled (editingChange), so "Save" is the one primary button.
 // Saving calls PUT /api/schoolsettings/promotion itself, then tells the
 // page (saved), which loads the preview again with the new suggestions.
-// If the Admin already changed decisions by hand, a dialog asks first,
-// because the new preview puts every decision back to its suggestion.
+// If the Admin already changed decisions by hand, the shared ConfirmDialog
+// asks first, because the new preview puts every decision back to its
+// suggestion.
 @Component({
   selector: 'app-rollover-threshold',
   imports: [
@@ -48,7 +64,9 @@ export class RolloverThreshold {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly actionResult = inject(ActionResult);
   private readonly dialog = inject(MatDialog);
+  private readonly language = inject(Language);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
 
 
   // The saved value (failedSubjectsToRepeat of the preview).
@@ -62,6 +80,12 @@ export class RolloverThreshold {
 
   // The new value, once the backend saved it.
   readonly saved = output<number>();
+
+  // The editor opened (true) or closed (false).
+  readonly editingChange = output<boolean>();
+
+  private readonly numberInput =
+    viewChild<ElementRef<HTMLInputElement>>('numberInput');
 
 
   readonly minValue = MIN_VALUE;
@@ -98,7 +122,13 @@ export class RolloverThreshold {
 
   startEdit(): void {
     this.draft.set(this.value());
-    this.isEditing.set(true);
+    this.setEditing(true);
+
+    // The cursor goes to the number once the editor is shown.
+    afterNextRender(
+      () => this.numberInput()?.nativeElement.select(),
+      { injector: this.injector }
+    );
   }
 
   cancel(): void {
@@ -106,7 +136,12 @@ export class RolloverThreshold {
       return;
     }
 
-    this.isEditing.set(false);
+    this.setEditing(false);
+  }
+
+  private setEditing(editing: boolean): void {
+    this.isEditing.set(editing);
+    this.editingChange.emit(editing);
   }
 
   decrease(): void {
@@ -157,10 +192,20 @@ export class RolloverThreshold {
     }
 
     this.dialog
-      .open<RolloverThresholdDialog, RolloverThresholdDialogData, boolean>(
-        RolloverThresholdDialog,
-        { data: { changedCount } }
-      )
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
+        maxWidth: '95vw',
+        direction: this.language.currentDirection(),
+        data: {
+          icon: 'warning',
+          titleKey: 'ROLLOVER.THRESHOLD.DIALOG.TITLE',
+          messageKey: changedCount === 1
+            ? 'ROLLOVER.THRESHOLD.DIALOG.MESSAGE_ONE'
+            : 'ROLLOVER.THRESHOLD.DIALOG.MESSAGE_MANY',
+          messageParams: { count: changedCount },
+          confirmKey: 'ROLLOVER.THRESHOLD.DIALOG.CONFIRM',
+          tone: 'warn'
+        }
+      })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(confirmed => {
@@ -196,7 +241,7 @@ export class RolloverThreshold {
             return;
           }
 
-          this.isEditing.set(false);
+          this.setEditing(false);
 
           this.actionResult.show(
             'success',

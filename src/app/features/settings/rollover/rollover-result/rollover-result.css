@@ -1,3 +1,11 @@
+/* ==========================================================
+   Rollover result (navy & gold, 15 Nov 2026)
+   A white card with the "done" line and the numbers (one card divided
+   by lines), then the students that could not be placed in the shared
+   table look (styles.css: .data-card, .data-table, .data-items).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 :host {
   display: block;
 }
@@ -6,14 +14,16 @@
   display: flex;
   flex-direction: column;
 
-  gap: 18px;
+  gap: var(--sp-6);
+}
 
-  padding: 20px 24px;
+.card {
+  padding: 20px;
 
-  background: #ffffff;
+  background: var(--surface);
 
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
 }
 
 
@@ -21,173 +31,236 @@
    Done
    ================================ */
 
-.result-head {
+.done-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 
   gap: 14px;
-
-  padding: 16px 18px;
-
-  color: #064e3b;
-  background: #d1fae5;
-
-  border-radius: 12px;
 }
 
-.result-head mat-icon {
+.done-icon {
   flex-shrink: 0;
 
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
 
-  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  color: #047857;
+  border-radius: 50%;
+
+  background: var(--ok-bg);
+
+  color: var(--ok-ink);
 }
 
-.result-head h3 {
-  margin: 0 0 2px;
+.done-icon mat-icon {
+  width: 24px;
+  height: 24px;
 
-  font-size: 17px;
+  font-size: 24px;
 }
 
-.result-head p {
+.done-title {
   margin: 0;
 
-  font-size: 13px;
+  color: var(--text);
+
+  font-size: var(--fs-20);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.done-text {
+  margin: var(--sp-1) 0 0;
+
+  color: var(--muted);
 }
 
 
 /* ================================
-   Tiles
+   Numbers
    ================================ */
 
-.tiles {
+.stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  /* One row: as many columns as numbers (set in the template) */
+  grid-template-columns: repeat(var(--stat-count, 4), minmax(0, 1fr));
 
-  gap: 10px;
+  row-gap: var(--sp-4);
+
+  margin-block-start: var(--sp-6);
 }
 
-.tile {
+.stat {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
 
-  gap: 2px;
+  padding-inline: var(--sp-4);
 
-  padding: 12px 14px;
-
-  border-radius: 10px;
+  border-inline-start: 1px solid var(--rule);
 }
 
-.tile strong {
-  font-size: 24px;
+.stat:first-child {
+  padding-inline-start: 0;
 
+  border-inline-start: 0;
+}
+
+.stat-label {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.stat-value {
+  color: var(--text);
+
+  font-size: var(--fs-24);
+  font-weight: 700;
+  line-height: 1.3;
   font-variant-numeric: tabular-nums;
 }
 
-.tile span {
-  font-size: 12px;
-}
+.stat-text {
+  color: var(--faint);
 
-.tone-blue   { background: #dbeafe; color: #2554a4; }
-.tone-green  { background: #d1fae5; color: #047857; }
-.tone-orange { background: #fef3c7; color: #b45309; }
-.tone-gold   { background: #fdf3d4; color: #8a6d1d; }
-.tone-grey   { background: #f3f4f6; color: #6b7280; }
+  font-size: var(--fs-12);
+  line-height: 1.4;
+}
 
 
 /* ================================
    Not placed
    ================================ */
 
-.not-placed {
+.card-head {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: baseline;
+
+  gap: var(--sp-1) var(--sp-3);
+
+  padding: var(--sp-4) 20px var(--sp-2);
+}
+
+.card-title {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.card-meta {
+  margin-inline-start: auto;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
+}
+
+.not-placed .data-table table {
+  min-width: 720px;
+
+  border-collapse: collapse;
+}
+
+.not-placed .data-table td {
+  padding-block: var(--sp-2);
+
+  border-bottom: 1px solid var(--rule);
+}
+
+.not-placed .data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.not-placed .data-table td.wrap {
+  white-space: normal;
+}
+
+.person {
+  display: flex;
+  align-items: center;
 
   gap: 10px;
 }
 
-.not-placed h3 {
+.person-text {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+
+  line-height: 1.4;
+}
+
+.person-name {
+  color: var(--text);
+
+  font-weight: 600;
+}
+
+.person-number {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
+
+  text-align: start;
+}
+
+.reason {
+  color: var(--bad-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.5;
+}
+
+.not-placed-item {
+  padding-inline: var(--sp-4);
+}
+
+.card-foot {
+  display: flex;
+  align-items: flex-start;
 
   gap: 6px;
 
   margin: 0;
+  padding: var(--sp-3) 20px;
 
-  font-size: 15px;
+  border-top: 1px solid var(--rule);
 
-  color: #7f1d1d;
-}
+  color: var(--muted);
 
-.not-placed h3 mat-icon {
-  width: 20px;
-  height: 20px;
-
-  font-size: 20px;
-}
-
-.not-placed-list {
-  display: flex;
-  flex-direction: column;
-
-  border: 1px solid #fecaca;
-  border-radius: 12px;
-
-  overflow: hidden;
-}
-
-.not-placed-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-
-  gap: 6px 16px;
-
-  padding: 12px 16px;
-
-  background: #fffafa;
-
-  border-bottom: 1px solid #fde2e2;
-}
-
-.not-placed-row:last-child {
-  border-bottom: 0;
-}
-
-.student-name {
-  font-weight: 500;
-}
-
-.student-number,
-.place {
-  font-size: 12px;
-
-  color: #6b7280;
-}
-
-.student-number {
-  font-variant-numeric: tabular-nums;
-}
-
-.note {
-  flex-basis: 100%;
-
-  font-size: 12px;
-  line-height: 1.5;
-
-  color: #6b7280;
-}
-
-.hint {
-  margin: 0;
-
-  font-size: 12px;
+  font-size: var(--fs-13);
   line-height: 1.6;
+}
 
-  color: #6b7280;
+.card-foot mat-icon {
+  flex-shrink: 0;
+
+  width: 16px;
+  height: 16px;
+
+  margin-block-start: 3px;
+
+  font-size: 16px;
+
+  color: var(--faint);
 }
 
 
@@ -195,22 +268,52 @@
    Actions
    ================================ */
 
-.step-actions {
+.result-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
 
-  gap: 10px;
-
-  padding-top: 14px;
-
-  border-top: 1px solid #e5e7eb;
+  gap: var(--sp-2);
 }
 
-@media (max-width: 650px) {
+
+/* ================================
+   Phone (under 720px)
+   ================================ */
+
+@media (max-width: 719.98px) {
 
   .result {
-    padding: 16px;
+    gap: var(--sp-4);
+  }
+
+  .card {
+    padding: var(--sp-4);
+  }
+
+  .done-title {
+    font-size: var(--fs-16);
+  }
+
+  .stats {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .stat:nth-child(odd) {
+    padding-inline-start: 0;
+
+    border-inline-start: 0;
+  }
+
+  .card-head,
+  .card-foot {
+    padding-inline: var(--sp-4);
+  }
+
+  .result-actions > * {
+    flex: 1;
+
+    height: var(--h-touch);
   }
 
 }

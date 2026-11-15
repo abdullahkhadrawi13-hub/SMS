@@ -1,138 +1,160 @@
+/* ==========================================================
+   Rollover route: from term → current term (navy & gold, 15 Nov 2026)
+   One white card. The fields use the shared look (styles.css: .field).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 :host {
   display: block;
 }
 
+.route-card {
+  padding: var(--sp-4) 20px 20px;
 
-/* ================================
-   From → To
-   ================================ */
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+}
 
 .route {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: stretch;
+  grid-template-columns: minmax(220px, 320px) auto minmax(220px, 320px) minmax(0, 1fr);
+  align-items: start;
 
-  gap: 14px;
-}
-
-.route-box {
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 8px;
-
-  padding: 18px 18px 6px;
-
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-
-  box-sizing: border-box;
-}
-
-.route-box mat-form-field {
-  width: 100%;
+  gap: var(--sp-3) var(--sp-4);
 }
 
 
 /* ================================
-   To: the current term (teal, like the current term banner)
-   ================================ */
-
-.route-box.to {
-  justify-content: center;
-
-  padding-bottom: 18px;
-
-  background: #0f5f5a;
-  color: #ffffff;
-
-  border-color: #0f5f5a;
-}
-
-.route-label {
-  font-size: 13px;
-
-  color: #ccfbf1;
-}
-
-.route-term {
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.kind-chip {
-  align-self: flex-start;
-
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 3px 10px;
-
-  font-size: 12px;
-  font-weight: 500;
-
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.kind-chip mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-
-  color: #99f6e4;
-}
-
-
-/* ================================
-   Arrow
+   Arrow (on the line of the boxes: label 13px × 1.4 + 6px gap)
    ================================ */
 
 .route-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 20px;
+  height: 20px;
 
-  color: #9ca3af;
-}
+  margin-block-start: calc(var(--fs-13) * 1.4 + 6px + (var(--h-control) - 20px) / 2);
 
-.route-arrow mat-icon {
-  width: 28px;
-  height: 28px;
+  font-size: 20px;
 
-  font-size: 28px;
-}
-
-/* Arabic (RTL): the arrow points to the left. */
-:host-context([dir='rtl']) .route-arrow mat-icon {
-  transform: scaleX(-1);
+  color: var(--faint);
 }
 
 
 /* ================================
-   Responsive
+   To: read only
    ================================ */
 
-@media (max-width: 650px) {
+.to-box {
+  gap: var(--sp-2);
+
+  padding-inline: 10px;
+}
+
+.to-dot {
+  flex-shrink: 0;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: var(--mark);
+}
+
+.to-name {
+  min-width: 0;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+/* ================================
+   Kind of rollover
+   ================================ */
+
+.kind {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  margin-block-start: calc(var(--fs-13) * 1.4 + 6px);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+.kind mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  margin-block-start: 2px;
+
+  font-size: 18px;
+
+  color: var(--faint);
+}
+
+.kind-text strong {
+  display: block;
+
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+}
+
+
+/* ================================
+   Narrow screens: the kind goes under the fields
+   ================================ */
+
+@media (max-width: 1199.98px) {
 
   .route {
-    grid-template-columns: 1fr;
-
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   }
 
-  /* One column: the arrow points down. */
-  .route-arrow mat-icon,
-  :host-context([dir='rtl']) .route-arrow mat-icon {
-    transform: rotate(90deg);
+  .kind {
+    grid-column: 1 / -1;
+
+    margin-block-start: 0;
+  }
+
+}
+
+
+/* ================================
+   Phone (under 720px): one column, no arrow
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .route-card {
+    padding: var(--sp-4);
+  }
+
+  .route {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .route-arrow {
+    display: none;
   }
 
 }

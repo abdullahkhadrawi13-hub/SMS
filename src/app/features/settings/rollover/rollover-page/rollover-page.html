@@ -43,7 +43,7 @@
         mat-stroked-button
         routerLink="/settings/academic-years"
       >
-        <mat-icon>calendar_month</mat-icon>
+        <mat-icon aria-hidden="true">calendar_month</mat-icon>
         {{ 'ROLLOVER.STATE.GO_TO_TERMS' | translate }}
       </a>
     </app-state-card>
@@ -74,7 +74,8 @@
           [currentTerm]="currentTerm"
           [currentYearName]="source().currentYearName"
           [isNewYear]="preview()?.isNewYear ?? null"
-          [disabled]="isRunning() || isPreviewLoading()"
+          [fromYearName]="preview()?.fromYearName ?? null"
+          [disabled]="isRunning() || isPreviewLoading() || closingTermId() !== null"
           (sourceChange)="onSourceChange($event)"
         ></app-rollover-route>
       }
@@ -101,7 +102,7 @@
 
       }
 
-      <!-- Done: the result replaces the stepper -->
+      <!-- Done: the result replaces the steps -->
       @else if (result(); as done) {
 
         <app-rollover-result
@@ -109,6 +110,7 @@
           [isNewYear]="preview()?.isNewYear ?? false"
           [toTermName]="toTermName()"
           [fromYearName]="preview()?.fromYearName ?? null"
+          [isPhone]="isPhone()"
           (newPreview)="startNewPreview()"
         ></app-rollover-result>
 
@@ -117,9 +119,74 @@
       <!-- The steps -->
       @else if (preview(); as currentPreview) {
 
-        <section class="stepper-card" [class.is-refreshing]="isPreviewLoading()">
+        <!-- ===== Steps header =====
+             A finished step: ✓, and a click goes back to it.
+             The current step: navy. A step not reached: its number only,
+             no hover, no ✓ (even if it is already ready). -->
+        <nav
+          #stepsNav
+          class="steps-card"
+          [attr.aria-label]="'ROLLOVER.STEPS.LABEL' | translate"
+        >
 
-          <!-- Reload ("Check again", or another source term): thin bar on top -->
+          <ol class="steps">
+
+            @for (step of steps(); track step.key; let i = $index, last = $last) {
+
+              <li class="step-item" [class.is-last]="last">
+
+                @if (i < stepIndex()) {
+
+                  <button
+                    type="button"
+                    class="step is-done"
+                    [disabled]="isRunning()"
+                    (click)="goToStep(i)"
+                  >
+                    <span class="step-num" aria-hidden="true">
+                      <mat-icon>check</mat-icon>
+                    </span>
+
+                    <span class="step-text">
+                      <span class="step-label">{{ step.labelKey | translate }}</span>
+                      <span class="step-sub">{{ 'ROLLOVER.STEPS.DONE' | translate }}</span>
+                    </span>
+                  </button>
+
+                } @else {
+
+                  <span
+                    class="step"
+                    [class.is-current]="i === stepIndex()"
+                    [attr.aria-current]="i === stepIndex() ? 'step' : null"
+                  >
+                    <span class="step-num" aria-hidden="true">{{ i + 1 }}</span>
+
+                    <span class="step-text">
+                      <span class="step-label">{{ step.labelKey | translate }}</span>
+
+                      @if (i === stepIndex()) {
+                        <span class="step-sub">
+                          {{ 'ROLLOVER.STEPS.STEP_OF' | translate: { current: i + 1, total: steps().length } }}
+                        </span>
+                      }
+                    </span>
+                  </span>
+
+                }
+
+                @if (!last) {
+                  <span class="step-line" [class.is-done]="i < stepIndex()" aria-hidden="true"></span>
+                }
+
+              </li>
+
+            }
+
+          </ol>
+
+          <!-- Reload ("Check again", another source term, a closed term):
+               a thin bar on the bottom edge -->
           @if (isPreviewLoading()) {
             <mat-progress-bar
               class="refresh-bar"
@@ -127,34 +194,18 @@
             ></mat-progress-bar>
           }
 
-          <mat-stepper
-            #stepper
-            linear
-            [selectedIndex]="stepIndex()"
-            (selectionChange)="stepIndex.set($event.selectedIndex)"
-          >
+        </nav>
 
-            <!-- A finished step shows a check mark (not Material's pencil). -->
-            <ng-template matStepperIcon="edit">
-              <mat-icon>check</mat-icon>
-            </ng-template>
 
-            <ng-template matStepperIcon="done">
-              <mat-icon>check</mat-icon>
-            </ng-template>
+        <!-- ===== The step ===== -->
+        <div class="step-content" [class.is-refreshing]="isPreviewLoading()">
+
+          @switch (currentStep()) {
 
             <!-- 1. Preview and decisions -->
-            <mat-step [completed]="isPreviewDone()">
+            @case ('preview') {
 
-              <ng-template matStepLabel>
-                {{
-                  (currentPreview.isNewYear
-                    ? 'ROLLOVER.STEPS.PREVIEW'
-                    : 'ROLLOVER.STEPS.PREVIEW_SAME_YEAR') | translate
-                }}
-              </ng-template>
-
-              <div class="step-body">
+              <div class="step-body" id="rollover-preview">
 
                 <!-- The rule behind "Repeat" (school settings), new year only -->
                 @if (currentPreview.isNewYear) {
@@ -163,6 +214,7 @@
                     [changedCount]="changedDecisions()"
                     [disabled]="isPreviewLoading() || isRunning()"
                     (saved)="onThresholdSaved()"
+                    (editingChange)="isEditingRule.set($event)"
                   ></app-rollover-threshold>
                 }
 
@@ -170,142 +222,113 @@
                   [preview]="currentPreview"
                   [groups]="groups()"
                   [decisions]="decisions()"
+                  [selected]="filter()"
+                  [isPhone]="isPhone()"
                   (decisionChange)="onDecisionChange($event)"
+                  (filterChange)="onFilterChange($event)"
                 ></app-rollover-preview>
-
-                <div class="step-actions">
-
-                  @if (!currentPreview.isNewYear) {
-                    <span class="note">
-                      <mat-icon>info</mat-icon>
-                      {{ 'ROLLOVER.PREVIEW.SAME_YEAR_NOTE' | translate }}
-                    </span>
-                  } @else if (tally().pending > 0) {
-                    <span class="note warn">
-                      <mat-icon>error_outline</mat-icon>
-                      {{
-                        (tally().pending === 1
-                          ? 'ROLLOVER.PREVIEW.PENDING_ONE'
-                          : 'ROLLOVER.PREVIEW.PENDING_MANY')
-                          | translate: { count: tally().pending }
-                      }}
-                    </span>
-                  } @else {
-                    <span class="note ok">
-                      <mat-icon>check_circle</mat-icon>
-                      {{ 'ROLLOVER.PREVIEW.ALL_DECIDED' | translate }}
-                    </span>
-                  }
-
-                  <button
-                    mat-flat-button
-                    matStepperNext
-                    type="button"
-                    [disabled]="!isPreviewDone() || isPreviewLoading()"
-                  >
-                    {{ 'ROLLOVER.STEPS.NEXT' | translate }}
-                  </button>
-
-                </div>
 
               </div>
 
-            </mat-step>
+              @let note = previewNote();
 
+              <app-rollover-step-bar [icon]="note.icon" [tone]="note.tone">
 
-            <!-- 2. Close the old year's grades (new year only) -->
-            @if (currentPreview.isNewYear) {
+                <span note>
+                  {{ note.key | translate: { count: note.count } }}
 
-              <mat-step [completed]="isTermsDone()">
-
-                <ng-template matStepLabel>
-                  {{ 'ROLLOVER.STEPS.TERMS' | translate }}
-                </ng-template>
-
-                <div class="step-body">
-
-                  <app-rollover-open-terms
-                    [yearTerms]="fromYearTerms()"
-                    [openTerms]="currentPreview.openTerms"
-                    [fromYearName]="currentPreview.fromYearName ?? ''"
-                    [isChecking]="isPreviewLoading()"
-                    (recheck)="recheckTerms()"
-                  ></app-rollover-open-terms>
-
-                  <div class="step-actions">
-
-                    @if (isTermsDone()) {
-                      <span class="note ok">
-                        <mat-icon>check_circle</mat-icon>
-                        {{ 'ROLLOVER.TERMS.READY' | translate }}
-                      </span>
-                    } @else {
-                      <span class="note warn">
-                        <mat-icon>lock_open</mat-icon>
-                        {{
-                          (currentPreview.openTerms.length === 1
-                            ? 'ROLLOVER.TERMS.OPEN_ONE'
-                            : 'ROLLOVER.TERMS.OPEN_MANY')
-                            | translate: { count: currentPreview.openTerms.length }
-                        }}
-                      </span>
-                    }
-
+                  @if (note.tone === 'warn') {
                     <button
-                      mat-button
-                      matStepperPrevious
                       type="button"
+                      class="text-link"
+                      (click)="showPending()"
                     >
-                      {{ 'ROLLOVER.STEPS.BACK' | translate }}
+                      {{ 'ROLLOVER.PREVIEW.SHOW_PENDING' | translate }}
                     </button>
+                  }
+                </span>
 
-                    <button
-                      mat-flat-button
-                      matStepperNext
-                      type="button"
-                      [disabled]="!isTermsDone() || isPreviewLoading()"
-                    >
-                      {{ 'ROLLOVER.STEPS.NEXT' | translate }}
-                    </button>
+                <ng-container ngProjectAs="[actions]">
+                  <button
+                    mat-flat-button
+                    type="button"
+                    [disabled]="!canLeavePreview()"
+                    (click)="next()"
+                  >
+                    {{ 'ROLLOVER.STEPS.NEXT' | translate }}
+                  </button>
+                </ng-container>
 
-                  </div>
-
-                </div>
-
-              </mat-step>
+              </app-rollover-step-bar>
 
             }
 
 
-            <!-- 3. Confirm and run -->
-            <mat-step>
+            <!-- 2. Close the old year's grades (new year only) -->
+            @case ('terms') {
 
-              <ng-template matStepLabel>
-                {{ 'ROLLOVER.STEPS.CONFIRM' | translate }}
-              </ng-template>
+              <app-rollover-open-terms
+                [yearTerms]="fromYearTerms()"
+                [openTerms]="currentPreview.openTerms"
+                [fromYearName]="currentPreview.fromYearName ?? ''"
+                [isChecking]="isPreviewLoading()"
+                [closingTermId]="closingTermId()"
+                [isPhone]="isPhone()"
+                (recheck)="recheckTerms()"
+                (closeTerm)="confirmCloseTerm($event)"
+              ></app-rollover-open-terms>
 
-              <div class="step-body">
+              @let note = termsNote();
 
-                <app-rollover-confirm
-                  [tally]="tally()"
-                  [isNewYear]="currentPreview.isNewYear"
-                  [fromYearName]="currentPreview.fromYearName"
-                  [toTermName]="toTermName()"
-                  [isRunning]="isRunning()"
-                  [passwordError]="passwordError()"
-                  [formError]="formError()"
-                  [isLocked]="isLocked()"
-                  (back)="stepper.previous()"
-                  (run)="run($event)"
-                ></app-rollover-confirm>
+              <app-rollover-step-bar [icon]="note.icon" [tone]="note.tone">
 
-              </div>
+                <span note>{{ note.key | translate: { count: note.count } }}</span>
 
-            </mat-step>
+                <ng-container ngProjectAs="[actions]">
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    (click)="previous()"
+                  >
+                    {{ 'ROLLOVER.STEPS.BACK' | translate }}
+                  </button>
 
-          </mat-stepper>
+                  <button
+                    mat-flat-button
+                    type="button"
+                    [disabled]="!isTermsDone() || isPreviewLoading() || closingTermId() !== null"
+                    (click)="next()"
+                  >
+                    {{ 'ROLLOVER.STEPS.NEXT' | translate }}
+                  </button>
+                </ng-container>
 
-        </section>
+              </app-rollover-step-bar>
+
+            }
+
+
+            <!-- 3. Confirm and run (its step bar is inside the form) -->
+            @case ('confirm') {
+
+              <app-rollover-confirm
+                [tally]="tally()"
+                [isNewYear]="currentPreview.isNewYear"
+                [fromYearName]="currentPreview.fromYearName"
+                [toTermName]="toTermName()"
+                [isRunning]="isRunning()"
+                [passwordError]="passwordError()"
+                [formError]="formError()"
+                [isLocked]="isLocked()"
+                (back)="previous()"
+                (run)="run($event)"
+              ></app-rollover-confirm>
+
+            }
+
+          }
+
+        </div>
 
       }
 

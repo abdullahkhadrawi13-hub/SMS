@@ -1,3 +1,10 @@
+/* ==========================================================
+   Rollover preview (navy & gold, 15 Nov 2026)
+   The filters sit on the page background (like the list pages);
+   the active one has the spec's "active filter" look (blue).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 :host {
   display: block;
 }
@@ -6,152 +13,136 @@
   display: flex;
   flex-direction: column;
 
-  gap: 16px;
+  gap: var(--sp-4);
 }
 
 
 /* ================================
-   Filter chips (same look as a Material filter chip)
+   Filters
    ================================ */
 
-.chips {
+.filters {
   display: flex;
   flex-wrap: wrap;
 
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
-.chip {
+.filter {
   display: inline-flex;
   align-items: center;
 
-  gap: 6px;
+  gap: var(--sp-2);
 
-  height: 32px;
+  height: var(--h-control);
 
-  padding: 0 12px;
+  box-sizing: border-box;
+  padding-inline: var(--sp-3);
 
-  font: inherit;
-  font-weight: 500;
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
 
-  color: #44474e;
-  background: #ffffff;
+  background: var(--surface);
 
-  border: 1px solid #c4c6d0;
-  border-radius: 8px;
+  color: var(--text);
+
+  font: 600 var(--fs-14) / 1 var(--font);
+
+  white-space: nowrap;
 
   cursor: pointer;
 
-  transition: background 0.15s ease;
+  transition: background-color var(--dur), border-color var(--dur);
 }
 
-.chip:hover:not(:disabled) {
-  background: #f3f4f6;
+.filter:hover:not(:disabled) {
+  background: var(--hover);
 }
 
-.chip:focus-visible {
-  outline: 2px solid #2554a4;
-  outline-offset: 2px;
+.filter.is-active,
+.filter.is-active:hover {
+  border-color: var(--accent);
+
+  background: var(--accent-soft);
+
+  color: var(--accent-ink);
 }
 
-.chip.selected {
-  color: #001b3e;
-  background: #d7e3ff;
+.filter:disabled {
+  border-color: var(--border);
 
-  border-color: #d7e3ff;
-}
+  background: var(--raised);
 
-.chip:disabled {
-  opacity: 0.45;
+  color: var(--faint);
 
   cursor: default;
 }
 
-.chip mat-icon {
+.filter mat-icon {
   width: 18px;
   height: 18px;
+
+  margin-inline-start: -2px;
 
   font-size: 18px;
 }
 
-.count {
-  color: #111827;
+.filter-count {
+  color: var(--muted);
 
+  font-size: var(--fs-13);
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
 }
 
-.swatch {
-  width: 10px;
-  height: 10px;
-
-  border-radius: 50%;
+.filter.is-active .filter-count {
+  color: var(--accent-ink);
 }
 
-/* The swatch color of each suggestion (the badge tones of the table). */
-.swatch.tone-blue     { background: #2554a4; }
-.swatch.tone-green    { background: #047857; }
-.swatch.tone-orange   { background: #b45309; }
-.swatch.tone-gold     { background: #c9a227; }
-.swatch.tone-red      { background: #b91c1c; }
-.swatch.tone-grey     { background: #9ca3af; }
-.swatch.tone-dark-red { background: #7f1d1d; }
+.filter:disabled .filter-count {
+  color: var(--faint);
+}
 
 
 /* ================================
-   Groups
+   Class cards
    ================================ */
 
 .groups {
   display: flex;
   flex-direction: column;
 
-  gap: 12px;
+  gap: var(--sp-4);
 }
 
 
 /* ================================
-   Empty
+   Phone (under 720px)
+   The filters scroll sideways in their row (44px for touch).
    ================================ */
 
-.empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+@media (max-width: 719.98px) {
 
-  gap: 10px;
+  .filters {
+    flex-wrap: nowrap;
 
-  padding: 30px;
+    margin-inline: calc(var(--sp-4) * -1);
+    padding-inline: var(--sp-4);
+    padding-block-end: 2px;
 
-  text-align: center;
+    overflow-x: auto;
 
-  border: 1px dashed #d1d5db;
-  border-radius: 12px;
-}
+    scrollbar-width: none;
+  }
 
-.empty mat-icon {
-  width: 40px;
-  height: 40px;
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
 
-  font-size: 40px;
+  .filter {
+    flex-shrink: 0;
 
-  color: #9ca3af;
-}
-
-.empty p {
-  margin: 0;
-
-  color: #6b7280;
-}
-
-
-/* ================================
-   Reduced Motion
-   ================================ */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .chip {
-    transition: none;
+    height: var(--h-touch);
   }
 
 }

@@ -10,14 +10,15 @@ import {
 } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { StatusBadgeTone } from '../../../../shared/components/status-badge/status-badge';
+
 import { RolloverTally } from '../rollover';
+import { RolloverStepBar } from '../rollover-step-bar/rollover-step-bar';
 
 
 // What the Admin typed, sent to POST /api/rollover by the parent page.
@@ -26,26 +27,32 @@ export interface RolloverConfirmation {
   confirmYearName: string | null;
 }
 
-// One tile of "What will happen".
+// One number of "What will happen": the label with the suggestion's dot,
+// the number, and one short line under it.
 interface TallyTile {
   labelKey: string;
+  textKey: string;
   count: number;
-  tone: string;
+  tone: StatusBadgeTone;
+  outlined: boolean;
 }
 
 
 // Step 3: what will happen, then the guards of POST /api/rollover:
 // the Admin's password (always), and for a new year the year name.
 // The password is never kept: it is cleared as soon as it is sent.
+// Navy & gold (15 Nov 2026): the numbers in one card divided by lines,
+// the shared field look, and the step bar at the bottom. The run button
+// is red for a new year (it cannot be undone), navy in the same year.
 @Component({
   selector: 'app-rollover-confirm',
   imports: [
     MatButtonModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatProgressSpinnerModule,
-    TranslatePipe
+    TranslatePipe,
+
+    RolloverStepBar
   ],
   templateUrl: './rollover-confirm.html',
   styleUrl: './rollover-confirm.css',
@@ -109,17 +116,17 @@ export class RolloverConfirm {
 
     const tiles: TallyTile[] = this.isNewYear()
       ? [
-          { labelKey: 'ROLLOVER.CONFIRM.PROMOTE',  count: tally.promote,  tone: 'green' },
-          { labelKey: 'ROLLOVER.CONFIRM.REPEAT',   count: tally.repeat,   tone: 'orange' },
-          { labelKey: 'ROLLOVER.CONFIRM.GRADUATE', count: tally.graduate, tone: 'gold' }
+          { labelKey: 'ROLLOVER.CONFIRM.PROMOTE',  textKey: 'ROLLOVER.CONFIRM.PROMOTE_TEXT',  count: tally.promote,  tone: 'ok',   outlined: false },
+          { labelKey: 'ROLLOVER.CONFIRM.REPEAT',   textKey: 'ROLLOVER.CONFIRM.REPEAT_TEXT',   count: tally.repeat,   tone: 'bad',  outlined: false },
+          { labelKey: 'ROLLOVER.CONFIRM.GRADUATE', textKey: 'ROLLOVER.CONFIRM.GRADUATE_TEXT', count: tally.graduate, tone: 'gold', outlined: false }
         ]
       : [
-          { labelKey: 'ROLLOVER.CONFIRM.COPY', count: tally.copy, tone: 'blue' }
+          { labelKey: 'ROLLOVER.CONFIRM.COPY', textKey: 'ROLLOVER.CONFIRM.COPY_TEXT', count: tally.copy, tone: 'ok', outlined: false }
         ];
 
     tiles.push(
-      { labelKey: 'ROLLOVER.CONFIRM.ALREADY_PLACED', count: tally.alreadyPlaced, tone: 'grey' },
-      { labelKey: 'ROLLOVER.CONFIRM.NO_TARGET',      count: tally.noTarget,      tone: 'dark-red' }
+      { labelKey: 'ROLLOVER.CONFIRM.ALREADY_PLACED', textKey: 'ROLLOVER.CONFIRM.ALREADY_PLACED_TEXT', count: tally.alreadyPlaced, tone: 'neutral', outlined: false },
+      { labelKey: 'ROLLOVER.CONFIRM.NO_TARGET',      textKey: 'ROLLOVER.CONFIRM.NO_TARGET_TEXT',      count: tally.noTarget,      tone: 'bad',     outlined: true }
     );
 
     return tiles;

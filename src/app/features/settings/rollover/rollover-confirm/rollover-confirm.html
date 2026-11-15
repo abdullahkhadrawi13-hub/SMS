@@ -1,3 +1,5 @@
+<!-- Step 3: what will happen, then the guards (navy & gold, 15 Nov 2026).
+     Fields: the shared look (styles.css: .field, .field-box). -->
 <form class="confirm" (submit)="$event.preventDefault(); submit()">
 
   <div class="confirm-grid">
@@ -5,20 +7,38 @@
     <!-- What will happen (from the preview and the Admin's decisions) -->
     <section class="card">
 
-      <h3>{{ 'ROLLOVER.CONFIRM.SUMMARY_TITLE' | translate }}</h3>
+      <div class="card-head">
+        <h2 class="card-title">{{ 'ROLLOVER.CONFIRM.SUMMARY_TITLE' | translate }}</h2>
+        <span class="card-meta">{{ 'ROLLOVER.CONFIRM.SUMMARY_META' | translate }}</span>
+      </div>
 
-      <div class="tiles">
+      <!-- One card divided by lines, not a card per number (spec: "الأرقام المجمّعة") -->
+      <div class="stats" [style.--stat-count]="tiles().length">
         @for (tile of tiles(); track tile.labelKey) {
-          <div class="tile" [class]="'tone-' + tile.tone">
-            <strong>{{ tile.count }}</strong>
-            <span>{{ tile.labelKey | translate }}</span>
+          <div class="stat" [class.is-zero]="tile.count === 0">
+
+            <span class="stat-label">
+              <span
+                class="tone-dot"
+                aria-hidden="true"
+                [attr.data-tone]="tile.tone"
+                [attr.data-outlined]="tile.outlined ? '' : null"
+              ></span>
+              {{ tile.labelKey | translate }}
+            </span>
+
+            <strong class="stat-value">{{ tile.count }}</strong>
+
+            <span class="stat-text">{{ tile.textKey | translate }}</span>
+
           </div>
         }
       </div>
 
       @if (tally().noTarget > 0) {
         <p class="hint">
-          {{ 'ROLLOVER.CONFIRM.NO_TARGET_HINT' | translate }}
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <span>{{ 'ROLLOVER.CONFIRM.NO_TARGET_HINT' | translate }}</span>
         </p>
       }
 
@@ -28,85 +48,118 @@
     <!-- The guards -->
     <section class="card">
 
-      @if (isNewYear()) {
+      <div class="card-head">
+        <h2 class="card-title">{{ 'ROLLOVER.CONFIRM.GUARD_TITLE' | translate }}</h2>
+      </div>
 
-        <!-- A new-year rollover cannot be undone -->
-        <div class="danger-box">
-          <mat-icon>warning</mat-icon>
+      <div class="guards">
 
-          <span>
-            <strong>{{ 'ROLLOVER.CONFIRM.WARNING_TITLE' | translate }}</strong>
-            {{ 'ROLLOVER.CONFIRM.WARNING_TEXT' | translate: { year: fromYearName() } }}
-          </span>
+        @if (isNewYear()) {
+
+          <!-- A new-year rollover cannot be undone -->
+          <div class="danger-note" role="note">
+            <mat-icon aria-hidden="true">warning</mat-icon>
+
+            <span>
+              <strong>{{ 'ROLLOVER.CONFIRM.WARNING_TITLE' | translate }}</strong>
+              {{ 'ROLLOVER.CONFIRM.WARNING_TEXT' | translate: { year: fromYearName() } }}
+            </span>
+          </div>
+
+          <!-- Type the year name -->
+          <div class="field">
+
+            <label class="field-label" for="rollover-year-name">
+              {{ 'ROLLOVER.CONFIRM.YEAR_LABEL' | translate }}
+            </label>
+
+            <div
+              class="field-box"
+              [class.is-invalid]="yearName() && !yearMatches()"
+              [class.is-matched]="yearName() && yearMatches()"
+            >
+              <input
+                id="rollover-year-name"
+                dir="ltr"
+                autocomplete="off"
+                aria-describedby="rollover-year-help"
+                [attr.aria-invalid]="yearName() && !yearMatches() ? 'true' : null"
+                [placeholder]="fromYearName() ?? ''"
+                [value]="yearName()"
+                (input)="onYearInput($event)"
+              />
+
+              @if (yearName() && yearMatches()) {
+                <mat-icon class="match-icon" aria-hidden="true">check_circle</mat-icon>
+              }
+            </div>
+
+            @if (yearName() && !yearMatches()) {
+              <div class="field-error" id="rollover-year-help">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                {{ 'ROLLOVER.CONFIRM.YEAR_MISMATCH' | translate }}
+              </div>
+            } @else if (yearName() && yearMatches()) {
+              <div class="field-ok" id="rollover-year-help">
+                <mat-icon aria-hidden="true">check</mat-icon>
+                {{ 'ROLLOVER.CONFIRM.YEAR_MATCH' | translate }}
+              </div>
+            } @else {
+              <div class="field-help" id="rollover-year-help">
+                {{ 'ROLLOVER.CONFIRM.YEAR_HINT' | translate: { year: fromYearName() } }}
+              </div>
+            }
+
+          </div>
+
+        }
+
+        <!-- The Admin's own password -->
+        <div class="field">
+
+          <label class="field-label" for="rollover-admin-password">
+            {{ 'ROLLOVER.CONFIRM.PASSWORD_LABEL' | translate }}
+          </label>
+
+          <div class="field-box" [class.is-invalid]="visiblePasswordError()">
+
+            <input
+              #passwordInput
+              id="rollover-admin-password"
+              autocomplete="current-password"
+              aria-describedby="rollover-password-help"
+              [attr.aria-invalid]="visiblePasswordError() ? 'true' : null"
+              [type]="showPassword() ? 'text' : 'password'"
+              [value]="password()"
+              (input)="onPasswordInput($event)"
+            />
+
+            <button
+              type="button"
+              class="field-action"
+              [attr.aria-label]="(showPassword() ? 'ROLLOVER.CONFIRM.HIDE_PASSWORD' : 'ROLLOVER.CONFIRM.SHOW_PASSWORD') | translate"
+              [attr.aria-pressed]="showPassword()"
+              (click)="togglePassword()"
+            >
+              <mat-icon aria-hidden="true">{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+
+          </div>
+
+          @if (visiblePasswordError()) {
+            <div class="field-error" id="rollover-password-help">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              {{ visiblePasswordError() }}
+            </div>
+          } @else {
+            <div class="field-help" id="rollover-password-help">
+              {{ 'ROLLOVER.CONFIRM.PASSWORD_HINT' | translate }}
+            </div>
+          }
+
         </div>
 
-        <!-- Type the year name -->
-        <mat-form-field
-          appearance="outline"
-          [class.matched]="yearName() && yearMatches()"
-        >
-          <mat-label>{{ 'ROLLOVER.CONFIRM.YEAR_LABEL' | translate }}</mat-label>
-
-          <input
-            matInput
-            id="rollover-year-name"
-            dir="ltr"
-            autocomplete="off"
-            [placeholder]="fromYearName() ?? ''"
-            [value]="yearName()"
-            (input)="onYearInput($event)"
-          />
-
-          @if (yearName() && !yearMatches()) {
-            <mat-hint class="field-error">
-              {{ 'ROLLOVER.CONFIRM.YEAR_MISMATCH' | translate }}
-            </mat-hint>
-          } @else if (yearName() && yearMatches()) {
-            <mat-hint class="field-ok">
-              {{ 'ROLLOVER.CONFIRM.YEAR_MATCH' | translate }}
-            </mat-hint>
-          } @else {
-            <mat-hint>
-              {{ 'ROLLOVER.CONFIRM.YEAR_HINT' | translate: { year: fromYearName() } }}
-            </mat-hint>
-          }
-        </mat-form-field>
-
-      }
-
-      <!-- The Admin's own password -->
-      <mat-form-field
-        appearance="outline"
-        [class.has-error]="visiblePasswordError()"
-      >
-        <mat-label>{{ 'ROLLOVER.CONFIRM.PASSWORD_LABEL' | translate }}</mat-label>
-
-        <input
-          #passwordInput
-          matInput
-          id="rollover-admin-password"
-          autocomplete="current-password"
-          [type]="showPassword() ? 'text' : 'password'"
-          [value]="password()"
-          (input)="onPasswordInput($event)"
-        />
-
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          [attr.aria-label]="(showPassword() ? 'ROLLOVER.CONFIRM.HIDE_PASSWORD' : 'ROLLOVER.CONFIRM.SHOW_PASSWORD') | translate"
-          (click)="togglePassword()"
-        >
-          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
-
-        @if (visiblePasswordError()) {
-          <mat-hint class="field-error">{{ visiblePasswordError() }}</mat-hint>
-        } @else {
-          <mat-hint>{{ 'ROLLOVER.CONFIRM.PASSWORD_HINT' | translate }}</mat-hint>
-        }
-      </mat-form-field>
+      </div>
 
     </section>
 
@@ -116,54 +169,55 @@
   <!-- Any other error from the backend -->
   @if (formError()) {
     <div class="form-error" role="alert">
-      <mat-icon>error_outline</mat-icon>
+      <mat-icon aria-hidden="true">error</mat-icon>
       <span>{{ formError() }}</span>
     </div>
   }
 
 
-  <!-- Actions -->
-  <div class="step-actions">
+  <!-- The step bar: the run button is red for a new year (it cannot be
+       undone and closes the year's grades for good), navy in the same year -->
+  <app-rollover-step-bar icon="lock">
 
-    <span class="note">
-      <mat-icon>lock</mat-icon>
-      {{ 'ROLLOVER.CONFIRM.PASSWORD_NOTE' | translate }}
-    </span>
+    <span note>{{ 'ROLLOVER.CONFIRM.PASSWORD_NOTE' | translate }}</span>
 
-    <button
-      mat-button
-      type="button"
-      [disabled]="isRunning()"
-      (click)="back.emit()"
-    >
-      {{ 'ROLLOVER.STEPS.BACK' | translate }}
-    </button>
+    <ng-container ngProjectAs="[actions]">
 
-    <button
-      mat-flat-button
-      type="submit"
-      class="run-button"
-      [class.danger]="isNewYear()"
-      [disabled]="!canRun()"
-    >
-      @if (isRunning()) {
-        <ng-container>
-          <mat-spinner diameter="18"></mat-spinner>
-          {{ 'ROLLOVER.CONFIRM.RUNNING' | translate }}
-        </ng-container>
-      } @else {
-        <ng-container>
-          <mat-icon>move_up</mat-icon>
+      <button
+        mat-stroked-button
+        type="button"
+        [disabled]="isRunning()"
+        (click)="back.emit()"
+      >
+        {{ 'ROLLOVER.STEPS.BACK' | translate }}
+      </button>
 
-          {{
-            isNewYear()
+      <button
+        mat-flat-button
+        type="submit"
+        class="fd-submit"
+        [class.btn-danger]="isNewYear()"
+        [class.is-busy]="isRunning()"
+        [attr.aria-disabled]="isRunning() ? 'true' : null"
+        [disabled]="!isRunning() && !canRun()"
+      >
+        <mat-icon aria-hidden="true" [class.fd-hidden]="isRunning()">move_up</mat-icon>
+
+        @if (isRunning()) {
+          <mat-spinner class="fd-submit-spinner" diameter="18" aria-hidden="true" />
+        }
+
+        {{
+          isRunning()
+            ? ('ROLLOVER.CONFIRM.RUNNING' | translate)
+            : isNewYear()
               ? ('ROLLOVER.CONFIRM.RUN_NEW_YEAR' | translate: { year: fromYearName() })
               : ('ROLLOVER.CONFIRM.RUN_SAME_YEAR' | translate: { term: toTermName() })
-          }}
-        </ng-container>
-      }
-    </button>
+        }}
+      </button>
 
-  </div>
+    </ng-container>
+
+  </app-rollover-step-bar>
 
 </form>

@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
 
@@ -20,6 +20,7 @@ import {
   RolloverClassGroup,
   RolloverDecisionChange
 } from '../rollover-class-group/rollover-class-group';
+import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // One filter chip: a suggestion and how many students have it.
@@ -29,15 +30,18 @@ interface FilterChip {
 }
 
 
-// Step 1: what the backend suggests for every student, grouped by class.
-// The filter chips are a view setting of this step only.
+// Step 1: what the backend suggests for every student, grouped by class
+// (navy & gold, 15 Nov 2026): the filters on the page background, then
+// one card per class. The chosen filter lives in the page, so the step
+// bar's "Show" link can choose "Needs a decision".
 @Component({
   selector: 'app-rollover-preview',
   imports: [
     MatIconModule,
     TranslatePipe,
 
-    RolloverClassGroup
+    RolloverClassGroup,
+    StateCard
   ],
   templateUrl: './rollover-preview.html',
   styleUrl: './rollover-preview.css',
@@ -48,12 +52,16 @@ export class RolloverPreview {
   readonly groups = input<ClassGroupView[]>([]);
   readonly decisions = input<RolloverDecisions>({});
 
+  // The chosen filter (null = all students), kept by the page.
+  readonly selected = input<RolloverSuggestion | null>(null);
+
+  // Under 720px the classes show their students as a two-line list.
+  readonly isPhone = input(false);
+
   readonly decisionChange = output<RolloverDecisionChange>();
+  readonly filterChange = output<RolloverSuggestion | null>();
 
   readonly suggestionStyle = SUGGESTION_STYLE;
-
-  // The chosen chip (null = all students).
-  private readonly selected = signal<RolloverSuggestion | null>(null);
 
   readonly chips = computed<FilterChip[]>(() => {
     const preview = this.preview();
@@ -80,6 +88,6 @@ export class RolloverPreview {
   readonly total = computed(() => this.preview().students.length);
 
   select(suggestion: RolloverSuggestion | null): void {
-    this.selected.set(suggestion);
+    this.filterChange.emit(suggestion);
   }
 }
