@@ -1,59 +1,131 @@
+<!-- After the rollover (navy & gold, 15 Nov 2026) -->
 <div class="result">
 
-  <!-- Done -->
-  <div class="result-head" role="status">
-    <mat-icon>task_alt</mat-icon>
+  <!-- Done, and the numbers (one card divided by lines) -->
+  <section class="card done-card">
 
-    <div>
-      <h3>{{ 'ROLLOVER.RESULT.TITLE' | translate: { term: toTermName() } }}</h3>
+    <div class="done-head" role="status">
 
-      <p>
-        {{
-          isNewYear()
-            ? ('ROLLOVER.RESULT.GRADES_CLOSED' | translate: { year: fromYearName() })
-            : ('ROLLOVER.RESULT.NO_GRADES_CLOSED' | translate)
-        }}
-      </p>
+      <span class="done-icon" aria-hidden="true">
+        <mat-icon>task_alt</mat-icon>
+      </span>
+
+      <div>
+        <h2 class="done-title">{{ 'ROLLOVER.RESULT.TITLE' | translate: { term: toTermName() } }}</h2>
+
+        <p class="done-text">
+          {{
+            isNewYear()
+              ? ('ROLLOVER.RESULT.GRADES_CLOSED' | translate: { year: fromYearName() })
+              : ('ROLLOVER.RESULT.NO_GRADES_CLOSED' | translate)
+          }}
+        </p>
+      </div>
+
     </div>
-  </div>
 
+    @if (tiles().length > 0) {
+      <div class="stats" [style.--stat-count]="tiles().length">
+        @for (tile of tiles(); track tile.labelKey) {
+          <div class="stat">
 
-  <!-- Counts -->
-  @if (tiles().length > 0) {
-    <div class="tiles">
-      @for (tile of tiles(); track tile.labelKey) {
-        <div class="tile" [class]="'tone-' + tile.tone">
-          <strong>{{ tile.count }}</strong>
-          <span>{{ tile.labelKey | translate }}</span>
-        </div>
-      }
-    </div>
-  }
+            <span class="stat-label">
+              <span class="tone-dot" aria-hidden="true" [attr.data-tone]="tile.tone"></span>
+              {{ tile.labelKey | translate }}
+            </span>
+
+            <strong class="stat-value">{{ tile.count }}</strong>
+
+            <span class="stat-text">{{ tile.textKey | translate }}</span>
+
+          </div>
+        }
+      </div>
+    }
+
+  </section>
 
 
   <!-- Students that could not be placed -->
   @if (result().notPlaced.length > 0) {
 
-    <section class="not-placed">
+    <section class="data-card not-placed">
 
-      <h3>
-        <mat-icon>block</mat-icon>
-        {{ 'ROLLOVER.RESULT.NOT_PLACED_TITLE' | translate: { count: result().notPlaced.length } }}
-      </h3>
-
-      <div class="not-placed-list">
-        @for (student of result().notPlaced; track student.studentId) {
-          <div class="not-placed-row">
-            <span class="student-name">{{ studentName(student) }}</span>
-            <bdi class="student-number" dir="ltr">{{ student.studentNumber }}</bdi>
-            <span class="place">{{ fromPlace(student) }}</span>
-            <span class="note">{{ note(student) }}</span>
-          </div>
-        }
+      <div class="card-head">
+        <h2 class="card-title">{{ 'ROLLOVER.RESULT.NOT_PLACED_TITLE' | translate }}</h2>
+        <span class="card-meta">
+          {{ notPlacedKey() | translate: { count: result().notPlaced.length } }}
+        </span>
       </div>
 
-      <p class="hint">
-        {{ 'ROLLOVER.RESULT.NOT_PLACED_HINT' | translate }}
+      @if (!isPhone()) {
+
+        <div class="data-table">
+          <table>
+
+            <thead>
+              <tr>
+                <th>{{ 'ROLLOVER.RESULT.COLUMNS.STUDENT' | translate }}</th>
+                <th>{{ 'ROLLOVER.RESULT.COLUMNS.FROM' | translate }}</th>
+                <th>{{ 'ROLLOVER.RESULT.COLUMNS.REASON' | translate }}</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (student of result().notPlaced; track student.studentId) {
+                <tr>
+
+                  <td>
+                    <div class="person">
+                      <span class="data-avatar" [attr.data-tone]="avatarTone(student)" aria-hidden="true">
+                        {{ initials(student) }}
+                      </span>
+
+                      <span class="person-text">
+                        <span class="person-name">{{ studentName(student) }}</span>
+                        <bdi class="person-number" dir="ltr">{{ student.studentNumber }}</bdi>
+                      </span>
+                    </div>
+                  </td>
+
+                  <td class="data-muted">{{ fromPlace(student) }}</td>
+
+                  <td class="wrap">
+                    <span class="reason">{{ note(student) || ('ROLLOVER.SUGGESTION.NO_TARGET' | translate) }}</span>
+                  </td>
+
+                </tr>
+              }
+            </tbody>
+
+          </table>
+        </div>
+
+      } @else {
+
+        <ul class="data-items">
+          @for (student of result().notPlaced; track student.studentId) {
+            <li class="data-item not-placed-item">
+              <div class="data-item-text">
+                <div class="data-item-line1">
+                  <span class="person-name">{{ studentName(student) }}</span>
+                </div>
+                <div class="data-item-line2">
+                  <bdi dir="ltr">{{ student.studentNumber }}</bdi>
+                  <span aria-hidden="true">·</span>
+                  <span>{{ fromPlace(student) }}</span>
+                </div>
+                <div class="reason">{{ note(student) || ('ROLLOVER.SUGGESTION.NO_TARGET' | translate) }}</div>
+              </div>
+            </li>
+          }
+        </ul>
+
+      }
+
+      <p class="card-foot">
+        <mat-icon aria-hidden="true">info</mat-icon>
+        <span>{{ 'ROLLOVER.RESULT.NOT_PLACED_HINT' | translate }}</span>
       </p>
 
     </section>
@@ -61,15 +133,15 @@
   }
 
 
-  <!-- Actions -->
-  <div class="step-actions">
+  <!-- Actions: one primary button -->
+  <div class="result-actions">
 
     <button
       mat-stroked-button
       type="button"
       (click)="newPreview.emit()"
     >
-      <mat-icon>restart_alt</mat-icon>
+      <mat-icon aria-hidden="true">restart_alt</mat-icon>
       {{ 'ROLLOVER.RESULT.NEW_PREVIEW' | translate }}
     </button>
 
@@ -77,7 +149,7 @@
       mat-flat-button
       routerLink="/students"
     >
-      <mat-icon>school</mat-icon>
+      <mat-icon aria-hidden="true">school</mat-icon>
       {{ 'ROLLOVER.RESULT.GO_TO_STUDENTS' | translate }}
     </a>
 

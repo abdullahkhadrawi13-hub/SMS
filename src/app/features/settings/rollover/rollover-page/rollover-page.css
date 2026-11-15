@@ -1,144 +1,318 @@
-/* ================================
-   Rollover Page
-   ================================ */
+/* ==========================================================
+   Rollover page (navy & gold, 15 Nov 2026)
+   The route card, the steps header, then the step on the page
+   background (its own cards inside) with the sticky step bar.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
 
 .rollover-page {
   width: 100%;
   box-sizing: border-box;
 }
 
-
-/* ================================
-   Page Content
-   ================================ */
-
 .page-content {
   display: flex;
   flex-direction: column;
 
-  gap: 22px;
-
-  /* Same width as the settings list. */
-  max-width: 1600px;
+  gap: var(--sp-6);
 }
 
 
 /* ================================
-   Stepper (mat-stepper inside a white card)
+   Steps header
    ================================ */
 
-.stepper-card {
+.steps-card {
   position: relative;
 
-  background: #ffffff;
+  padding: var(--sp-3) 20px;
 
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  background: var(--surface);
 
-  /* The stepper's own background is the card's. */
-  --mat-stepper-container-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  /* The page scrolls to it when the step changes; keep it clear of the top */
+  scroll-margin-block-start: var(--sp-4);
 }
 
-/* Thin bar on the top edge while the preview reloads. */
+.steps {
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-3);
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.step-item {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-3);
+}
+
+.step-item.is-last {
+  flex: none;
+}
+
+.step {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin: -6px -8px;
+  padding: 6px 8px;
+
+  border: 0;
+  border-radius: var(--r-control);
+
+  background: none;
+
+  color: inherit;
+
+  font: inherit;
+  text-align: start;
+}
+
+/* Only a finished step is a button (back to it) */
+button.step {
+  cursor: pointer;
+
+  transition: background-color var(--dur);
+}
+
+button.step:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+button.step:disabled {
+  cursor: default;
+}
+
+.step-num {
+  flex-shrink: 0;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--control);
+  border-radius: 50%;
+
+  background: var(--surface);
+
+  color: var(--faint);
+
+  font-size: var(--fs-13);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.step-num mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+.step.is-current .step-num {
+  border-color: var(--primary);
+
+  background: var(--primary);
+
+  color: var(--on-primary);
+}
+
+.step.is-done .step-num {
+  border-color: var(--ok-line);
+
+  background: var(--ok-bg);
+
+  color: var(--ok-ink);
+}
+
+.step-text {
+  display: flex;
+  flex-direction: column;
+
+  line-height: 1.3;
+}
+
+.step-label {
+  color: var(--faint);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.step.is-current .step-label {
+  color: var(--text);
+
+  font-weight: 700;
+}
+
+.step.is-done .step-label {
+  color: var(--text);
+}
+
+.step-sub {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+.step.is-done .step-sub {
+  color: var(--ok-ink);
+}
+
+/* The line to the next step: gold once the step is finished */
+.step-line {
+  flex: 1;
+  min-width: var(--sp-6);
+
+  height: 2px;
+
+  border-radius: 2px;
+
+  background: var(--track);
+}
+
+.step-line.is-done {
+  background: var(--mark);
+}
+
+/* Reload: a thin bar on the bottom edge (absolute: no jump) */
 .refresh-bar {
   position: absolute;
 
-  top: 0;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
+  inset-block-end: 0;
 
-  z-index: 2;
+  border-radius: 0 0 var(--r-card) var(--r-card);
 
-  border-radius: 14px 14px 0 0;
   overflow: hidden;
 }
 
-.stepper-card mat-stepper {
-  border-radius: 14px;
 
-  transition: opacity 0.15s ease;
-}
-
-/* Old data fades a little and cannot be clicked until the new data arrives. */
-.stepper-card.is-refreshing mat-stepper {
-  opacity: 0.6;
-
-  pointer-events: none;
-}
+/* ================================
+   Step
+   ================================ */
 
 .step-body {
   display: flex;
   flex-direction: column;
 
-  gap: 18px;
+  gap: var(--sp-4);
 
-  padding-top: 4px;
+  scroll-margin-block-start: var(--sp-4);
 }
 
-.step-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+/* Old data fades a little and cannot be clicked until the new data arrives */
+.step-content.is-refreshing .step-body,
+.step-content.is-refreshing app-rollover-open-terms {
+  opacity: 0.55;
 
-  gap: 10px 12px;
+  pointer-events: none;
 
-  padding-top: 14px;
-
-  border-top: 1px solid #e5e7eb;
+  transition: opacity var(--dur) ease;
 }
 
-.note {
-  flex: 1;
-  min-width: 200px;
+/* "Show" in the step bar (spec: "رابط نصي") */
+.text-link {
+  margin-inline-start: var(--sp-1);
+  padding: 0;
 
-  display: flex;
-  align-items: center;
+  border: 0;
 
-  gap: 8px;
+  background: none;
 
-  font-size: 13px;
+  color: var(--accent-ink);
 
-  color: #6b7280;
+  font: 600 var(--fs-13) / 1.5 var(--font);
+
+  cursor: pointer;
 }
 
-.note mat-icon {
-  width: 18px;
-  height: 18px;
-
-  font-size: 18px;
-}
-
-.note.warn {
-  color: #b45309;
-}
-
-.note.ok {
-  color: #047857;
-}
-
-/* The steps of the header take the whole width on a phone:
-   only the chosen step keeps its label. */
-@media (max-width: 650px) {
-
-  .stepper-card ::ng-deep .mat-horizontal-stepper-header:not([aria-selected='true']) .mat-step-label {
-    display: none;
-  }
-
-  .stepper-card ::ng-deep .mat-horizontal-content-container {
-    padding: 0 16px 16px;
-  }
-
+.text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 
 /* ================================
-   Reduced Motion
+   Phone (under 720px)
+   Only the current step keeps its label; the others show their circle.
    ================================ */
 
-@media (prefers-reduced-motion: reduce) {
+@media (max-width: 719.98px) {
 
-  .stepper-card mat-stepper {
-    transition: none;
+  .page-content {
+    gap: var(--sp-4);
+  }
+
+  .steps-card {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .steps,
+  .step-item {
+    gap: var(--sp-2);
+  }
+
+  .step:not(.is-current) .step-text,
+  .step-sub {
+    display: none;
+  }
+
+  /* The current step's label may take two lines on a narrow screen */
+  .step.is-current {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .step.is-current .step-label {
+    white-space: normal;
+  }
+
+  /* Short lines; the current step takes the free space */
+  .step-item {
+    flex: 0 1 auto;
+  }
+
+  .step-item:has(.is-current) {
+    flex: 1 1 auto;
+  }
+
+  .step-line {
+    flex: none;
+
+    width: var(--sp-4);
+    min-width: 0;
+  }
+
+  .step-item:has(.is-current) .step-line {
+    flex: 1;
+  }
+
+  .text-link {
+    min-height: var(--h-touch);
   }
 
 }

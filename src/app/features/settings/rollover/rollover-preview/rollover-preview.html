@@ -1,45 +1,52 @@
 <div class="preview">
 
-  <!-- Filter chips -->
+  <!-- Filters: on the page background, like the list pages -->
   <div
-    class="chips"
+    class="filters"
     role="group"
     [attr.aria-label]="'ROLLOVER.PREVIEW.FILTER_LABEL' | translate"
   >
 
     <button
       type="button"
-      class="chip"
-      [class.selected]="filter() === null"
+      class="filter"
+      [class.is-active]="filter() === null"
       [attr.aria-pressed]="filter() === null"
       (click)="select(null)"
     >
       @if (filter() === null) {
-        <mat-icon>check</mat-icon>
+        <mat-icon aria-hidden="true">check</mat-icon>
       }
 
       {{ 'ROLLOVER.PREVIEW.ALL' | translate }}
-      <span class="count">{{ total() }}</span>
+      <span class="filter-count">{{ total() }}</span>
     </button>
 
     @for (chip of chips(); track chip.suggestion) {
 
+      @let style = suggestionStyle[chip.suggestion];
+
       <button
         type="button"
-        class="chip"
-        [class.selected]="filter() === chip.suggestion"
+        class="filter"
+        [class.is-active]="filter() === chip.suggestion"
         [attr.aria-pressed]="filter() === chip.suggestion"
         [disabled]="chip.count === 0"
         (click)="select(chip.suggestion)"
       >
         @if (filter() === chip.suggestion) {
-          <mat-icon>check</mat-icon>
+          <mat-icon aria-hidden="true">check</mat-icon>
         } @else {
-          <span class="swatch" [class]="'tone-' + suggestionStyle[chip.suggestion].tone"></span>
+          <span
+            class="tone-dot"
+            aria-hidden="true"
+            [attr.data-tone]="style.tone"
+            [attr.data-outlined]="style.outlined ? '' : null"
+          ></span>
         }
 
-        {{ suggestionStyle[chip.suggestion].labelKey | translate }}
-        <span class="count">{{ chip.count }}</span>
+        {{ style.labelKey | translate }}
+        <span class="filter-count">{{ chip.count }}</span>
       </button>
 
     }
@@ -47,7 +54,7 @@
   </div>
 
 
-  <!-- One panel per class -->
+  <!-- One card per class -->
   @if (groups().length > 0) {
 
     <div class="groups">
@@ -59,6 +66,7 @@
           [decisions]="decisions()"
           [isNewYear]="preview().isNewYear"
           [filter]="filter()"
+          [isPhone]="isPhone()"
           (decisionChange)="decisionChange.emit($event)"
         ></app-rollover-class-group>
 
@@ -69,13 +77,11 @@
   } @else {
 
     <!-- No active students in the source term -->
-    <div class="empty">
-      <mat-icon>groups</mat-icon>
-
-      <p>
-        {{ 'ROLLOVER.PREVIEW.EMPTY' | translate }}
-      </p>
-    </div>
+    <app-state-card
+      type="empty"
+      icon="groups"
+      [message]="'ROLLOVER.PREVIEW.EMPTY' | translate"
+    />
 
   }
 

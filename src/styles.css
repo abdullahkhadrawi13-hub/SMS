@@ -1685,6 +1685,37 @@ button.data-link {
   background: var(--surface);
 }
 
+/* ---------- Tone dot ----------
+   An 8px dot in the colour of a status badge, for counts and filters
+   where a full badge would be too much (the rollover's filters, class
+   counts and totals; added 15 Nov 2026). Same tones as app-status-badge.
+
+   <span class="tone-dot" data-tone="ok" aria-hidden="true"></span>
+   <span class="tone-dot" data-tone="bad" data-outlined aria-hidden="true"></span> */
+.tone-dot {
+  display: inline-block;
+  flex-shrink: 0;
+
+  width: 8px;
+  height: 8px;
+
+  box-sizing: border-box;
+  border-radius: 50%;
+
+  background: var(--control);
+}
+
+.tone-dot[data-tone='ok']      { background: var(--ok-ink); }
+.tone-dot[data-tone='bad']     { background: var(--bad); }
+.tone-dot[data-tone='warn']    { background: var(--chg); }
+.tone-dot[data-tone='gold']    { background: var(--mark); }
+.tone-dot[data-tone='neutral'] { background: var(--control); }
+
+.tone-dot[data-tone='bad'][data-outlined] {
+  border: 2px solid var(--bad);
+  background: var(--surface);
+}
+
 /* ---------- Text for screen readers only ---------- */
 .visually-hidden {
   position: absolute;

@@ -1,8 +1,6 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -11,14 +9,14 @@ import { Language } from '../../../../core/services/language';
 
 import { RolloverTermOption } from '../rollover';
 
-// The "From term → current term" bar at the top of the page.
+// The "From term → current term" card at the top of the page
+// (navy & gold, 15 Nov 2026: a plain <select> in the shared field look
+// instead of mat-select, and the current term as a read-only box).
 // The source term is chosen here; the destination is always the current term.
 @Component({
   selector: 'app-rollover-route',
   imports: [
-    MatFormFieldModule,
     MatIconModule,
-    MatSelectModule,
     TranslatePipe
   ],
   templateUrl: './rollover-route.html',
@@ -38,8 +36,11 @@ export class RolloverRoute {
   readonly currentTerm = input.required<AcademicTerm>();
   readonly currentYearName = input('');
 
-  // From the preview: null while it loads (no badge yet).
+  // From the preview: null while it loads (the kind is not shown yet).
   readonly isNewYear = input<boolean | null>(null);
+
+  // The old year, whose grades close after a new-year rollover.
+  readonly fromYearName = input<string | null>(null);
 
   // The source cannot change while the rollover runs or after it ran.
   readonly disabled = input(false);
@@ -55,6 +56,15 @@ export class RolloverRoute {
 
     return this.isArabic() ? term.nameAr : term.nameEn;
   });
+
+  // The <select> gives the value as text.
+  onSelect(value: string): void {
+    const termId = Number(value);
+
+    if (termId && termId !== this.sourceTermId()) {
+      this.sourceChange.emit(termId);
+    }
+  }
 
   termName(term: AcademicTerm): string {
     return this.isArabic() ? term.nameAr : term.nameEn;

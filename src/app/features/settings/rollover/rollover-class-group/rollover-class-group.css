@@ -1,64 +1,111 @@
+/* ==========================================================
+   Rollover class card (navy & gold, 15 Nov 2026)
+   The card, the table and the phone list are the shared ones in
+   styles.css (.data-card, .data-table, .data-items, .data-avatar,
+   .choice-switch, .tone-dot). Only what this card adds is here:
+   the header that opens / closes it (like the year cards), the
+   student cell, the subjects, the decision and the changed row.
+   No shadow, no lift on hover (spec: "البطاقات").
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 :host {
   display: block;
 }
 
-
-/* ================================
-   Panel
-   ================================ */
-
-.panel {
-  background: #ffffff;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-
-  overflow: hidden;
+:host(.is-empty) {
+  display: none;
 }
 
-.panel-head {
-  width: 100%;
-  min-height: 60px;
+
+/* ================================
+   Header
+   ================================ */
+
+.class-head {
+  min-height: 64px;
 
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 8px 14px;
+  gap: var(--sp-1) var(--sp-3);
 
-  padding: 10px 18px;
-
-  color: #111827;
-  text-align: start;
-
-  background: #ffffff;
-
-  border: 0;
-
-  cursor: pointer;
-
-  font: inherit;
+  box-sizing: border-box;
+  padding-block: 10px;
+  padding-inline: 20px var(--sp-4);
 }
 
-.panel-head:hover {
-  background: #fafbfc;
+.class-head.is-open {
+  border-bottom: 1px solid var(--border);
 }
 
-.panel-head:focus-visible {
-  outline: 2px solid #2554a4;
-  outline-offset: -2px;
-}
+.class-toggle {
+  flex: 1;
+  min-width: 0;
 
-.panel-title {
   display: flex;
   align-items: center;
 
-  gap: 8px;
+  gap: var(--sp-3);
 
-  font-size: 15px;
-  font-weight: 600;
+  padding: var(--sp-1) 0;
+
+  border: 0;
+  border-radius: var(--r-control);
+
+  background: none;
+
+  color: inherit;
+
+  font: inherit;
+  text-align: start;
+
+  cursor: pointer;
+}
+
+.chevron {
+  flex-shrink: 0;
+
+  width: 20px;
+  height: 20px;
+
+  font-size: 20px;
+
+  color: var(--faint);
+
+  transition: transform var(--dur) ease;
+}
+
+.class-head.is-open .chevron {
+  transform: rotate(180deg);
+}
+
+.class-toggle:hover .chevron {
+  color: var(--text);
+}
+
+.class-text {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.class-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2);
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .title-arrow {
@@ -67,297 +114,326 @@
 
   font-size: 18px;
 
-  color: #9ca3af;
+  color: var(--faint);
 }
 
-:host-context([dir='rtl']) .title-arrow {
-  transform: scaleX(-1);
-}
-
-/* The same gold badge as the graduation class card. */
-.grad-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 2px 9px;
-
-  font-size: 11.5px;
-  font-weight: 600;
-
-  color: #ffffff;
-  background: #c9a227;
-
-  border-radius: 999px;
-}
-
-.grad-badge mat-icon {
-  width: 14px;
-  height: 14px;
-
-  font-size: 14px;
-}
-
-.panel-counts {
+.class-counts {
   display: flex;
   flex-wrap: wrap;
 
+  gap: 2px 14px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  line-height: 1.5;
+}
+
+.class-count {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.class-count strong {
+  color: var(--text);
+
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* "1 needs a decision", at the end of the header */
+.class-pending {
+  display: inline-flex;
+  align-items: center;
+
   gap: 6px;
 
-  margin-inline-start: auto;
-}
+  color: var(--warn-ink);
 
-.mini {
-  padding: 2px 8px;
-
-  font-size: 12px;
-
-  border-radius: 999px;
-}
-
-.num {
+  font-size: var(--fs-13);
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-}
-
-.chevron {
-  color: #6b7280;
-
-  transition: transform 0.2s ease;
-}
-
-.panel.open .chevron {
-  transform: rotate(180deg);
-}
-
-
-/* ================================
-   Table
-   ================================ */
-
-.table-wrap {
-  overflow-x: auto;
-
-  border-top: 1px solid #e5e7eb;
-}
-
-table {
-  width: 100%;
-  min-width: 820px;
-
-  border-collapse: collapse;
-}
-
-th {
-  padding: 10px 16px;
-
-  font-size: 12px;
-  font-weight: 500;
-  text-align: start;
-
-  color: #6b7280;
-
-  border-bottom: 1px solid #e5e7eb;
-}
-
-td {
-  padding: 12px 16px;
-
-  vertical-align: middle;
-
-  border-bottom: 1px solid #f1f3f6;
-}
-
-tr:last-child td {
-  border-bottom: 0;
-}
-
-/* A NeedsDecision student the Admin has not decided yet. */
-tr.needs td {
-  background: #fff7f7;
-}
-
-.student-name {
-  font-weight: 500;
-}
-
-.student-number {
-  font-size: 12px;
-
-  color: #6b7280;
-
-  font-variant-numeric: tabular-nums;
-}
-
-.place {
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-}
-
-.place-class {
-  font-weight: 500;
 
   white-space: nowrap;
 }
 
-.place-section {
-  font-size: 12px;
 
-  color: #6b7280;
+/* ================================
+   Table (on top of the shared .data-table)
+   ================================ */
+
+.class-card .data-table table {
+  min-width: 1040px;
+
+  border-collapse: collapse;
 }
 
-/* Promoted: the new class in blue. */
-.place.moved .place-class {
-  color: #2554a4;
+.class-card .data-table td {
+  padding-block: var(--sp-2);
+
+  border-bottom: 1px solid var(--rule);
+
+  vertical-align: middle;
 }
+
+.class-card .data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.class-card .data-table tbody tr:hover {
+  background: var(--hover);
+}
+
+/* Cells whose text can be long (subjects, the reason) */
+.class-card .data-table td.wrap {
+  white-space: normal;
+}
+
+/* A decision that differs from the suggestion (like a changed student
+   in the attendance sheet): light yellow row and a dot before the name */
+.class-card .data-table tbody tr.is-changed,
+.class-card .data-table tbody tr.is-changed:hover,
+.student-item.is-changed {
+  background: var(--chg-bg);
+}
+
+.changed-dot {
+  flex-shrink: 0;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: var(--chg);
+}
+
+
+/* ---------- Student ---------- */
+
+.person {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.person-text {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  line-height: 1.4;
+}
+
+.person-name {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: var(--text);
+
+  font-weight: 600;
+}
+
+.person-number {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
+
+  text-align: start;
+}
+
+
+/* ---------- Subjects ---------- */
 
 .subjects {
   display: flex;
   flex-direction: column;
 
-  gap: 4px;
+  gap: 2px;
 
-  font-size: 12.5px;
+  font-size: var(--fs-13);
+  line-height: 1.5;
 }
 
 .subject {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
 
   gap: 6px;
 }
 
-.subject .mark {
-  font-weight: 600;
+.subject-mark {
+  color: var(--bad-ink);
 
-  color: #b91c1c;
-
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.subject .pass {
-  color: #9ca3af;
+.subject-pass {
+  color: var(--faint);
 
+  font-size: var(--fs-12);
   font-variant-numeric: tabular-nums;
 }
 
-.subject.missing {
-  align-items: center;
-
-  color: #b45309;
+.subject.is-missing {
+  color: var(--warn-ink);
 }
 
-.subject.missing mat-icon {
-  width: 15px;
-  height: 15px;
+.subject.is-missing mat-icon {
+  width: 16px;
+  height: 16px;
 
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .note {
-  display: block;
+  color: var(--muted);
 
-  max-width: 280px;
-
-  font-size: 12px;
+  font-size: var(--fs-13);
   line-height: 1.5;
-
-  color: #6b7280;
 }
 
 .dash {
-  color: #9ca3af;
+  color: var(--faint);
 }
 
 
-/* ================================
-   Suggestion badge (tones)
-   ================================ */
+/* ---------- Decision ---------- */
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 3px 10px;
-
-  font-size: 12px;
-  font-weight: 500;
-
-  white-space: nowrap;
-
-  border-radius: 999px;
+.decision-cell {
+  width: 196px;
 }
-
-.badge mat-icon {
-  width: 15px;
-  height: 15px;
-
-  font-size: 15px;
-}
-
-.tone-blue     { background: #dbeafe; color: #2554a4; }
-.tone-green    { background: #d1fae5; color: #047857; }
-.tone-orange   { background: #fef3c7; color: #b45309; }
-.tone-gold     { background: #fdf3d4; color: #8a6d1d; }
-.tone-red      { background: #fee2e2; color: #b91c1c; }
-.tone-grey     { background: #f3f4f6; color: #6b7280; }
-.tone-dark-red { background: #fee2e2; color: #7f1d1d; }
-
-
-/* ================================
-   Decision (mat-button-toggle-group)
-   The chosen button takes the color of what it means.
-   ================================ */
 
 .decision {
-  --mat-button-toggle-height: 36px;
-  --mat-button-toggle-shape: 18px;
+  width: 196px;
 }
 
-/* Not decided yet: a red border (the group's border uses this variable). */
-.decision.unset {
-  --mat-button-toggle-divider-color: #ba1a1a;
+/* No decision yet: the switch has a yellow border */
+.decision.is-unset {
+  border-color: var(--chg);
 }
 
-.decision .is-promote {
-  --mat-button-toggle-selected-state-background-color: #d1fae5;
-  --mat-button-toggle-selected-state-text-color: #047857;
+.decision-note {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-block-start: var(--sp-1);
+
+  color: var(--muted);
+
+  font-size: var(--fs-12);
+  line-height: 1.4;
 }
 
-.decision .is-graduate {
-  --mat-button-toggle-selected-state-background-color: #fdf3d4;
-  --mat-button-toggle-selected-state-text-color: #8a6d1d;
+.decision-note.is-needed {
+  color: var(--warn-ink);
+
+  font-weight: 600;
 }
 
-.decision .is-repeat {
-  --mat-button-toggle-selected-state-background-color: #fef3c7;
-  --mat-button-toggle-selected-state-text-color: #b45309;
+
+/* ---------- To ---------- */
+
+.place {
+  display: flex;
+  flex-direction: column;
+
+  line-height: 1.4;
 }
 
-.must {
-  display: block;
+.place-class {
+  color: var(--text);
 
-  margin-top: 4px;
+  font-weight: 600;
+}
 
-  font-size: 11.5px;
+.place-section {
+  color: var(--faint);
 
-  color: #ba1a1a;
+  font-size: var(--fs-12);
+}
+
+/* Repeats: stays in the same class, so it is quieter */
+.stays,
+.place.stays .place-class {
+  color: var(--muted);
+
+  font-weight: 400;
 }
 
 
 /* ================================
-   Reduced Motion
+   Phone list (on top of the shared .data-items)
    ================================ */
 
-@media (prefers-reduced-motion: reduce) {
+.student-item {
+  align-items: flex-start;
 
-  .chevron {
-    transition: none;
+  padding-inline: var(--sp-4);
+}
+
+.student-item .data-item-line1 {
+  justify-content: space-between;
+
+  flex-wrap: nowrap;
+}
+
+.student-item .person-name {
+  min-width: 0;
+}
+
+.line-arrow {
+  width: 14px;
+  height: 14px;
+
+  font-size: 14px;
+
+  color: var(--faint);
+}
+
+.item-subjects {
+  margin-block-start: 2px;
+}
+
+.item-decision {
+  margin-block-start: var(--sp-2);
+}
+
+.item-decision .decision {
+  width: 100%;
+}
+
+
+/* ================================
+   Phone (under 720px)
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .class-head {
+    min-height: 60px;
+
+    padding-block: var(--sp-2);
+    padding-inline: var(--sp-4);
+  }
+
+  /* "Needs a decision" goes under the counts, lined up with them
+     (20px chevron + 12px gap) */
+  .class-pending {
+    flex-basis: 100%;
+
+    padding-inline-start: 32px;
   }
 
 }

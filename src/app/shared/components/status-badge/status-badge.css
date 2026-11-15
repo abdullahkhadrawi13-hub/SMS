@@ -76,6 +76,14 @@ mat-icon {
   border-color: var(--ok-line);
 }
 
+/* Outlined red: white, a red border, red text (a student with no section
+   to move to in the rollover, next to the filled red "repeat";
+   added 15 Nov 2026). */
+:host([data-tone='bad'][data-outlined]) {
+  background: var(--surface);
+  border-color: var(--bad);
+}
+
 /* Grey with a thin border, so it still reads as a badge on white */
 :host([data-tone='neutral']) {
   background: var(--raised);

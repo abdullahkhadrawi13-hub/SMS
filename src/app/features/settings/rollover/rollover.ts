@@ -4,6 +4,7 @@ import {
   RolloverStudent,
   RolloverSuggestion
 } from '../../../core/models/rollover';
+import { StatusBadgeTone } from '../../../shared/components/status-badge/status-badge';
 
 // Shared types and helpers of the rollover page (UI only).
 
@@ -102,29 +103,81 @@ export function graduatesIfPromoted(student: RolloverStudent): boolean {
   return isDecidable(student) && student.targetClassId === null;
 }
 
+// The Admin chose the other decision than the backend's suggestion
+// (Promote / Repeat / Graduate). The row is marked like a changed student
+// in the attendance sheet (15 Nov 2026). A NeedsDecision student has no
+// suggestion, so deciding it is not a change.
+export function differsFromSuggestion(
+  student: RolloverStudent,
+  decision: RolloverDecision | null
+): boolean {
+
+  const suggested = defaultDecision(student);
+
+  return suggested !== null && decision !== null && decision !== suggested;
+}
+
+
+// =====================================================
+// Avatar
+// =====================================================
+
+// The six avatar colours of the lists (--avatar-1 … --avatar-6);
+// a student keeps the same one everywhere (chosen by id).
+const AVATAR_TONES = 6;
+
+export function avatarTone(studentId: number): number {
+  return (studentId % AVATAR_TONES) + 1;
+}
+
+// The first letter of the first and the last word of a full name:
+// "مع" / "MA". The rollover gives one full name, not the four parts.
+// A zero-width non-joiner keeps two Arabic letters apart.
+export function nameInitials(fullName: string): string {
+  const words = fullName.trim().split(/\s+/).filter(Boolean);
+
+  if (words.length === 0) {
+    return '';
+  }
+
+  const first = words[0].charAt(0);
+  const last = words.length > 1 ? words[words.length - 1].charAt(0) : '';
+
+  return [first, last]
+    .filter(Boolean)
+    .join('\u200c')
+    .toUpperCase();
+}
+
 
 // =====================================================
 // Suggestion badge
 // =====================================================
 
-// Color of a badge; each tone is defined in the components' CSS (.tone-...).
-export type SuggestionTone =
-  'blue' | 'green' | 'orange' | 'gold' | 'red' | 'grey' | 'dark-red';
-
+// The colour of a suggestion, from the spec's "ألوان المعنى" table
+// (navy & gold, 15 Nov 2026). Shown with the shared app-status-badge,
+// and as a small dot (.tone-dot, styles.css) in the filters and counts.
+//   ok       promote / copy: moves on normally (green)
+//   bad      repeat: failed (light red, like the "راسب" result)
+//   warn     needs a decision: usually a missing mark (yellow)
+//   gold     graduate (light gold, like the "متخرّج" badge)
+//   neutral  already placed: nothing changes (grey)
+//   bad + outlined  no section to move to: white with a red border,
+//                   so it is not mixed up with "repeat"
 export interface SuggestionStyle {
   labelKey: string;
-  icon: string;
-  tone: SuggestionTone;
+  tone: StatusBadgeTone;
+  outlined: boolean;
 }
 
 export const SUGGESTION_STYLE: Record<RolloverSuggestion, SuggestionStyle> = {
-  [RolloverSuggestion.Copy]:          { labelKey: 'ROLLOVER.SUGGESTION.COPY',           icon: 'content_copy',    tone: 'blue' },
-  [RolloverSuggestion.Promote]:       { labelKey: 'ROLLOVER.SUGGESTION.PROMOTE',        icon: 'trending_up',     tone: 'green' },
-  [RolloverSuggestion.Repeat]:        { labelKey: 'ROLLOVER.SUGGESTION.REPEAT',         icon: 'replay',          tone: 'orange' },
-  [RolloverSuggestion.Graduate]:      { labelKey: 'ROLLOVER.SUGGESTION.GRADUATE',       icon: 'school',          tone: 'gold' },
-  [RolloverSuggestion.NeedsDecision]: { labelKey: 'ROLLOVER.SUGGESTION.NEEDS_DECISION', icon: 'help',            tone: 'red' },
-  [RolloverSuggestion.AlreadyPlaced]: { labelKey: 'ROLLOVER.SUGGESTION.ALREADY_PLACED', icon: 'event_available', tone: 'grey' },
-  [RolloverSuggestion.NoTarget]:      { labelKey: 'ROLLOVER.SUGGESTION.NO_TARGET',      icon: 'block',           tone: 'dark-red' }
+  [RolloverSuggestion.Copy]:          { labelKey: 'ROLLOVER.SUGGESTION.COPY',           tone: 'ok',      outlined: false },
+  [RolloverSuggestion.Promote]:       { labelKey: 'ROLLOVER.SUGGESTION.PROMOTE',        tone: 'ok',      outlined: false },
+  [RolloverSuggestion.Repeat]:        { labelKey: 'ROLLOVER.SUGGESTION.REPEAT',         tone: 'bad',     outlined: false },
+  [RolloverSuggestion.Graduate]:      { labelKey: 'ROLLOVER.SUGGESTION.GRADUATE',       tone: 'gold',    outlined: false },
+  [RolloverSuggestion.NeedsDecision]: { labelKey: 'ROLLOVER.SUGGESTION.NEEDS_DECISION', tone: 'warn',    outlined: false },
+  [RolloverSuggestion.AlreadyPlaced]: { labelKey: 'ROLLOVER.SUGGESTION.ALREADY_PLACED', tone: 'neutral', outlined: false },
+  [RolloverSuggestion.NoTarget]:      { labelKey: 'ROLLOVER.SUGGESTION.NO_TARGET',      tone: 'bad',     outlined: true }
 };
 
 // The order of the filter chips.

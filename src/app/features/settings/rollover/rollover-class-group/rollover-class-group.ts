@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,14 +10,20 @@ import {
   RolloverSuggestion
 } from '../../../../core/models/rollover';
 import { Language } from '../../../../core/services/language';
+import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+import { pluralKey } from '../../../../shared/utils/plural';
 
 import {
+  avatarTone,
+  differsFromSuggestion,
   graduatesIfPromoted,
   ClassGroupView,
   isDecidable,
+  nameInitials,
   RolloverDecision,
   RolloverDecisions,
-  SUGGESTION_STYLE
+  SUGGESTION_STYLE,
+  SuggestionStyle
 } from '../rollover';
 
 
@@ -48,17 +54,27 @@ interface HeaderCount {
 }
 
 
-// One class of the source term: a panel with its students,
-// the backend's suggestion, the failed subjects and the Admin's decision.
+// One class of the source term (navy & gold, 15 Nov 2026): a card that
+// opens and closes like the year cards, with "Seventh → Eighth", the counts
+// per suggestion and the students still waiting for a decision.
+// Inside: the shared table look (.data-card, .data-table in styles.css),
+// or a two-line list on the phone. The decision is the shared
+// .choice-switch (two real radio buttons). A decision that differs from
+// the suggestion marks the row, like a changed student in attendance.
 @Component({
   selector: 'app-rollover-class-group',
   imports: [
-    MatButtonToggleModule,
+    NgTemplateOutlet,
     MatIconModule,
-    TranslatePipe
+    TranslatePipe,
+    StatusBadge
   ],
   templateUrl: './rollover-class-group.html',
   styleUrl: './rollover-class-group.css',
+  host: {
+    // A class with no student under the filter takes no space.
+    '[class.is-empty]': 'rows().length === 0',
+  },
 })
 export class RolloverClassGroup {
 
@@ -70,8 +86,11 @@ export class RolloverClassGroup {
   // The decision toggles appear in a new-year rollover only.
   readonly isNewYear = input(false);
 
-  // The suggestion chosen in the filter chips (null = all students).
+  // The suggestion chosen in the filters (null = all students).
   readonly filter = input<RolloverSuggestion | null>(null);
+
+  // Under 720px: a two-line list instead of the table.
+  readonly isPhone = input(false);
 
   readonly decisionChange = output<RolloverDecisionChange>();
 
@@ -121,6 +140,24 @@ export class RolloverClassGroup {
   });
 
 
+  // NeedsDecision students the Admin has not decided yet (shown in the
+  // header even when the card is closed).
+  readonly pendingCount = computed(() =>
+    this.isNewYear()
+      ? this.group().students.filter(student =>
+          isDecidable(student) && this.decisionOf(student) === null
+        ).length
+      : 0
+  );
+
+  readonly pendingKey = computed(() =>
+    pluralKey('ROLLOVER.PREVIEW.CLASS_PENDING', this.pendingCount())
+  );
+
+  // Ids for aria-controls and the radio names (one card per class).
+  readonly bodyId = computed(() => `rollover-class-${this.group().classId}`);
+
+
   toggle(): void {
     this.isOpen.update(open => !open);
   }
@@ -143,6 +180,24 @@ export class RolloverClassGroup {
     return graduatesIfPromoted(student)
       ? 'ROLLOVER.DECISION.GRADUATE'
       : 'ROLLOVER.DECISION.PROMOTE';
+  }
+
+  // The Admin chose the other decision than the suggestion.
+  isChanged(student: RolloverStudent): boolean {
+    return this.canDecide(student)
+      && differsFromSuggestion(student, this.decisionOf(student));
+  }
+
+  styleOf(student: RolloverStudent): SuggestionStyle {
+    return SUGGESTION_STYLE[student.suggestion];
+  }
+
+  avatarTone(student: RolloverStudent): number {
+    return avatarTone(student.studentId);
+  }
+
+  initials(student: RolloverStudent): string {
+    return nameInitials(this.studentName(student));
   }
 
   onDecision(student: RolloverStudent, decision: RolloverDecision): void {

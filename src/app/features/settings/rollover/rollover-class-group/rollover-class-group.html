@@ -1,218 +1,258 @@
+<!-- One class of the source term (navy & gold, 15 Nov 2026).
+     .data-card / .data-table / .data-items: the shared look (styles.css). -->
 @if (rows().length > 0) {
 
-  <section class="panel" [class.open]="isOpen()">
+  <section class="data-card class-card">
 
-    <!-- Header: class → destination, and the counts of the class -->
-    <button
-      type="button"
-      class="panel-head"
-      [attr.aria-expanded]="isOpen()"
-      (click)="toggle()"
-    >
+    <!-- ===== Header: class → destination, counts, waiting decisions ===== -->
+    <div class="class-head" [class.is-open]="isOpen()">
 
-      <span class="panel-title">
-        <span>{{ className() }}</span>
+      <button
+        type="button"
+        class="class-toggle"
+        [attr.aria-expanded]="isOpen()"
+        [attr.aria-controls]="bodyId()"
+        (click)="toggle()"
+      >
 
-        <mat-icon class="title-arrow">arrow_forward</mat-icon>
+        <!-- Up / down: not a direction, so it does not flip in Arabic -->
+        <mat-icon class="chevron" aria-hidden="true">expand_more</mat-icon>
 
-        @if (group().isGraduation) {
-          <span>{{ 'ROLLOVER.PREVIEW.GRADUATION' | translate }}</span>
-        } @else if (!isNewYear()) {
-          <span>{{ 'ROLLOVER.PREVIEW.SAME_CLASS' | translate }}</span>
-        } @else {
-          <span>{{ targetName() || '—' }}</span>
-        }
-      </span>
+        <span class="class-text">
 
-      @if (group().isGraduation) {
-        <span class="grad-badge">
-          <mat-icon>workspace_premium</mat-icon>
-          {{ 'ROLLOVER.PREVIEW.GRADUATION_CLASS' | translate }}
+          <span class="class-title">
+
+            <span>{{ className() }}</span>
+
+            <mat-icon class="title-arrow flip" aria-hidden="true">arrow_forward</mat-icon>
+
+            @if (group().isGraduation) {
+              <span>{{ 'ROLLOVER.PREVIEW.GRADUATION' | translate }}</span>
+            } @else if (!isNewYear()) {
+              <span>{{ 'ROLLOVER.PREVIEW.SAME_CLASS' | translate }}</span>
+            } @else {
+              <span>{{ targetName() || '—' }}</span>
+            }
+
+            @if (group().isGraduation) {
+              <app-status-badge tone="gold" icon="workspace_premium">
+                {{ 'ROLLOVER.PREVIEW.GRADUATION_CLASS' | translate }}
+              </app-status-badge>
+            }
+
+          </span>
+
+          <!-- The counts of the whole class, as text with a dot -->
+          <span class="class-counts">
+            @for (item of headerCounts(); track item.suggestion) {
+
+              @let style = suggestionStyle[item.suggestion];
+
+              <span class="class-count">
+                <span
+                  class="tone-dot"
+                  aria-hidden="true"
+                  [attr.data-tone]="style.tone"
+                  [attr.data-outlined]="style.outlined ? '' : null"
+                ></span>
+
+                {{ style.labelKey | translate }}
+
+                <strong>{{ item.count }}</strong>
+              </span>
+
+            }
+          </span>
+
+        </span>
+
+      </button>
+
+      <!-- Still visible when the card is closed -->
+      @if (pendingCount() > 0) {
+        <span class="class-pending">
+          <span class="tone-dot" data-tone="warn" aria-hidden="true"></span>
+          {{ pendingKey() | translate: { count: pendingCount() } }}
         </span>
       }
 
-      <span class="panel-counts">
-        @for (item of headerCounts(); track item.suggestion) {
-          <span
-            class="mini"
-            [class]="'tone-' + suggestionStyle[item.suggestion].tone"
-          >
-            {{ suggestionStyle[item.suggestion].labelKey | translate }}
-            <span class="num">{{ item.count }}</span>
-          </span>
-        }
-      </span>
-
-      <mat-icon class="chevron">expand_more</mat-icon>
-
-    </button>
+    </div>
 
 
-    <!-- Students -->
+    <!-- ===== Students ===== -->
     @if (isOpen()) {
 
-      <div class="table-wrap">
+      <div [id]="bodyId()">
 
-        <table>
+        @if (!isPhone()) {
 
-          <thead>
-            <tr>
-              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.STUDENT' | translate }}</th>
-              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.FROM' | translate }}</th>
-              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.SUGGESTION' | translate }}</th>
-              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.SUBJECTS' | translate }}</th>
-              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.DECISION' | translate }}</th>
-              <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.TO' | translate }}</th>
-            </tr>
-          </thead>
+          <!-- Computer: the shared table look -->
+          <div class="data-table">
 
-          <tbody>
+            <table>
+
+              <thead>
+                <tr>
+                  <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.STUDENT' | translate }}</th>
+                  <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.SECTION' | translate }}</th>
+                  <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.SUGGESTION' | translate }}</th>
+
+                  @if (isNewYear()) {
+                    <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.SUBJECTS' | translate }}</th>
+                    <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.DECISION' | translate }}</th>
+                  }
+
+                  <th>{{ 'ROLLOVER.PREVIEW.COLUMNS.TO' | translate }}</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                @for (student of rows(); track student.studentId) {
+
+                  <tr [class.is-changed]="isChanged(student)">
+
+                    <!-- Student: avatar, name, student number -->
+                    <td>
+                      <div class="person">
+
+                        <span class="data-avatar" [attr.data-tone]="avatarTone(student)" aria-hidden="true">
+                          {{ initials(student) }}
+                        </span>
+
+                        <span class="person-text">
+                          <span class="person-name">
+                            @if (isChanged(student)) {
+                              <span class="changed-dot" aria-hidden="true"></span>
+                            }
+                            {{ studentName(student) }}
+                          </span>
+
+                          <bdi class="person-number" dir="ltr">{{ student.studentNumber }}</bdi>
+                        </span>
+
+                      </div>
+                    </td>
+
+                    <!-- Section (the class is in the card's header) -->
+                    <td class="data-muted">
+                      {{ 'ROLLOVER.PREVIEW.SECTION' | translate: { name: fromSection(student) } }}
+                    </td>
+
+                    <!-- Suggestion -->
+                    <td>
+                      <ng-container
+                        [ngTemplateOutlet]="suggestionBadge"
+                        [ngTemplateOutletContext]="{ $implicit: student }"
+                      />
+                    </td>
+
+                    @if (isNewYear()) {
+
+                      <!-- Failed / missing subjects -->
+                      <td class="wrap">
+                        <ng-container
+                          [ngTemplateOutlet]="subjects"
+                          [ngTemplateOutletContext]="{ $implicit: student }"
+                        />
+                      </td>
+
+                      <!-- Decision -->
+                      <td class="decision-cell">
+                        @if (canDecide(student)) {
+                          <ng-container
+                            [ngTemplateOutlet]="decisionSwitch"
+                            [ngTemplateOutletContext]="{ $implicit: student }"
+                          />
+                        } @else if (student.suggestion === Suggestion.AlreadyPlaced) {
+                          <span class="note">{{ 'ROLLOVER.PREVIEW.NO_CHANGE' | translate }}</span>
+                        } @else {
+                          <span class="dash">—</span>
+                        }
+                      </td>
+
+                    }
+
+                    <!-- To -->
+                    <td class="wrap">
+                      <ng-container
+                        [ngTemplateOutlet]="destinationCell"
+                        [ngTemplateOutletContext]="{ $implicit: student }"
+                      />
+                    </td>
+
+                  </tr>
+
+                }
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        } @else {
+
+          <!-- Phone: one item per student -->
+          <ul class="data-items">
 
             @for (student of rows(); track student.studentId) {
 
-              @let decision = decisionOf(student);
-              @let style = suggestionStyle[student.suggestion];
-              @let to = destination(student);
+              <li class="data-item student-item" [class.is-changed]="isChanged(student)">
 
-              <tr [class.needs]="canDecide(student) && decision === null">
+                <div class="data-item-text">
 
-                <!-- Student -->
-                <td>
-                  <div class="student-name">{{ studentName(student) }}</div>
-                  <bdi class="student-number" dir="ltr">{{ student.studentNumber }}</bdi>
-                </td>
-
-                <!-- From -->
-                <td>
-                  <div class="place">
-                    <span class="place-class">{{ fromClass(student) }}</span>
-                    <span class="place-section">
-                      {{ 'ROLLOVER.PREVIEW.SECTION' | translate: { name: fromSection(student) } }}
+                  <div class="data-item-line1">
+                    <span class="person-name">
+                      @if (isChanged(student)) {
+                        <span class="changed-dot" aria-hidden="true"></span>
+                      }
+                      {{ studentName(student) }}
                     </span>
+
+                    <ng-container
+                      [ngTemplateOutlet]="suggestionBadge"
+                      [ngTemplateOutletContext]="{ $implicit: student }"
+                    />
                   </div>
-                </td>
 
-                <!-- Suggestion -->
-                <td>
-                  <span class="badge" [class]="'tone-' + style.tone">
-                    <mat-icon>{{ style.icon }}</mat-icon>
-                    {{ style.labelKey | translate }}
-                  </span>
-                </td>
+                  <!-- Section → destination -->
+                  <div class="data-item-line2">
+                    <span>{{ 'ROLLOVER.PREVIEW.SECTION' | translate: { name: fromSection(student) } }}</span>
+                    <mat-icon class="line-arrow flip" aria-hidden="true">arrow_forward</mat-icon>
+                    <ng-container
+                      [ngTemplateOutlet]="destinationCell"
+                      [ngTemplateOutletContext]="{ $implicit: student, inline: true }"
+                    />
+                  </div>
 
-                <!-- Failed / missing subjects -->
-                <td>
-                  @if (student.failedSubjects.length || student.missingGradeSubjects.length) {
-
-                    <div class="subjects">
-
-                      @for (subject of student.failedSubjects; track subject.subjectId) {
-                        <span class="subject">
-                          {{ subjectName(subject) }}
-                          <span class="mark">{{ subject.average }}</span>
-                          <span class="pass">
-                            {{ 'ROLLOVER.PREVIEW.PASSING' | translate: { mark: subject.passingMark } }}
-                          </span>
-                        </span>
-                      }
-
-                      @for (subject of student.missingGradeSubjects; track subject.subjectId) {
-                        <span class="subject missing">
-                          <mat-icon>hourglass_empty</mat-icon>
-                          {{ 'ROLLOVER.PREVIEW.MISSING_MARK' | translate: { subject: subjectName(subject) } }}
-                        </span>
-                      }
-
+                  @if (isNewYear() && (student.failedSubjects.length || student.missingGradeSubjects.length)) {
+                    <div class="item-subjects">
+                      <ng-container
+                        [ngTemplateOutlet]="subjects"
+                        [ngTemplateOutletContext]="{ $implicit: student }"
+                      />
                     </div>
-
-                  } @else if (student.suggestion === Suggestion.NeedsDecision && note(student)) {
-                    <span class="note">{{ note(student) }}</span>
-                  } @else {
-                    <span class="dash">—</span>
                   }
-                </td>
 
-                <!-- Decision (new year only) -->
-                <td>
                   @if (canDecide(student)) {
-
-                    <mat-button-toggle-group
-                      class="decision"
-                      [class.unset]="decision === null"
-                      [value]="decision"
-                      [attr.aria-label]="'ROLLOVER.DECISION.LABEL' | translate: { name: studentName(student) }"
-                      (change)="onDecision(student, $event.value)"
-                    >
-                      <mat-button-toggle
-                        value="promote"
-                        [class.is-promote]="decision === 'promote' && !graduates(student)"
-                        [class.is-graduate]="decision === 'promote' && graduates(student)"
-                      >
-                        {{ promoteLabel(student) | translate }}
-                      </mat-button-toggle>
-
-                      <mat-button-toggle
-                        value="repeat"
-                        [class.is-repeat]="decision === 'repeat'"
-                      >
-                        {{ 'ROLLOVER.DECISION.REPEAT' | translate }}
-                      </mat-button-toggle>
-                    </mat-button-toggle-group>
-
-                    @if (decision === null) {
-                      <span class="must">
-                        {{ 'ROLLOVER.DECISION.REQUIRED' | translate }}
-                      </span>
-                    }
-
-                  } @else if (student.suggestion === Suggestion.AlreadyPlaced) {
-                    <span class="note">{{ 'ROLLOVER.PREVIEW.NO_CHANGE' | translate }}</span>
-                  } @else {
-                    <span class="dash">—</span>
+                    <div class="item-decision">
+                      <ng-container
+                        [ngTemplateOutlet]="decisionSwitch"
+                        [ngTemplateOutletContext]="{ $implicit: student }"
+                      />
+                    </div>
                   }
-                </td>
 
-                <!-- To -->
-                <td>
-                  @switch (to.kind) {
+                </div>
 
-                    @case ('place') {
-                      <div class="place" [class.moved]="to.moved">
-                        <span class="place-class">{{ to.className }}</span>
-                        <span class="place-section">
-                          {{ 'ROLLOVER.PREVIEW.SECTION' | translate: { name: to.sectionName } }}
-                          @if (to.repeats) {
-                            · {{ 'ROLLOVER.PREVIEW.REPEATS_YEAR' | translate }}
-                          }
-                        </span>
-                      </div>
-                    }
-
-                    @case ('graduate') {
-                      <span class="badge tone-gold">
-                        <mat-icon>school</mat-icon>
-                        {{ 'ROLLOVER.PREVIEW.GRADUATE' | translate }}
-                      </span>
-                    }
-
-                    @case ('pending') {
-                      <span class="dash">{{ 'ROLLOVER.PREVIEW.WAITING' | translate }}</span>
-                    }
-
-                    @case ('none') {
-                      <span class="note">{{ to.note || ('ROLLOVER.SUGGESTION.NO_TARGET' | translate) }}</span>
-                    }
-
-                  }
-                </td>
-
-              </tr>
+              </li>
 
             }
 
-          </tbody>
+          </ul>
 
-        </table>
+        }
 
       </div>
 
@@ -221,3 +261,146 @@
   </section>
 
 }
+
+
+<!-- ===================== Pieces used by the table and the list ===================== -->
+
+<!-- The backend's suggestion: one badge per student -->
+<ng-template #suggestionBadge let-student>
+  @let style = styleOf(student);
+
+  <app-status-badge [tone]="style.tone" [outlined]="style.outlined">
+    {{ style.labelKey | translate }}
+  </app-status-badge>
+</ng-template>
+
+
+<!-- Failed subjects (mark / passing mark) and missing marks -->
+<ng-template #subjects let-student>
+  @if (student.failedSubjects.length || student.missingGradeSubjects.length) {
+
+    <div class="subjects">
+
+      @for (subject of student.failedSubjects; track subject.subjectId) {
+        <span class="subject">
+          <span>{{ subjectName(subject) }}</span>
+          <strong class="subject-mark">{{ subject.average }}</strong>
+          <span class="subject-pass">
+            {{ 'ROLLOVER.PREVIEW.PASSING' | translate: { mark: subject.passingMark } }}
+          </span>
+        </span>
+      }
+
+      @for (subject of student.missingGradeSubjects; track subject.subjectId) {
+        <span class="subject is-missing">
+          <mat-icon aria-hidden="true">hourglass_empty</mat-icon>
+          {{ 'ROLLOVER.PREVIEW.MISSING_MARK' | translate: { subject: subjectName(subject) } }}
+        </span>
+      }
+
+    </div>
+
+  } @else if (student.suggestion === Suggestion.NeedsDecision && note(student)) {
+    <span class="note">{{ note(student) }}</span>
+  } @else {
+    <span class="dash">—</span>
+  }
+</ng-template>
+
+
+<!-- Promote (or Graduate) / Repeat: the shared two-choice switch -->
+<ng-template #decisionSwitch let-student>
+  @let decision = decisionOf(student);
+
+  <div
+    class="choice-switch decision"
+    [class.is-unset]="decision === null"
+    role="radiogroup"
+    [attr.aria-label]="'ROLLOVER.DECISION.LABEL' | translate: { name: studentName(student) }"
+  >
+    <label class="choice-option">
+      <input
+        type="radio"
+        value="promote"
+        [name]="'rollover-decision-' + student.studentId"
+        [checked]="decision === 'promote'"
+        (change)="onDecision(student, 'promote')"
+      />
+      <span class="choice-face">{{ promoteLabel(student) | translate }}</span>
+    </label>
+
+    <label class="choice-option">
+      <input
+        type="radio"
+        value="repeat"
+        [name]="'rollover-decision-' + student.studentId"
+        [checked]="decision === 'repeat'"
+        (change)="onDecision(student, 'repeat')"
+      />
+      <span class="choice-face">{{ 'ROLLOVER.DECISION.REPEAT' | translate }}</span>
+    </label>
+  </div>
+
+  @if (decision === null) {
+    <span class="decision-note is-needed">
+      <span class="tone-dot" data-tone="warn" aria-hidden="true"></span>
+      {{ 'ROLLOVER.DECISION.REQUIRED' | translate }}
+    </span>
+  } @else if (isChanged(student)) {
+    <span class="decision-note">
+      {{ 'ROLLOVER.DECISION.CHANGED' | translate }}
+    </span>
+  }
+</ng-template>
+
+
+<!-- Where the student will be, with the Admin's decision -->
+<ng-template #destinationCell let-student let-inline="inline">
+  @let to = destination(student);
+
+  @switch (to.kind) {
+
+    @case ('place') {
+      @if (inline) {
+        <span [class.stays]="to.repeats">
+          @if (to.repeats) {
+            {{ 'ROLLOVER.PREVIEW.STAYS_IN' | translate: { name: to.className } }}
+          } @else {
+            {{ to.className }} · {{ to.sectionName }}
+          }
+        </span>
+      } @else {
+        <span class="place" [class.stays]="to.repeats">
+          <span class="place-class">
+            @if (to.repeats) {
+              {{ 'ROLLOVER.PREVIEW.STAYS_IN' | translate: { name: to.className } }}
+            } @else {
+              {{ to.className }}
+            }
+          </span>
+          <span class="place-section">
+            {{ 'ROLLOVER.PREVIEW.SECTION' | translate: { name: to.sectionName } }}
+            @if (to.repeats) {
+              · {{ 'ROLLOVER.PREVIEW.REPEATS_YEAR' | translate }}
+            }
+          </span>
+        </span>
+      }
+    }
+
+    @case ('graduate') {
+      <app-status-badge tone="gold" icon="school">
+        {{ 'ROLLOVER.PREVIEW.GRADUATE' | translate }}
+      </app-status-badge>
+    }
+
+    @case ('pending') {
+      <span class="dash">{{ 'ROLLOVER.PREVIEW.WAITING' | translate }}</span>
+    }
+
+    @case ('none') {
+      <span class="note">{{ to.note || ('ROLLOVER.SUGGESTION.NO_TARGET' | translate) }}</span>
+    }
+
+  }
+</ng-template>

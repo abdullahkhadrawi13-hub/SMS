@@ -1,112 +1,314 @@
+/* ==========================================================
+   Rollover step 2: the old year's terms (navy & gold, 15 Nov 2026)
+   The card, the table and the phone list are the shared ones in
+   styles.css (.data-card, .data-table, .data-items).
+   The grades text is the same as the academic years page.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ========================================================== */
+
 :host {
   display: block;
 }
 
-.open-terms {
-  display: flex;
-  flex-direction: column;
-
-  gap: 16px;
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 
 /* ================================
-   Info box (same as the grades status dialog)
+   Header and note
    ================================ */
 
-.info-box {
+.terms-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+
+  gap: var(--sp-1) var(--sp-3);
+
+  padding: var(--sp-4) 20px 0;
+}
+
+.terms-title {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+.terms-meta {
+  margin-inline-start: auto;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+/* Info note (spec: "الملاحظات") */
+.terms-info {
   display: flex;
   align-items: flex-start;
 
-  gap: 10px;
+  gap: var(--sp-2);
 
-  padding: 12px 14px;
+  margin: var(--sp-4) 20px var(--sp-2);
+  padding: 10px 14px;
 
-  line-height: 1.7;
+  border-radius: var(--r-control);
 
-  color: #0c447c;
-  background: #e6f1fb;
+  background: var(--accent-soft);
 
-  border-radius: 10px;
+  color: var(--accent-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
 }
 
-.info-box mat-icon {
+.terms-info mat-icon {
   flex-shrink: 0;
 
-  color: #185fa5;
+  width: 18px;
+  height: 18px;
+
+  margin-block-start: 2px;
+
+  font-size: 18px;
 }
 
 
 /* ================================
-   Terms
+   Table (on top of the shared .data-table)
    ================================ */
 
-.term-list {
-  display: flex;
-  flex-direction: column;
+.terms-card .data-table table {
+  min-width: 720px;
 
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  overflow: hidden;
+  border-collapse: collapse;
 }
 
-.term-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-
-  gap: 10px 16px;
-
-  padding: 14px 16px;
-
-  border-bottom: 1px solid #e5e7eb;
+.terms-card .data-table td {
+  border-bottom: 1px solid var(--rule);
 }
 
-.term-row:last-child {
+.terms-card .data-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
+.actions-col {
+  width: 1%;
+
+  text-align: end;
+}
+
+.two-lines {
+  display: flex;
+  flex-direction: column;
+
+  line-height: 1.4;
+}
+
 .term-name {
-  flex: 1;
-  min-width: 160px;
+  color: var(--text);
 
   font-weight: 600;
 }
 
+.line-2 {
+  color: var(--faint);
 
-/* ================================
-   Actions / All closed
-   ================================ */
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 8px;
+  font-size: var(--fs-12);
 }
 
-.all-closed {
-  display: flex;
-  flex-direction: column;
+
+/* ---------- Grades: text with a lock ---------- */
+
+.grades {
+  display: inline-flex;
   align-items: center;
 
   gap: 6px;
 
-  padding: 24px;
-
-  text-align: center;
-
-  color: #047857;
-  background: #f0fdf7;
-
-  border: 1px dashed #a7f3d0;
-  border-radius: 12px;
+  font-size: var(--fs-13);
+  line-height: 1.4;
 }
 
-.all-closed mat-icon {
-  width: 36px;
-  height: 36px;
+.grades mat-icon {
+  flex-shrink: 0;
 
-  font-size: 36px;
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+/* Open: what blocks the rollover, so in the warning colour */
+.grades.is-open {
+  color: var(--warn-ink);
+
+  font-weight: 600;
+}
+
+.grades.is-closed {
+  color: var(--text);
+
+  font-weight: 600;
+}
+
+.grades.is-closed mat-icon {
+  color: var(--muted);
+}
+
+.grades-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Under the lock text, lined up with the words (16px icon + 6px gap) */
+.grades-date {
+  padding-inline-start: 22px;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  line-height: 1.4;
+}
+
+.grades-wrap.inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.grades-wrap.inline .grades-date {
+  padding-inline-start: 0;
+}
+
+.grades-wrap.inline .grades-date::before {
+  content: '· ';
+}
+
+
+/* ---------- Close button (keeps its look while closing) ---------- */
+
+.close-button mat-spinner {
+  display: inline-block;
+
+  margin-inline-end: var(--sp-2);
+
+  vertical-align: middle;
+}
+
+.close-button .is-hidden {
+  display: none;
+}
+
+.close-button.is-busy {
+  pointer-events: none;
+}
+
+
+/* ================================
+   Footer: the link and "Check again"
+   ================================ */
+
+.terms-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: var(--sp-2) var(--sp-3);
+
+  padding: var(--sp-3) 20px;
+
+  border-top: 1px solid var(--rule);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+/* Text link (spec: "رابط نصي") */
+.text-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: var(--sp-1);
+
+  padding: 0;
+
+  border: 0;
+
+  background: none;
+
+  color: var(--accent-ink);
+
+  font: 600 var(--fs-13) / 1.5 var(--font);
+
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.text-link:hover:not(:disabled) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.text-link:disabled {
+  color: var(--faint);
+
+  cursor: default;
+}
+
+.text-link mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+
+/* ================================
+   Phone (under 720px)
+   ================================ */
+
+.term-item {
+  align-items: flex-start;
+
+  padding-inline: var(--sp-4);
+}
+
+.item-action {
+  margin-block-start: var(--sp-2);
+}
+
+.item-action .close-button {
+  width: 100%;
+  height: var(--h-touch);
+}
+
+@media (max-width: 719.98px) {
+
+  .terms-head {
+    padding: var(--sp-4) var(--sp-4) 0;
+  }
+
+  .terms-info {
+    margin-inline: var(--sp-4);
+  }
+
+  .terms-foot {
+    padding-inline: var(--sp-4);
+  }
+
+  .text-link {
+    min-height: var(--h-touch);
+  }
+
 }
