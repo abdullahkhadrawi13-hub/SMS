@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,8 +11,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { TeacherListDto } from '../../../../core/models/teacher';
+import { Language } from '../../../../core/services/language';
 
-import { getTeacherName } from '../teacher-name';
+import { toOfficerTeacherView } from '../officer-view';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
@@ -30,6 +31,8 @@ import { StateCard } from '../../../../shared/components/state-card/state-card';
   styleUrl: './officer-teacher-list.css',
 })
 export class OfficerTeacherList {
+
+  private readonly language = inject(Language);
 
   // ===== Inputs (all data is owned and loaded by the parent page) =====
 
@@ -57,6 +60,17 @@ export class OfficerTeacherList {
 
   // True while the parent page is saving: the rows cannot be clicked.
   readonly disabled = input(false);
+
+  // Name and avatar of each teacher in the language of the page.
+  readonly rows = computed(() => {
+
+    const isArabic = this.language.currentDirection() === 'rtl';
+
+    return this.teachers().map(teacher =>
+      toOfficerTeacherView(teacher, isArabic)
+    );
+  });
+
 
   // ===== Loading modes =====
 
@@ -89,11 +103,5 @@ export class OfficerTeacherList {
     }
 
     this.selectTeacher.emit(teacher);
-  }
-
-
-  // Returns the teacher name according to the current language.
-  getTeacherName(teacher: TeacherListDto): string {
-    return getTeacherName(teacher);
   }
 }

@@ -2,7 +2,7 @@ import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,15 +18,21 @@ import { SaveBar } from '../../../../shared/components/save-bar/save-bar';
 
 import { OfficerCurrentCard } from '../officer-current-card/officer-current-card';
 import { OfficerTeacherList } from '../officer-teacher-list/officer-teacher-list';
-import { OfficerTeacherSearch } from '../officer-teacher-search/officer-teacher-search';
 import { TeacherListDto } from '../../../../core/models/teacher';
-import { getTeacherName } from '../teacher-name';
+import { Language } from '../../../../core/services/language';
+import { getFullName } from '../../../../shared/utils/person-name';
+import { pluralKey } from '../../../../shared/utils/plural';
+import { SearchField } from '../../../../shared/components/search-field/search-field';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 
 
 // Number of teachers shown in one page of the list.
 const TEACHERS_PAGE_SIZE = 10;
+
+// The list searches by itself this long after the last key
+// (the same as the teachers list).
+const SEARCH_DEBOUNCE_MS = 400;
 
 
 @Component({
@@ -39,8 +45,8 @@ const TEACHERS_PAGE_SIZE = 10;
 
     OfficerCurrentCard,
     OfficerTeacherList,
-    OfficerTeacherSearch,
     SaveBar,
+    SearchField,
     PageHeader,
     StateCard,
   ],
@@ -63,6 +69,9 @@ export class AttendanceOfficerPage {
 
   // Shows the success / error result dialog after saving.
   private readonly actionResult = inject(ActionResult);
+
+  // The language of the page (names in Arabic or English).
+  private readonly language = inject(Language);
 
 
   // ===== Current officer =====
@@ -94,9 +103,16 @@ export class AttendanceOfficerPage {
   // Number of teachers per page.
   readonly pageSize = TEACHERS_PAGE_SIZE;
 
+  // The text in the search field (two-way bound with app-search-field).
+  readonly searchText = signal('');
+
   // The search text that was sent to the backend.
   // Empty = the Admin has not searched yet (or cleared the search).
   readonly search = signal('');
+
+  // Each key typed in the search field: the list reloads
+  // SEARCH_DEBOUNCE_MS after the last one.
+  private readonly searchTyping = new Subject<void>();
 
   // Indicates whether the teachers list is loading.
   readonly isListLoading = signal(false);
@@ -117,8 +133,15 @@ export class AttendanceOfficerPage {
   // stays when the Admin searches again or opens another page.
   readonly selectedTeacher = signal<TeacherListDto | null>(null);
 
-  // The selected teacher's full name, shown in the save bar.
-  readonly getTeacherName = getTeacherName;
+  // Title of the save bar: "المعلم المختار: <full name>".
+  readonly selectedName = computed(() => {
+
+    const teacher = this.selectedTeacher();
+
+    return teacher
+      ? getFullName(teacher, this.language.currentDirection() === 'rtl')
+      : '';
+  });
 
   // Indicates whether the new officer is currently being saved.
   readonly isSaving = signal(false);
@@ -135,11 +158,33 @@ export class AttendanceOfficerPage {
   );
 
 
+  // The number of results under the search ("4 معلمين يطابقون البحث"),
+  // shown only once a search has answered (null: nothing to show).
+  readonly matchingKey = computed(() => {
+
+    // No count while loading, after an error, or with no result
+    // (the empty card already says "no teacher matches").
+    if (!this.search() || this.isListLoading() || this.listErrorMessage() || this.totalCount() === 0) {
+      return null;
+    }
+
+    return pluralKey('TEACHERS.COUNT.MATCHING', this.totalCount());
+  });
+
+
   constructor() {
 
     // Load the officer when the page is opened.
     // The teachers are loaded only after the Admin searches.
     this.loadOfficer();
+
+    // Search by itself 400ms after the Admin stops typing.
+    this.searchTyping
+      .pipe(
+        debounceTime(SEARCH_DEBOUNCE_MS),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => this.onSearch());
   }
 
 
@@ -289,8 +334,21 @@ export class AttendanceOfficerPage {
   }
 
 
-  // Runs when the Admin submits or clears the search field.
-  onSearch(value: string): void {
+  // A key was typed: the list reloads 400ms after the last one.
+  onSearchTyping(): void {
+    this.searchTyping.next();
+  }
+
+
+  // Runs 400ms after typing, or straight away on Enter.
+  onSearch(): void {
+
+    const value = this.searchText().trim();
+
+    // The same search again (e.g. Enter after the list already reloaded).
+    if (value === this.search()) {
+      return;
+    }
 
     this.search.set(value);
     this.pageNumber.set(1);
@@ -302,6 +360,15 @@ export class AttendanceOfficerPage {
     }
 
     this.loadTeachers();
+  }
+
+
+  // The ✕ button of the search field: the list goes back to empty.
+  clearSearch(): void {
+
+    this.searchText.set('');
+
+    this.onSearch();
   }
 
 

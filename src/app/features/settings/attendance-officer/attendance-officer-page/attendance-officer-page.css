@@ -2,24 +2,12 @@
    Attendance Officer Page
    ================================ */
 
-.attendance-officer-page {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-
-/* ================================
-   Page Content
-   ================================ */
-
+/* The current officer card, then the teachers section: 24px apart. */
 .page-content {
   display: flex;
   flex-direction: column;
 
-  gap: 24px;
-
-  /* Same width as the settings list. */
-  max-width: 1600px;
+  gap: var(--sp-6);
 }
 
 
@@ -28,27 +16,37 @@
    (title + search + list)
    ================================ */
 
-.teachers-section {
-  display: flex;
-  flex-direction: column;
-
-  gap: 14px;
+.teachers-header {
+  margin-bottom: var(--sp-3);
 }
 
 .section-title {
-  margin: 0 0 4px;
+  margin: 0 0 var(--sp-1);
 
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
 
-  color: #6b7280;
+  color: var(--text);
 }
 
-.teachers-header p {
+.section-subtitle {
   margin: 0;
 
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: var(--fs-13);
 
-  color: #9ca3af;
+  color: var(--muted);
+}
+
+
+/* ================================
+   Phone
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .page-content {
+    gap: var(--sp-4);
+  }
+
 }

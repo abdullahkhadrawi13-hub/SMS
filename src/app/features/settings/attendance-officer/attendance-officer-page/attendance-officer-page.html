@@ -40,52 +40,80 @@
         [officer]="officer()"
       ></app-officer-current-card>
 
-      <!-- Teachers to choose from -->
-      <section class="teachers-section">
+      <!-- Choose a new officer: title, search, number of results, list -->
+      <section
+        class="teachers-section"
+        aria-labelledby="teachers-section-title"
+      >
 
-        <!-- Section Title -->
         <div class="teachers-header">
 
-          <h2 class="section-title">
+          <h2 id="teachers-section-title" class="section-title">
             {{ 'ATTENDANCE_OFFICER.LIST.TITLE' | translate }}
           </h2>
 
-          <p>
+          <p class="section-subtitle">
             {{ 'ATTENDANCE_OFFICER.LIST.SUBTITLE' | translate }}
           </p>
 
         </div>
 
-        <!-- Teacher Search (the search is done by the backend) -->
-        <app-officer-teacher-search
-          (searchSubmit)="onSearch($event)"
-        ></app-officer-teacher-search>
+        <!-- The shared list layout (styles.css → List page):
+             the search on the page, the list card 16px under it. -->
+        <div class="list-area">
 
-        <!-- Teacher List
-             (hint / error / loading / rows / no results / pagination) -->
-        <app-officer-teacher-list
-          [teachers]="teachers()"
-          [isLoading]="isListLoading()"
-          [errorMessage]="listErrorMessage()"
-          [totalCount]="totalCount()"
-          [pageNumber]="pageNumber()"
-          [pageSize]="pageSize"
-          [hasSearched]="search() !== ''"
-          [officerId]="officerId()"
-          [selectedId]="selectedId()"
-          [disabled]="isSaving()"
-          (pageChange)="onPageChange($event)"
-          (retry)="loadTeachers()"
-          (selectTeacher)="onSelectTeacher($event)"
-        ></app-officer-teacher-list>
+          <div>
+
+            <!-- The search is done by the backend, 400ms after typing stops. -->
+            <app-search-field
+              [(search)]="searchText"
+              [label]="'ATTENDANCE_OFFICER.LIST.SEARCH_LABEL' | translate"
+              [placeholder]="'ATTENDANCE_OFFICER.LIST.SEARCH_PLACEHOLDER' | translate"
+              [clearLabel]="'ATTENDANCE_OFFICER.LIST.SEARCH_CLEAR' | translate"
+              (searchTyping)="onSearchTyping()"
+              (searchSubmit)="onSearch()"
+              (searchClear)="clearSearch()"
+            />
+
+            <!-- Always in the page, so a screen reader reads each new number. -->
+            <div role="status" aria-live="polite">
+              @if (matchingKey(); as key) {
+                <p class="list-results">
+                  {{ key | translate: { count: totalCount() } }}
+                </p>
+              }
+            </div>
+
+          </div>
+
+          <!-- Teacher List
+               (hint / error / loading / rows / no results / pagination) -->
+          <app-officer-teacher-list
+            [teachers]="teachers()"
+            [isLoading]="isListLoading()"
+            [errorMessage]="listErrorMessage()"
+            [totalCount]="totalCount()"
+            [pageNumber]="pageNumber()"
+            [pageSize]="pageSize"
+            [hasSearched]="search() !== ''"
+            [officerId]="officerId()"
+            [selectedId]="selectedId()"
+            [disabled]="isSaving()"
+            (pageChange)="onPageChange($event)"
+            (retry)="loadTeachers()"
+            (selectTeacher)="onSelectTeacher($event)"
+          ></app-officer-teacher-list>
+
+        </div>
 
       </section>
 
       <!-- Save Bar (shared): shown only after a teacher is selected. -->
-      @if (selectedTeacher(); as teacher) {
+      @if (selectedTeacher()) {
 
         <app-save-bar
-          [title]="('ATTENDANCE_OFFICER.SAVE_BAR.SELECTED' | translate) + ': ' + getTeacherName(teacher)"
+          [title]="('ATTENDANCE_OFFICER.SAVE_BAR.SELECTED' | translate) + ': ' + selectedName()"
+          [hint]="'ATTENDANCE_OFFICER.SAVE_BAR.HINT' | translate"
           [undoLabel]="'ATTENDANCE_OFFICER.SAVE_BAR.CANCEL' | translate"
           [saveLabel]="'ATTENDANCE_OFFICER.SAVE_BAR.SAVE' | translate"
           [savingLabel]="'ATTENDANCE_OFFICER.SAVE_BAR.SAVING' | translate"
