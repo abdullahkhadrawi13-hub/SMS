@@ -568,9 +568,10 @@ html {
 }
 
 /* ---------- Confirm dialog panel ----------
-   The shared confirm dialog (shared/components/confirm-dialog) adds this
-   class to its own panel: 10px corners and the floating shadow, like the
-   form dialogs, but it never fills the phone screen. */
+   The shared confirm dialog (shared/components/confirm-dialog) and the
+   action result dialog (shared/components/action-result-dialog) add this
+   class to their own panel: 10px corners and the floating shadow, like the
+   form dialogs, but they never fill the phone screen. */
 .confirm-dialog-panel {
   --mat-dialog-container-shape: var(--r-card);
   --mat-dialog-container-color: var(--surface);

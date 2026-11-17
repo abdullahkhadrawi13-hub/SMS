@@ -17,9 +17,7 @@ import {
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -29,6 +27,7 @@ import { UserAccountsService } from '../../../core/services/user-accounts';
 import { ApiMessageService } from '../../../core/services/api-message';
 import { Language } from '../../../core/services/language';
 import { UserRole, getRoleTranslationKey } from '../../../core/models/user-role';
+import { getInitials } from '../../utils/person-name';
 import {
   TEMP_PASSWORD_MAX_LENGTH,
   TEMP_PASSWORD_MIN_LENGTH,
@@ -64,6 +63,10 @@ export interface ResetPasswordDialogData {
     labelKey: string;
     value: string;
   };
+
+  // The avatar colour the person has in the table (1–6), so the dialog
+  // shows the same avatar as the row it was opened from.
+  avatarTone?: number;
 }
 
 // Returned only after a successful reset.
@@ -83,7 +86,9 @@ type CopyTarget = 'loginId' | 'password' | 'both';
 
 
 // "Reset password" (POST /api/users/{userId}/reset-password). Admin only.
-// Opened from the ⋮ menu of the students, teachers and parents tables.
+// Opened from the ⋮ menu of the students, teachers and parents tables,
+// with panelClass 'form-dialog' (styles.css: full screen on the phone).
+// The inside uses the shared dialog layout (.fd) and the shared fields.
 //
 //   1. Form: a generated temporary password (editable) and the Admin's own
 //      password to confirm.
@@ -100,15 +105,14 @@ type CopyTarget = 'loginId' | 'password' | 'both';
   imports: [
     MatButtonModule,
     MatDialogModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
     TranslatePipe
   ],
   templateUrl: './reset-password-dialog.html',
   styleUrl: './reset-password-dialog.css',
+  host: { class: 'fd' }
 })
 export class ResetPasswordDialog {
 
@@ -130,6 +134,9 @@ export class ResetPasswordDialog {
 
   readonly maxLength = TEMP_PASSWORD_MAX_LENGTH;
 
+  // The shared avatar colours (styles.css: .data-avatar[data-tone]).
+  readonly avatarTone = this.data.avatarTone ?? 6;
+
 
   // ===== The person =====
 
@@ -144,6 +151,11 @@ export class ResetPasswordDialog {
 
     return parts.filter(part => !!part?.trim()).join(' ');
   });
+
+  // The two letters on the avatar, in the UI language.
+  readonly initials = computed(() =>
+    getInitials(this.user, this.language.currentDirection() === 'rtl')
+  );
 
   // First name only, for the "Give ... these details" line.
   readonly firstName = computed(() =>
@@ -164,6 +176,12 @@ export class ResetPasswordDialog {
   // The temporary password's own rule (checked before sending).
   readonly tempPasswordTooShort = computed(() =>
     this.tempPassword().trim().length < TEMP_PASSWORD_MIN_LENGTH
+  );
+
+  // The red border: a backend error, or too short once something is typed.
+  readonly tempPasswordInvalid = computed(() =>
+    !!this.tempPasswordError() ||
+    (!!this.tempPassword() && this.tempPasswordTooShort())
   );
 
   // Errors from the backend.

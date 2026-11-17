@@ -106,9 +106,12 @@ export class Navbar {
 
   openProfile(): void {
     const dialogRef = this.dialog.open(ProfileDialog, {
-      width: '600px',
+      width: '640px',
       maxWidth: '95vw',
+      maxHeight: '90vh',
       autoFocus: false,
+      // Shared dialog panel (styles.css): full screen on the phone
+      panelClass: 'form-dialog',
       ariaLabelledBy: 'profile-dialog-title'
     });
 

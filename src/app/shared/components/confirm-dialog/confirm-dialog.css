@@ -1,8 +1,10 @@
 /* ================================
    Confirm dialog (shared)
-   An icon in a circle, the title, one paragraph, then
-   Cancel (secondary) and the confirm button
+   A 36px icon in a circle beside the title, one paragraph under the
+   title (in line with it), then Cancel (secondary) and the confirm button
    (navy; red for a destructive action: .btn-danger in styles.css).
+   Icon beside the title: chosen 17 Nov 2026 (the same as the action
+   result dialog).
    Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
@@ -12,18 +14,21 @@
 }
 
 .confirm-body {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
 
-  gap: var(--sp-3);
+  gap: var(--sp-2) var(--sp-3);
 
   padding: var(--sp-6) var(--sp-6) var(--sp-2);
 }
 
 .confirm-icon {
-  width: 44px;
-  height: 44px;
+  grid-row: 1;
+  grid-column: 1;
+
+  width: 36px;
+  height: 36px;
 
   display: flex;
   align-items: center;
@@ -41,14 +46,21 @@
 }
 
 .confirm-icon mat-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 
-  font-size: 22px;
+  font-size: 20px;
 }
 
 /* The Material class in the selector wins over Material's own title rules. */
 .confirm h2.mat-mdc-dialog-title {
+  grid-row: 1;
+  grid-column: 2;
+
+  /* The title is as tall as the icon, so the two sit on one line */
+  min-height: 36px;
+  align-items: center;
+
   margin: 0;
   padding: 0;
 
@@ -66,6 +78,10 @@
 }
 
 .confirm .mat-mdc-dialog-content {
+  /* Under the title, in line with it (the icon keeps its own column) */
+  grid-row: 2;
+  grid-column: 2;
+
   margin: 0;
   padding: 0;
 }

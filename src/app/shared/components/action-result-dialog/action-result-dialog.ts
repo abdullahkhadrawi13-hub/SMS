@@ -20,10 +20,12 @@ const RESULT_CONFIG: Record<
   ActionResultType,
   { icon: string; titleKey: string }
 > = {
-  success: { icon: 'check_circle', titleKey: 'SHARED.ACTION_RESULT.SUCCESS' },
-  error: { icon: 'cancel', titleKey: 'SHARED.ACTION_RESULT.ERROR' },
-  info: { icon: 'info', titleKey: 'SHARED.ACTION_RESULT.INFO' },
-  warning: { icon: 'error', titleKey: 'SHARED.ACTION_RESULT.WARNING' }
+  // The icon sits in a circle of its colour (action-result-dialog.css),
+  // so the plain glyphs: ✓, ✕, i, !
+  success: { icon: 'check', titleKey: 'SHARED.ACTION_RESULT.SUCCESS' },
+  error: { icon: 'close', titleKey: 'SHARED.ACTION_RESULT.ERROR' },
+  info: { icon: 'info_i', titleKey: 'SHARED.ACTION_RESULT.INFO' },
+  warning: { icon: 'priority_high', titleKey: 'SHARED.ACTION_RESULT.WARNING' }
 };
 
 @Component({
@@ -46,6 +48,12 @@ export class ActionResultDialog {
 
   private readonly dialogRef =
     inject(MatDialogRef<ActionResultDialog>);
+
+  constructor() {
+    // 10px corners and the floating shadow, like the confirm dialog
+    // (styles.css: "Confirm dialog panel"), whoever opens it.
+    this.dialogRef.addPanelClass('confirm-dialog-panel');
+  }
 
   close(): void {
     this.dialogRef.close();

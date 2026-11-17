@@ -1,24 +1,13 @@
-<div class="coming-soon">
-  <div class="coming-soon-card">
-
-    <!-- Icon -->
-    <div class="icon-wrapper">
-      <span class="material-icons">construction</span>
-    </div>
-
-    <!-- Content -->
-    <h1>Coming Soon</h1>
-
-    <p>
-      This page is currently under development.
-    </p>
-
-    <!-- Decorative line -->
-    <div class="divider"></div>
-
-    <span class="sub-message">
-      We are working on it and it will be available soon.
-    </span>
-
-  </div>
-</div>
+<!-- A page that is not ready yet (the "قريبًا" links of the sidebar, and
+     any address that has no page). The shared empty state in its own card. -->
+<app-state-card
+  type="empty"
+  icon="construction"
+  [title]="'SHARED.COMING_SOON.TITLE' | translate"
+  [message]="'SHARED.COMING_SOON.MESSAGE' | translate"
+>
+  <a actions mat-stroked-button routerLink="/dashboard">
+    <mat-icon aria-hidden="true">space_dashboard</mat-icon>
+    {{ 'SHARED.COMING_SOON.BACK' | translate }}
+  </a>
+</app-state-card>
