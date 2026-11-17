@@ -1,233 +1,160 @@
-<!-- The role colors (role-colors.ts) reach the CSS as
-     --role-main / --role-soft / --role-dark -->
-<div
-  class="profile-dialog"
-  [style.--role-main]="roleColor().main"
-  [style.--role-soft]="roleColor().soft"
-  [style.--role-dark]="roleColor().dark">
+<!-- Layout: the shared details dialog (styles.css: .fd, .fd-head, .fd-body,
+     .fd-foot, and .dd-head / .dd-list for the avatar header and the values). -->
 
-  <!-- Dialog Header -->
-  <div class="dialog-header">
+<!-- ================= Header (fixed) ================= -->
+<header class="fd-head dd-head">
 
-    <div class="header-content">
+  @if (user()) {
+    <!-- One colour per role (role-colors.ts), the same as the navbar avatar -->
+    <span
+      class="data-avatar dd-avatar"
+      aria-hidden="true"
+      [style.background]="roleColor().main"
+      [style.color]="roleColor().dark"
+    >
+      {{ initials() }}
+    </span>
+  }
 
-      <div class="header-icon">
-        <mat-icon>account_circle</mat-icon>
-      </div>
+  <div class="fd-head-text">
 
-      <div>
+    <h2 mat-dialog-title id="profile-dialog-title" class="dd-title">
+      @if (user()) {
+        <span class="visually-hidden">{{ 'PROFILE_DIALOG.TITLE' | translate }}:</span>
+        <span>{{ fullName() }}</span>
+      } @else {
+        {{ 'PROFILE_DIALOG.TITLE' | translate }}
+      }
+    </h2>
 
-        <h2 id="profile-dialog-title">
-          {{ 'PROFILE_DIALOG.TITLE' | translate }}
-        </h2>
-
-        <p>
-          {{ 'PROFILE_DIALOG.SUBTITLE' | translate }}
-        </p>
-
-      </div>
-
-    </div>
-
-    <button
-      mat-icon-button
-      type="button"
-      (click)="close()"
-      [attr.aria-label]="'PROFILE_DIALOG.CLOSE' | translate">
-      <mat-icon>close</mat-icon>
-    </button>
+    @if (user()) {
+      <p class="fd-head-sub">{{ roleKey() | translate }}</p>
+    }
 
   </div>
 
+  <button
+    mat-icon-button
+    type="button"
+    [attr.aria-label]="'PROFILE_DIALOG.CLOSE' | translate"
+    (click)="close()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+
+</header>
+
+
+<!-- ================= Body (scrolls) ================= -->
+<div class="fd-body">
 
   @if (user(); as currentUser) {
 
-    <div class="dialog-content">
+    <!-- ---------- Personal information ---------- -->
+    <section class="fd-section" aria-labelledby="pf-personal-title">
 
-      <!-- Profile card: avatar, full name (page language) and role -->
-      <div class="profile-card">
-
-        <div class="avatar" aria-hidden="true">
-          {{ initials() }}
-        </div>
-
-        <div class="profile-name">
-
-          <h3>{{ fullName() }}</h3>
-
-          <span class="role-chip">
-            {{ roleKey() | translate }}
-          </span>
-
-        </div>
-
+      <div class="fd-section-head">
+        <h3 id="pf-personal-title">{{ 'PROFILE_DIALOG.PERSONAL_INFO' | translate }}</h3>
+        <span class="fd-section-hint">· {{ 'PROFILE_DIALOG.PERSONAL_INFO_DESCRIPTION' | translate }}</span>
       </div>
 
+      <dl class="dd-list">
 
-      <!-- ================================
-           Personal Information
-           ================================ -->
-
-      <section class="details-section">
-
-        <div class="section-header">
-
-          <div class="section-icon personal">
-            <mat-icon>badge</mat-icon>
-          </div>
-
-          <div>
-
-            <h4>
-              {{ 'PROFILE_DIALOG.PERSONAL_INFO' | translate }}
-            </h4>
-
-            <p>
-              {{ 'PROFILE_DIALOG.PERSONAL_INFO_DESCRIPTION' | translate }}
-            </p>
-
-          </div>
-
+        <div class="dd-item">
+          <dt>{{ 'PROFILE_DIALOG.NAME_AR' | translate }}</dt>
+          <dd>
+            @if (arabicName()) {
+              <bdi dir="rtl">{{ arabicName() }}</bdi>
+            } @else {
+              <span class="dd-missing">—</span>
+            }
+          </dd>
         </div>
 
-        <div class="details-grid">
-
-          <!-- Name in Arabic -->
-          <div class="detail-item">
-
-            <span class="detail-label">
-              {{ 'PROFILE_DIALOG.NAME_AR' | translate }}
-            </span>
-
-            <span class="detail-value">
-              <bdi>{{ arabicName() || '-' }}</bdi>
-            </span>
-
-          </div>
-
-          <!-- Name in English -->
-          <div class="detail-item">
-
-            <span class="detail-label">
-              {{ 'PROFILE_DIALOG.NAME_EN' | translate }}
-            </span>
-
-            <span class="detail-value">
-              <bdi>{{ englishName() || '-' }}</bdi>
-            </span>
-
-          </div>
-
-          <!-- Phone Number -->
-          <div class="detail-item">
-
-            <span class="detail-label">
-              {{ 'PROFILE_DIALOG.PHONE' | translate }}
-            </span>
-
-            <span class="detail-value">
-              <bdi>{{ currentUser.phoneNumber || '-' }}</bdi>
-            </span>
-
-          </div>
-
+        <div class="dd-item">
+          <dt>{{ 'PROFILE_DIALOG.NAME_EN' | translate }}</dt>
+          <dd>
+            @if (englishName()) {
+              <bdi dir="ltr">{{ englishName() }}</bdi>
+            } @else {
+              <span class="dd-missing">—</span>
+            }
+          </dd>
         </div>
 
-      </section>
-
-
-      <!-- ================================
-           Account Information
-           (the role is shown in the profile card)
-           ================================ -->
-
-      <section class="details-section">
-
-        <div class="section-header">
-
-          <div class="section-icon account">
-            <mat-icon>manage_accounts</mat-icon>
-          </div>
-
-          <div>
-
-            <h4>
-              {{ 'PROFILE_DIALOG.ACCOUNT_INFO' | translate }}
-            </h4>
-
-            <p>
-              {{ 'PROFILE_DIALOG.ACCOUNT_INFO_DESCRIPTION' | translate }}
-            </p>
-
-          </div>
-
+        <div class="dd-item">
+          <dt>{{ 'PROFILE_DIALOG.PHONE' | translate }}</dt>
+          <dd>
+            @if (currentUser.phoneNumber) {
+              <bdi dir="ltr" class="tabular">{{ currentUser.phoneNumber }}</bdi>
+            } @else {
+              <span class="dd-missing">—</span>
+            }
+          </dd>
         </div>
 
-        <div class="details-grid">
+      </dl>
 
-          <!-- Login ID -->
-          <div class="detail-item">
+    </section>
 
-            <span class="detail-label">
-              {{ 'PROFILE_DIALOG.LOGIN_ID' | translate }}
-            </span>
 
-            <span class="detail-value">
-              <bdi>{{ currentUser.loginId }}</bdi>
-            </span>
+    <!-- ---------- Account (the role is in the header) ---------- -->
+    <section class="fd-section" aria-labelledby="pf-account-title">
 
-          </div>
+      <div class="fd-section-head">
+        <h3 id="pf-account-title">{{ 'PROFILE_DIALOG.ACCOUNT_INFO' | translate }}</h3>
+        <span class="fd-section-hint">· {{ 'PROFILE_DIALOG.ACCOUNT_INFO_DESCRIPTION' | translate }}</span>
+      </div>
 
-          <!-- Password: hidden, with a button to change it -->
-          <div class="detail-item">
+      <dl class="dd-list">
 
-            <span class="detail-label">
-              {{ 'PROFILE_DIALOG.PASSWORD' | translate }}
-            </span>
-
-            <div class="password-row">
-
-              <span class="password-dots" aria-hidden="true">••••••••</span>
-
-              <button
-                type="button"
-                class="change-button"
-                (click)="changePassword()"
-                [attr.aria-label]="'PROFILE_DIALOG.CHANGE_PASSWORD_LABEL' | translate">
-                <mat-icon>lock_reset</mat-icon>
-                {{ 'PROFILE_DIALOG.CHANGE_PASSWORD' | translate }}
-              </button>
-
-            </div>
-
-          </div>
-
+        <div class="dd-item">
+          <dt>{{ 'PROFILE_DIALOG.LOGIN_ID' | translate }}</dt>
+          <dd><bdi dir="ltr">{{ currentUser.loginId }}</bdi></dd>
         </div>
 
-      </section>
+        <!-- Hidden, with a link to change it -->
+        <div class="dd-item">
+          <dt>{{ 'PROFILE_DIALOG.PASSWORD' | translate }}</dt>
+          <dd class="pf-password">
+            <span class="pf-dots" aria-hidden="true">••••••••</span>
 
+            <button
+              type="button"
+              class="pf-change"
+              [attr.aria-label]="'PROFILE_DIALOG.CHANGE_PASSWORD_LABEL' | translate"
+              (click)="changePassword()"
+            >
+              <mat-icon aria-hidden="true">lock_reset</mat-icon>
+              {{ 'PROFILE_DIALOG.CHANGE_PASSWORD' | translate }}
+            </button>
+          </dd>
+        </div>
+
+      </dl>
 
       <!-- Only the administration edits the name and the phone -->
-      <div class="edit-note">
-        <mat-icon>info</mat-icon>
+      <div class="fd-note info">
+        <mat-icon aria-hidden="true">info</mat-icon>
         <span>{{ 'PROFILE_DIALOG.EDIT_NOTE' | translate }}</span>
       </div>
 
-    </div>
+    </section>
 
   }
 
-
-  <!-- Dialog Footer -->
-  <div class="dialog-actions">
-
-    <button
-      mat-button
-      type="button"
-      (click)="close()">
-      {{ 'PROFILE_DIALOG.CLOSE' | translate }}
-    </button>
-
-  </div>
-
 </div>
+
+
+<!-- ================= Footer (fixed) ================= -->
+<footer class="fd-foot dd-foot">
+
+  <button
+    mat-stroked-button
+    type="button"
+    (click)="close()"
+  >
+    {{ 'PROFILE_DIALOG.CLOSE' | translate }}
+  </button>
+
+</footer>

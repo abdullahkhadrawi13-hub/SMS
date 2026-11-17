@@ -54,6 +54,7 @@ import {
   ParentLinkChildResult
 } from '../parent-link-child/parent-link-child';
 
+import { getAvatarTone } from '../parents';
 
 // How long the search waits after the last key before reloading the list.
 const SEARCH_DEBOUNCE_MS = 400;
@@ -709,8 +710,12 @@ export class ParentsPage {
         width: '520px',
         maxWidth: '95vw',
         maxHeight: '90vh',
+        // Shared dialog panel (styles.css): full screen on the phone
+        panelClass: 'form-dialog',
         data: {
           user: parent,
+          // The same avatar colour as the table row
+          avatarTone: getAvatarTone(parent.parentId),
           detail: {
             labelKey: 'PARENTS.TABLE.PHONE',
             value: parent.phoneNumber

@@ -1,25 +1,34 @@
-<div class="action-result-dialog">
+<!-- The same shape as the shared confirm dialog: an icon in a circle,
+     the title, one paragraph, then one button at the end. -->
+<div class="result" [attr.data-type]="data.type">
 
-  <div class="result-icon" [class]="data.type">
-    <mat-icon>
-      {{ config.icon }}
-    </mat-icon>
+  <div class="result-body">
+
+    <span class="result-icon" aria-hidden="true">
+      <mat-icon>{{ config.icon }}</mat-icon>
+    </span>
+
+    <h2 mat-dialog-title>
+      {{ config.titleKey | translate }}
+    </h2>
+
+    <mat-dialog-content>
+      <p>{{ data.message }}</p>
+    </mat-dialog-content>
+
   </div>
 
-  <h2 class="result-title">
-    {{ config.titleKey | translate }}
-  </h2>
+  <mat-dialog-actions>
 
-  <p class="result-message">
-    {{ data.message }}
-  </p>
+    <button
+      mat-flat-button
+      type="button"
+      cdkFocusInitial
+      (click)="close()"
+    >
+      {{ 'SHARED.ACTION_RESULT.OK' | translate }}
+    </button>
 
-  <button
-    mat-flat-button
-    type="button"
-    (click)="close()"
-  >
-    {{ 'SHARED.ACTION_RESULT.OK' | translate }}
-  </button>
+  </mat-dialog-actions>
 
 </div>

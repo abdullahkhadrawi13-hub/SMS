@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -32,15 +32,20 @@ export const PROFILE_DIALOG_CHANGE_PASSWORD = 'change-password';
 //
 // If the Admin edits the name after the user logged in, the old name
 // stays until the next login (the same as the navbar).
+//
+// Navy & gold: the shared details dialog layout (styles.css: .fd, .dd-…),
+// opened by the navbar with panelClass 'form-dialog' (full screen on the phone).
 @Component({
   selector: 'app-profile-dialog',
   imports: [
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     TranslatePipe
   ],
   templateUrl: './profile-dialog.html',
   styleUrl: './profile-dialog.css',
+  host: { class: 'fd' }
 })
 export class ProfileDialog {
 

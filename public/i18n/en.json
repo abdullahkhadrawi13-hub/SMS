@@ -829,6 +829,11 @@
     "STATE_CARD": {
       "RETRY": "Retry"
     },
+    "COMING_SOON": {
+      "TITLE": "Coming soon",
+      "MESSAGE": "This page is under development and will be available soon.",
+      "BACK": "Back to the dashboard"
+    },
     "ACTION_RESULT": {
       "SUCCESS": "Success",
       "ERROR": "Error",
@@ -839,11 +844,13 @@
 
     "RESET_PASSWORD": {
       "TITLE": "Reset password",
+      "CLOSE": "Close",
       "LOGIN_ID": "Login ID",
       "TEMP_LABEL": "New temporary password",
       "TEMP_HINT": "Generated for you. You can type another one (at least 8 characters).",
       "TEMP_TOO_SHORT": "Must be at least 8 characters.",
       "GENERATE": "Generate a new password",
+      "GENERATE_BUTTON": "Generate",
       "ADMIN_LABEL": "Your password (to confirm)",
       "ADMIN_HINT": "The password you sign in with.",
       "SHOW_PASSWORD": "Show password",
