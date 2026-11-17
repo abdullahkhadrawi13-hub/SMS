@@ -2,8 +2,9 @@
    Action result dialog (shared) — navy & gold
    The backend message after an action (success / error), or a frontend
    message (info / warning). The same shape as the confirm dialog:
-   an icon in a circle in the colour of its meaning, the title, the
-   message, then "OK" (navy primary) at the end.
+   a 36px icon in a circle in the colour of its meaning beside the title,
+   the message under the title (in line with it), then "OK" (navy
+   primary) at the end. (Icon beside the title: chosen 17 Nov 2026.)
    Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
@@ -13,18 +14,21 @@
 }
 
 .result-body {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
 
-  gap: var(--sp-3);
+  gap: var(--sp-2) var(--sp-3);
 
   padding: var(--sp-6) var(--sp-6) var(--sp-2);
 }
 
 .result-icon {
-  width: 44px;
-  height: 44px;
+  grid-row: 1;
+  grid-column: 1;
+
+  width: 36px;
+  height: 36px;
 
   display: flex;
   align-items: center;
@@ -34,10 +38,10 @@
 }
 
 .result-icon mat-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 
-  font-size: 22px;
+  font-size: 20px;
 }
 
 /* The colours of the meaning table (spec: "ألوان المعنى") */
@@ -63,6 +67,13 @@
 
 /* The Material class in the selector wins over Material's own title rules. */
 .result h2.mat-mdc-dialog-title {
+  grid-row: 1;
+  grid-column: 2;
+
+  /* The title is as tall as the icon, so the two sit on one line */
+  min-height: 36px;
+  align-items: center;
+
   margin: 0;
   padding: 0;
 
@@ -80,6 +91,10 @@
 }
 
 .result .mat-mdc-dialog-content {
+  /* Under the title, in line with it (the icon keeps its own column) */
+  grid-row: 2;
+  grid-column: 2;
+
   margin: 0;
   padding: 0;
 }
