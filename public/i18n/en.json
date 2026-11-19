@@ -1799,7 +1799,8 @@
       "TABLE": {
         "CLASS": "Class",
         "SECTION": "Section",
-        "RECORDED": "Recorded / Students",
+        "RECORDED": "Recorded",
+        "RECORDED_VALUE": "{{recorded}} of {{total}}",
         "ABSENT": "Absent",
         "STATE": "State",
         "ACTIONS": "Actions"

@@ -1798,7 +1798,8 @@
       "TABLE": {
         "CLASS": "الصف",
         "SECTION": "الشعبة",
-        "RECORDED": "المسجَّل / عدد الطلاب",
+        "RECORDED": "المسجَّلون",
+        "RECORDED_VALUE": "{{recorded}} من {{total}}",
         "ABSENT": "الغياب",
         "STATE": "الحالة",
         "ACTIONS": "الإجراءات"
