@@ -1,10 +1,17 @@
 <div class="grades-page">
 
-  <!-- Page Header -->
-  <app-page-header
-    [title]="'GRADES.HEADER.TITLE' | translate"
-    [subtitle]="subtitleKey() | translate"
-  />
+  <!-- Page Header. The teacher does not see the term in the navbar (the
+       terms list is Admin / AssistantPrincipal only), so for the teacher
+       the line under the title starts with it, like «صفوفي». -->
+  <app-page-header [title]="'GRADES.HEADER.TITLE' | translate">
+    <span subtitle>
+      @if (currentTermName(); as termName) {
+        {{ termName }}
+        <span class="sep" aria-hidden="true">·</span>
+      }
+      {{ subtitleKey() | translate }}
+    </span>
+  </app-page-header>
 
 
   <!-- Which sheet: teacher (class and subject) or staff (term → class → section → subject) -->
