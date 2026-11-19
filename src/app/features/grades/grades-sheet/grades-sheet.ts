@@ -205,7 +205,7 @@ export class GradesSheet {
     const className = isArabic ? sheet.classNameAr : sheet.classNameEn;
     const section = isArabic ? sheet.sectionAr : sheet.sectionEn;
 
-    return `${subject} · ${className} / ${section}`;
+    return `${subject} · ${className} · ${section}`;
   });
 
   readonly passingMark = computed(() => {

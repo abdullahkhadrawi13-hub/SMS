@@ -1774,7 +1774,7 @@
       "TABLE": {
         "INDEX": "#",
         "STUDENT_NUMBER": "Student Number",
-        "NAME": "Student Name",
+        "NAME": "Student",
         "STATUS": "Status"
       },
 

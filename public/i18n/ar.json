@@ -1772,8 +1772,8 @@
 
       "TABLE": {
         "INDEX": "#",
-        "STUDENT_NUMBER": "رقم الطالب",
-        "NAME": "اسم الطالب",
+        "STUDENT_NUMBER": "الرقم المدرسي",
+        "NAME": "الطالب",
         "STATUS": "الحالة"
       },
 
