@@ -937,10 +937,19 @@ html {
   }
 
   .fd-foot {
+    flex-wrap: wrap;
     padding: var(--sp-3) var(--sp-4);
   }
 
+  /* The note gets its own line above the buttons, and only when it has
+     something to say: the number of fields to fix after pressing
+     Save / Add, or why the main button is disabled. Empty, it takes
+     no room (review report, question 2 — option A, 19 Nov 2026). */
   .fd-foot-note {
+    flex-basis: 100%;
+  }
+
+  .fd-foot-note:empty {
     display: none;
   }
 
