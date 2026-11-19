@@ -51,6 +51,13 @@
   color: var(--lang-btn-icon, currentColor);
 }
 
+/* Phone: 44px high to touch (the login and first-login top bar) */
+@media (max-width: 719.98px) {
+  .language-button {
+    height: var(--h-touch);
+  }
+}
+
 
 /* ==============================
    Compact: the icon only, 44 × 44 (phone navbar)

@@ -16,10 +16,6 @@ export interface ComponentGroup {
   // Name in the current language.
   componentName: string;
 
-  // The component's color: the same color the Admin sees for it
-  // in the subject plan page (componentColor of its position).
-  color: string;
-
   // The section's assessments under this component, sorted by order.
   assessments: Assessment[];
 }
@@ -34,7 +30,6 @@ export interface AssessmentFormData {
   // The open component the assessment belongs to.
   component: SubjectPlanComponent;
   componentName: string;
-  color: string;
 
   // Edit mode only.
   assessment?: Assessment;

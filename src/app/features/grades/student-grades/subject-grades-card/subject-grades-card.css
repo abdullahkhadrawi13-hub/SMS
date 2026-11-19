@@ -348,6 +348,20 @@
     padding: 14px var(--sp-4) var(--sp-3);
   }
 
+  /* More room between the chips, so a history button's touch area
+     (below) never reaches the next chip */
+  .marks {
+    gap: var(--sp-3);
+  }
+
+  /* 44px to touch, without a bigger icon */
+  .history-button::after {
+    content: '';
+
+    position: absolute;
+    inset: -11px;
+  }
+
   .components {
     padding: 2px var(--sp-4) 10px;
   }

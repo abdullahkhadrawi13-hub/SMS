@@ -753,11 +753,27 @@
     height: var(--h-touch);
   }
 
+  /* A little more room between two marks, for the history button's
+     touch area below */
+  .mark-col {
+    min-width: 112px;
+  }
+
   .history-button {
     inset-inline-end: -24px;
 
     width: 24px;
     height: 24px;
+  }
+
+  /* 44px to touch, without a bigger icon: the area grows away from its
+     own mark (into the space before the next one) and above and below. */
+  .history-button::after {
+    content: '';
+
+    position: absolute;
+    inset-block: -10px;
+    inset-inline: 0 -20px;
   }
 
   /* No keyboard on the phone */

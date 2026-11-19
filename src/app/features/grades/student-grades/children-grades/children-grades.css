@@ -100,22 +100,12 @@
   background: var(--accent-soft);
 }
 
-.avatar {
-  flex-shrink: 0;
-
+/* The shared .data-avatar (styles.css) at 40px, like the Parent dashboard */
+.child-avatar {
   width: 40px;
   height: 40px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  color: var(--on-primary);
-
-  font-size: var(--fs-16);
-  font-weight: 700;
+  font-size: var(--fs-14);
 }
 
 .child-info {

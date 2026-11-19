@@ -3,23 +3,6 @@
    (.field, .field-box…) are the shared ones in styles.css.
    Only what this form adds is here. */
 
-/* The component line under the title, with the component's colour dot */
-.af-component {
-  display: flex;
-  align-items: center;
-
-  gap: var(--sp-2);
-}
-
-.af-dot {
-  flex: none;
-
-  width: 8px;
-  height: 8px;
-
-  border-radius: 50%;
-}
-
 .af-fields {
   display: flex;
   flex-direction: column;
