@@ -1014,17 +1014,27 @@ html {
   min-width: 0;
 }
 
+/* No browser arrow (it looked different in every browser): the same
+   expand_more as the forms' select (.field-chevron), 8px from the end.
+   A <select> cannot hold an icon, so the arrow is a background image
+   (--select-arrow in tokens.css); its side follows the language. */
 .filter-select {
   height: var(--h-control);
   min-width: 150px;
 
   box-sizing: border-box;
-  padding-inline: 10px;
+  padding-inline: 10px 36px;
+
+  appearance: none;
 
   border: 1px solid var(--control);
   border-radius: var(--r-control);
 
   background-color: var(--surface);
+  background-image: var(--select-arrow);
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: calc(100% - 8px) 50%;
   color: var(--text);
 
   font-family: var(--font);
@@ -1033,6 +1043,10 @@ html {
   cursor: pointer;
 
   transition: border-color var(--dur), background-color var(--dur), color var(--dur);
+}
+
+[dir="rtl"] .filter-select {
+  background-position: 8px 50%;
 }
 
 /* A list with a longer text ("Section: choose a class first") */
@@ -1056,6 +1070,7 @@ html {
 .filter-select.is-active:hover {
   border-color: var(--accent);
   background-color: var(--accent-soft);
+  background-image: var(--select-arrow-on);
   color: var(--accent-ink);
 
   font-weight: 600;
