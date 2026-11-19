@@ -15,16 +15,6 @@ import { Student } from '../../core/models/student';
 import { getShortName } from '../../shared/utils/person-name';
 
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-const AVATAR_TONES = 6;
-
-// The same colour for the same person, everywhere
-// (a parent by parentId, a child or a student by studentId).
-export function getAvatarTone(id: number): number {
-  return (id % AVATAR_TONES) + 1;
-}
-
-
 // The separator of a list written in one line: "سارة، عمر" / "Sara, Omar".
 export function getListSeparator(isArabic: boolean): string {
   return isArabic ? '، ' : ', ';

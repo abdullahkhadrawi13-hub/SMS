@@ -14,8 +14,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Students } from '../../../core/services/students';
 import { Language } from '../../../core/services/language';
 import { Student } from '../../../core/models/student';
-import { getFullName, getInitials } from '../../../shared/utils/person-name';
-import { getAvatarTone, getClassSection } from '../parents';
+import { getFullName, getInitials, getAvatarTone } from '../../../shared/utils/person-name';
+import { getClassSection } from '../parents';
 
 
 // Student search (combobox): the same numbers as the teacher combobox

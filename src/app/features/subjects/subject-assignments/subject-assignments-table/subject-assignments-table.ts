@@ -17,11 +17,11 @@ import { PHONE_QUERY } from '../../../../layouts/dashboard-layout/dashboard-layo
 
 import {
   SubjectAssignmentRow,
-  formatNumber,
-  nameInitials,
+  formatNumber
 } from '../../shared/subjects-shared';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
 
 
 // A subject with a plan for the class but no teacher in the section.
@@ -31,8 +31,6 @@ export interface MissingPlanSubject {
 }
 
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-const AVATAR_TONES = 6;
 
 
 // The subjects of one section: the "no teacher" note, the table
@@ -157,11 +155,11 @@ export class SubjectAssignmentsTable {
   // ===== Teacher avatar =====
 
   initials(row: SubjectAssignmentRow): string {
-    return nameInitials(row.teacherName);
+    return getInitialsFromFullName(row.teacherName);
   }
 
   // The same colour for the same teacher, everywhere (like the teachers list).
   avatarTone(row: SubjectAssignmentRow): number {
-    return (row.assignment.teacherId % AVATAR_TONES) + 1;
+    return getAvatarTone(row.assignment.teacherId);
   }
 }

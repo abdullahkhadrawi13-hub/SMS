@@ -31,10 +31,9 @@ import { Language } from '../../../../core/services/language';
 
 import {
   formatNumber,
-  nameInitials,
   SubjectOption,
   teacherOptionFromDto,
-  TeacherOption,
+  TeacherOption
 } from '../../shared/subjects-shared';
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 import {
@@ -43,6 +42,7 @@ import {
   showFieldError,
   useDiscardOnClose,
 } from '../../shared/subjects-form-dialog';
+import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
 
 
 // Data passed by the parent (subject-assignments-tab) when the dialog is opened.
@@ -95,8 +95,6 @@ export interface SubjectAssignmentsFormResult {
 const TEACHER_SEARCH_DEBOUNCE_MS = 400;
 const TEACHER_SEARCH_PAGE_SIZE = 20;
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-const AVATAR_TONES = 6;
 
 
 // The teacher field holds the typed text (string) until a teacher is chosen
@@ -385,11 +383,11 @@ export class SubjectAssignmentsForm implements OnInit {
   // The teacher's avatar in the results: initials and colour
   // (the same colour for the same teacher, as in the teachers list).
   teacherInitials(teacher: TeacherOption): string {
-    return nameInitials(this.getTeacherName(teacher));
+    return getInitialsFromFullName(this.getTeacherName(teacher));
   }
 
   avatarTone(teacher: TeacherOption): number {
-    return (teacher.teacherId % AVATAR_TONES) + 1;
+    return getAvatarTone(teacher.teacherId);
   }
 
   getSubjectName(option: SubjectOption): string {

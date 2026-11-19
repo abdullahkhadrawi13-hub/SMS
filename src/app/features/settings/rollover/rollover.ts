@@ -119,38 +119,6 @@ export function differsFromSuggestion(
 
 
 // =====================================================
-// Avatar
-// =====================================================
-
-// The six avatar colours of the lists (--avatar-1 … --avatar-6);
-// a student keeps the same one everywhere (chosen by id).
-const AVATAR_TONES = 6;
-
-export function avatarTone(studentId: number): number {
-  return (studentId % AVATAR_TONES) + 1;
-}
-
-// The first letter of the first and the last word of a full name:
-// "مع" / "MA". The rollover gives one full name, not the four parts.
-// A zero-width non-joiner keeps two Arabic letters apart.
-export function nameInitials(fullName: string): string {
-  const words = fullName.trim().split(/\s+/).filter(Boolean);
-
-  if (words.length === 0) {
-    return '';
-  }
-
-  const first = words[0].charAt(0);
-  const last = words.length > 1 ? words[words.length - 1].charAt(0) : '';
-
-  return [first, last]
-    .filter(Boolean)
-    .join('\u200c')
-    .toUpperCase();
-}
-
-
-// =====================================================
 // Suggestion badge
 // =====================================================
 

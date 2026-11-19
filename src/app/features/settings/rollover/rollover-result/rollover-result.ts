@@ -13,8 +13,8 @@ import {
 import { Language } from '../../../../core/services/language';
 import { StatusBadgeTone } from '../../../../shared/components/status-badge/status-badge';
 import { pluralKey } from '../../../../shared/utils/plural';
+import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
 
-import { avatarTone, nameInitials } from '../rollover';
 
 
 // One number of the result: the label with its dot, the number,
@@ -88,11 +88,11 @@ export class RolloverResult {
   );
 
   avatarTone(student: RolloverStudent): number {
-    return avatarTone(student.studentId);
+    return getAvatarTone(student.studentId);
   }
 
   initials(student: RolloverStudent): string {
-    return nameInitials(this.studentName(student));
+    return getInitialsFromFullName(this.studentName(student));
   }
 
   studentName(student: RolloverStudent): string {

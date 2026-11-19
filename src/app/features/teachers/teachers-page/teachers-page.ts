@@ -40,14 +40,12 @@ import {
 import { TeacherTable } from '../teacher-table/teacher-table';
 import { TeacherForm, TeacherFormResult } from '../teacher-form/teacher-form';
 import { TeacherDetails } from '../teacher-details/teacher-details';
+import { getAvatarTone } from '../../../shared/utils/person-name';
 
 
 // How long the search waits after the last key before reloading the list.
 const SEARCH_DEBOUNCE_MS = 400;
 
-// The avatar colours (1–6), the same formula as the teacher table,
-// so "Reset password" shows the same avatar as the row.
-const AVATAR_TONES = 6;
 
 // The history state key of the step that opened the add / edit form.
 const FORM_STEP = 'teacherForm';
@@ -651,7 +649,7 @@ export class TeachersPage {
         data: {
           user: teacher,
           // The same avatar colour as the table row
-          avatarTone: (teacher.teacherId % AVATAR_TONES) + 1,
+          avatarTone: getAvatarTone(teacher.teacherId),
           detail: {
             labelKey: 'TEACHERS.TABLE.TEACHER_NUMBER',
             value: teacher.teacherNumber

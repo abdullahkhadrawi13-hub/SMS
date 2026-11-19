@@ -53,8 +53,8 @@ import {
   ParentLinkChildDialogData,
   ParentLinkChildResult
 } from '../parent-link-child/parent-link-child';
+import { getAvatarTone } from '../../../shared/utils/person-name';
 
-import { getAvatarTone } from '../parents';
 
 // How long the search waits after the last key before reloading the list.
 const SEARCH_DEBOUNCE_MS = 400;

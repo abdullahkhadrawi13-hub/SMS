@@ -13,7 +13,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TeacherListDto } from '../../../core/models/teacher';
 import { Language } from '../../../core/services/language';
 import { RangePaginatorIntl } from '../../../core/services/paginator-intl';
-import { getFullName, getInitials, getShortName } from '../../../shared/utils/person-name';
+import {
+  getFullName,
+  getInitials,
+  getShortName,
+  getAvatarTone
+} from '../../../shared/utils/person-name';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 
@@ -27,8 +32,6 @@ export interface TeacherRow extends TeacherListDto {
 }
 
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-const AVATAR_TONES = 6;
 
 
 @Component({
@@ -128,7 +131,7 @@ export class TeacherTable {
       shortName: getShortName(teacher, isArabic),
       initials: getInitials(teacher, isArabic),
       // The same colour for the same teacher, everywhere.
-      avatarTone: (teacher.teacherId % AVATAR_TONES) + 1
+      avatarTone: getAvatarTone(teacher.teacherId)
     }));
 
   });

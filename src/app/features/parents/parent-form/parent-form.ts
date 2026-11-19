@@ -50,7 +50,8 @@ import {
 import {
   getFirstName,
   getFullName,
-  getInitials
+  getInitials,
+  getAvatarTone
 } from '../../../shared/utils/person-name';
 
 import { ParentsService } from '../../../core/services/parents';
@@ -77,7 +78,6 @@ import { StudentPicker } from '../student-picker/student-picker';
 import { RelationshipToggle } from '../relationship-toggle/relationship-toggle';
 import {
   findTakenRelationships,
-  getAvatarTone,
   getClassSection,
   getListSeparator,
   isRelationshipTaken,
