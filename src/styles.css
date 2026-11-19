@@ -1939,6 +1939,20 @@ button.data-link {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  /* The loading spinner draws its arc with an animation, so without it
+     the arc shrank to a dot. It stays still at its longest arc instead
+     (the middle of Material's keyframes): a ring with a small gap,
+     next to its "جاري التحميل..." text. */
+  .mat-mdc-progress-spinner .mdc-circular-progress__circle-left .mdc-circular-progress__indeterminate-circle-graphic {
+    animation: none !important;
+    transform: rotate(130deg);
+  }
+
+  .mat-mdc-progress-spinner .mdc-circular-progress__circle-right .mdc-circular-progress__indeterminate-circle-graphic {
+    animation: none !important;
+    transform: rotate(-130deg);
+  }
 }
 
 
