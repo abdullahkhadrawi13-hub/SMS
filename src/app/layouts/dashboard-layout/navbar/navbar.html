@@ -130,7 +130,8 @@
     class="logout-item"
     (click)="logout()">
 
-    <mat-icon aria-hidden="true">logout</mat-icon>
+    <!-- A direction arrow: points the other way in Arabic (.flip) -->
+    <mat-icon class="flip" aria-hidden="true">logout</mat-icon>
 
     <span>
       {{ 'NAVBAR.LOGOUT' | translate }}
