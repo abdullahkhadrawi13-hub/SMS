@@ -1,13 +1,19 @@
 import { UserRole } from '../../core/models/user-role';
 
-import { CardColor } from './card-colors';
 
-
-// One color per role, the same shape as the card colors (card-colors.ts):
+// The three shades of one role colour:
 //
 //   main: the avatar background
 //   soft: a lighter version (the background of the profile card)
 //   dark: the initials on the avatar, and text on the soft background
+export interface RoleColor {
+  main: string;
+  soft: string;
+  dark: string;
+}
+
+
+// One color per role.
 //
 // Navy & Gold: every role has a light avatar with dark initials;
 // the Admin is gold with navy initials.
@@ -15,7 +21,7 @@ import { CardColor } from './card-colors';
 // so they work in [style.--role-main]="..." bindings.
 //
 // Used by the navbar avatar, the user menu and the profile dialog.
-export const ROLE_COLORS: Record<UserRole, CardColor> = {
+export const ROLE_COLORS: Record<UserRole, RoleColor> = {
   [UserRole.Admin]: {
     main: 'var(--role-admin-main)',
     soft: 'var(--role-admin-soft)',
@@ -45,7 +51,7 @@ export const ROLE_COLORS: Record<UserRole, CardColor> = {
 
 
 // Gray, for a role the frontend does not know.
-const UNKNOWN_ROLE_COLOR: CardColor = {
+const UNKNOWN_ROLE_COLOR: RoleColor = {
   main: 'var(--role-unknown-main)',
   soft: 'var(--role-unknown-soft)',
   dark: 'var(--role-unknown-dark)'
@@ -53,6 +59,6 @@ const UNKNOWN_ROLE_COLOR: CardColor = {
 
 
 // Returns the color of a role.
-export function getRoleColor(role: UserRole | null | undefined): CardColor {
+export function getRoleColor(role: UserRole | null | undefined): RoleColor {
   return (role != null && ROLE_COLORS[role]) || UNKNOWN_ROLE_COLOR;
 }

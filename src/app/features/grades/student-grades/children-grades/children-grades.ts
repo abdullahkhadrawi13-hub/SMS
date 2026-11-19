@@ -22,8 +22,7 @@ import { ApiMessageService } from '../../../../core/services/api-message';
 import { Language } from '../../../../core/services/language';
 import { ParentsService } from '../../../../core/services/parents';
 import { StudentGradesService } from '../../../../core/services/student-grades';
-import { getCardColor } from '../../../../shared/constants/card-colors';
-import { getArabicName, getEnglishName } from '../../../../shared/utils/person-name';
+import { getFullName, getInitials } from '../../../../shared/utils/person-name';
 
 import { TermGrades } from '../term-grades/term-grades';
 import {
@@ -37,12 +36,18 @@ import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StudentStatusBadge } from '../../../../shared/components/student-status/student-status';
 
 
+// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css
+// (the same rule as the students table and the Parent dashboard:
+// studentId % 6 + 1, so a child keeps the same avatar everywhere).
+const AVATAR_TONES = 6;
+
+
 // One child card, ready to show.
 interface ChildCard {
   studentId: number;
   name: string;
-  initial: string;
-  color: string;
+  initials: string;
+  avatarTone: number;
   classSection: { class: string; section: string };
   status: StudentStatus;
 }
@@ -121,25 +126,14 @@ export class ChildrenGrades implements OnInit {
 
     const isArabic = this.isArabic();
 
-    return this.children().map((child, index) => {
-
-      const name = isArabic
-        ? getArabicName(child) || getEnglishName(child)
-        : getEnglishName(child) || getArabicName(child);
-
-      const firstName = isArabic
-        ? child.firstNameAr || child.firstNameEn
-        : child.firstNameEn || child.firstNameAr;
-
-      return {
-        studentId: child.studentId,
-        name,
-        initial: (firstName ?? '').trim().charAt(0).toUpperCase(),
-        color: getCardColor(index).main,
-        classSection: getClassSectionParams(child, isArabic),
-        status: child.studentStatus,
-      };
-    });
+    return this.children().map(child => ({
+      studentId: child.studentId,
+      name: getFullName(child, isArabic),
+      initials: getInitials(child, isArabic),
+      avatarTone: (child.studentId % AVATAR_TONES) + 1,
+      classSection: getClassSectionParams(child, isArabic),
+      status: child.studentStatus,
+    }));
   });
 
   readonly hasManyChildren = computed(() => this.children().length > 1);

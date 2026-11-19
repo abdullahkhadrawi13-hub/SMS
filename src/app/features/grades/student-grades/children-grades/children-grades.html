@@ -71,8 +71,9 @@
             (click)="select(card.studentId)"
           >
 
-            <span class="avatar" [style.background]="card.color">
-              {{ card.initial }}
+            <!-- The shared avatar (styles.css: .data-avatar), like the Parent dashboard -->
+            <span class="data-avatar child-avatar" [attr.data-tone]="card.avatarTone" aria-hidden="true">
+              {{ card.initials }}
             </span>
 
             <span class="child-info">
