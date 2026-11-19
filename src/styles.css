@@ -1455,8 +1455,47 @@ button.data-link {
   --mat-paginator-container-text-size: var(--fs-13);
   --mat-paginator-container-size: var(--row);
   --mat-paginator-form-field-container-height: var(--h-control);
-  --mat-paginator-form-field-container-vertical-padding: 6px;
+  --mat-paginator-form-field-container-vertical-padding: 0px;
   --mat-paginator-select-trigger-text-size: var(--fs-13);
+
+  /* "Items per page" looks like the other fields (.field-box):
+     8px corners, a --control border, blue when focused */
+  --mat-form-field-outlined-container-shape: var(--r-control);
+  --mat-form-field-outlined-outline-color: var(--control);
+  --mat-form-field-outlined-hover-outline-color: var(--control);
+  --mat-form-field-outlined-focus-outline-color: var(--accent);
+  --mat-form-field-outlined-focus-outline-width: 1px;
+}
+
+/* 36px high (it was 38px: the line height of the text pushed it) */
+.data-card .mat-mdc-paginator-page-size-select .mat-mdc-form-field-infix {
+  min-height: var(--h-control);
+
+  display: flex;
+  align-items: center;
+}
+
+/* The expand_more arrow of the fields instead of Material's ▼ */
+.data-card .mat-mdc-paginator-page-size-select .mat-mdc-select-arrow {
+  width: 20px;
+  height: 20px;
+
+  background: var(--select-arrow) center / 20px 20px no-repeat;
+}
+
+.data-card .mat-mdc-paginator-page-size-select .mat-mdc-select-arrow svg {
+  display: none;
+}
+
+/* Focused: a blue border and the light blue ring of .field-box,
+   instead of a second ring drawn around the text inside the box */
+.data-card .mat-mdc-paginator-page-size-select.mat-focused .mat-mdc-text-field-wrapper {
+  border-radius: var(--r-control);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.data-card .mat-mdc-paginator-page-size-select .mat-mdc-select:focus-visible {
+  outline: none;
 }
 
 .data-card .mat-mdc-paginator-container {
