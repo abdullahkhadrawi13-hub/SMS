@@ -866,6 +866,11 @@ html {
   font-size: 18px;
 }
 
+/* Why the main button cannot be pressed yet: a hint, not an error */
+.fd-foot-note.is-hint {
+  color: var(--muted);
+}
+
 /* While saving the button keeps its colour and cannot be pressed again */
 .fd-submit.is-busy {
   pointer-events: none;

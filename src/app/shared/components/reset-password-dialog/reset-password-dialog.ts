@@ -211,6 +211,26 @@ export class ResetPasswordDialog {
     !this.isLocked()
   );
 
+  // Why "إعادة التعيين" cannot be pressed yet, written next to it
+  // (spec: a disabled button says why). Nothing while saving, and nothing
+  // when locked: the lock note above already says it, with the countdown.
+  readonly disabledReasonKey = computed<string | null>(() => {
+
+    if (this.isSubmitting() || this.isLocked()) {
+      return null;
+    }
+
+    if (this.tempPasswordTooShort()) {
+      return 'SHARED.RESET_PASSWORD.REASON_TEMP';
+    }
+
+    if (this.adminPassword().length === 0) {
+      return 'SHARED.RESET_PASSWORD.REASON_ADMIN';
+    }
+
+    return null;
+  });
+
 
   // ===== Done =====
 

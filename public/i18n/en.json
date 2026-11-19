@@ -872,6 +872,8 @@
       "LOCKED_TEXT": "Try again in",
       "CANCEL": "Cancel",
       "SUBMIT": "Reset password",
+      "REASON_ADMIN": "Enter your password to confirm.",
+      "REASON_TEMP": "The temporary password needs at least 8 characters.",
       "SUBMITTING": "Saving...",
       "DONE_TITLE": "The password was reset",
       "DONE_TEXT": "Give {{name}} these details to sign in.",
