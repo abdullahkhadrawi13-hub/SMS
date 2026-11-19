@@ -90,24 +90,6 @@ export const FULL_WEIGHT = 100;
 // The default passing mark of a new plan.
 export const DEFAULT_PASSING_MARK = 50;
 
-// The colors of the plan components, in their order.
-// Still used by the dots of the plan form and the teacher's assessments page;
-// the weight bar itself is gold (one gold part per component).
-// After the last one the colors start again.
-const COMPONENT_COLORS = [
-  '#5b8def', // soft blue
-  '#e8845c', // soft coral
-  '#4fb3a9', // soft teal
-  '#d16d9e', // soft rose
-  '#8c7ae6', // soft lavender
-  '#e3b448', // soft mustard
-];
-
-export function componentColor(index: number): string {
-  return COMPONENT_COLORS[index % COMPONENT_COLORS.length];
-}
-
-
 // The components of a plan, sorted by their order.
 export function sortComponents<T extends { order: number }>(components: T[]): T[] {
   return [...components].sort((a, b) => a.order - b.order);

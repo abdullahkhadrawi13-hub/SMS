@@ -1,7 +1,6 @@
 /* ================================
    One plan component, with the section's assessments under it
    A quiet card: white, 1px border, no shadow (spec: البطاقات).
-   The component's colour is only the small dot before its name.
    Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
@@ -19,7 +18,7 @@
 }
 
 
-/* ---------- Head: dot, name and type, weight ---------- */
+/* ---------- Head: name and type, weight ---------- */
 
 .card-head {
   display: flex;
@@ -28,16 +27,6 @@
   gap: 10px;
 
   padding: var(--sp-4) 20px var(--sp-3);
-}
-
-.dot {
-  flex-shrink: 0;
-
-  width: 10px;
-  height: 10px;
-  margin-block-start: 7px;
-
-  border-radius: 50%;
 }
 
 .head-text {

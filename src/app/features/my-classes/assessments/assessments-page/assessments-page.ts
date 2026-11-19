@@ -27,7 +27,6 @@ import { SubjectPlan } from '../../../../core/models/subject-plan';
 import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 import {
-  componentColor,
   formatNumber,
   sortComponents,
 } from '../../../subjects/shared/subjects-shared';
@@ -164,8 +163,8 @@ export class AssessmentsPage implements OnInit {
   // =========================
 
   // One group per plan component, in the components' order.
-  // The color is the component's position color (a small dot on its card),
-  // the same dot as in the Admin's plan form.
+  // (No colour per component: the spec dropped the component colours,
+  // they carry no meaning; the weight bar is gold.)
   readonly groups = computed<ComponentGroup[]>(() => {
 
     const plan = this.plan();
@@ -177,10 +176,9 @@ export class AssessmentsPage implements OnInit {
     const isArabic = this.isArabic();
     const assessments = this.assessments();
 
-    return sortComponents(plan.components).map((component, index) => ({
+    return sortComponents(plan.components).map(component => ({
       component,
       componentName: isArabic ? component.nameAr : component.nameEn,
-      color: componentColor(index),
       assessments: assessments
         .filter(a => a.subjectPlanComponentId === component.subjectPlanComponentId)
         .sort((a, b) => a.order - b.order),
@@ -364,7 +362,6 @@ export class AssessmentsPage implements OnInit {
       teacherAssignmentId: this.teacherAssignmentId,
       component: group.component,
       componentName: group.componentName,
-      color: group.color,
       nextOrder: lastOrder + 1,
     });
   }
@@ -377,7 +374,6 @@ export class AssessmentsPage implements OnInit {
       teacherAssignmentId: this.teacherAssignmentId,
       component: group.component,
       componentName: group.componentName,
-      color: group.color,
       assessment,
       nextOrder: assessment.order,
     });

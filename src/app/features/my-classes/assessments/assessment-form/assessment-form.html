@@ -9,9 +9,8 @@
       {{ (isEditMode ? 'MY_CLASSES.ASSESSMENTS.FORM.EDIT_TITLE' : 'MY_CLASSES.ASSESSMENTS.FORM.ADD_TITLE') | translate }}
     </h2>
 
-    <!-- The component the assessment goes under, with its colour -->
-    <p class="fd-head-sub af-component">
-      <span class="af-dot" [style.background]="data.color" aria-hidden="true"></span>
+    <!-- The component the assessment goes under -->
+    <p class="fd-head-sub">
       {{ 'MY_CLASSES.ASSESSMENTS.FORM.COMPONENT' | translate: { name: data.componentName, weight: componentWeight } }}
     </p>
   </div>
