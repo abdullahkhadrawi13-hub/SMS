@@ -364,7 +364,18 @@ button:focus-visible,
   }
 
   .field-action {
+    position: relative;
+
     height: 36px;
+    min-width: 36px;
+  }
+
+  /* The touch area is 44px; the button itself does not grow */
+  .field-action::after {
+    content: '';
+
+    position: absolute;
+    inset: -4px;
   }
 }
 
@@ -1512,6 +1523,31 @@ button.data-link {
   flex-shrink: 0;
 }
 
+/* The name is the item's link (the person's page or details): on the
+   phone its touch area covers the whole item (at least 68px high),
+   like the class cards, so the look does not change. The ⋮ button
+   stays above it. (The ::after is placed on .data-item, so the name's
+   overflow: hidden does not cut it.) */
+@media (max-width: 719.98px) {
+
+  .data-item {
+    position: relative;
+  }
+
+  .data-item .data-link::after {
+    content: '';
+
+    position: absolute;
+    inset: 0;
+  }
+
+  .data-item .data-actions {
+    position: relative;
+    z-index: 1;
+  }
+
+}
+
 @media (max-width: 719.98px) {
 
   .data-card .mat-mdc-paginator-container {
@@ -1824,6 +1860,12 @@ button.data-link {
 
 .user-menu-panel .mat-mdc-menu-item {
   min-height: 40px;
+}
+
+@media (max-width: 719.98px) {
+  .user-menu-panel .mat-mdc-menu-item {
+    min-height: var(--h-touch);
+  }
 }
 
 /* ---------- Reduced motion ---------- */

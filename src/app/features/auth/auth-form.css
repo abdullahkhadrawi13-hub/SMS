@@ -323,6 +323,24 @@
 }
 
 
+/* ---------- phone: show-password takes a 44px tap ---------- */
+
+@media (max-width: 719.98px) {
+
+  .password-toggle {
+    position: relative;
+  }
+
+  .password-toggle::after {
+    content: '';
+
+    position: absolute;
+    inset: -4px;
+  }
+
+}
+
+
 @media (prefers-reduced-motion: reduce) {
 
   .input-box,

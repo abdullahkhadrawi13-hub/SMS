@@ -128,15 +128,19 @@ input:focus {
 
   input {
     height: var(--h-touch);
+    padding-inline-end: var(--h-touch);
   }
 
   .search-icon {
     inset-inline-start: 12px;
   }
 
+  /* 44 × 44 to touch, the ✕ stays where it was */
   .clear-button {
-    width: 36px;
-    height: 36px;
+    inset-inline-end: 0;
+
+    width: var(--h-touch);
+    height: var(--h-touch);
   }
 
 }

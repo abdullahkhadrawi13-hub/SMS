@@ -43,6 +43,23 @@
   color: var(--text);
 }
 
+/* Phone: a 44px touch area (the link itself stays 20px high) */
+@media (max-width: 719.98px) {
+
+  .back-link {
+    position: relative;
+  }
+
+  .back-link::after {
+    content: '';
+
+    position: absolute;
+    inset-block: -12px;
+    inset-inline: -8px;
+  }
+
+}
+
 
 /* ---------- Page header ---------- */
 
