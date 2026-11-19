@@ -32,7 +32,7 @@
 
   "CHANGE_PASSWORD": {
     "TITLE": "Change Password",
-    "SUBTITLE": "You can change your password here",
+    "SUBTITLE": "You can change your password here.",
     "FIRST_LOGIN_TITLE": "Choose a new password",
     "FIRST_LOGIN_SUBTITLE": "The password you signed in with is temporary. Choose your own to start using the system.",
     "STEP_SIGN_IN": "Sign in",
@@ -109,7 +109,7 @@
 
   "PROFILE_DIALOG": {
     "TITLE": "Profile",
-    "SUBTITLE": "Your account information",
+    "SUBTITLE": "Your account information.",
     "CLOSE": "Close",
     "PERSONAL_INFO": "Personal Information",
     "PERSONAL_INFO_DESCRIPTION": "Your name and phone number as the administration entered them",
@@ -1270,11 +1270,11 @@
   "SUBJECTS": {
     "HEADER": {
       "TITLE": "Subjects",
-      "SUBTITLE": "Each class and section's subjects and teachers, by term",
+      "SUBTITLE": "Each class and section's subjects and teachers, by term.",
       "ADD": "Add Subject",
       "SUBTITLE_PLANS": "Assessment components, weights and passing mark for each subject in each class. Every section of the class follows the same plan.",
-      "SUBTITLE_ASSIGNMENTS": "Each section's subjects and teachers, by term",
-      "SUBTITLE_CATALOG": "Every subject taught at the school",
+      "SUBTITLE_ASSIGNMENTS": "Each section's subjects and teachers, by term.",
+      "SUBTITLE_CATALOG": "Every subject taught at the school.",
       "ADD_PLAN": "New Plan",
       "COPY_PLANS": "Copy from Earlier Term",
       "ADD_ASSIGNMENT": "Add subject to section"
@@ -1720,7 +1720,7 @@
   "ATTENDANCE": {
     "HEADER": {
       "TITLE": "Attendance",
-      "SUBTITLE": "Record and follow up daily student attendance"
+      "SUBTITLE": "Record and follow up daily student attendance."
     },
 
     "TABS": {
