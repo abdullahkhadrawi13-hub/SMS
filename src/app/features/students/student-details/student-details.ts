@@ -10,14 +10,6 @@ import { Student } from '../../../core/models/student';
 // (getArabicName, getEnglishName, getFullName, getInitials).
 
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-// The same student keeps the same colour as in the students list.
-const AVATAR_TONES = 6;
-
-export function getStudentAvatarTone(student: Student): number {
-  return (student.studentId % AVATAR_TONES) + 1;
-}
-
 
 // The class name comes with the student (classNameAr / classNameEn).
 // Falls back to the id if the names are missing.

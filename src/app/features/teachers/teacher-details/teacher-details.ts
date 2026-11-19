@@ -21,7 +21,8 @@ import {
   getArabicName,
   getEnglishName,
   getFullName,
-  getInitials
+  getInitials,
+  getAvatarTone
 } from '../../../shared/utils/person-name';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
@@ -33,8 +34,6 @@ export interface TeacherDetailsDialogData {
 }
 
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-const AVATAR_TONES = 6;
 
 
 // The teacher details dialog (navy & gold, 11 Nov 2026).
@@ -109,7 +108,7 @@ export class TeacherDetails {
       nameEn: getEnglishName(teacher),
       initials: getInitials(teacher, isArabic),
       // The same colour as in the teachers list.
-      avatarTone: (teacher.teacherId % AVATAR_TONES) + 1
+      avatarTone: getAvatarTone(teacher.teacherId)
     };
   });
 

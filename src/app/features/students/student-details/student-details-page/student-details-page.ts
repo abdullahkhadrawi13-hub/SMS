@@ -27,11 +27,10 @@ import { StudentGradesTab } from '../../../grades/student-grades/student-grades-
 import { Student } from '../../../../core/models/student';
 
 import {
-  getStudentAvatarTone,
   getStudentClassName,
   getStudentSectionName
 } from '../student-details';
-import { getFullName, getInitials } from '../../../../shared/utils/person-name';
+import { getFullName, getInitials, getAvatarTone } from '../../../../shared/utils/person-name';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
@@ -232,7 +231,7 @@ export class StudentDetailsPage {
     return {
       name: getFullName(student, isArabic),
       initials: getInitials(student, isArabic),
-      avatarTone: getStudentAvatarTone(student),
+      avatarTone: getAvatarTone(student.studentId),
       className: getStudentClassName(student, isArabic),
       sectionName: getStudentSectionName(student, isArabic),
     };

@@ -43,9 +43,6 @@ import { pluralKey } from '../../../shared/utils/plural';
 // How long the search waits after the last key before reloading the list.
 const SEARCH_DEBOUNCE_MS = 400;
 
-// The avatar colours (1–6), the same formula as the student table,
-// so "Reset password" shows the same avatar as the row.
-const AVATAR_TONES = 6;
 
 // The history state key of the step that opened the add / edit form.
 const FORM_STEP = 'studentForm';
@@ -59,6 +56,7 @@ import {
   ResetPasswordDialogData,
   ResetPasswordResult
 } from '../../../shared/components/reset-password-dialog/reset-password-dialog';
+import { getAvatarTone } from '../../../shared/utils/person-name';
 
 
 
@@ -785,7 +783,7 @@ export class StudentsPage {
         data: {
           user: student,
           // The same avatar colour as the table row
-          avatarTone: (student.studentId % AVATAR_TONES) + 1,
+          avatarTone: getAvatarTone(student.studentId),
           detail: {
             labelKey: 'STUDENTS.STUDENT_NUMBER',
             value: student.studentNumber

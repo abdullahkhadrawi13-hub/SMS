@@ -1,10 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Navbar } from './navbar/navbar';
 import { Sidebar } from './sidebar/sidebar';
 import { RouterOutlet } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../core/services/language';
 import { AttendanceAccessService } from '../../core/services/attendance-access';
@@ -20,7 +21,8 @@ export const PHONE_QUERY = '(max-width: 719.98px)';
     MatSidenavModule,
     Navbar,
     Sidebar,
-    RouterOutlet
+    RouterOutlet,
+    TranslatePipe
   ],
   templateUrl: './dashboard-layout.html',
   styleUrl: './dashboard-layout.css'
@@ -37,6 +39,9 @@ export class DashboardLayout implements OnInit {
 
   // Computer: always open. Phone: closed until the menu button is pressed.
   readonly sidebarOpened = signal(!this.isPhone());
+
+  // The page area (<main>), where "تخطَّ إلى المحتوى" sends the focus.
+  private readonly mainContent = viewChild.required<ElementRef<HTMLElement>>('mainContent');
 
   constructor() {
 
@@ -65,6 +70,14 @@ export class DashboardLayout implements OnInit {
   // The menu button of the navbar (phone only).
   openSidebar(): void {
     this.sidebarOpened.set(true);
+  }
+
+  // "تخطَّ إلى المحتوى": the next Tab goes to the first thing in the page.
+  // Handled here, not by the #main-content address, so the router does not
+  // see a new URL.
+  skipToContent(event: Event): void {
+    event.preventDefault();
+    this.mainContent().nativeElement.focus();
   }
 
   // A link in the sidebar was clicked. On the phone the sidebar closes,

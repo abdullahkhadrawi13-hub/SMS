@@ -22,12 +22,13 @@ import {
   getFirstName,
   getFullName,
   getInitials,
-  getShortName
+  getShortName,
+  getAvatarTone
 } from '../../../shared/utils/person-name';
 import { pluralKey } from '../../../shared/utils/plural';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
-import { getAvatarTone, getListSeparator } from '../parents';
+import { getListSeparator } from '../parents';
 
 
 // How many children are shown as chips in the "Children" column.

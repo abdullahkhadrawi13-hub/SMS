@@ -1,5 +1,8 @@
 <!-- A page that is not ready yet (the "قريبًا" links of the sidebar, and
-     any address that has no page). The shared empty state in its own card. -->
+     any address that has no page): the page name as its h1, like every
+     page, then the shared empty state in its own card. -->
+<app-page-header [title]="titleKey() | translate" />
+
 <app-state-card
   type="empty"
   icon="construction"

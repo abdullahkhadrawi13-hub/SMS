@@ -866,6 +866,11 @@ html {
   font-size: 18px;
 }
 
+/* Why the main button cannot be pressed yet: a hint, not an error */
+.fd-foot-note.is-hint {
+  color: var(--muted);
+}
+
 /* While saving the button keeps its colour and cannot be pressed again */
 .fd-submit.is-busy {
   pointer-events: none;
@@ -932,10 +937,19 @@ html {
   }
 
   .fd-foot {
+    flex-wrap: wrap;
     padding: var(--sp-3) var(--sp-4);
   }
 
+  /* The note gets its own line above the buttons, and only when it has
+     something to say: the number of fields to fix after pressing
+     Save / Add, or why the main button is disabled. Empty, it takes
+     no room (review report, question 2 — option A, 19 Nov 2026). */
   .fd-foot-note {
+    flex-basis: 100%;
+  }
+
+  .fd-foot-note:empty {
     display: none;
   }
 
@@ -1014,17 +1028,27 @@ html {
   min-width: 0;
 }
 
+/* No browser arrow (it looked different in every browser): the same
+   expand_more as the forms' select (.field-chevron), 8px from the end.
+   A <select> cannot hold an icon, so the arrow is a background image
+   (--select-arrow in tokens.css); its side follows the language. */
 .filter-select {
   height: var(--h-control);
   min-width: 150px;
 
   box-sizing: border-box;
-  padding-inline: 10px;
+  padding-inline: 10px 36px;
+
+  appearance: none;
 
   border: 1px solid var(--control);
   border-radius: var(--r-control);
 
   background-color: var(--surface);
+  background-image: var(--select-arrow);
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: calc(100% - 8px) 50%;
   color: var(--text);
 
   font-family: var(--font);
@@ -1033,6 +1057,10 @@ html {
   cursor: pointer;
 
   transition: border-color var(--dur), background-color var(--dur), color var(--dur);
+}
+
+[dir="rtl"] .filter-select {
+  background-position: 8px 50%;
 }
 
 /* A list with a longer text ("Section: choose a class first") */
@@ -1056,6 +1084,7 @@ html {
 .filter-select.is-active:hover {
   border-color: var(--accent);
   background-color: var(--accent-soft);
+  background-image: var(--select-arrow-on);
   color: var(--accent-ink);
 
   font-weight: 600;
@@ -1440,8 +1469,47 @@ button.data-link {
   --mat-paginator-container-text-size: var(--fs-13);
   --mat-paginator-container-size: var(--row);
   --mat-paginator-form-field-container-height: var(--h-control);
-  --mat-paginator-form-field-container-vertical-padding: 6px;
+  --mat-paginator-form-field-container-vertical-padding: 0px;
   --mat-paginator-select-trigger-text-size: var(--fs-13);
+
+  /* "Items per page" looks like the other fields (.field-box):
+     8px corners, a --control border, blue when focused */
+  --mat-form-field-outlined-container-shape: var(--r-control);
+  --mat-form-field-outlined-outline-color: var(--control);
+  --mat-form-field-outlined-hover-outline-color: var(--control);
+  --mat-form-field-outlined-focus-outline-color: var(--accent);
+  --mat-form-field-outlined-focus-outline-width: 1px;
+}
+
+/* 36px high (it was 38px: the line height of the text pushed it) */
+.data-card .mat-mdc-paginator-page-size-select .mat-mdc-form-field-infix {
+  min-height: var(--h-control);
+
+  display: flex;
+  align-items: center;
+}
+
+/* The expand_more arrow of the fields instead of Material's ▼ */
+.data-card .mat-mdc-paginator-page-size-select .mat-mdc-select-arrow {
+  width: 20px;
+  height: 20px;
+
+  background: var(--select-arrow) center / 20px 20px no-repeat;
+}
+
+.data-card .mat-mdc-paginator-page-size-select .mat-mdc-select-arrow svg {
+  display: none;
+}
+
+/* Focused: a blue border and the light blue ring of .field-box,
+   instead of a second ring drawn around the text inside the box */
+.data-card .mat-mdc-paginator-page-size-select.mat-focused .mat-mdc-text-field-wrapper {
+  border-radius: var(--r-control);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.data-card .mat-mdc-paginator-page-size-select .mat-mdc-select:focus-visible {
+  outline: none;
 }
 
 .data-card .mat-mdc-paginator-container {
@@ -1879,6 +1947,20 @@ button.data-link {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /* The loading spinner draws its arc with an animation, so without it
+     the arc shrank to a dot. It stays still at its longest arc instead
+     (the middle of Material's keyframes): a ring with a small gap,
+     next to its "جاري التحميل..." text. */
+  .mat-mdc-progress-spinner .mdc-circular-progress__circle-left .mdc-circular-progress__indeterminate-circle-graphic {
+    animation: none !important;
+    transform: rotate(130deg);
+  }
+
+  .mat-mdc-progress-spinner .mdc-circular-progress__circle-right .mdc-circular-progress__indeterminate-circle-graphic {
+    animation: none !important;
+    transform: rotate(-130deg);
   }
 }
 

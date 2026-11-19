@@ -1,5 +1,5 @@
 import { TeacherListDto } from '../../../core/models/teacher';
-import { getFullName, getInitials } from '../../../shared/utils/person-name';
+import { getFullName, getInitials, getAvatarTone } from '../../../shared/utils/person-name';
 
 // What the attendance officer components show for one teacher:
 // the full name and the avatar in the language of the page.
@@ -16,8 +16,6 @@ export interface OfficerTeacherView {
   avatarTone: number;
 }
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-const AVATAR_TONES = 6;
 
 // isArabic comes from the Language service, so a computed() that calls
 // this function updates as soon as the language changes.
@@ -32,6 +30,6 @@ export function toOfficerTeacherView(
     initials: getInitials(teacher, isArabic),
 
     // The same colour as in the teachers table.
-    avatarTone: (teacher.teacherId % AVATAR_TONES) + 1
+    avatarTone: getAvatarTone(teacher.teacherId)
   };
 }

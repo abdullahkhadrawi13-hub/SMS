@@ -216,6 +216,20 @@
   color: var(--nav-soon-ink);
 }
 
+/* The open "قريبًا" page: white like every active link (the grey was
+   only 4.0:1 on the active background). */
+.link.soon.active {
+  color: var(--nav-active-ink);
+}
+
+.link.soon.active mat-icon {
+  color: var(--nav-active-icon);
+}
+
+.link.soon.active .soon-tag {
+  color: var(--side-muted);
+}
+
 .soon-tag {
   flex-shrink: 0;
 

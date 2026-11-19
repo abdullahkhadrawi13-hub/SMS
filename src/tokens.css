@@ -94,6 +94,13 @@
   --btn-icon-offset: -2px;  /* pulls the 18px icon slightly towards the edge */
   --shade: #000000;         /* the hover layer that darkens a filled button */
 
+  /* the arrow of a <select> drawn by CSS (the filter lists, the paginator's
+     "items per page"): the same expand_more as the forms' .field-chevron,
+     in --faint, and in --accent-ink for a filter that is on
+     — added 19 Nov 2026 (review report 3.2) */
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%23636c7e' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
+  --select-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%231f4478' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
+
   /* motion */
   --dur: 150ms;
 }

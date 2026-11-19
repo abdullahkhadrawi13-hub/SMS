@@ -20,7 +20,7 @@ import {
 } from '../../shared/attendance-shared';
 import { DayBar } from '../../shared/day-bar/day-bar';
 import { SearchField } from '../../../../shared/components/search-field/search-field';
-import { getFullName, getInitials } from '../../../../shared/utils/person-name';
+import { getFullName, getInitials, getAvatarTone } from '../../../../shared/utils/person-name';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 
@@ -28,8 +28,6 @@ import { StatusBadge } from '../../../../shared/components/status-badge/status-b
 // (section ids are always above 0).
 const ALL_SECTIONS = 0;
 
-// Avatar colours: --avatar-1 ... --avatar-6 (the same as the students table).
-const AVATAR_TONES = 6;
 
 // A piece of text, marked when it matches the search (shown in <mark>).
 interface TextPart {
@@ -320,7 +318,7 @@ export class AbsenteesList {
         nameParts: this.highlight(name, words),
         numberParts: this.highlight(student.studentNumber, words),
         initials: getInitials(student, isArabic),
-        avatarTone: (student.studentId % AVATAR_TONES) + 1,
+        avatarTone: getAvatarTone(student.studentId),
         parents: student.parents.map(parent => ({
           parent,
           name: isArabic

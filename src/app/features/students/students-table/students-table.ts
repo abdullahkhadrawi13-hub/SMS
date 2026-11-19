@@ -14,7 +14,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Student, StudentStatus } from '../../../core/models/student';
 import { Language } from '../../../core/services/language';
 import { RangePaginatorIntl } from '../../../core/services/paginator-intl';
-import { getFullName, getInitials, getShortName } from '../../../shared/utils/person-name';
+import {
+  getFullName,
+  getInitials,
+  getShortName,
+  getAvatarTone
+} from '../../../shared/utils/person-name';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
@@ -30,8 +35,6 @@ export interface StudentRow extends Student {
 }
 
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-const AVATAR_TONES = 6;
 
 
 @Component({
@@ -138,7 +141,7 @@ export class StudentsTable {
       initials: getInitials(student, isArabic),
       classSection: this.getClassSection(student, isArabic),
       // The same colour for the same student, everywhere.
-      avatarTone: (student.studentId % AVATAR_TONES) + 1
+      avatarTone: getAvatarTone(student.studentId)
     }));
 
   });

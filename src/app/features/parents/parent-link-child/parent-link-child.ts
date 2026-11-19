@@ -22,10 +22,9 @@ import { Student } from '../../../core/models/student';
 
 import { StudentPicker } from '../student-picker/student-picker';
 import { RelationshipToggle } from '../relationship-toggle/relationship-toggle';
-import { getFullName, getInitials } from '../../../shared/utils/person-name';
+import { getFullName, getInitials, getAvatarTone } from '../../../shared/utils/person-name';
 import {
   findTakenRelationships,
-  getAvatarTone,
   getClassSection,
   isRelationshipTaken,
   NO_TAKEN_RELATIONSHIPS,

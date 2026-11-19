@@ -40,12 +40,11 @@ import { TeacherAssignment } from '../../../../core/models/teacher-assignment';
 
 import {
   formatNumber,
-  nameInitials,
   FULL_WEIGHT,
   getPlanStatus,
   PLAN_STATUS_BADGE,
   sortComponents,
-  SubjectsTab,
+  SubjectsTab
 } from '../../shared/subjects-shared';
 import { passingMarkValidator } from '../plan-validators';
 import { PlanWeightBar } from '../plan-weight-bar/plan-weight-bar';
@@ -58,6 +57,7 @@ import { PageHeader } from '../../../../shared/components/page-header/page-heade
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { PHONE_QUERY } from '../../../../layouts/dashboard-layout/dashboard-layout';
+import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
 
 
 // One component row of the table, with its names.
@@ -81,8 +81,6 @@ interface PlanSection {
 }
 
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css.
-const AVATAR_TONES = 6;
 
 
 // The page of one subject plan: /subjects/plans/:planId
@@ -357,8 +355,8 @@ export class PlanDetailsPage implements OnInit {
                 sectionName: isArabic ? a.sectionAr : a.sectionEn,
                 teacherName: name || a.teacherNumber,
                 isActive: a.isActive,
-                initials: nameInitials(name),
-                avatarTone: (a.teacherId % AVATAR_TONES) + 1,
+                initials: getInitialsFromFullName(name),
+                avatarTone: getAvatarTone(a.teacherId),
               };
             })
             .sort((a, b) => a.sectionName.localeCompare(b.sectionName));

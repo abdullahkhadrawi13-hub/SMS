@@ -212,8 +212,8 @@ export class GradesPage implements OnInit, LeaveConfirmation {
         .map(a => ({
           teacherAssignmentId: a.teacherAssignmentId,
           label: isArabic
-            ? `${a.subjectAr} · ${a.classNameAr} / ${a.sectionAr}`
-            : `${a.subjectEn} · ${a.classNameEn} / ${a.sectionEn}`,
+            ? `${a.subjectAr} · ${a.classNameAr} · ${a.sectionAr}`
+            : `${a.subjectEn} · ${a.classNameEn} · ${a.sectionEn}`,
           teacherName: '',
         }))
         .sort((a, b) => a.label.localeCompare(b.label));

@@ -188,20 +188,3 @@ export function getTermLabel(
     : name;
 }
 
-// Two initials from a full name, for an avatar, the same way as
-// getInitials() of shared/utils/person-name: first + family name letters,
-// joined with a zero-width non-joiner so Arabic letters stay apart.
-// (The teacher's name comes with an assignment as one string.)
-export function nameInitials(fullName: string): string {
-
-  const words = (fullName ?? '').trim().split(/\s+/).filter(Boolean);
-
-  if (words.length === 0) {
-    return '';
-  }
-
-  const first = words[0].charAt(0);
-  const last = words.length > 1 ? words[words.length - 1].charAt(0) : '';
-
-  return [first, last].filter(Boolean).join('\u200c').toUpperCase();
-}

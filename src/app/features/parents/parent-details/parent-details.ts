@@ -43,10 +43,11 @@ import {
   getEnglishName,
   getFirstName,
   getFullName,
-  getInitials
+  getInitials,
+  getAvatarTone
 } from '../../../shared/utils/person-name';
 import { pluralKey } from '../../../shared/utils/plural';
-import { getAvatarTone, getClassSection } from '../parents';
+import { getClassSection } from '../parents';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';

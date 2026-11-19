@@ -110,7 +110,7 @@
               </td>
             </ng-container>
 
-            <!-- Recorded / Students -->
+            <!-- Recorded: "15 من 19", like the rest of the system -->
             <ng-container matColumnDef="recorded">
               <th mat-header-cell *matHeaderCellDef>
                 {{ 'ATTENDANCE.DAILY_SUMMARY.TABLE.RECORDED' | translate }}
@@ -119,7 +119,10 @@
               <td mat-cell *matCellDef="let row">
                 <div class="recorded-cell">
                   <span class="recorded-text tabular">
-                    {{ row.section.recordedCount }} / {{ row.section.studentCount }}
+                    {{
+                      'ATTENDANCE.DAILY_SUMMARY.TABLE.RECORDED_VALUE'
+                        | translate: { recorded: row.section.recordedCount, total: row.section.studentCount }
+                    }}
                   </span>
 
                   <div class="progress small" aria-hidden="true">

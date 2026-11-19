@@ -3,7 +3,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../../core/services/language';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
-import { getFirstName, getFullName, getInitials } from '../../../../shared/utils/person-name';
+import {
+  getFirstName,
+  getFullName,
+  getInitials,
+  getAvatarTone
+} from '../../../../shared/utils/person-name';
 import { pluralKey } from '../../../../shared/utils/plural';
 
 import { DashboardNumbers } from '../../shared/dashboard-numbers/dashboard-numbers';
@@ -11,9 +16,6 @@ import { DashboardNumber, ParentChild } from '../../shared/dashboard.models';
 import { joinNames } from '../../shared/dashboard-names';
 
 
-// The avatar colours: --avatar-1 ... --avatar-6 in tokens.css
-// (the same rule as the students table: studentId % 6 + 1).
-const AVATAR_TONES = 6;
 
 
 // One child on the Parent dashboard: the avatar and name, the class,
@@ -46,7 +48,7 @@ export class ChildCard {
   readonly name = computed(() => getFullName(this.child(), this.isArabic()));
   readonly firstName = computed(() => getFirstName(this.child(), this.isArabic()));
   readonly initials = computed(() => getInitials(this.child(), this.isArabic()));
-  readonly avatarTone = computed(() => (this.child().studentId % AVATAR_TONES) + 1);
+  readonly avatarTone = computed(() => getAvatarTone(this.child().studentId));
 
   // "الثامن · ب · 2026000154" / "Grade 8 · B · 2026000154"
   readonly placement = computed(() => {

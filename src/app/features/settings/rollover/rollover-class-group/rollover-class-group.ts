@@ -14,17 +14,16 @@ import { StatusBadge } from '../../../../shared/components/status-badge/status-b
 import { pluralKey } from '../../../../shared/utils/plural';
 
 import {
-  avatarTone,
   differsFromSuggestion,
   graduatesIfPromoted,
   ClassGroupView,
   isDecidable,
-  nameInitials,
   RolloverDecision,
   RolloverDecisions,
   SUGGESTION_STYLE,
   SuggestionStyle
 } from '../rollover';
+import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
 
 
 // A decision changed by the Admin.
@@ -193,11 +192,11 @@ export class RolloverClassGroup {
   }
 
   avatarTone(student: RolloverStudent): number {
-    return avatarTone(student.studentId);
+    return getAvatarTone(student.studentId);
   }
 
   initials(student: RolloverStudent): string {
-    return nameInitials(this.studentName(student));
+    return getInitialsFromFullName(this.studentName(student));
   }
 
   onDecision(student: RolloverStudent, decision: RolloverDecision): void {
