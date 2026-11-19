@@ -126,10 +126,13 @@ export class Navbar {
 
   openChangePassword(): void {
     this.dialog.open(ChangePassword, {
-      width: '500px',
+      width: '520px',
       maxWidth: '95vw',
+      maxHeight: '90vh',
       autoFocus: false,
-      panelClass: 'change-password-dialog'
+      // Shared dialog panel (styles.css): full screen on the phone
+      panelClass: 'form-dialog',
+      direction: this.language.currentDirection()
     });
   }
 }
