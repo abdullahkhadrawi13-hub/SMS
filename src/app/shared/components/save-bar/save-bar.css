@@ -179,6 +179,8 @@
 /* ================================
    Phone (under 720px)
    Full width, stuck to the bottom of the screen, no corners.
+   Two rows: the dot and the text on the first (the title on one line),
+   Undo and Save under it, sharing the width equally.
    The line under the title is hidden, unless it says why Save
    is disabled.
    ================================ */
@@ -195,7 +197,10 @@
   }
 
   .save-bar {
-    padding: var(--sp-2) var(--sp-4);
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+
+    padding: var(--sp-3) var(--sp-4);
 
     border-inline: 0;
     border-block-end: 0;
@@ -206,9 +211,16 @@
     display: none;
   }
 
+  /* The buttons go to their own row under the text */
+  .save-bar-actions {
+    flex: 1 1 100%;
+  }
+
   .save-bar-actions button {
     --mat-button-text-container-height: var(--h-touch);
     --mat-button-filled-container-height: var(--h-touch);
+
+    flex: 1;
   }
 
 }
