@@ -824,6 +824,7 @@
   },
 
   "SHARED": {
+    "SKIP_TO_CONTENT": "تخطَّ إلى المحتوى",
     "ACCOUNT": {
       "STATUS": "حالة الحساب",
       "ACTIVE": "فعال",

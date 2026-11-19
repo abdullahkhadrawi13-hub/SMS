@@ -3,6 +3,12 @@
      language changes (right in Arabic, left in English). -->
 <div class="dashboard-layout" [dir]="languageService.getDirection()">
 
+  <!-- Keyboard: the first Tab shows this link, and Enter jumps over the
+       sidebar links straight to the page. Hidden until it has focus. -->
+  <a class="skip-link" href="#main-content" (click)="skipToContent($event)">
+    {{ 'SHARED.SKIP_TO_CONTENT' | translate }}
+  </a>
+
   <mat-sidenav-container class="layout-container">
 
     <!-- Sidebar
@@ -33,7 +39,7 @@
       </app-navbar>
 
       <!-- Content: the only place with the page padding -->
-      <main class="content-area">
+      <main class="content-area" id="main-content" tabindex="-1" #mainContent>
         <router-outlet></router-outlet>
       </main>
 
