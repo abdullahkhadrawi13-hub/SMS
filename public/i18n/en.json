@@ -2166,6 +2166,7 @@
         "FIXED": "Fixed component of the subject plan",
         "MISSING": "No mark yet (not counted as zero)",
         "HISTORY": "Mark history: point at a saved mark, then click the icon",
+    "HISTORY_TOUCH": "Mark history: tap the icon next to a saved mark",
         "KEYS": "Enter for the next student, Tab for the next assessment"
       },
       "HISTORY": {

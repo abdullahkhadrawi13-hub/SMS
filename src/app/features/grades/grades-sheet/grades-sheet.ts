@@ -75,6 +75,10 @@ interface CellError {
 // bottom sheet instead of a menu.
 const NARROW_SCREEN = '(max-width: 719.98px)';
 
+// A touch screen (no hover): the history button always shows,
+// and the legend says "tap" instead of "point at".
+const TOUCH_SCREEN = '(hover: none)';
+
 
 // The grade sheet: title, counters, notes and the marks table.
 //
@@ -120,12 +124,24 @@ export class GradesSheet {
   // Passed to the bottom sheet, so it can use the page's GradeHistoryCache.
   private readonly viewContainerRef = inject(ViewContainerRef);
 
+  private readonly breakpointObserver = inject(BreakpointObserver);
+
   // true on a narrow screen: the history opens as a bottom sheet.
   readonly isNarrow = toSignal(
-    inject(BreakpointObserver)
+    this.breakpointObserver
       .observe(NARROW_SCREEN)
       .pipe(map(state => state.matches)),
     { initialValue: false }
+  );
+
+  // The legend line about the history button.
+  readonly historyLegendKey = toSignal(
+    this.breakpointObserver
+      .observe(TOUCH_SCREEN)
+      .pipe(map(state => state.matches
+        ? 'GRADES.SHEET.LEGEND.HISTORY_TOUCH'
+        : 'GRADES.SHEET.LEGEND.HISTORY')),
+    { initialValue: 'GRADES.SHEET.LEGEND.HISTORY' }
   );
 
 
