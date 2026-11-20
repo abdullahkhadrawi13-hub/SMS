@@ -1,37 +1,29 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../../core/services/language';
+import { StudentDashboardCard } from '../../../../core/models/dashboard';
+import { StudentStatus } from '../../../../core/models/student';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
-import {
-  getFirstName,
-  getFullName,
-  getInitials,
-  getAvatarTone
-} from '../../../../shared/utils/person-name';
-import { pluralKey } from '../../../../shared/utils/plural';
+import { StudentStatusBadge } from '../../../../shared/components/student-status/student-status';
+import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
 
 import { DashboardNumbers } from '../../shared/dashboard-numbers/dashboard-numbers';
-import { DashboardNumber, ParentChild } from '../../shared/dashboard.models';
-import { joinNames } from '../../shared/dashboard-names';
+import { LatestMarks } from '../../shared/latest-marks/latest-marks';
+import { DashboardNumber } from '../../shared/dashboard.models';
+import { attendanceNumbers, isAbsentToday } from '../../shared/attendance-numbers';
 
 
-
-
-// One child on the Parent dashboard: the avatar and name, the class,
-// section and student number, "غياب اليوم" when the child is absent today,
-// then the child's numbers this term (passed, failed, incomplete, days absent)
-// and a link to the child's grades.
-//
-// For now the link has no action: it gets its route (the parent's grades
-// page on this child) when the dashboard is connected to the backend.
+// One child on the Parent dashboard (a card of GET /api/dashboard/parent/me):
+// the avatar and name, the class, section and student number,
+// "غياب اليوم" when the child's last absence is today, the current term's
+// attendance numbers, the newest 3 marks, and a link to the child's grades.
+// A former child (graduated, inactive, transferred) shows only the head
+// with the student status, without numbers or marks.
 @Component({
   selector: 'app-child-card',
-  imports: [
-    TranslatePipe,
-    StatusBadge,
-    DashboardNumbers,
-  ],
+  imports: [TranslatePipe, RouterLink, StatusBadge, StudentStatusBadge, DashboardNumbers, LatestMarks],
   templateUrl: './child-card.html',
   styleUrl: './child-card.css',
 })
@@ -39,62 +31,27 @@ export class ChildCard {
 
   private readonly language = inject(Language);
 
-  readonly child = input.required<ParentChild>();
+  readonly child = input.required<StudentDashboardCard>();
 
-  private readonly isArabic = computed(
-    () => this.language.currentDirection() === 'rtl'
-  );
+  private readonly isArabic = computed(() => this.language.currentDirection() === 'rtl');
 
-  readonly name = computed(() => getFullName(this.child(), this.isArabic()));
-  readonly firstName = computed(() => getFirstName(this.child(), this.isArabic()));
-  readonly initials = computed(() => getInitials(this.child(), this.isArabic()));
+  readonly isCurrent = computed(() => this.child().studentStatus === StudentStatus.Active);
+  readonly absentToday = computed(() => isAbsentToday(this.child()));
+
+  readonly name = computed(() => this.isArabic() ? this.child().studentNameAr : this.child().studentNameEn);
+  readonly firstName = computed(() => this.name().split(' ')[0]);
+  readonly initials = computed(() => getInitialsFromFullName(this.name()));
   readonly avatarTone = computed(() => getAvatarTone(this.child().studentId));
 
-  // "الثامن · ب · 2026000154" / "Grade 8 · B · 2026000154"
+  // "الصف الثامن · ب · 2026000154" / "Grade 8 · B · 2026000154"
   readonly placement = computed(() => {
     const child = this.child();
-
     return this.isArabic()
-      ? `${child.classNameAr} · ${child.sectionNameAr} · ${child.studentNumber}`
-      : `${child.classNameEn} · ${child.sectionNameEn} · ${child.studentNumber}`;
+      ? `${child.classNameAr} · ${child.sectionAr} · ${child.studentNumber}`
+      : `${child.classNameEn} · ${child.sectionEn} · ${child.studentNumber}`;
   });
 
-  readonly numbers = computed<DashboardNumber[]>(() => {
-    const child = this.child();
-    const isArabic = this.isArabic();
-
-    const failedNumber: DashboardNumber = child.failedSubjects.length > 0
-      ? {
-        labelKey: 'DASHBOARD.PARENT.NUMBERS.FAILED',
-        value: child.failedCount,
-        isBad: true,
-        captionText: joinNames(child.failedSubjects.map(subject => isArabic ? subject.nameAr : subject.nameEn), isArabic),
-      }
-      : {
-        labelKey: 'DASHBOARD.PARENT.NUMBERS.FAILED',
-        value: child.failedCount,
-        isBad: child.failedCount > 0,
-        captionKey: 'DASHBOARD.PARENT.NUMBERS.FAILED_NONE',
-      };
-
-    return [
-      {
-        labelKey: 'DASHBOARD.PARENT.NUMBERS.PASSED',
-        value: child.passedCount,
-        captionKey: pluralKey('DASHBOARD.PARENT.NUMBERS.OF_SUBJECTS', child.subjectCount),
-        captionParams: { count: child.subjectCount },
-      },
-      failedNumber,
-      {
-        labelKey: 'DASHBOARD.PARENT.NUMBERS.INCOMPLETE',
-        value: child.incompleteCount,
-        captionKey: 'DASHBOARD.PARENT.NUMBERS.INCOMPLETE_CAPTION',
-      },
-      {
-        labelKey: 'DASHBOARD.PARENT.NUMBERS.ABSENT',
-        value: child.absentDays,
-        captionKey: 'DASHBOARD.PARENT.NUMBERS.ABSENT_CAPTION',
-      },
-    ];
-  });
+  readonly numbers = computed<DashboardNumber[]>(() =>
+    attendanceNumbers(this.child(), this.isArabic(), false)
+  );
 }

@@ -1,4 +1,4 @@
-<section class="card" [attr.aria-label]="name()">
+<section class="card" [class.former]="!isCurrent()" [attr.aria-label]="name()">
 
   <div class="child-head">
     <span class="data-avatar child-avatar" [attr.data-tone]="avatarTone()" aria-hidden="true">{{ initials() }}</span>
@@ -8,22 +8,42 @@
       <span class="child-placement tabular">{{ placement() }}</span>
     </div>
 
-    @if (child().isAbsentToday) {
+    @if (!isCurrent()) {
+      <app-student-status [status]="child().studentStatus" />
+    } @else if (absentToday()) {
       <app-status-badge tone="bad">{{ 'DASHBOARD.PARENT.ABSENT_TODAY' | translate }}</app-status-badge>
     }
   </div>
 
-  <app-dashboard-numbers
-    [items]="numbers()"
-    [embedded]="true"
-    ariaKey="DASHBOARD.PARENT.NUMBERS.ARIA"
-  />
+  @if (isCurrent() && !child().currentTerm) {
 
-  <!-- No action until the dashboard is connected to the backend -->
-  <div class="card-foot">
-    <button type="button" class="text-link">
-      {{ 'DASHBOARD.PARENT.CHILD_GRADES' | translate: { name: firstName() } }}
-    </button>
-  </div>
+    <!-- No current term: no attendance and no marks to show -->
+    <p class="no-term">{{ 'DASHBOARD.NO_TERM' | translate }}</p>
+
+  } @else if (isCurrent()) {
+
+    <app-dashboard-numbers
+      [items]="numbers()"
+      [embedded]="true"
+      ariaKey="DASHBOARD.ATTENDANCE_NUMBERS.ARIA"
+    />
+
+    <div class="marks">
+      <h3 class="marks-title">{{ 'DASHBOARD.PARENT.LATEST_MARKS' | translate }}</h3>
+
+      @if (child().latestMarks.length === 0) {
+        <p class="marks-empty">{{ 'DASHBOARD.PARENT.NO_MARKS' | translate }}</p>
+      } @else {
+        <app-latest-marks [marks]="child().latestMarks" [limit]="3" />
+      }
+    </div>
+
+    <div class="card-foot">
+      <a class="text-link" routerLink="/grades" [queryParams]="{ child: child().studentId }">
+        {{ 'DASHBOARD.PARENT.CHILD_GRADES' | translate: { name: firstName() } }}
+      </a>
+    </div>
+
+  }
 
 </section>

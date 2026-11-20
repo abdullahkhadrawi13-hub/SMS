@@ -1,31 +1,57 @@
 <app-page-header
   [title]="'DASHBOARD.TITLE' | translate"
-  [subtitle]="'DASHBOARD.PARENT.SUBTITLE' | translate"
+  [subtitle]="subtitle() ? (subtitle()!.key | translate: subtitle()!.params) : ''"
 />
 
+@if (errorMessage()) {
 
-<!-- TEMPORARY: removed together with dashboard-sample-data.ts -->
-<p class="sample-note" role="note">
-  <mat-icon aria-hidden="true">info</mat-icon>
-  <span>{{ 'DASHBOARD.SAMPLE_NOTE' | translate }}</span>
-</p>
+  <app-state-card
+    type="error"
+    [message]="errorMessage()"
+    [showRetry]="errorRetryable()"
+    (retry)="load()"
+  />
 
+} @else if (isLoading() || !isLoaded()) {
+
+  <app-state-card type="loading" [message]="'DASHBOARD.LOADING' | translate" />
+
+} @else {
 
 <div class="dashboard">
 
   <section class="dashboard-main children" aria-labelledby="children-title">
     <h2 id="children-title" class="section-title">{{ 'DASHBOARD.PARENT.CHILDREN' | translate }}</h2>
 
-    @for (child of data.children; track child.studentId) {
+    @for (child of currentChildren(); track child.studentId) {
       <app-child-card [child]="child" />
     } @empty {
       <p class="section-empty">{{ 'DASHBOARD.PARENT.NO_CHILDREN' | translate }}</p>
+    }
+
+    @if (formerChildren().length > 0) {
+      <button
+        type="button"
+        class="former-toggle"
+        [attr.aria-expanded]="showFormer()"
+        (click)="showFormer.set(!showFormer())"
+      >
+        <mat-icon aria-hidden="true">{{ showFormer() ? 'expand_less' : 'expand_more' }}</mat-icon>
+        {{ (showFormer() ? 'DASHBOARD.PARENT.HIDE_FORMER' : 'DASHBOARD.PARENT.SHOW_FORMER') | translate: { count: formerChildren().length } }}
+      </button>
+
+      @if (showFormer()) {
+        @for (child of formerChildren(); track child.studentId) {
+          <app-child-card [child]="child" />
+        }
+      }
     }
   </section>
 
   <div class="dashboard-side">
     <app-notices-card [notices]="notices()" />
-    <app-current-term-card [data]="term" [showYearsLink]="false" />
   </div>
 
 </div>
+
+}

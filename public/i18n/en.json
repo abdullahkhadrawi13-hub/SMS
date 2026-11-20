@@ -131,6 +131,30 @@
     "ADD_STUDENT": "Add Student",
     "RECORD_ATTENDANCE": "Record attendance",
     "SAMPLE_NOTE": "Sample data for display only. It is replaced by the real numbers when the dashboard is connected to the backend.",
+    "LOADING": "Loading the dashboard...",
+    "TERM_SUBTITLE": "{{term}} · {{year}}",
+    "NO_TERM": "There is no current term.",
+    "MARKS": {
+      "EDITED": "Edited"
+    },
+    "ATTENDANCE_NUMBERS": {
+      "ARIA": "Attendance this term",
+      "PRESENT": "Days present",
+      "OF_DAYS": {
+        "ZERO": "No days recorded yet",
+        "ONE": "Of 1 recorded day",
+        "TWO": "Of 2 recorded days",
+        "FEW": "Of {{count}} recorded days",
+        "MANY": "Of {{count}} recorded days",
+        "OTHER": "Of {{count}} recorded days"
+      },
+      "ABSENT": "Days absent",
+      "ABSENT_LAST": "Latest on {{date}}",
+      "ABSENT_NONE": "No absences this term",
+      "RATE": "Attendance rate",
+      "THIS_TERM": "This term",
+      "NONE_YET": "No attendance recorded yet"
+    },
     "TODAY": {
       "TITLE": "Today's attendance",
       "UPDATED": "Updated {{time}}",
@@ -323,52 +347,18 @@
       }
     },
     "STUDENT": {
-      "SUBTITLE": "Your grades this term, your information, and the current term.",
-      "GRADES": {
-        "TITLE": "My grades this term",
-        "SUBJECTS": {
-          "ZERO": "No subjects",
-          "ONE": "1 subject",
-          "TWO": "2 subjects",
-          "FEW": "{{count}} subjects",
-          "MANY": "{{count}} subjects",
-          "OTHER": "{{count}} subjects"
-        },
-        "EMPTY": "You have no subjects this term yet.",
-        "HEAD_SUBJECT": "Subject",
-        "HEAD_ENTERED": "Assessments entered",
-        "HEAD_TOTAL": "Total",
-        "HEAD_RESULT": "Result",
-        "ENTERED": {
-          "ZERO": "No assessments yet",
-          "ONE": "{{entered}} of 1 assessment",
-          "TWO": "{{entered}} of 2 assessments",
-          "FEW": "{{entered}} of {{count}} assessments",
-          "MANY": "{{entered}} of {{count}} assessments",
-          "OTHER": "{{entered}} of {{count}} assessments"
-        },
-        "NO_TOTAL": "No total until every assessment is entered",
-        "PASSED": "Passed",
-        "FAILED": "Failed",
-        "INCOMPLETE": "Incomplete",
-        "ALL": "All my grades"
-      },
       "INFO": {
         "TITLE": "My information",
         "NUMBER": "Student number",
         "CLASS": "Class and section",
         "STATUS": "Student status"
       },
-      "NUMBERS": {
-        "SUBJECTS": "Subjects",
-        "SUBJECTS_CAPTION": "In the {{term}}",
-        "PASSED": "Passed",
-        "PASSED_CAPTION": "Every assessment entered",
-        "FAILED": "Failed",
-        "FAILED_NONE": "None",
-        "ABSENT": "Days absent",
-        "ABSENT_LAST": "Latest on {{date}}",
-        "ABSENT_NONE": "No absences this term"
+      "NO_TERM_MESSAGE": "Your marks and attendance will show here once the school sets the current term.",
+      "MARKS": {
+        "TITLE": "My latest marks",
+        "META": "The newest marks this term",
+        "EMPTY": "No marks have been entered for you this term yet.",
+        "ALL": "All my grades"
       }
     },
     "PARENT": {
@@ -377,30 +367,13 @@
       "NO_CHILDREN": "No children are linked to your account. Contact the school administration.",
       "ABSENT_TODAY": "Absent today",
       "CHILD_GRADES": "{{name}}'s grades",
-      "NUMBERS": {
-        "ARIA": "Current term numbers",
-        "PASSED": "Passed",
-        "OF_SUBJECTS": {
-          "ZERO": "No subjects",
-          "ONE": "Of 1 subject",
-          "TWO": "Of 2 subjects",
-          "FEW": "Of {{count}} subjects",
-          "MANY": "Of {{count}} subjects",
-          "OTHER": "Of {{count}} subjects"
-        },
-        "FAILED": "Failed",
-        "FAILED_NONE": "None",
-        "INCOMPLETE": "Incomplete",
-        "INCOMPLETE_CAPTION": "Marks not entered yet",
-        "ABSENT": "Days absent",
-        "ABSENT_CAPTION": "This term"
-      },
+      "LATEST_MARKS": "Latest marks",
+      "NO_MARKS": "No marks this term yet.",
+      "SHOW_FORMER": "Former children ({{count}})",
+      "HIDE_FORMER": "Hide former children",
       "NOTICES": {
         "ABSENT": "{{name}} is absent today",
-        "ABSENT_LINE": "Marked on today's attendance sheet",
-        "FAILED": "{{name}} · {{subject}} below the passing mark",
-        "FAILED_LINE": "{{total}} of 100; the passing mark is {{passing}}",
-        "GRADES": "Grades"
+        "ABSENT_LINE": "Marked on today's attendance sheet"
       }
     }
   },

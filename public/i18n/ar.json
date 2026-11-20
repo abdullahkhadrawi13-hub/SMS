@@ -131,6 +131,30 @@
     "ADD_STUDENT": "إضافة طالب",
     "RECORD_ATTENDANCE": "تسجيل الحضور",
     "SAMPLE_NOTE": "بيانات تجريبية للعرض فقط. تُستبدل بالأرقام الحقيقية عند ربط اللوحة بالـ backend.",
+    "LOADING": "جاري تحميل لوحة التحكم...",
+    "TERM_SUBTITLE": "{{term}} · {{year}}",
+    "NO_TERM": "لا يوجد فصل دراسي حالي.",
+    "MARKS": {
+      "EDITED": "معدّلة"
+    },
+    "ATTENDANCE_NUMBERS": {
+      "ARIA": "حضور الفصل الحالي",
+      "PRESENT": "أيام الحضور",
+      "OF_DAYS": {
+        "ZERO": "لا أيام مسجّلة بعد",
+        "ONE": "من يوم واحد مسجّل",
+        "TWO": "من يومين مسجّلين",
+        "FEW": "من {{count}} أيام مسجّلة",
+        "MANY": "من {{count}} يومًا مسجّلًا",
+        "OTHER": "من {{count}} يوم مسجّل"
+      },
+      "ABSENT": "أيام الغياب",
+      "ABSENT_LAST": "آخرها {{date}}",
+      "ABSENT_NONE": "لا غياب هذا الفصل",
+      "RATE": "نسبة الحضور",
+      "THIS_TERM": "هذا الفصل",
+      "NONE_YET": "لم يُسجَّل حضور بعد"
+    },
     "TODAY": {
       "TITLE": "حضور اليوم",
       "UPDATED": "آخر تحديث {{time}}",
@@ -323,52 +347,18 @@
       }
     },
     "STUDENT": {
-      "SUBTITLE": "علاماتك هذا الفصل، ومعلوماتك، والفصل الحالي.",
-      "GRADES": {
-        "TITLE": "علاماتي هذا الفصل",
-        "SUBJECTS": {
-          "ZERO": "لا مواد",
-          "ONE": "مادة واحدة",
-          "TWO": "مادتان",
-          "FEW": "{{count}} مواد",
-          "MANY": "{{count}} مادة",
-          "OTHER": "{{count}} مادة"
-        },
-        "EMPTY": "لا توجد مواد لك في هذا الفصل بعد.",
-        "HEAD_SUBJECT": "المادة",
-        "HEAD_ENTERED": "التقييمات المُدخلة",
-        "HEAD_TOTAL": "المجموع",
-        "HEAD_RESULT": "النتيجة",
-        "ENTERED": {
-          "ZERO": "لا تقييمات بعد",
-          "ONE": "{{entered}} من تقييم واحد",
-          "TWO": "{{entered}} من تقييمين",
-          "FEW": "{{entered}} من {{count}} تقييمات",
-          "MANY": "{{entered}} من {{count}} تقييمًا",
-          "OTHER": "{{entered}} من {{count}} تقييم"
-        },
-        "NO_TOTAL": "لا مجموع قبل إدخال كل التقييمات",
-        "PASSED": "ناجح",
-        "FAILED": "راسب",
-        "INCOMPLETE": "غير مكتمل",
-        "ALL": "كل علاماتي"
-      },
       "INFO": {
         "TITLE": "معلوماتي",
         "NUMBER": "الرقم المدرسي",
         "CLASS": "الصف والشعبة",
         "STATUS": "وضع الطالب"
       },
-      "NUMBERS": {
-        "SUBJECTS": "المواد",
-        "SUBJECTS_CAPTION": "في {{term}}",
-        "PASSED": "ناجح",
-        "PASSED_CAPTION": "كل تقييماتها مُدخلة",
-        "FAILED": "راسب",
-        "FAILED_NONE": "لا مواد",
-        "ABSENT": "أيام الغياب",
-        "ABSENT_LAST": "آخرها {{date}}",
-        "ABSENT_NONE": "لا غياب هذا الفصل"
+      "NO_TERM_MESSAGE": "ستظهر علاماتك وحضورك هنا عندما تحدد إدارة المدرسة الفصل الحالي.",
+      "MARKS": {
+        "TITLE": "آخر علاماتي",
+        "META": "أحدث العلامات في هذا الفصل",
+        "EMPTY": "لم تُدخل لك علامات في هذا الفصل بعد.",
+        "ALL": "كل علاماتي"
       }
     },
     "PARENT": {
@@ -377,30 +367,13 @@
       "NO_CHILDREN": "لا يوجد أبناء مرتبطون بحسابك. تواصل مع إدارة المدرسة.",
       "ABSENT_TODAY": "غياب اليوم",
       "CHILD_GRADES": "علامات {{name}}",
-      "NUMBERS": {
-        "ARIA": "أرقام الفصل الحالي",
-        "PASSED": "ناجح",
-        "OF_SUBJECTS": {
-          "ZERO": "لا مواد",
-          "ONE": "من مادة واحدة",
-          "TWO": "من مادتين",
-          "FEW": "من {{count}} مواد",
-          "MANY": "من {{count}} مادة",
-          "OTHER": "من {{count}} مادة"
-        },
-        "FAILED": "راسب",
-        "FAILED_NONE": "لا مواد",
-        "INCOMPLETE": "غير مكتمل",
-        "INCOMPLETE_CAPTION": "تقييمات لم تُدخل بعد",
-        "ABSENT": "أيام الغياب",
-        "ABSENT_CAPTION": "هذا الفصل"
-      },
+      "LATEST_MARKS": "آخر العلامات",
+      "NO_MARKS": "لا علامات في هذا الفصل بعد.",
+      "SHOW_FORMER": "الأبناء السابقون ({{count}})",
+      "HIDE_FORMER": "إخفاء الأبناء السابقين",
       "NOTICES": {
         "ABSENT": "غياب {{name}} اليوم",
-        "ABSENT_LINE": "مسجّل في كشف حضور اليوم",
-        "FAILED": "{{name}} · {{subject}} دون علامة النجاح",
-        "FAILED_LINE": "{{total}} من 100، وعلامة النجاح {{passing}}",
-        "GRADES": "العلامات"
+        "ABSENT_LINE": "مسجّل في كشف حضور اليوم"
       }
     }
   },

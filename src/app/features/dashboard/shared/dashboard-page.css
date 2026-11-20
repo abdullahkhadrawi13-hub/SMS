@@ -110,3 +110,38 @@
 
   font-size: var(--fs-14);
 }
+
+/* Parent: "الأبناء السابقون" — a text button under the current children */
+.former-toggle {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+
+  gap: var(--sp-1);
+
+  min-block-size: var(--h-control);
+  padding: 0;
+
+  border: 0;
+
+  background: none;
+  color: var(--accent-ink);
+
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.former-toggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.former-toggle:focus-visible {
+  border-radius: 2px;
+
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

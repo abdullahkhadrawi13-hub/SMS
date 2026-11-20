@@ -76,7 +76,7 @@
 }
 
 
-/* Phone: a 2 × 2 grid */
+/* Phone: a 2 × 2 grid (four numbers) */
 @media (max-width: 719.98px) {
 
   .stats {
@@ -95,5 +95,27 @@
   /* the lines after the first have a line above them */
   .stat:nth-child(n + 3) {
     border-block-start: 1px solid var(--rule);
+  }
+}
+
+
+/* Phone, three numbers (the attendance of the Student and Parent
+   dashboards): the three stay in one row */
+@media (max-width: 719.98px) {
+
+  .stats.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stats.three .stat {
+    padding-inline: var(--sp-3);
+  }
+
+  .stats.three .stat + .stat {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  .stats.three .stat:nth-child(n + 3) {
+    border-block-start: 0;
   }
 }

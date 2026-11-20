@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 
@@ -59,7 +60,8 @@ interface ChildCard {
 // A child whose status is not Active (in the Students table: inactive,
 // graduated, moved to another school) has no record in the current term:
 // no grades request is sent, a message is shown instead.
-// The first active child is picked when the page opens.
+// The first active child is picked when the page opens, or the child in
+// ?child=<studentId> (the "علامات <name>" link on the Parent dashboard).
 //
 // Read only, no history button (who changed a mark is for the staff).
 @Component({
@@ -83,6 +85,7 @@ export class ChildrenGrades implements OnInit {
   private readonly apiMessageService = inject(ApiMessageService);
   private readonly language = inject(Language);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
 
 
   // Status values used in the template.
@@ -211,9 +214,13 @@ export class ChildrenGrades implements OnInit {
 
           this.children.set(children);
 
-          // Start with the first active child (else the first child).
+          // Start with the child in ?child= (from the Parent dashboard),
+          // else the first active child, else the first child.
+          const wanted = Number(this.route.snapshot.queryParamMap.get('child'));
+
           const first =
-            children.find(c => c.studentStatus === StudentStatus.Active)
+            children.find(c => c.studentId === wanted)
+            ?? children.find(c => c.studentStatus === StudentStatus.Active)
             ?? children[0];
 
           if (first) {
