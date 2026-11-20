@@ -1,5 +1,4 @@
 import { StudentStatus } from '../../../core/models/student';
-import { FourPartName } from '../../../shared/utils/person-name';
 
 
 // What the role dashboards show.
@@ -142,6 +141,9 @@ export interface DashboardNumber {
 
   // The value in red (failed subjects). Default: the normal text colour.
   isBad?: boolean;
+
+  // Shown instead of value, already formatted ("93%", "—").
+  valueText?: string;
 }
 
 // A piece of the second line of a notice: a translation key with its
@@ -195,22 +197,9 @@ export interface TeacherDashboardData {
 }
 
 
-// ===== Student (card "علاماتي هذا الفصل" + "معلوماتي") =====
-
-// The result of one subject this term.
-//   passed / failed  every mark is in, the total is compared to the passing mark
-//   incomplete       some marks are missing, so there is no total yet
-export type SubjectResult = 'passed' | 'failed' | 'incomplete';
-
-// One subject (later: GET /api/studentgrades/me).
-export interface StudentSubjectRow extends LocalizedName {
-  subjectId: number;
-  enteredCount: number;     // assessments with a mark
-  assessmentCount: number;  // assessments in the plan
-  total: number | null;     // out of 100, null while incomplete
-  passingMark: number;
-  result: SubjectResult;
-}
+// ===== Student ("معلوماتي") =====
+// The Student and Parent dashboards read GET /api/dashboard/.../me
+// (core/models/dashboard.ts); this is only the shape of the info card.
 
 export interface StudentInfo {
   studentNumber: string;
@@ -219,43 +208,4 @@ export interface StudentInfo {
   sectionNameAr: string;
   sectionNameEn: string;
   studentStatus: StudentStatus;
-}
-
-export interface StudentDashboardData {
-  info: StudentInfo;
-  subjects: StudentSubjectRow[];
-
-  // TEMPORARY: there is no attendance endpoint for the student yet.
-  absentDays: number;
-  lastAbsentDate: string | null;  // date only: "2026-11-10"
-}
-
-
-// ===== Parent (cards "أبنائي") =====
-
-// One child of the parent (later: GET /api/parents/me + the child's grades).
-export interface ParentChild extends FourPartName {
-  studentId: number;
-  studentNumber: string;
-
-  classNameAr: string;
-  classNameEn: string;
-  sectionNameAr: string;
-  sectionNameEn: string;
-
-  subjectCount: number;
-  passedCount: number;
-  failedCount: number;
-  incompleteCount: number;
-
-  // The failed subjects, with the total and the passing mark.
-  failedSubjects: { nameAr: string; nameEn: string; total: number; passingMark: number }[];
-
-  // TEMPORARY: there is no attendance endpoint for the parent yet.
-  absentDays: number;
-  isAbsentToday: boolean;
-}
-
-export interface ParentDashboardData {
-  children: ParentChild[];
 }

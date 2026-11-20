@@ -1,0 +1,18 @@
+<section class="card" aria-labelledby="student-marks-title">
+
+  <div class="card-head">
+    <h2 id="student-marks-title">{{ 'DASHBOARD.STUDENT.MARKS.TITLE' | translate }}</h2>
+    <span class="card-meta">{{ 'DASHBOARD.STUDENT.MARKS.META' | translate }}</span>
+  </div>
+
+  @if (marks().length === 0) {
+    <p class="empty">{{ 'DASHBOARD.STUDENT.MARKS.EMPTY' | translate }}</p>
+  } @else {
+    <app-latest-marks class="list" [marks]="marks()" />
+  }
+
+  <div class="card-foot">
+    <a class="text-link" routerLink="/grades">{{ 'DASHBOARD.STUDENT.MARKS.ALL' | translate }}</a>
+  </div>
+
+</section>

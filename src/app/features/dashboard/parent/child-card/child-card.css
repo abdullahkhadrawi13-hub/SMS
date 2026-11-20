@@ -64,10 +64,54 @@
 }
 
 
+/* ===== The newest marks ===== */
+
+.marks {
+  border-block-start: 1px solid var(--rule);
+}
+
+.marks-title {
+  margin: 0;
+  padding: var(--sp-3) 20px 0;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+}
+
+.marks-empty,
+.no-term {
+  margin: 0;
+  padding: var(--sp-2) 20px var(--sp-4);
+
+  color: var(--muted);
+
+  font-size: var(--fs-14);
+}
+
+.no-term {
+  padding-block-start: var(--sp-3);
+
+  border-block-start: 1px solid var(--rule);
+}
+
+/* A former child: the head only, a quieter card */
+.card.former {
+  background: var(--raised);
+}
+
+.card.former .child-name {
+  font-size: var(--fs-14);
+}
+
+
 /* ===== The text link ===== */
 
 .text-link {
   padding: 0;
+
+  text-decoration: none;
 
   border: 0;
 
@@ -99,7 +143,10 @@
 @media (max-width: 719.98px) {
 
   .child-head,
-  .card-foot {
+  .card-foot,
+  .marks-title,
+  .marks-empty,
+  .no-term {
     padding-inline: var(--sp-4);
   }
 
@@ -108,6 +155,9 @@
   }
 
   .text-link {
+    display: inline-flex;
+    align-items: center;
+
     min-block-size: 44px;
   }
 }

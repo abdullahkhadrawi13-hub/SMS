@@ -1,26 +1,43 @@
 <app-page-header
   [title]="'DASHBOARD.TITLE' | translate"
-  [subtitle]="'DASHBOARD.STUDENT.SUBTITLE' | translate"
+  [subtitle]="subtitle() ? (subtitle()!.key | translate: subtitle()!.params) : ''"
 />
 
+@if (errorMessage()) {
 
-<!-- TEMPORARY: removed together with dashboard-sample-data.ts -->
-<p class="sample-note" role="note">
-  <mat-icon aria-hidden="true">info</mat-icon>
-  <span>{{ 'DASHBOARD.SAMPLE_NOTE' | translate }}</span>
-</p>
+  <app-state-card
+    type="error"
+    [message]="errorMessage()"
+    [showRetry]="errorRetryable()"
+    (retry)="load()"
+  />
 
+} @else if (isLoading() || !card()) {
 
-<div class="dashboard">
+  <app-state-card type="loading" [message]="'DASHBOARD.LOADING' | translate" />
 
-  <div class="dashboard-main">
-    <app-student-grades-card [subjects]="data.subjects" />
-    <app-dashboard-numbers [items]="numbers()" />
+} @else if (card(); as card) {
+
+  <div class="dashboard">
+
+    <div class="dashboard-main">
+      @if (card.currentTerm) {
+        <app-student-marks-card [marks]="card.latestMarks" />
+        <app-dashboard-numbers [items]="numbers()" ariaKey="DASHBOARD.ATTENDANCE_NUMBERS.ARIA" />
+      } @else {
+        <app-state-card
+          type="empty"
+          icon="event_busy"
+          [title]="'DASHBOARD.NO_TERM' | translate"
+          [message]="'DASHBOARD.STUDENT.NO_TERM_MESSAGE' | translate"
+        />
+      }
+    </div>
+
+    <div class="dashboard-side">
+      <app-student-info-card [info]="info()!" />
+    </div>
+
   </div>
 
-  <div class="dashboard-side">
-    <app-student-info-card [info]="data.info" />
-    <app-current-term-card [data]="term" [showYearsLink]="false" />
-  </div>
-
-</div>
+}

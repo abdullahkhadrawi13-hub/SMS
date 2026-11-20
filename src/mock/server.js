@@ -22,6 +22,8 @@ const studentGradesRoutes = require('./routes/student-grades.routes');
 
 const rolloverRoutes = require('./routes/rollover.routes');
 
+const dashboardRoutes = require('./routes/dashboard.routes');
+
 const PORT =3000;
 
 const server = http.createServer((req, res) => {
@@ -218,6 +220,15 @@ if (academicTermsRoutes(req, res)) {
   // =========================
 
   if (rolloverRoutes(req, res)) {
+    return;
+  }
+
+
+  // =========================
+  // Dashboard API (student and parent home pages)
+  // =========================
+
+  if (dashboardRoutes(req, res)) {
     return;
   }
 
