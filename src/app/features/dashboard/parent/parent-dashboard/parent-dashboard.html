@@ -18,10 +18,14 @@
 
 } @else {
 
-<div class="dashboard">
+<!-- parent-layout: "أبنائي" sits above the children only, so the first child's
+     card and "يحتاج انتباهك" start on the same line. On narrow screens
+     "يحتاج انتباهك" comes first (dashboard-page.css). -->
+<div class="dashboard parent-layout">
+
+  <h2 id="children-title" class="section-title children-title">{{ 'DASHBOARD.PARENT.CHILDREN' | translate }}</h2>
 
   <section class="dashboard-main children" aria-labelledby="children-title">
-    <h2 id="children-title" class="section-title">{{ 'DASHBOARD.PARENT.CHILDREN' | translate }}</h2>
 
     @for (child of currentChildren(); track child.studentId) {
       <app-child-card [child]="child" />
@@ -48,7 +52,7 @@
     }
   </section>
 
-  <div class="dashboard-side">
+  <div class="dashboard-side attention">
     <app-notices-card [notices]="notices()" />
   </div>
 

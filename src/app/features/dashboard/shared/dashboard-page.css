@@ -91,6 +91,44 @@
 
 /* ===== Parent: the "أبنائي" title and the child cards under it ===== */
 
+/* The grid: "أبنائي" over the children column only, so the first child's
+   card and "يحتاج انتباهك" start on the same line.
+   Narrow screens (one column): "يحتاج انتباهك" first, then "أبنائي". */
+.parent-layout {
+  grid-template-areas:
+    "title ."
+    "main  side";
+
+  row-gap: var(--sp-4);
+}
+
+.parent-layout .children-title {
+  grid-area: title;
+}
+
+.parent-layout .children {
+  grid-area: main;
+}
+
+.parent-layout .attention {
+  grid-area: side;
+}
+
+@media (max-width: 1099.98px) {
+
+  .parent-layout {
+    grid-template-areas:
+      "side"
+      "title"
+      "main";
+  }
+
+  .parent-layout .attention {
+    margin-block-end: var(--sp-2);
+  }
+}
+
+
 .children {
   gap: var(--sp-4);
 }
