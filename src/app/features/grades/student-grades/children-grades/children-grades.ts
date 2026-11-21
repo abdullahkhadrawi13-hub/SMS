@@ -24,13 +24,13 @@ import { Language } from '../../../../core/services/language';
 import { ParentsService } from '../../../../core/services/parents';
 import { StudentGradesService } from '../../../../core/services/student-grades';
 import { getFullName, getInitials, getAvatarTone } from '../../../../shared/utils/person-name';
+import { StatusMessage } from '../../../../shared/utils/student-status-icons';
 
 import { TermGrades } from '../term-grades/term-grades';
 import {
   getChildStatusMessage,
   getClassSectionParams,
   getTermLabelParams,
-  StatusMessage,
 } from '../student-grades';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';

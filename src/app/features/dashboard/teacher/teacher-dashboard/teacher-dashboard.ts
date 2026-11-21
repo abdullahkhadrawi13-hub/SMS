@@ -6,18 +6,17 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { AttendanceAccessService } from '../../../../core/services/attendance-access';
 import { Language } from '../../../../core/services/language';
+import { NumbersStrip, NumbersStripItem } from '../../../../shared/components/numbers-strip/numbers-strip';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { pluralKey } from '../../../../shared/utils/plural';
 
 import { TodayAttendanceCard } from '../../shared/today-attendance-card/today-attendance-card';
-import { DashboardNumbers } from '../../shared/dashboard-numbers/dashboard-numbers';
 import { NoticesCard } from '../../shared/notices-card/notices-card';
 import { CurrentTermCard } from '../../shared/current-term-card/current-term-card';
 import { TeacherGradesCard } from '../teacher-grades-card/teacher-grades-card';
 import {
   DashboardData,
   DashboardNotice,
-  DashboardNumber,
   TeacherDashboardData,
 } from '../../shared/dashboard.models';
 import { groupSectionsByClass, joinNames, sectionName } from '../../shared/dashboard-names';
@@ -47,7 +46,7 @@ import {
     MatIconModule,
     PageHeader,
     TodayAttendanceCard,
-    DashboardNumbers,
+    NumbersStrip,
     NoticesCard,
     CurrentTermCard,
     TeacherGradesCard,
@@ -76,7 +75,7 @@ export class TeacherDashboard {
 
   // ===== The numbers strip =====
 
-  readonly numbers = computed<DashboardNumber[]>(() => {
+  readonly numbers = computed<NumbersStripItem[]>(() => {
     const isArabic = this.isArabic();
     const rows = this.data.rows;
 

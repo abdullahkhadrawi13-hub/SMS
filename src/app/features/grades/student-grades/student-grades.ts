@@ -3,6 +3,10 @@ import {
   StudentGradesSubject,
   StudentGradesTerm,
 } from '../../../core/models/student-grades-report';
+import {
+  getStatusMessageIcon,
+  StatusMessage,
+} from '../../../shared/utils/student-status-icons';
 
 // Shared helpers of one student's grades (read only).
 // Used by three screens:
@@ -110,17 +114,7 @@ export function getClassSectionParams(
 // A record that is not active: the icon and the message.
 // The staff gets one message per status (with "the marks are kept").
 // The student and the parent get one general message.
-export interface StatusMessage {
-  icon: string;
-  key: string;
-}
-
-const STATUS_ICONS: Record<StudentStatus, string> = {
-  [StudentStatus.Active]: 'school',
-  [StudentStatus.Inactive]: 'person_off',
-  [StudentStatus.Graduated]: 'workspace_premium',
-  [StudentStatus.Transferred]: 'swap_horiz',
-};
+// The icons are shared with the attendance pages (student-status-icons.ts).
 
 const STAFF_STATUS_KEYS: Record<StudentStatus, string> = {
   [StudentStatus.Active]: '',
@@ -135,7 +129,7 @@ export function getRecordStatusMessage(
 ): StatusMessage {
 
   return {
-    icon: viewer === 'staff' ? STATUS_ICONS[status] : 'person_off',
+    icon: viewer === 'staff' ? getStatusMessageIcon(status) : 'person_off',
     key: viewer === 'staff'
       ? STAFF_STATUS_KEYS[status]
       : 'STUDENT_GRADES.STATUS.PORTAL',
@@ -155,7 +149,7 @@ const CHILD_STATUS_KEYS: Record<StudentStatus, string> = {
 
 export function getChildStatusMessage(status: StudentStatus): StatusMessage {
   return {
-    icon: STATUS_ICONS[status],
+    icon: getStatusMessageIcon(status),
     key: CHILD_STATUS_KEYS[status],
   };
 }

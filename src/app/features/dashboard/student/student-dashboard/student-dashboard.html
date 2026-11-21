@@ -23,7 +23,7 @@
     <div class="dashboard-main">
       @if (card.currentTerm) {
         <app-student-marks-card [marks]="card.latestMarks" />
-        <app-dashboard-numbers [items]="numbers()" ariaKey="DASHBOARD.ATTENDANCE_NUMBERS.ARIA" />
+        <app-numbers-strip [items]="numbers()" ariaKey="DASHBOARD.ATTENDANCE_NUMBERS.ARIA" />
       } @else {
         <app-state-card
           type="empty"

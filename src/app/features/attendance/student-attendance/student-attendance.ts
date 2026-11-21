@@ -9,6 +9,16 @@ import { DashboardCurrentTerm } from '../../../core/models/dashboard';
 import { DEFAULT_WEEKLY_DAYS_OFF } from '../../../core/models/school-settings';
 import { StudentStatus } from '../../../core/models/student';
 import { SchoolSettingsService } from '../../../core/services/school-settings';
+import { NumbersStripItem } from '../../../shared/components/numbers-strip/numbers-strip';
+import {
+  AttendanceCounts,
+  formatLastAbsence,
+  getAttendanceCounts,
+} from '../../../shared/utils/attendance-counts';
+import {
+  getStatusMessageIcon,
+  StatusMessage,
+} from '../../../shared/utils/student-status-icons';
 import {
   ATTENDANCE_LOCALE_AR,
   ATTENDANCE_LOCALE_EN,
@@ -119,42 +129,73 @@ export function getTermLabelParams(
 
 
 // =====================================================
-// Counts of one term
+// The numbers of one term
 // =====================================================
 
-export interface AttendanceCounts {
-  present: number;
-  absent: number;
-  recorded: number;
-
-  // Present ÷ recorded, as a whole percentage. null = no recorded day.
-  rate: number | null;
-
-  // The newest day absent ("YYYY-MM-DD"), or null.
-  lastAbsence: string | null;
-}
-
-// The counts come from the summary (the backend's numbers).
-// lastAbsence comes from the records (the summary does not have it).
+// The counts come from the summary (the backend's numbers, shared with
+// the dashboards: shared/utils/attendance-counts.ts).
+// The last absence comes from the records (the summary does not have it).
 // A term that is not in the summary has no records: zeros.
-export function getCounts(
+export function getTermCounts(
   summary: AttendanceTermSummary | null,
   termRecords: AttendanceRecord[]
 ): AttendanceCounts {
 
-  const present = summary?.presentCount ?? 0;
-  const absent = summary?.absentCount ?? 0;
-  const recorded = summary?.totalRecorded ?? 0;
-
   const absences = termRecords.filter(r => r.status === ATTENDANCE_ABSENT);
 
-  return {
-    present,
-    absent,
-    recorded,
-    rate: recorded > 0 ? Math.round((present / recorded) * 100) : null,
-    lastAbsence: absences.length > 0 ? absences[absences.length - 1].date : null,
-  };
+  return getAttendanceCounts(
+    summary,
+    absences.length > 0 ? absences[absences.length - 1].date : null
+  );
+}
+
+// The page's four numbers (app-numbers-strip):
+//   days absent (the biggest number: the page's question) with the last one,
+//   days present, recorded days, and the rate with the gold bar.
+export function getTermNumbers(
+  counts: AttendanceCounts,
+  isArabic: boolean
+): NumbersStripItem[] {
+
+  return [
+    {
+      labelKey: 'ATTENDANCE_COUNTS.ABSENT',
+      value: counts.absent,
+      lead: true,
+      isBad: counts.absent > 0,
+      ...(counts.lastAbsence
+        ? {
+            captionKey: 'ATTENDANCE_COUNTS.LAST_ABSENCE',
+            captionParams: { date: formatLastAbsence(counts.lastAbsence, isArabic) },
+          }
+        : counts.recorded > 0
+          ? { captionKey: 'ATTENDANCE_COUNTS.NO_ABSENCE' }
+          : {}),
+    },
+    {
+      labelKey: 'ATTENDANCE_COUNTS.PRESENT',
+      value: counts.present,
+    },
+    {
+      labelKey: 'ATTENDANCE_COUNTS.RECORDED',
+      value: counts.recorded,
+    },
+    counts.rate === null
+      ? {
+          // "—" before any recorded day, without the bar
+          labelKey: 'ATTENDANCE_COUNTS.RATE',
+          value: 0,
+          valueText: '—',
+          isEmpty: true,
+        }
+      : {
+          labelKey: 'ATTENDANCE_COUNTS.RATE',
+          value: counts.rate,
+          valueText: `${counts.rate}%`,
+          hintKey: 'STUDENT_ATTENDANCE.STATS.RATE_HINT',
+          bar: counts.rate,
+        },
+  ];
 }
 
 
@@ -327,15 +368,6 @@ export function formatLongDate(date: string, isArabic: boolean): string {
   }).format(fromApiDate(date));
 }
 
-// "الخميس، 12 تشرين الثاني" / "Thursday 12 November" (no year)
-export function formatShortDate(date: string, isArabic: boolean): string {
-  return new Intl.DateTimeFormat(locale(isArabic), {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  }).format(fromApiDate(date));
-}
-
 // The weekday names, Sunday first: long ("الأحد") and narrow ("ح").
 // 1 November 2026 is a Sunday.
 export function getWeekdayNames(isArabic: boolean): { long: string; short: string }[] {
@@ -364,16 +396,10 @@ const CHILD_STATUS_KEYS: Record<StudentStatus, string> = {
   [StudentStatus.Transferred]: 'STUDENT_ATTENDANCE.CHILDREN.TRANSFERRED',
 };
 
-const CHILD_STATUS_ICONS: Record<StudentStatus, string> = {
-  [StudentStatus.Active]: 'school',
-  [StudentStatus.Inactive]: 'person_off',
-  [StudentStatus.Graduated]: 'workspace_premium',
-  [StudentStatus.Transferred]: 'swap_horiz',
-};
-
-export function getChildStatusMessage(status: StudentStatus): { icon: string; key: string } {
+// The icons are shared with the grades pages (student-status-icons.ts).
+export function getChildStatusMessage(status: StudentStatus): StatusMessage {
   return {
-    icon: CHILD_STATUS_ICONS[status],
+    icon: getStatusMessageIcon(status),
     key: CHILD_STATUS_KEYS[status],
   };
 }

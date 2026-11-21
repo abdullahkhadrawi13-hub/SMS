@@ -1,7 +1,6 @@
 /* ================================
-   Dashboard · a numbers strip (Teacher, Student, Parent)
-   One card split by 1px lines, no icons (spec: الأرقام المجمّعة).
-   The same look as dashboard-stats (the Admin strip).
+   The numbers strip (spec: الأرقام المجمّعة)
+   One card split by 1px lines, no icons.
    Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
@@ -12,6 +11,8 @@
 .stats {
   display: grid;
   grid-template-columns: repeat(var(--columns, 4), minmax(0, 1fr));
+
+  margin: 0;
 
   border: 1px solid var(--border);
   border-radius: var(--r-card);
@@ -34,24 +35,48 @@
   border-inline-start: 1px solid var(--rule);
 }
 
-.stat-label {
+dt {
   color: var(--muted);
 
   font-size: var(--fs-13);
   font-weight: 600;
 }
 
-.stat-value {
+dd {
+  margin: 0;
+
+  color: var(--text);
+
   font-size: var(--fs-24);
   font-weight: 700;
   line-height: 1.3;
 }
 
-.stat-value.bad {
+/* The lead number answers the page's question */
+.stat.lead dd {
+  font-size: var(--fs-28);
+}
+
+dd.is-bad {
   color: var(--bad-ink);
 }
 
-.stat-caption {
+/* "—": no value yet */
+dd.is-empty {
+  color: var(--faint);
+  font-weight: 400;
+}
+
+dd small {
+  margin-inline-start: var(--sp-1);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 400;
+}
+
+.caption {
   min-block-size: 1.6em;
 
   color: var(--faint);
@@ -59,24 +84,53 @@
   font-size: var(--fs-12);
 }
 
+/* The rate bar: 8px, round, gold fill on the grey track */
+.bar {
+  height: 8px;
 
-/* Inside a card (the Parent dashboard's child cards) */
-.stats.embedded {
+  margin-block-start: var(--sp-2);
+
+  border-radius: 999px;
+
+  background: var(--track);
+
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+
+  height: 100%;
+
+  border-radius: 999px;
+
+  background: var(--mark);
+}
+
+
+/* ================================
+   Inside a card (the Parent dashboard's child cards)
+   ================================ */
+
+:host(.embedded) .stats {
   border: 0;
   border-block-start: 1px solid var(--rule);
   border-radius: 0;
 }
 
-.stats.embedded .stat {
+:host(.embedded) .stat {
   padding-block: var(--sp-3);
 }
 
-.stats.embedded .stat-value {
+:host(.embedded) dd {
   font-size: var(--fs-20);
 }
 
 
-/* Phone: a 2 × 2 grid (four numbers) */
+/* ================================
+   Phone: 2 × 2 (four numbers)
+   ================================ */
+
 @media (max-width: 719.98px) {
 
   .stats {
@@ -92,30 +146,35 @@
     border-inline-start: 0;
   }
 
-  /* the lines after the first have a line above them */
+  /* the second line has a line above it */
   .stat:nth-child(n + 3) {
     border-block-start: 1px solid var(--rule);
   }
-}
 
+  dd {
+    font-size: var(--fs-20);
+  }
 
-/* Phone, three numbers (the attendance of the Student and Parent
-   dashboards): the three stay in one row */
-@media (max-width: 719.98px) {
+  .stat.lead dd {
+    font-size: var(--fs-24);
+  }
 
-  .stats.three {
+  /* Three numbers (the attendance of the Student and Parent dashboards):
+     the three stay in one row */
+  :host(.three) .stats {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .stats.three .stat {
+  :host(.three) .stat {
     padding-inline: var(--sp-3);
   }
 
-  .stats.three .stat + .stat {
+  :host(.three) .stat + .stat {
     border-inline-start: 1px solid var(--rule);
   }
 
-  .stats.three .stat:nth-child(n + 3) {
+  :host(.three) .stat:nth-child(n + 3) {
     border-block-start: 0;
   }
+
 }
