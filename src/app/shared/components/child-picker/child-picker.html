@@ -1,0 +1,39 @@
+<div class="children" role="group" [attr.aria-label]="label()">
+
+  @for (card of cards(); track card.studentId) {
+
+    <button
+      type="button"
+      class="child-card"
+      [class.selected]="card.studentId === selectedId()"
+      [attr.aria-pressed]="card.studentId === selectedId()"
+      (click)="pick.emit(card.studentId)"
+    >
+
+      <!-- The shared avatar (styles.css: .data-avatar), like the Parent dashboard -->
+      <span class="data-avatar child-avatar" [attr.data-tone]="card.avatarTone" aria-hidden="true">
+        {{ card.initials }}
+      </span>
+
+      <span class="child-info">
+
+        <span class="child-name">
+          <span>{{ card.name }}</span>
+
+          <!-- Not regular (withdrawn / graduated / transferred): the shared student status badge -->
+          @if (card.status !== statusActive) {
+            <app-student-status [status]="card.status" />
+          }
+        </span>
+
+        <span class="child-class">
+          {{ 'SHARED.CLASS_SECTION' | translate: card.classSection }}
+        </span>
+
+      </span>
+
+    </button>
+
+  }
+
+</div>

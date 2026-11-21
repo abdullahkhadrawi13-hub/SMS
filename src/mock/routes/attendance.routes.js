@@ -7,6 +7,7 @@ const users = require('../data/users');
 const teachers = require('../data/teachers');
 const schoolSettings = require('../data/school-settings');
 const { parents, parentStudents } = require('../data/parents');
+const academicYears = require('../data/academic-years');
 
 
 // =====================================================
@@ -17,10 +18,21 @@ const { parents, parentStudents } = require('../data/parents');
 // 0 = no delay. Try 500 or 2000 to see the loading states.
 const DELAY_MS = 0;
 
-// Roles that can call the attendance API at all:
-// 0 = Admin, 1 = Assistant Principal, 2 = Teacher.
-// Student (3) and Parent (4) have no attendance endpoints yet: 403.
+// Staff roles: 0 = Admin, 1 = Assistant Principal, 2 = Teacher.
+// Student (3) and Parent (4) only reach the student endpoints
+// (PR #48): me, summary/me (Student), and by-student / summary/by-student
+// for their own children (Parent). Anything else: 403.
 const STAFF_ROLES = [0, 1, 2];
+const STUDENT_ROLE = 3;
+const PARENT_ROLE = 4;
+
+// The "student" account (userId 4) has no student row of its own:
+// it is student 2, like in routes/dashboard.routes.js.
+const MOCK_STUDENT_LINKS = { 4: 2 };
+
+// Like routes/dashboard.routes.js: the "parent" account also sees
+// student 7 (graduated), only to try the "not active" message.
+const EXTRA_CHILDREN_OF_PARENT_1 = [7];
 
 // Admin and Assistant Principal: any past day or today,
 // plus by-student and by-date.
@@ -51,6 +63,9 @@ const STATUS_ABSENT = 1;
 //    The officer gets 400 for any day other than today.
 // 3. by-student / by-date: Admin and Assistant Principal only.
 //    A teacher (the officer included) gets 403.
+//    by-student and summary/by-student: also a Parent, for their own
+//    children (403 for any other student, existing or not).
+//    me and summary/me: the Student.
 //    daily-summary: Admin, Assistant Principal and the attendance officer.
 //    The officer gets 400 for any day other than today.
 //    A teacher who is not the officer gets 403.
@@ -396,6 +411,206 @@ function toAttendanceDto(record) {
 
 
 // =====================================================
+// Student and parent (PR #48)
+// =====================================================
+
+// The student row of a Student account (or undefined).
+function getStudentOfUser(user) {
+
+  const linkedId = MOCK_STUDENT_LINKS[user.userId];
+
+  return students.find(student =>
+    linkedId !== undefined
+      ? student.studentId === linkedId
+      : student.userId === user.userId
+  );
+}
+
+// The studentIds of a Parent account's children.
+function getChildrenOfUser(user) {
+
+  const parent = parents.find(item => item.userId === user.userId);
+
+  if (!parent) {
+    return [];
+  }
+
+  const ids = parentStudents
+    .filter(link => link.parentId === parent.parentId)
+    .map(link => link.studentId);
+
+  if (parent.parentId === 1) {
+    ids.push(...EXTRA_CHILDREN_OF_PARENT_1.filter(id => !ids.includes(id)));
+  }
+
+  return ids;
+}
+
+// One student's records, oldest first (AttendanceDto).
+function getHistory(studentId) {
+  return attendanceRecords
+    .filter(record => record.studentId === studentId)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(toAttendanceDto);
+}
+
+// GET .../summary/...: present / absent per term, newest term first.
+// A term with no record is not in the list.
+function getSummary(studentId, academicTermId) {
+
+  const terms = [];
+
+  for (const record of attendanceRecords) {
+
+    if (
+      record.studentId !== studentId ||
+      (academicTermId && record.academicTermId !== academicTermId)
+    ) {
+      continue;
+    }
+
+    let item = terms.find(t => t.academicTermId === record.academicTermId);
+
+    if (!item) {
+
+      const term = academicTerms.find(t => t.academicTermId === record.academicTermId);
+      const year = term && academicYears.find(y => y.academicYearId === term.academicYearId);
+
+      item = {
+        academicTermId: record.academicTermId,
+        termNameAr: term ? term.nameAr : '',
+        termNameEn: term ? term.nameEn : '',
+        yearName: year ? year.yearName : '',
+        isCurrent: !!(term && term.isCurrent),
+        startDate: term ? term.startDate : '',
+        presentCount: 0,
+        absentCount: 0,
+        totalRecorded: 0
+      };
+
+      terms.push(item);
+    }
+
+    if (record.status === STATUS_ABSENT) {
+      item.absentCount++;
+    } else {
+      item.presentCount++;
+    }
+
+    item.totalRecorded++;
+  }
+
+  return {
+    studentId,
+    terms: terms
+      .sort((a, b) => b.startDate.localeCompare(a.startDate))
+      .map(({ startDate, ...term }) => term)
+  };
+}
+
+// The student and parent endpoints. Returns true when the request was
+// one of them (answered here), false otherwise.
+function handleStudentEndpoints(req, res, url, pathname, currentUser) {
+
+  if (req.method !== 'GET') {
+    return false;
+  }
+
+  const termParam = Number(url.searchParams.get('academicTermId')) || null;
+
+
+  // GET /api/attendance/me, GET /api/attendance/summary/me (Student)
+  if (
+    pathname === '/api/attendance/me' ||
+    pathname === '/api/attendance/summary/me'
+  ) {
+
+    if (currentUser.role !== STUDENT_ROLE) {
+      sendEmpty(res, 403);
+      return true;
+    }
+
+    const student = getStudentOfUser(currentUser);
+
+    if (!student) {
+      sendError(res, 404, 'الطالب غير موجود.', 'Student not found.');
+      return true;
+    }
+
+    sendJson(res, 200, pathname === '/api/attendance/me'
+      ? {
+          success: true,
+          messageAr: 'تم جلب سجل الحضور بنجاح',
+          messageEn: 'Attendance retrieved successfully',
+          data: getHistory(student.studentId)
+        }
+      : {
+          success: true,
+          messageAr: 'تم جلب ملخص الحضور بنجاح',
+          messageEn: 'Attendance summary retrieved successfully',
+          data: getSummary(student.studentId, termParam)
+        });
+
+    return true;
+  }
+
+
+  // GET /api/attendance/by-student/{id}, GET /api/attendance/summary/by-student/{id}
+  // (Admin, Assistant Principal; Parent for their own children)
+  const match = pathname.match(
+    /^\/api\/attendance\/(summary\/)?by-student\/(\d+)$/
+  );
+
+  if (!match) {
+    return false;
+  }
+
+  const isSummary = !!match[1];
+  const studentId = Number(match[2]);
+
+  if (currentUser.role === PARENT_ROLE) {
+
+    // One answer for "not yours" and "does not exist".
+    if (!getChildrenOfUser(currentUser).includes(studentId)) {
+      sendError(
+        res,
+        403,
+        'يمكنك عرض حضور أبنائك فقط.',
+        'You can only view the attendance of your own children.'
+      );
+      return true;
+    }
+
+  } else if (!FULL_ACCESS_ROLES.includes(currentUser.role)) {
+
+    sendEmpty(res, 403);
+    return true;
+
+  } else if (!students.some(student => student.studentId === studentId)) {
+
+    sendError(res, 404, 'الطالب غير موجود', 'Student not found');
+    return true;
+  }
+
+  sendJson(res, 200, isSummary
+    ? {
+        success: true,
+        messageAr: 'تم جلب ملخص الحضور بنجاح',
+        messageEn: 'Attendance summary retrieved successfully',
+        data: getSummary(studentId, termParam)
+      }
+    : {
+        success: true,
+        messageAr: 'تم جلب سجل حضور الطالب بنجاح',
+        messageEn: 'Student attendance retrieved successfully',
+        data: getHistory(studentId)
+      });
+
+  return true;
+}
+
+
+// =====================================================
 // Attendance Routes
 // =====================================================
 
@@ -452,7 +667,13 @@ function handleAttendance(req, res, url, pathname) {
     return;
   }
 
-  // Student / Parent: no attendance endpoints yet.
+  // The student endpoints (Student, Parent, and the staff's by-student
+  // and summary/by-student) are answered here.
+  if (handleStudentEndpoints(req, res, url, pathname, currentUser)) {
+    return;
+  }
+
+  // Everything else is for the staff only.
   if (!STAFF_ROLES.includes(currentUser.role)) {
     sendEmpty(res, 403);
     return;
@@ -477,60 +698,6 @@ function handleAttendance(req, res, url, pathname) {
       messageAr: 'تم جلب صلاحيات الحضور بنجاح',
       messageEn: 'Attendance access retrieved successfully',
       data: getAccess(currentUser)
-    });
-
-    return;
-  }
-
-
-  // =====================================================
-  // GET /api/attendance/by-student/{studentId}
-  // (Admin, Assistant Principal)
-  // One student's history in every term, oldest first.
-  // =====================================================
-
-  const byStudentMatch = pathname.match(
-    /^\/api\/attendance\/by-student\/(\d+)$/
-  );
-
-  if (
-    req.method === 'GET' &&
-    byStudentMatch
-  ) {
-
-    if (!hasFullAccess) {
-      sendEmpty(res, 403);
-      return;
-    }
-
-    const studentId = Number(byStudentMatch[1]);
-
-    const studentExists = students.some(
-      student => student.studentId === studentId
-    );
-
-    if (!studentExists) {
-
-      sendError(
-        res,
-        404,
-        'الطالب غير موجود',
-        'Student not found'
-      );
-
-      return;
-    }
-
-    const history = attendanceRecords
-      .filter(record => record.studentId === studentId)
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .map(toAttendanceDto);
-
-    sendJson(res, 200, {
-      success: true,
-      messageAr: 'تم جلب سجل حضور الطالب بنجاح',
-      messageEn: 'Student attendance retrieved successfully',
-      data: history
     });
 
     return;

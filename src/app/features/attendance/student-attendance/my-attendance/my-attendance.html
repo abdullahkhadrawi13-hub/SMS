@@ -1,0 +1,56 @@
+<div class="student-attendance-page">
+
+  <!-- Page Header: title, the current term and the term list -->
+  <app-page-header
+    [title]="'STUDENT_ATTENDANCE.MY_TITLE' | translate"
+    [subtitle]="currentTermLabel() ? ('STUDENT_ATTENDANCE.TERM_LABEL' | translate: currentTermLabel()) : ''"
+  >
+
+    <!-- Earlier terms: only when there is more than one term -->
+    @if (ready() && termOptions().length > 1) {
+      <app-attendance-term-select
+        actions
+        [options]="termOptions()"
+        [value]="termId()"
+        (valueChange)="termId.set($event)"
+      />
+    }
+
+  </app-page-header>
+
+
+  @if (loading()) {
+    <app-state-card
+      type="loading"
+      [message]="'STUDENT_ATTENDANCE.LOADING' | translate"
+    />
+  }
+
+  @else if (errorMessage()) {
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      [showRetry]="errorRetryable()"
+      (retry)="load()"
+    />
+  }
+
+  <!-- No current term and no record in any term -->
+  @else if (!term()) {
+    <app-state-card
+      type="empty"
+      icon="event_busy"
+      [message]="'STUDENT_ATTENDANCE.NO_TERM' | translate"
+    />
+  }
+
+  @else if (term(); as term) {
+    <app-term-attendance
+      [records]="records()"
+      [summaries]="summaries()"
+      [term]="term"
+      [weeklyDaysOff]="weeklyDaysOff()"
+    />
+  }
+
+</div>

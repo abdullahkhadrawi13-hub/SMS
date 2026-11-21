@@ -176,6 +176,28 @@ async function handleSchoolSettings(req, res, pathname) {
     return;
   }
 
+  // =====================================================
+  // GET /api/schoolsettings/school (PR #51)
+  // The school information and weekly days off
+  // (every signed-in user). PUT is not in the mock yet.
+  // =====================================================
+
+  if (
+    req.method === 'GET' &&
+    pathname === '/api/schoolsettings/school'
+  ) {
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم جلب معلومات المدرسة بنجاح.',
+      messageEn: 'School information retrieved successfully.',
+      data: { ...schoolSettings.school, weeklyDaysOff: [...schoolSettings.school.weeklyDaysOff] }
+    });
+
+    return;
+  }
+
+
   if (!ALLOWED_ROLES.includes(currentUser.role)) {
     sendEmpty(res, 403);
     return;

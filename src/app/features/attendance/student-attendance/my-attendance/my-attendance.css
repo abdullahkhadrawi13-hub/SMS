@@ -1,0 +1,9 @@
+/* ================================
+   «حضوري» (same spacing as «علاماتي»)
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+.student-attendance-page {
+  width: 100%;
+  box-sizing: border-box;
+}

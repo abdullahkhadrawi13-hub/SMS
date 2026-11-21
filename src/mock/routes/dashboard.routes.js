@@ -7,6 +7,7 @@ const academicTerms = require('../data/academic-terms');
 const academicYears = require('../data/academic-years');
 const { parents, parentStudents } = require('../data/parents');
 const dashboardData = require('../data/dashboard');
+const attendanceRecords = require('../data/attendance');
 
 
 // =====================================================
@@ -103,9 +104,27 @@ function buildCard(student) {
 
   if (currentTerm) {
 
-    const present = data ? data.attendance.presentCount : 0;
-    const absent = data ? data.attendance.absentCount : 0;
-    const last = data ? data.attendance.lastAbsenceDate : null;
+    // The student's records in the current term (data/attendance.js),
+    // so the home page and «حضوري» agree. Without records: data/dashboard.js.
+    const records = isActive
+      ? attendanceRecords.filter(r =>
+          r.studentId === student.studentId &&
+          r.academicTermId === currentTerm.academicTermId)
+      : [];
+
+    const absences = records.filter(r => r.status === 1).map(r => r.date).sort();
+
+    const present = records.length > 0
+      ? records.length - absences.length
+      : (data ? data.attendance.presentCount : 0);
+
+    const absent = records.length > 0
+      ? absences.length
+      : (data ? data.attendance.absentCount : 0);
+
+    const last = records.length > 0
+      ? (absences[absences.length - 1] ?? null)
+      : (data ? data.attendance.lastAbsenceDate : null);
 
     attendance = {
       presentCount: present,

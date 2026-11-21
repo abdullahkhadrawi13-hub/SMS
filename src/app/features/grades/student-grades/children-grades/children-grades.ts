@@ -34,20 +34,12 @@ import {
 } from '../student-grades';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
-import { StudentStatusBadge } from '../../../../shared/components/student-status/student-status';
+import {
+  ChildPicker,
+  ChildPickerCard,
+} from '../../../../shared/components/child-picker/child-picker';
 
 
-
-
-// One child card, ready to show.
-interface ChildCard {
-  studentId: number;
-  name: string;
-  initials: string;
-  avatarTone: number;
-  classSection: { class: string; section: string };
-  status: StudentStatus;
-}
 
 
 // The parent's Grades page («علامات أبنائي»). Route: /grades (Parent).
@@ -73,7 +65,7 @@ interface ChildCard {
     TermGrades,
     PageHeader,
     StateCard,
-    StudentStatusBadge,
+    ChildPicker,
   ],
   templateUrl: './children-grades.html',
   styleUrl: './children-grades.css',
@@ -86,10 +78,6 @@ export class ChildrenGrades implements OnInit {
   private readonly language = inject(Language);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
-
-
-  // Status values used in the template.
-  readonly statusActive = StudentStatus.Active;
 
 
   // ===== Children (GET /api/parents/me) =====
@@ -121,7 +109,7 @@ export class ChildrenGrades implements OnInit {
     () => this.language.currentDirection() === 'rtl'
   );
 
-  readonly cards = computed<ChildCard[]>(() => {
+  readonly cards = computed<ChildPickerCard[]>(() => {
 
     const isArabic = this.isArabic();
 

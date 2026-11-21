@@ -62,15 +62,13 @@ export const SIDEBAR_MENU: MenuItem[] = [
     group: 'today'
   },
 
-  // Student and Parent have no attendance endpoints yet:
-  // the page opens as Coming Soon for them.
+  // Student: «حضوري», Parent: «حضور أبنائي» (attendance.routes.ts).
   {
     label: 'SIDEBAR.ATTENDANCE',
     icon: 'fact_check',
     route: '/attendance',
     roles: [Admin, AssistantPrincipal, Teacher, Student, Parent],
-    group: 'today',
-    comingSoon: [Student, Parent]
+    group: 'today'
   },
 
   {

@@ -1,0 +1,401 @@
+/* ================================
+   Attendance calendar: one month, Sunday first.
+   Only the absent days are coloured (light red); a present day is a
+   white day with a small green ✓, so the month is not all green.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.calendar-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+}
+
+
+/* ---------- Head: month, its counts, the arrows (mat-icon-button) ---------- */
+
+.calendar-head {
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-1);
+
+  padding-block: var(--sp-3) 0;
+  padding-inline: 20px var(--sp-3);
+}
+
+.calendar-head h2 {
+  flex: 1;
+  min-width: 0;
+
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.month-counts {
+  margin-inline-end: var(--sp-2);
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  white-space: nowrap;
+}
+
+/* ---------- The month ---------- */
+
+.calendar-body {
+  padding: var(--sp-3) 20px var(--sp-4);
+}
+
+.calendar {
+  width: calc(100% + 12px);
+
+  margin: -6px;
+
+  border-collapse: separate;
+  border-spacing: 6px;
+
+  table-layout: fixed;
+}
+
+.calendar th {
+  padding: 0 0 2px;
+
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+  text-align: center;
+}
+
+.weekday-short {
+  display: none;
+}
+
+.calendar td {
+  height: 64px;
+
+  padding: 0;
+
+  vertical-align: top;
+}
+
+.day {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 6px var(--sp-2);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-control);
+
+  background: var(--surface);
+  color: var(--text);
+}
+
+.day-number {
+  align-self: flex-start;
+
+  font-size: var(--fs-13);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.day-mark {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 3px;
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.day-mark mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+/* A long word ("Not recorded") goes on two lines in a narrow day */
+.day-text {
+  min-width: 0;
+
+  overflow-wrap: anywhere;
+}
+
+/* The "—" of an unrecorded day: on the phone only (the word on the computer) */
+.day-dash {
+  display: none;
+}
+
+/* present: a white day, a green ✓ */
+.day.is-present .day-mark {
+  color: var(--ok-ink);
+}
+
+/* absent: the only coloured day */
+.day.is-absent {
+  border-color: var(--bad-line);
+  background: var(--bad-bg);
+}
+
+.day.is-absent .day-mark {
+  color: var(--bad-ink);
+}
+
+/* unrecorded: dashed, "—" */
+.day.is-unrecorded {
+  border-style: dashed;
+  border-color: var(--control);
+}
+
+.day.is-unrecorded .day-mark {
+  color: var(--faint);
+  font-weight: 400;
+}
+
+/* weekly day off: grey, no word (the legend says it) */
+.day.is-off {
+  border-color: var(--raised);
+  background: var(--raised);
+}
+
+.day.is-off .day-number,
+.day.is-none .day-number {
+  color: var(--faint);
+  font-weight: 400;
+}
+
+.day.is-none {
+  border-color: var(--rule);
+}
+
+/* today: the number in a navy circle */
+.day.is-today .day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 22px;
+  height: 22px;
+
+  padding-inline: 5px;
+  box-sizing: border-box;
+
+  border-radius: 999px;
+
+  background: var(--primary);
+  color: var(--on-primary);
+
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* the day picked in the list of days absent */
+.day.is-selected {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.day[tabindex] {
+  cursor: default;
+
+  transition: border-color var(--dur);
+}
+
+.day[tabindex]:hover {
+  border-color: var(--control);
+}
+
+.day.is-absent[tabindex]:hover {
+  border-color: var(--bad);
+}
+
+.day:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* ---------- Key (the note above it comes from app-term-attendance) ---------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px var(--sp-4);
+
+  margin: 0;
+
+  padding: var(--sp-3) 20px 14px;
+
+  border-block-start: 1px solid var(--rule);
+
+  list-style: none;
+
+  color: var(--muted);
+
+  font-size: var(--fs-12);
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border);
+  border-radius: 5px;
+
+  background: var(--surface);
+
+  font-size: var(--fs-11);
+}
+
+.swatch mat-icon {
+  width: 13px;
+  height: 13px;
+
+  font-size: 13px;
+}
+
+.swatch.is-present {
+  color: var(--ok-ink);
+}
+
+.swatch.is-absent {
+  border-color: var(--bad-line);
+  background: var(--bad-bg);
+  color: var(--bad-ink);
+}
+
+.swatch.is-unrecorded {
+  border-style: dashed;
+  border-color: var(--control);
+  color: var(--faint);
+}
+
+.swatch.is-off {
+  border-color: var(--raised);
+  background: var(--raised);
+}
+
+
+/* ================================
+   Phone: the month at the screen's width, an icon only in each day
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .calendar-head {
+    padding-block-start: var(--sp-2);
+    padding-inline: var(--sp-4) var(--sp-2);
+  }
+
+  /* The counts of the month are in the list below on the phone */
+  .month-counts {
+    display: none;
+  }
+
+  .calendar-body {
+    padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  }
+
+  .calendar {
+    width: calc(100% + 8px);
+
+    margin: -4px;
+
+    border-spacing: 4px;
+  }
+
+  .weekday-long {
+    display: none;
+  }
+
+  .weekday-short {
+    display: inline;
+  }
+
+  .calendar td {
+    height: 46px;
+  }
+
+  .day {
+    align-items: center;
+    justify-content: center;
+
+    padding: 3px;
+  }
+
+  .day-number {
+    align-self: center;
+
+    font-size: var(--fs-12);
+  }
+
+  .day.is-today .day-number {
+    min-width: 20px;
+    height: 20px;
+  }
+
+  .day-mark mat-icon {
+    width: 15px;
+    height: 15px;
+
+    font-size: 15px;
+  }
+
+  .day-text {
+    display: none;
+  }
+
+  .day-dash {
+    display: inline;
+  }
+
+  .legend {
+    gap: 6px var(--sp-3);
+
+    padding-inline: var(--sp-4);
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .day[tabindex] {
+    transition: none;
+  }
+
+}

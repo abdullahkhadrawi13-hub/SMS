@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
-import { PromotionSettings } from '../models/school-settings';
+import { PromotionSettings, SchoolInfo } from '../models/school-settings';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -35,6 +35,15 @@ export class SchoolSettingsService {
       null
     );
   }
+
+  // GET /api/schoolsettings/school (any signed-in user)
+  // The school's names, phone, address and weekly days off.
+  getSchoolInfo(): Observable<ApiResponse<SchoolInfo>> {
+    return this.http.get<ApiResponse<SchoolInfo>>(
+      `${this.apiUrl}/school`
+    );
+  }
+
 
   // Change the rollover setting: how many failed subjects (or more)
   // make the rollover preview suggest "Repeat" (between 1 and 50).

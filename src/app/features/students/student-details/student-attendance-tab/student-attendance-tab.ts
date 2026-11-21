@@ -4,66 +4,54 @@ import {
   DestroyRef,
   inject,
   input,
+  linkedSignal,
   OnInit,
-  signal
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-
-import { MatIconModule } from '@angular/material/icon';
+import { forkJoin } from 'rxjs';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { AcademicTermsService } from '../../../../core/services/academic-terms';
+import {
+  AttendanceRecord,
+  AttendanceTermSummary,
+} from '../../../../core/models/attendance';
+import { DEFAULT_WEEKLY_DAYS_OFF } from '../../../../core/models/school-settings';
+import { ApiResponse } from '../../../../core/models/api-response';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { AttendanceService } from '../../../../core/services/attendance';
-import { Language } from '../../../../core/services/language';
-import {
-  AttendanceHistoryStats,
-  formatAttendanceDate,
-  formatAttendanceDateTime
-} from '../../../attendance/shared/attendance-shared';
-import { AcademicTerm } from '../../../../core/models/academic-term';
-import {
-  ATTENDANCE_ABSENT,
-  ATTENDANCE_PRESENT,
-  AttendanceRecord,
-  AttendanceStatus
-} from '../../../../core/models/attendance';
+import { SchoolSettingsService } from '../../../../core/services/school-settings';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
-import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+import {
+  getDefaultTermId,
+  getTermOptions,
+  loadWeeklyDaysOff,
+} from '../../../attendance/student-attendance/student-attendance';
+import { TermAttendance } from '../../../attendance/student-attendance/term-attendance/term-attendance';
+import { AttendanceTermSelect } from '../../../attendance/student-attendance/term-select/term-select';
 
-// One academic term in the term list.
-// name = null when the name of the term could not be loaded.
-interface AttendanceHistoryTerm {
-  academicTermId: number;
-  name: string | null;
-}
 
-// One row of the history table.
-interface AttendanceHistoryRow {
-  attendanceId: number;
-  date: string;
-  status: AttendanceStatus;
-  recordedAt: string;
-
-  // null = the record was never edited.
-  editedAt: string | null;
-}
-
-// The "Attendance" tab of the student page (/students/:id?tab=attendance):
-// the student's attendance history.
-// GET /api/attendance/by-student/{studentId} (Admin, AssistantPrincipal).
+// The "Attendance" tab of the student page (/students/:id?tab=attendance),
+// Admin and AssistantPrincipal. The same numbers, month calendar and days
+// absent as the student's «حضوري» page (app-term-attendance).
 //
-// It loads its own data; the student page only gives it the student id.
-// The date helpers come from the attendance section (attendance-shared).
+//   GET /api/attendance/by-student/{studentId}           every record
+//   GET /api/attendance/summary/by-student/{studentId}   counts and term names
+//   GET /api/schoolsettings/school                        weekly days off
+//
+// One term at a time: the current term first (else the newest with
+// records); "Academic term" lists the others when there is more than one.
+// The term names come with the summary, so GET /api/academicterms is no
+// longer called here.
 @Component({
   selector: 'app-student-attendance-tab',
   imports: [
-    MatIconModule,
     TranslatePipe,
     StateCard,
-    StatusBadge,
+    TermAttendance,
+    AttendanceTermSelect,
   ],
   templateUrl: './student-attendance-tab.html',
   styleUrl: './student-attendance-tab.css',
@@ -71,174 +59,75 @@ interface AttendanceHistoryRow {
 export class StudentAttendanceTab implements OnInit {
 
   private readonly attendanceService = inject(AttendanceService);
-  private readonly termsService = inject(AcademicTermsService);
-
+  private readonly schoolSettingsService = inject(SchoolSettingsService);
   private readonly apiMessageService = inject(ApiMessageService);
-  private readonly language = inject(Language);
-
   private readonly destroyRef = inject(DestroyRef);
+
 
   // ===== Input =====
 
   readonly studentId = input.required<number>();
+
 
   // ===== Data =====
 
   // Every record of the student, in every academic term (oldest first).
   readonly records = signal<AttendanceRecord[]>([]);
 
-  // Used only to show the names of the terms.
-  private readonly terms = signal<AcademicTerm[]>([]);
+  readonly summaries = signal<AttendanceTermSummary[]>([]);
+
+  readonly weeklyDaysOff = signal<readonly number[]>(DEFAULT_WEEKLY_DAYS_OFF);
 
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
-  // The selected academic term. null = all terms.
-  readonly termId = signal<number | null>(null);
+  // The terms with records, newest first (the staff has no current term
+  // without records here: the summary leaves such a term out).
+  readonly termOptions = computed(() => getTermOptions(this.summaries(), null));
 
-  // Status values used in the template.
-  readonly present = ATTENDANCE_PRESENT;
-  readonly absent = ATTENDANCE_ABSENT;
+  readonly termId = linkedSignal(() => getDefaultTermId(this.termOptions()));
 
-  private readonly isArabic = computed(
-    () => this.language.currentDirection() === 'rtl'
+  readonly term = computed(() =>
+    this.termOptions().find(t => t.academicTermId === this.termId()) ?? null
   );
-
-  // The terms the student has records in (newest first).
-  // The history covers every term, so the term is filtered here in the
-  // frontend. The list is shown only when there is more than one term.
-  readonly termOptions = computed<AttendanceHistoryTerm[]>(() => {
-
-    const isArabic = this.isArabic();
-    const terms = this.terms();
-
-    const termIds: number[] = [];
-
-    for (const record of this.records()) {
-      if (!termIds.includes(record.academicTermId)) {
-        termIds.push(record.academicTermId);
-      }
-    }
-
-    return termIds
-      .reverse()
-      .map(academicTermId => {
-
-        const term = terms.find(
-          t => t.academicTermId === academicTermId
-        );
-
-        return {
-          academicTermId,
-          name: term
-            ? this.getTermName(term, isArabic)
-            : null
-        };
-      });
-  });
-
-  // The records of the selected term.
-  private readonly filteredRecords = computed(() => {
-
-    const termId = this.termId();
-
-    return termId === null
-      ? this.records()
-      : this.records().filter(
-          record => record.academicTermId === termId
-        );
-  });
-
-  // There is no ready-made total in the API:
-  // absent days = the number of records with status 1, counted here.
-  readonly stats = computed<AttendanceHistoryStats>(() => {
-
-    const records = this.filteredRecords();
-
-    const absent = records.filter(
-      record => record.status === ATTENDANCE_ABSENT
-    ).length;
-
-    return {
-      recorded: records.length,
-      present: records.length - absent,
-      absent
-    };
-  });
-
-  // Present days ÷ recorded days, as a whole percentage (null = no day).
-  // Only the recorded days count: a day with no record is not "present"
-  // (the note under the counters says so). Counted here, no extra request.
-  readonly rate = computed<number | null>(() => {
-
-    const { recorded, present } = this.stats();
-
-    return recorded > 0
-      ? Math.round((present / recorded) * 100)
-      : null;
-  });
-
-  // Newest day first (the API sends the oldest first).
-  readonly rows = computed<AttendanceHistoryRow[]>(() => {
-
-    const isArabic = this.isArabic();
-
-    return this.filteredRecords()
-      .map(record => ({
-        attendanceId: record.attendanceId,
-        date: formatAttendanceDate(record.date, isArabic),
-        status: record.status,
-        recordedAt: formatAttendanceDateTime(record.recordedAt, isArabic),
-        editedAt: record.editedAt
-          ? formatAttendanceDateTime(record.editedAt, isArabic)
-          : null
-      }))
-      .reverse();
-  });
 
 
   ngOnInit(): void {
+
     this.loadHistory();
+
+    loadWeeklyDaysOff(this.schoolSettingsService)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(days => this.weeklyDaysOff.set(days));
   }
 
 
-  // GET /api/attendance/by-student/{studentId}
   loadHistory(): void {
 
     this.loading.set(true);
     this.errorMessage.set(null);
 
-    this.attendanceService
-      .getStudentAttendance(this.studentId())
+    forkJoin({
+      records: this.attendanceService.getStudentAttendance(this.studentId()),
+      summary: this.attendanceService.getStudentSummary(this.studentId()),
+    })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {
+        next: ({ records, summary }) => {
 
           this.loading.set(false);
 
-          if (!response.success || !response.data) {
+          const failed = ([records, summary] as ApiResponse<unknown>[]).find(r => !r.success);
+
+          if (failed) {
             this.records.set([]);
-            this.errorMessage.set(
-              this.apiMessageService.getMessage(response)
-            );
+            this.summaries.set([]);
+            this.errorMessage.set(this.apiMessageService.getMessage(failed));
             return;
           }
 
-          const records = response.data;
-
-          this.records.set(records);
-
-          // Start with the term of the newest record (the last one).
-          this.termId.set(
-            records.length > 0
-              ? records[records.length - 1].academicTermId
-              : null
-          );
-
-          // The term names are needed only when there is a term list.
-          if (this.termOptions().length > 1) {
-            this.loadTerms();
-          }
+          this.records.set(records.data ?? []);
+          this.summaries.set(summary.data?.terms ?? []);
         },
 
         error: (error: HttpErrorResponse) => {
@@ -246,56 +135,9 @@ export class StudentAttendanceTab implements OnInit {
 
           this.loading.set(false);
           this.records.set([]);
+          this.summaries.set([]);
           this.errorMessage.set(this.apiMessageService.getErrorMessage(error));
-        }
-      });
-  }
-
-  // GET /api/academicterms (Admin and AssistantPrincipal, the only
-  // roles that open this tab). The term names are extra: if the list
-  // fails, it is not shown as an error, the list shows "Term #id".
-  private loadTerms(): void {
-
-    this.termsService
-      .getAcademicTerms()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.terms.set(response.success ? response.data : []);
         },
-
-        error: () => {
-          this.terms.set([]);
-        }
       });
   }
-
-  // The term list is a plain <select>: its value is a string,
-  // '' = all terms.
-  onTermChange(value: string): void {
-    this.termId.set(value === '' ? null : Number(value));
-  }
-
-
-  // =========================
-  // Helpers
-  // =========================
-
-  // "First Term (09/2025 - 01/2026)".
-  // The dates are added because every year has a term with the same name.
-  private getTermName(term: AcademicTerm, isArabic: boolean): string {
-
-    const name = isArabic ? term.nameAr : term.nameEn;
-
-    return `${name} (${this.getMonth(term.startDate)} - ${this.getMonth(term.endDate)})`;
-  }
-
-  // "2025-09-01T00:00:00" -> "09/2025"
-  private getMonth(value: string): string {
-
-    const [year, month] = value.slice(0, 7).split('-');
-
-    return `${month}/${year}`;
-  }
-
 }

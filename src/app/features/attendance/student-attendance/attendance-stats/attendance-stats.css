@@ -1,0 +1,141 @@
+/* ================================
+   Attendance numbers: one card split by 1px lines (no card per number,
+   no coloured icons). Four columns on the computer, 2 × 2 on the phone.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  margin: 0;
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+}
+
+.stat {
+  min-width: 0;
+
+  padding: var(--sp-4) 20px;
+}
+
+.stat + .stat {
+  border-inline-start: 1px solid var(--rule);
+}
+
+.stat dt {
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 600;
+}
+
+.stat dd {
+  margin: 2px 0 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-24);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* The lead number answers the page's question */
+.stat.lead dd {
+  font-size: var(--fs-28);
+}
+
+.stat dd.is-bad {
+  color: var(--bad-ink);
+}
+
+.stat dd small {
+  margin-inline-start: var(--sp-1);
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+  font-weight: 400;
+}
+
+.stat-sub {
+  min-height: 1.5em;
+
+  margin-block-start: 2px;
+
+  color: var(--muted);
+
+  font-size: var(--fs-12);
+}
+
+.missing {
+  color: var(--faint);
+  font-weight: 400;
+}
+
+/* The rate bar: 8px, round, gold fill on the grey track */
+.rate-bar {
+  height: 8px;
+
+  margin-block-start: var(--sp-2);
+
+  border-radius: 999px;
+
+  background: var(--track);
+
+  overflow: hidden;
+}
+
+.rate-fill {
+  display: block;
+
+  height: 100%;
+
+  border-radius: 999px;
+
+  background: var(--mark);
+}
+
+
+/* ================================
+   Phone: 2 × 2
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .stat + .stat {
+    border-inline-start: 0;
+  }
+
+  .stat:nth-child(even) {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  .stat:nth-child(n + 3) {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .stat dd {
+    font-size: var(--fs-20);
+  }
+
+  .stat.lead dd {
+    font-size: var(--fs-24);
+  }
+
+}

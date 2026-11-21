@@ -1,202 +1,54 @@
-<section class="history-card" aria-labelledby="attendance-history-title">
+<!-- Title + academic term (the list only when there is more than one term) -->
+<div class="tab-head">
 
-  <!-- Header: title + academic term -->
-  <div class="card-head">
+  <h2 class="tab-title">
+    {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.TITLE' | translate }}
+  </h2>
 
-    <h2 class="card-title" id="attendance-history-title">
-      {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.TITLE' | translate }}
-    </h2>
-
-    <!-- Academic term (only when the student has records in more than one term) -->
-    @if (!loading() && !errorMessage() && termOptions().length > 1) {
-      <div class="term-field">
-        <div class="field-box is-select">
-          <select
-            [attr.aria-label]="'STUDENT_DETAILS.ATTENDANCE_TAB.TERM' | translate"
-            [value]="termId() ?? ''"
-            (change)="onTermChange($any($event.target).value)"
-          >
-            <option value="" [selected]="termId() === null">
-              {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.ALL_TERMS' | translate }}
-            </option>
-
-            @for (term of termOptions(); track term.academicTermId) {
-              <option [value]="term.academicTermId" [selected]="termId() === term.academicTermId">
-                {{
-                  term.name
-                    ?? ('STUDENT_DETAILS.ATTENDANCE_TAB.TERM_NUMBER' | translate: { id: term.academicTermId })
-                }}
-              </option>
-            }
-          </select>
-
-          <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
-        </div>
-      </div>
-    }
-
-  </div>
-
-
-  <!-- Loading -->
-  @if (loading()) {
-    <app-state-card
-      type="loading"
-      [message]="'STUDENT_DETAILS.ATTENDANCE_TAB.LOADING' | translate"
-      [framed]="false"
-      size="compact"
+  @if (!loading() && !errorMessage() && termOptions().length > 1) {
+    <app-attendance-term-select
+      [options]="termOptions()"
+      [value]="termId()"
+      (valueChange)="termId.set($event)"
     />
   }
 
-  <!-- Error -->
-  @else if (errorMessage()) {
-    <app-state-card
-      type="error"
-      [message]="errorMessage()"
-      [framed]="false"
-      size="compact"
-      (retry)="loadHistory()"
-    />
-  }
-
-  <!-- The student has no attendance records at all -->
-  @else if (records().length === 0) {
-    <app-state-card
-      type="empty"
-      icon="event_busy"
-      [title]="'STUDENT_DETAILS.ATTENDANCE_TAB.EMPTY.TITLE' | translate"
-      [message]="'STUDENT_DETAILS.ATTENDANCE_TAB.EMPTY.MESSAGE' | translate"
-      [framed]="false"
-      size="compact"
-    />
-  }
-
-  <!-- History -->
-  @else {
-
-    <!-- The numbers: one strip split by lines -->
-    <dl class="stats">
-
-      <div class="stat">
-        <dt>{{ 'STUDENT_DETAILS.ATTENDANCE_TAB.RECORDED_DAYS' | translate }}</dt>
-        <dd class="tabular">{{ stats().recorded }}</dd>
-      </div>
-
-      <div class="stat">
-        <dt>{{ 'ATTENDANCE.STATUS.PRESENT' | translate }}</dt>
-        <dd class="tabular">{{ stats().present }}</dd>
-      </div>
-
-      <div class="stat">
-        <dt>{{ 'ATTENDANCE.STATUS.ABSENT' | translate }}</dt>
-        <dd class="tabular" [class.is-bad]="stats().absent > 0">{{ stats().absent }}</dd>
-      </div>
-
-      <!-- Present ÷ recorded days, with a gold bar -->
-      <div class="stat">
-        <dt>{{ 'STUDENT_DETAILS.ATTENDANCE_TAB.RATE' | translate }}</dt>
-        <dd class="tabular">
-          @if (rate() !== null) {
-            {{ rate() }}%
-            <small>{{ 'STUDENT_DETAILS.ATTENDANCE_TAB.RATE_HINT' | translate }}</small>
-          } @else {
-            <span class="missing">—</span>
-          }
-        </dd>
-
-        @if (rate() !== null) {
-          <div
-            class="rate-bar"
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            [attr.aria-valuenow]="rate()"
-            [attr.aria-label]="'STUDENT_DETAILS.ATTENDANCE_TAB.RATE' | translate"
-          >
-            <span class="rate-fill" [style.width.%]="rate()"></span>
-          </div>
-        }
-      </div>
-
-    </dl>
+</div>
 
 
-    <!-- A day with no record is not shown, and it does not mean "present" -->
-    <p class="history-note">
-      <mat-icon aria-hidden="true">info</mat-icon>
-      <span>{{ 'STUDENT_DETAILS.ATTENDANCE_TAB.NOTE' | translate }}</span>
-    </p>
+<!-- Loading -->
+@if (loading()) {
+  <app-state-card
+    type="loading"
+    [message]="'STUDENT_DETAILS.ATTENDANCE_TAB.LOADING' | translate"
+  />
+}
 
+<!-- Error -->
+@else if (errorMessage()) {
+  <app-state-card
+    type="error"
+    [message]="errorMessage()"
+    (retry)="loadHistory()"
+  />
+}
 
-    <!-- Records (newest day first) -->
-    <div class="records">
+<!-- The student has no attendance records at all -->
+@else if (!term()) {
+  <app-state-card
+    type="empty"
+    icon="event_busy"
+    [title]="'STUDENT_DETAILS.ATTENDANCE_TAB.EMPTY.TITLE' | translate"
+    [message]="'STUDENT_DETAILS.ATTENDANCE_TAB.EMPTY.MESSAGE' | translate"
+  />
+}
 
-      <!-- Wide screens: a table (the header stays visible while scrolling) -->
-      <div class="table-wrapper">
-        <table class="records-table">
-          <thead>
-            <tr>
-              <th scope="col">{{ 'STUDENT_DETAILS.ATTENDANCE_TAB.TABLE.DATE' | translate }}</th>
-              <th scope="col">{{ 'STUDENT_DETAILS.ATTENDANCE_TAB.TABLE.STATUS' | translate }}</th>
-              <th scope="col">{{ 'STUDENT_DETAILS.ATTENDANCE_TAB.TABLE.RECORDED_AT' | translate }}</th>
-              <th scope="col">{{ 'STUDENT_DETAILS.ATTENDANCE_TAB.TABLE.EDITED_AT' | translate }}</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            @for (row of rows(); track row.attendanceId) {
-              <tr>
-                <td class="date">{{ row.date }}</td>
-
-                <td>
-                  <app-status-badge [tone]="row.status === present ? 'ok' : 'bad'">
-                    {{ (row.status === present ? 'ATTENDANCE.STATUS.PRESENT' : 'ATTENDANCE.STATUS.ABSENT') | translate }}
-                  </app-status-badge>
-                </td>
-
-                <td class="time">{{ row.recordedAt }}</td>
-
-                <td class="time">
-                  @if (row.editedAt) {
-                    <span class="edited">
-                      <mat-icon aria-hidden="true">edit</mat-icon>
-                      {{ row.editedAt }}
-                    </span>
-                  } @else {
-                    <span class="missing">—</span>
-                  }
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Phone: two lines per day -->
-      <ul class="records-list">
-        @for (row of rows(); track row.attendanceId) {
-          <li class="record">
-            <div class="record-line">
-              <span class="date">{{ row.date }}</span>
-
-              <app-status-badge [tone]="row.status === present ? 'ok' : 'bad'">
-                {{ (row.status === present ? 'ATTENDANCE.STATUS.PRESENT' : 'ATTENDANCE.STATUS.ABSENT') | translate }}
-              </app-status-badge>
-            </div>
-
-            <div class="record-meta">
-              {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.RECORDED' | translate: { time: row.recordedAt } }}
-
-              @if (row.editedAt) {
-                · {{ 'STUDENT_DETAILS.ATTENDANCE_TAB.EDITED' | translate: { time: row.editedAt } }}
-              }
-            </div>
-          </li>
-        }
-      </ul>
-
-    </div>
-
-  }
-
-</section>
+<!-- One term: the numbers, the calendar and the days absent -->
+@else if (term(); as term) {
+  <app-term-attendance
+    [records]="records()"
+    [summaries]="summaries()"
+    [term]="term"
+    [weeklyDaysOff]="weeklyDaysOff()"
+  />
+}

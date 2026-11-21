@@ -175,3 +175,32 @@ export interface AbsentStudentParent {
   phoneNumber: string;
   isActive: boolean;
 }
+
+
+// =====================================================
+// One student's attendance per term (PR #48)
+// =====================================================
+
+// GET /api/attendance/summary/by-student/{studentId}   (Admin, AssistantPrincipal, Parent)
+// GET /api/attendance/summary/me                       (Student)
+//
+// Only recorded days count: totalRecorded = presentCount + absentCount.
+// A term with no records is NOT in "terms" (so the current term can be
+// missing at the start of a term). terms: [] is not an error.
+export interface AttendanceTermSummary {
+  academicTermId: number;
+  termNameAr: string;
+  termNameEn: string;
+  yearName: string;
+  isCurrent: boolean;
+  presentCount: number;
+  absentCount: number;
+  totalRecorded: number;
+}
+
+export interface StudentAttendanceSummary {
+  studentId: number;
+
+  // Newest term first.
+  terms: AttendanceTermSummary[];
+}

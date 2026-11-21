@@ -2,8 +2,10 @@
 // Student and parent home pages (API Reference, section 15)
 // =====================================================
 //
-// The mock has no attendance and almost no marks at start, so the home
-// page cards take their current-term attendance and newest marks from here.
+// The mock has almost no marks at start, so the home page cards take their
+// newest marks from here. The current-term attendance comes from the
+// records in data/attendance.js when the student has some in the current
+// term (students 2 and 8 do); the attendance here is used otherwise.
 // The student's name, class, section and status come from data/students.js,
 // and the current term from data/academic-terms.js (routes/dashboard.routes.js).
 //

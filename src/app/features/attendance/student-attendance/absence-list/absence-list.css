@@ -1,0 +1,219 @@
+/* ================================
+   «أيام الغياب»: one row per day absent, newest first.
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.absence-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+
+  overflow: hidden;
+}
+
+.absence-head {
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-3);
+
+  padding: var(--sp-4) 20px 0;
+}
+
+.absence-head h2 {
+  flex: 1;
+  min-width: 0;
+
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.absence-meta {
+  color: var(--faint);
+
+  font-size: var(--fs-12);
+}
+
+
+/* ---------- Rows ---------- */
+
+.absence-list {
+  margin: 0;
+
+  padding: var(--sp-2) 0;
+
+  list-style: none;
+}
+
+.absence-list li + li .absence-row {
+  border-block-start: 1px solid var(--rule);
+}
+
+.absence-row {
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-3);
+
+  width: 100%;
+  min-height: var(--row);
+
+  padding: var(--sp-2) 20px;
+
+  border: 0;
+
+  background: none;
+  color: inherit;
+
+  font: inherit;
+  text-align: start;
+
+  cursor: pointer;
+
+  transition: background-color var(--dur);
+}
+
+.absence-row:hover {
+  background: var(--hover);
+}
+
+.absence-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.absence-row.is-selected {
+  background: var(--accent-soft);
+}
+
+.absence-mark {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--r-control);
+
+  background: var(--bad-bg);
+  color: var(--bad-ink);
+}
+
+.absence-mark mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}
+
+.absence-text {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.absence-date {
+  color: var(--text);
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+}
+
+.absence-time {
+  color: var(--muted);
+
+  font-size: var(--fs-12);
+}
+
+.absence-chevron {
+  flex-shrink: 0;
+
+  width: 20px;
+  height: 20px;
+
+  color: var(--faint);
+
+  font-size: 20px;
+}
+
+
+/* ---------- Empty ---------- */
+
+.absence-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 28px 20px 32px;
+
+  text-align: center;
+}
+
+.absence-empty mat-icon {
+  width: 40px;
+  height: 40px;
+
+  color: var(--state-icon);
+
+  font-size: 40px;
+}
+
+.absence-empty strong {
+  color: var(--text);
+
+  font-size: var(--fs-16);
+  font-weight: 700;
+}
+
+.absence-empty p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: var(--fs-13);
+}
+
+
+/* ================================
+   Phone
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .absence-head {
+    padding: 14px var(--sp-4) 0;
+  }
+
+  .absence-row {
+    min-height: 56px;
+
+    padding-inline: var(--sp-4);
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .absence-row {
+    transition: none;
+  }
+
+}
