@@ -127,25 +127,6 @@ export interface DashboardData {
 
 // ===== Shared by the three =====
 
-// One cell of a numbers strip (spec: الأرقام المجمّعة).
-// The label is a translation key. The caption is either a translation key
-// (with its params; a count goes through pluralKey before it gets here)
-// or a text already in the UI language (a list of subject names).
-export interface DashboardNumber {
-  labelKey: string;
-  value: number;
-
-  captionKey?: string;
-  captionParams?: Record<string, string | number>;
-  captionText?: string;
-
-  // The value in red (failed subjects). Default: the normal text colour.
-  isBad?: boolean;
-
-  // Shown instead of value, already formatted ("93%", "—").
-  valueText?: string;
-}
-
 // A piece of the second line of a notice: a translation key with its
 // params, or a text already in the UI language. The pieces are joined by " · ".
 export interface NoticePart {

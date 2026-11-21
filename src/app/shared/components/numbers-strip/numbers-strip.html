@@ -1,0 +1,44 @@
+<section [attr.aria-label]="ariaKey() | translate">
+  <dl class="stats" [style.--columns]="items().length">
+
+    @for (item of items(); track item.labelKey) {
+      <div class="stat" [class.lead]="item.lead">
+
+        <dt>{{ item.labelKey | translate }}</dt>
+
+        <dd class="tabular" [class.is-bad]="item.isBad" [class.is-empty]="item.isEmpty">
+          {{ item.valueText ?? item.value }}
+
+          @if (item.hintKey && !item.isEmpty) {
+            <small>{{ item.hintKey | translate }}</small>
+          }
+        </dd>
+
+        @if (item.bar !== undefined) {
+          <!-- The gold bar takes the place of the caption line -->
+          <div
+            class="bar"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="item.bar"
+            [attr.aria-label]="item.labelKey | translate"
+          >
+            <span class="bar-fill" [style.width.%]="item.bar"></span>
+          </div>
+        } @else {
+          <!-- Always there (even empty), so the numbers line up -->
+          <div class="caption">
+            @if (item.captionKey) {
+              {{ item.captionKey | translate: item.captionParams }}
+            } @else {
+              {{ item.captionText }}
+            }
+          </div>
+        }
+
+      </div>
+    }
+
+  </dl>
+</section>

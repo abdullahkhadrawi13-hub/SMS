@@ -139,7 +139,6 @@
     },
     "ATTENDANCE_NUMBERS": {
       "ARIA": "Attendance this term",
-      "PRESENT": "Days present",
       "OF_DAYS": {
         "ZERO": "No days recorded yet",
         "ONE": "Of 1 recorded day",
@@ -148,10 +147,6 @@
         "MANY": "Of {{count}} recorded days",
         "OTHER": "Of {{count}} recorded days"
       },
-      "ABSENT": "Days absent",
-      "ABSENT_LAST": "Latest on {{date}}",
-      "ABSENT_NONE": "No absences this term",
-      "RATE": "Attendance rate",
       "THIS_TERM": "This term",
       "NONE_YET": "No attendance recorded yet"
     },
@@ -1229,6 +1224,15 @@
     }
   },
 
+  "ATTENDANCE_COUNTS": {
+    "PRESENT": "Days present",
+    "ABSENT": "Days absent",
+    "RECORDED": "Recorded days",
+    "RATE": "Attendance rate",
+    "LAST_ABSENCE": "Last on {{date}}",
+    "NO_ABSENCE": "No absences this term"
+  },
+
   "STUDENT_ATTENDANCE": {
     "MY_TITLE": "My attendance",
     "CHILDREN_TITLE": "Children's attendance",
@@ -1239,13 +1243,8 @@
     "NO_TERM": "There is no current academic term, and no earlier attendance records.",
     "PAST_TERM": "You are viewing an earlier term: {{term}}, {{year}}.",
     "STATS": {
-      "ABSENT": "Days absent",
-      "PRESENT": "Days present",
-      "RECORDED": "Recorded days",
-      "RATE": "Attendance rate",
-      "RATE_HINT": "of recorded days",
-      "LAST_ABSENCE": "Last on {{date}}",
-      "NO_ABSENCE": "No absences this term"
+      "ARIA": "Attendance numbers this term",
+      "RATE_HINT": "of recorded days"
     },
     "CALENDAR": {
       "PREVIOUS": "Previous month",

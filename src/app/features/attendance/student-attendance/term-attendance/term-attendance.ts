@@ -16,22 +16,23 @@ import {
   AttendanceTermSummary,
 } from '../../../../core/models/attendance';
 import { Language } from '../../../../core/services/language';
+import { NumbersStrip } from '../../../../shared/components/numbers-strip/numbers-strip';
 import { todayApiDate } from '../../shared/attendance-shared';
 import { AbsenceList } from '../absence-list/absence-list';
 import { AttendanceCalendar } from '../attendance-calendar/attendance-calendar';
-import { AttendanceStats } from '../attendance-stats/attendance-stats';
 import {
   AttendanceTermOption,
   CalendarMonth,
   getCalendarRange,
-  getCounts,
   getMonthOf,
+  getTermCounts,
   getTermLabelParams,
+  getTermNumbers,
 } from '../student-attendance';
 
 
 // One term of one student's attendance:
-//   the numbers (stats), then the month calendar and «أيام الغياب» side by side
+//   the numbers (app-numbers-strip), then the month calendar and «أيام الغياب» side by side
 //   (one under the other on the phone).
 // Used by «حضوري», «حضور أبنائي» and the "Attendance" tab of the student page.
 // The page loads the data; this only shows the chosen term.
@@ -40,7 +41,7 @@ import {
   imports: [
     MatIconModule,
     TranslatePipe,
-    AttendanceStats,
+    NumbersStrip,
     AttendanceCalendar,
     AbsenceList,
   ],
@@ -77,10 +78,15 @@ export class TermAttendance {
   );
 
   readonly counts = computed(() =>
-    getCounts(
+    getTermCounts(
       this.summaries().find(s => s.academicTermId === this.term().academicTermId) ?? null,
       this.termRecords()
     )
+  );
+
+  // The numbers strip: days absent, present, recorded, and the rate.
+  readonly numbers = computed(() =>
+    getTermNumbers(this.counts(), this.isArabic())
   );
 
   readonly range = computed(() =>

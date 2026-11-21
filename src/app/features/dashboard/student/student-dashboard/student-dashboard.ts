@@ -7,13 +7,13 @@ import { StudentDashboardCard } from '../../../../core/models/dashboard';
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { DashboardService } from '../../../../core/services/dashboard';
 import { Language } from '../../../../core/services/language';
+import { NumbersStrip, NumbersStripItem } from '../../../../shared/components/numbers-strip/numbers-strip';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 
-import { DashboardNumbers } from '../../shared/dashboard-numbers/dashboard-numbers';
 import { StudentMarksCard } from '../student-marks-card/student-marks-card';
 import { StudentInfoCard } from '../student-info-card/student-info-card';
-import { DashboardNumber, StudentInfo } from '../../shared/dashboard.models';
+import { StudentInfo } from '../../shared/dashboard.models';
 import { attendanceNumbers } from '../../shared/attendance-numbers';
 import { getTermSubtitle } from '../../shared/term-subtitle';
 
@@ -30,7 +30,7 @@ import { getTermSubtitle } from '../../shared/term-subtitle';
     TranslatePipe,
     PageHeader,
     StateCard,
-    DashboardNumbers,
+    NumbersStrip,
     StudentMarksCard,
     StudentInfoCard,
   ],
@@ -70,7 +70,7 @@ export class StudentDashboard implements OnInit {
     };
   });
 
-  readonly numbers = computed<DashboardNumber[]>(() => {
+  readonly numbers = computed<NumbersStripItem[]>(() => {
     const card = this.card();
     return card ? attendanceNumbers(card, this.isArabic(), true) : [];
   });

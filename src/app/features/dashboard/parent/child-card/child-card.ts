@@ -5,13 +5,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Language } from '../../../../core/services/language';
 import { StudentDashboardCard } from '../../../../core/models/dashboard';
 import { StudentStatus } from '../../../../core/models/student';
+import { NumbersStrip, NumbersStripItem } from '../../../../shared/components/numbers-strip/numbers-strip';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { StudentStatusBadge } from '../../../../shared/components/student-status/student-status';
 import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
 
-import { DashboardNumbers } from '../../shared/dashboard-numbers/dashboard-numbers';
 import { LatestMarks } from '../../shared/latest-marks/latest-marks';
-import { DashboardNumber } from '../../shared/dashboard.models';
 import { attendanceNumbers, isAbsentToday } from '../../shared/attendance-numbers';
 
 
@@ -23,7 +22,7 @@ import { attendanceNumbers, isAbsentToday } from '../../shared/attendance-number
 // with the student status, without numbers or marks.
 @Component({
   selector: 'app-child-card',
-  imports: [TranslatePipe, RouterLink, StatusBadge, StudentStatusBadge, DashboardNumbers, LatestMarks],
+  imports: [TranslatePipe, RouterLink, StatusBadge, StudentStatusBadge, NumbersStrip, LatestMarks],
   templateUrl: './child-card.html',
   styleUrl: './child-card.css',
 })
@@ -51,7 +50,7 @@ export class ChildCard {
       : `${child.classNameEn} · ${child.sectionEn} · ${child.studentNumber}`;
   });
 
-  readonly numbers = computed<DashboardNumber[]>(() =>
+  readonly numbers = computed<NumbersStripItem[]>(() =>
     attendanceNumbers(this.child(), this.isArabic(), false)
   );
 }
