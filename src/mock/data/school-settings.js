@@ -11,7 +11,8 @@
 // Shape:
 // {
 //   attendanceOfficerTeacherId: 20,  // teacherId, or null when no officer is set
-//   failedSubjectsToRepeat: 1        // the rollover setting (1 to 50, default 1)
+//   failedSubjectsToRepeat: 1,       // the rollover setting (1 to 50, default 1)
+//   school: { ... }                  // GET /api/schoolsettings/school
 // }
 
 const teachers = require('./teachers');
@@ -30,7 +31,18 @@ const schoolSettings = {
   // How many failed subjects (or more) make the rollover preview
   // suggest "Repeat" (GET / PUT /api/schoolsettings/promotion).
   // The rollover mock reads it on every preview.
-  failedSubjectsToRepeat: 1
+  failedSubjectsToRepeat: 1,
+
+  // The school information (GET /api/schoolsettings/school, every user).
+  // weeklyDaysOff: day numbers like Date.getDay() (0 Sunday … 6 Saturday).
+  // The real backend starts with [5, 6] (Friday and Saturday).
+  school: {
+    schoolNameAr: 'مدرسة النور الثانوية',
+    schoolNameEn: 'Al Noor Secondary School',
+    phoneNumber: null,
+    address: null,
+    weeklyDaysOff: [5, 6]
+  }
 };
 
 module.exports = schoolSettings;

@@ -51,14 +51,6 @@ export interface AttendanceSheetTarget {
   date: string;
 }
 
-// Counters shown above a student's attendance history.
-export interface AttendanceHistoryStats {
-  recorded: number;
-  present: number;
-  absent: number;
-}
-
-
 // =====================================================
 // Date helpers
 // =====================================================
@@ -115,18 +107,15 @@ export function formatAttendanceDate(
 // with fromApiDateTime() from shared/utils/date-time.ts (also used by the
 // grades and academic years pages).
 
-// UTC time from the API -> local time of the browser:
-// "08/10/2026 10:18 م" or "08/10/2026, 22:18".
-export function formatAttendanceDateTime(
+// UTC time from the API -> the local time only: "08:05 ص" or "08:05"
+// (when a day was recorded or edited, in the student's attendance).
+export function formatAttendanceTime(
   value: string,
   isArabic: boolean
 ): string {
   return new Intl.DateTimeFormat(
     isArabic ? ATTENDANCE_LOCALE_AR : ATTENDANCE_LOCALE_EN,
     {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     }

@@ -1,0 +1,142 @@
+<section class="calendar-card" aria-labelledby="attendance-month-title">
+
+  <!-- Month name, its counts, and the arrows -->
+  <div class="calendar-head">
+
+    <h2 id="attendance-month-title" aria-live="polite">{{ title() }}</h2>
+
+    @if (records().length > 0) {
+      <span class="month-counts">
+        {{
+          'STUDENT_ATTENDANCE.CALENDAR.MONTH_COUNTS' | translate: {
+            absent: monthCounts().absent,
+            present: monthCounts().present
+          }
+        }}
+      </span>
+    }
+
+    <button
+      type="button"
+      mat-icon-button
+      [disabled]="!hasPrevious()"
+      [attr.aria-label]="'STUDENT_ATTENDANCE.CALENDAR.PREVIOUS' | translate"
+      (click)="previous()"
+    >
+      <mat-icon class="flip" aria-hidden="true">chevron_left</mat-icon>
+    </button>
+
+    <button
+      type="button"
+      mat-icon-button
+      [disabled]="!hasNext()"
+      [attr.aria-label]="'STUDENT_ATTENDANCE.CALENDAR.NEXT' | translate"
+      (click)="next()"
+    >
+      <mat-icon class="flip" aria-hidden="true">chevron_right</mat-icon>
+    </button>
+
+  </div>
+
+
+  <!-- The month, Sunday first -->
+  <div class="calendar-body">
+    <table class="calendar">
+
+      <thead>
+        <tr>
+          @for (weekday of weekdays(); track $index) {
+            <th scope="col" [attr.abbr]="weekday.long">
+              <span class="weekday-long">{{ weekday.long }}</span>
+              <span class="weekday-short" aria-hidden="true">{{ weekday.short }}</span>
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (week of weeks(); track $index) {
+          <tr>
+            @for (day of week; track $index) {
+              <td>
+                @if (day) {
+                  <span
+                    [class]="'day is-' + day.kind"
+                    [class.is-today]="day.isToday"
+                    [class.is-selected]="day.date === selectedDate()"
+                    [attr.data-date]="day.date"
+                    [attr.tabindex]="day.record ? 0 : null"
+                    role="img"
+                    [attr.aria-label]="
+                      day.dateLabel
+                      + (day.statusKey ? ': ' + (day.statusKey | translate) : '')
+                      + (day.isToday ? ' (' + ('STUDENT_ATTENDANCE.CALENDAR.TODAY' | translate) + ')' : '')
+                    "
+                    [matTooltip]="
+                      day.recordedTime
+                        ? (day.statusKey! | translate)
+                          + ' · ' + ('STUDENT_ATTENDANCE.CALENDAR.RECORDED_AT' | translate: { time: day.recordedTime })
+                          + (day.editedTime ? ('STUDENT_ATTENDANCE.CALENDAR.EDITED_AT' | translate: { time: day.editedTime }) : '')
+                        : ''
+                    "
+                    [matTooltipDisabled]="!day.recordedTime"
+                  >
+                    <span class="day-number tabular">{{ day.day }}</span>
+
+                    @switch (day.kind) {
+                      @case ('present') {
+                        <span class="day-mark">
+                          <mat-icon aria-hidden="true">check</mat-icon>
+                          <span class="day-text">{{ 'ATTENDANCE.STATUS.PRESENT' | translate }}</span>
+                        </span>
+                      }
+                      @case ('absent') {
+                        <span class="day-mark">
+                          <mat-icon aria-hidden="true">close</mat-icon>
+                          <span class="day-text">{{ 'ATTENDANCE.STATUS.ABSENT' | translate }}</span>
+                        </span>
+                      }
+                      @case ('unrecorded') {
+                        <span class="day-mark">
+                          <span class="day-dash" aria-hidden="true">—</span>
+                          <span class="day-text">{{ 'STUDENT_ATTENDANCE.CALENDAR.UNRECORDED' | translate }}</span>
+                        </span>
+                      }
+                    }
+                  </span>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+
+    </table>
+  </div>
+
+
+  <!-- The note under the month (from the page: app-term-attendance) -->
+  <ng-content select="[note]" />
+
+
+  <!-- Key: each swatch is the day's own mark, smaller -->
+  <ul class="legend">
+    <li>
+      <span class="swatch is-present" aria-hidden="true"><mat-icon>check</mat-icon></span>
+      {{ 'ATTENDANCE.STATUS.PRESENT' | translate }}
+    </li>
+    <li>
+      <span class="swatch is-absent" aria-hidden="true"><mat-icon>close</mat-icon></span>
+      {{ 'ATTENDANCE.STATUS.ABSENT' | translate }}
+    </li>
+    <li>
+      <span class="swatch is-unrecorded" aria-hidden="true">—</span>
+      {{ 'STUDENT_ATTENDANCE.CALENDAR.UNRECORDED' | translate }}
+    </li>
+    <li>
+      <span class="swatch is-off" aria-hidden="true"></span>
+      {{ 'STUDENT_ATTENDANCE.CALENDAR.WEEKLY_DAY_OFF' | translate }}
+    </li>
+  </ul>
+
+</section>

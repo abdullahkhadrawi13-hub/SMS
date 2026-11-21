@@ -1,0 +1,35 @@
+<!-- An earlier term (the list in the page header, or a graduate's last term) -->
+@if (!term().isCurrent) {
+  <p class="note past-note">
+    <mat-icon aria-hidden="true">history</mat-icon>
+    <span>{{ 'STUDENT_ATTENDANCE.PAST_TERM' | translate: termLabel() }}</span>
+  </p>
+}
+
+<app-attendance-stats [counts]="counts()" />
+
+<div class="term-grid">
+
+  <app-attendance-calendar
+    [records]="termRecords()"
+    [weeklyDaysOff]="weeklyDaysOff()"
+    [range]="range()"
+    [today]="today"
+    [selectedDate]="selectedDate()"
+    [(month)]="month"
+  >
+    <!-- A day with no record is not "present" -->
+    <p note class="note calendar-note">
+      <mat-icon aria-hidden="true">info</mat-icon>
+      <span>{{ 'STUDENT_ATTENDANCE.CALENDAR.NOTE' | translate }}</span>
+    </p>
+  </app-attendance-calendar>
+
+  <app-absence-list
+    [records]="termRecords()"
+    [termName]="termName()"
+    [selectedDate]="selectedDate()"
+    (pick)="showDay($event)"
+  />
+
+</div>

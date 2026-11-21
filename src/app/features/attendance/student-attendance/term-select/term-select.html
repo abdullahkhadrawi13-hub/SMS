@@ -1,0 +1,14 @@
+<div class="field-box is-select">
+  <select
+    [attr.aria-label]="'STUDENT_ATTENDANCE.TERM' | translate"
+    (change)="onChange($any($event.target).value)"
+  >
+    @for (choice of choices(); track choice.id) {
+      <option [value]="choice.id" [selected]="choice.id === value()">
+        {{ 'STUDENT_ATTENDANCE.TERM_LABEL' | translate: choice.label }}
+      </option>
+    }
+  </select>
+
+  <mat-icon class="field-chevron" aria-hidden="true">expand_more</mat-icon>
+</div>

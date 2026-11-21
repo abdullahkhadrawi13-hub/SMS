@@ -12,6 +12,7 @@ import {
   AttendanceSheet,
   AttendanceStatus,
   RecordAttendanceRequest,
+  StudentAttendanceSummary,
   UpdateAttendanceRequest
 } from '../models/attendance';
 import { environment } from '../../../environments/environment';
@@ -102,16 +103,55 @@ export class AttendanceService {
   }
 
 
-  // GET /api/attendance/by-student/{studentId}   (Admin, AssistantPrincipal)
+  // GET /api/attendance/by-student/{studentId}
+  // (Admin, AssistantPrincipal; Parent for their own children)
   // One student's attendance history, in every academic term,
   // sorted oldest to newest. Only recorded days are returned:
   // a day with no record does NOT mean the student was present.
+  // 404 for Admin / AssistantPrincipal when the student does not exist;
+  // 403 for a parent on a student that is not theirs (or does not exist).
   getStudentAttendance(
     studentId: number
   ): Observable<ApiResponse<AttendanceRecord[]>> {
 
     return this.http.get<ApiResponse<AttendanceRecord[]>>(
       `${this.apiUrl}/by-student/${studentId}`
+    );
+  }
+
+
+  // GET /api/attendance/me   (Student)
+  // The logged-in student's own records: the same list and order
+  // as by-student. 404 when the account has no student row.
+  getMyAttendance(): Observable<ApiResponse<AttendanceRecord[]>> {
+
+    return this.http.get<ApiResponse<AttendanceRecord[]>>(
+      `${this.apiUrl}/me`
+    );
+  }
+
+
+  // GET /api/attendance/summary/by-student/{studentId}
+  // (Admin, AssistantPrincipal; Parent for their own children)
+  // Present / absent counts per term, newest term first.
+  // Every term: no academicTermId is sent (the pages show one term at a
+  // time from this list).
+  getStudentSummary(
+    studentId: number
+  ): Observable<ApiResponse<StudentAttendanceSummary>> {
+
+    return this.http.get<ApiResponse<StudentAttendanceSummary>>(
+      `${this.apiUrl}/summary/by-student/${studentId}`
+    );
+  }
+
+
+  // GET /api/attendance/summary/me   (Student)
+  // The same counts for the logged-in student.
+  getMySummary(): Observable<ApiResponse<StudentAttendanceSummary>> {
+
+    return this.http.get<ApiResponse<StudentAttendanceSummary>>(
+      `${this.apiUrl}/summary/me`
     );
   }
 

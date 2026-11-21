@@ -1,0 +1,54 @@
+<section class="absence-card" aria-labelledby="absence-list-title">
+
+  <div class="absence-head">
+    <h2 id="absence-list-title">{{ 'STUDENT_ATTENDANCE.ABSENCES.TITLE' | translate }}</h2>
+    <span class="absence-meta">{{ 'STUDENT_ATTENDANCE.ABSENCES.IN_TERM' | translate: { term: termName() } }}</span>
+  </div>
+
+  @if (rows().length > 0) {
+
+    <ul class="absence-list">
+      @for (row of rows(); track row.attendanceId) {
+        <li>
+          <button
+            type="button"
+            class="absence-row"
+            [class.is-selected]="row.date === selectedDate()"
+            [attr.aria-pressed]="row.date === selectedDate()"
+            (click)="pick.emit(row.date)"
+          >
+            <span class="absence-mark" aria-hidden="true">
+              <mat-icon>close</mat-icon>
+            </span>
+
+            <span class="absence-text">
+              <span class="absence-date">{{ row.dateLabel }}</span>
+              <span class="absence-time">
+                {{ 'STUDENT_ATTENDANCE.ABSENCES.RECORDED_AT' | translate: { time: row.recordedTime } }}
+              </span>
+            </span>
+
+            <mat-icon class="absence-chevron flip" aria-hidden="true">chevron_right</mat-icon>
+          </button>
+        </li>
+      }
+    </ul>
+
+  } @else {
+
+    <!-- No day absent: a whole term without a record, or all present -->
+    <div class="absence-empty">
+      <mat-icon aria-hidden="true">event_available</mat-icon>
+
+      @if (records().length === 0) {
+        <strong>{{ 'STUDENT_ATTENDANCE.EMPTY.TITLE' | translate }}</strong>
+        <p>{{ 'STUDENT_ATTENDANCE.EMPTY.MESSAGE' | translate }}</p>
+      } @else {
+        <strong>{{ 'STUDENT_ATTENDANCE.ABSENCES.NONE_TITLE' | translate }}</strong>
+        <p>{{ 'STUDENT_ATTENDANCE.ABSENCES.NONE_MESSAGE' | translate }}</p>
+      }
+    </div>
+
+  }
+
+</section>

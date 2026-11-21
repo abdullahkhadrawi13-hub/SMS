@@ -1,0 +1,39 @@
+/* ================================
+   «حضوري» (same spacing as «علاماتي»)
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+.student-attendance-page {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Class chip (next to the page title): 24px, 6px corners, 12px/600 */
+.class-chip {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  height: 24px;
+
+  padding-inline: 10px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+
+  background: var(--surface);
+  color: var(--muted);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.class-chip mat-icon {
+  width: 16px;
+  height: 16px;
+
+  font-size: 16px;
+}

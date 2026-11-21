@@ -1,0 +1,85 @@
+/* ================================
+   One term: numbers, then calendar (2/3) and days absent (1/3).
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+}
+
+/* The blue notes: an earlier term (above the numbers), and
+   "a day with no record…" (inside the calendar card, projected) */
+.note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--sp-2);
+
+  margin: 0;
+
+  padding: 10px 14px;
+
+  border-radius: var(--r-control);
+
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+
+  font-size: var(--fs-13);
+  line-height: 1.6;
+}
+
+.note mat-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  margin-block-start: 2px;
+
+  font-size: 18px;
+}
+
+.past-note {
+  margin-block-end: var(--sp-4);
+}
+
+.calendar-note {
+  margin: 0 20px var(--sp-4);
+}
+
+.term-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+  align-items: start;
+
+  gap: var(--sp-6);
+
+  margin-block-start: var(--sp-6);
+}
+
+
+/* ================================
+   Narrow screens: one column, the calendar first
+   ================================ */
+
+@media (max-width: 1099.98px) {
+
+  .term-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+}
+
+@media (max-width: 719.98px) {
+
+  .calendar-note {
+    margin-inline: var(--sp-4);
+  }
+
+  .term-grid {
+    gap: var(--sp-4);
+
+    margin-block-start: var(--sp-4);
+  }
+
+}

@@ -481,22 +481,7 @@
     },
     "ATTENDANCE_TAB": {
       "TITLE": "Attendance record",
-      "RECORDED_DAYS": "Recorded days",
-      "RATE": "Attendance rate",
-      "RATE_HINT": "of recorded days",
-      "TERM": "Academic term",
-      "ALL_TERMS": "All terms",
-      "TERM_NUMBER": "Term #{{id}}",
-      "NOTE": "Only recorded days are listed. A day with no record does not mean the student was present.",
       "LOADING": "Loading attendance history...",
-      "RECORDED": "Recorded {{time}}",
-      "EDITED": "Edited {{time}}",
-      "TABLE": {
-        "DATE": "Date",
-        "STATUS": "Status",
-        "RECORDED_AT": "Recorded at",
-        "EDITED_AT": "Last edit"
-      },
       "EMPTY": {
         "TITLE": "No attendance records",
         "MESSAGE": "No attendance has been recorded for this student yet."
@@ -799,6 +784,7 @@
 
   "SHARED": {
     "SKIP_TO_CONTENT": "Skip to content",
+    "CLASS_SECTION": "{{class}}, section {{section}}",
     "ACCOUNT": {
       "STATUS": "Account status",
       "ACTIVE": "Active",
@@ -1240,6 +1226,59 @@
       "INACTIVE": "The student's record at the school is not active, so the grades are not shown.",
       "GRADUATED": "Graduated from the school, so there are no grades in the current term.",
       "TRANSFERRED": "The student moved to another school, so there are no grades in the current term."
+    }
+  },
+
+  "STUDENT_ATTENDANCE": {
+    "MY_TITLE": "My attendance",
+    "CHILDREN_TITLE": "Children's attendance",
+    "TERM_LABEL": "{{term}}, {{year}}",
+    "TERM": "Academic term",
+    "LOADING": "Loading attendance...",
+    "NOT_FOUND": "The student's record was not found.",
+    "NO_TERM": "There is no current academic term, and no earlier attendance records.",
+    "PAST_TERM": "You are viewing an earlier term: {{term}}, {{year}}.",
+    "STATS": {
+      "ABSENT": "Days absent",
+      "PRESENT": "Days present",
+      "RECORDED": "Recorded days",
+      "RATE": "Attendance rate",
+      "RATE_HINT": "of recorded days",
+      "LAST_ABSENCE": "Last on {{date}}",
+      "NO_ABSENCE": "No absences this term"
+    },
+    "CALENDAR": {
+      "PREVIOUS": "Previous month",
+      "NEXT": "Next month",
+      "MONTH_COUNTS": "This month: {{absent}} absent · {{present}} present",
+      "UNRECORDED": "Not recorded",
+      "DAY_OFF": "Day off",
+      "WEEKLY_DAY_OFF": "Weekly day off",
+      "TODAY": "today",
+      "RECORDED_AT": "recorded {{time}}",
+      "EDITED_AT": ", edited {{time}}",
+      "NOTE": "A day that was not recorded is neither present nor absent: the school has not recorded it yet."
+    },
+    "ABSENCES": {
+      "TITLE": "Days absent",
+      "IN_TERM": "In {{term}}",
+      "RECORDED_AT": "Recorded at {{time}}",
+      "NONE_TITLE": "No days absent",
+      "NONE_MESSAGE": "Every recorded day this term is present."
+    },
+    "EMPTY": {
+      "TITLE": "No days recorded yet",
+      "MESSAGE": "The school has not recorded attendance this term yet. Days will appear here once they are recorded."
+    },
+    "CHILDREN": {
+      "LIST": "Children",
+      "PICK": "Choose a child to see their attendance.",
+      "NONE": "No children are linked to your account.",
+      "INACTIVE": "The student's record at the school is not active, so there is no attendance in the current term.",
+      "GRADUATED": "Graduated from the school, so there is no attendance in the current term.",
+      "TRANSFERRED": "The student moved to another school, so there is no attendance in the current term.",
+      "SHOW_PAST": "See attendance in earlier terms",
+      "NO_PAST": "There are no attendance records in earlier terms."
     }
   },
 

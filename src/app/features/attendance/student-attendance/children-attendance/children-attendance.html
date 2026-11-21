@@ -1,0 +1,133 @@
+<div class="student-attendance-page">
+
+  <!-- Page Header: title, the current term (and "pick a child"),
+       the class (one child) and the term list -->
+  <app-page-header [title]="'STUDENT_ATTENDANCE.CHILDREN_TITLE' | translate">
+
+    @if (currentTermLabel() || hasManyChildren()) {
+      <span subtitle>
+        @if (currentTermLabel(); as label) {
+          {{ 'STUDENT_ATTENDANCE.TERM_LABEL' | translate: label }}@if (hasManyChildren()) {.}
+        }
+
+        @if (hasManyChildren()) {
+          {{ 'STUDENT_ATTENDANCE.CHILDREN.PICK' | translate }}
+        }
+      </span>
+    }
+
+    <!-- One child: no cards, the class is next to the title -->
+    @if (singleChildClass(); as classSection) {
+      <span actions class="class-chip">
+        <mat-icon aria-hidden="true">school</mat-icon>
+        {{ 'SHARED.CLASS_SECTION' | translate: classSection }}
+      </span>
+    }
+
+    <!-- Earlier terms: only when the picked child has more than one term -->
+    @if (!statusMessage() && termOptions().length > 1) {
+      <app-attendance-term-select
+        actions
+        [options]="termOptions()"
+        [value]="termId()"
+        (valueChange)="termId.set($event)"
+      />
+    }
+
+  </app-page-header>
+
+
+  <!-- Loading the children -->
+  @if (childrenLoading()) {
+    <app-state-card
+      type="loading"
+      [message]="'STUDENT_ATTENDANCE.LOADING' | translate"
+    />
+  }
+
+  @else if (childrenError()) {
+    <app-state-card
+      type="error"
+      [message]="childrenError()"
+      (retry)="loadChildren()"
+    />
+  }
+
+  <!-- No children linked to this account -->
+  @else if (cards().length === 0) {
+    <app-state-card
+      type="empty"
+      icon="family_restroom"
+      [message]="'STUDENT_ATTENDANCE.CHILDREN.NONE' | translate"
+    />
+  }
+
+  @else {
+
+    <!-- The children (more than one): pick one -->
+    @if (hasManyChildren()) {
+      <app-child-picker
+        [cards]="cards()"
+        [selectedId]="selectedId()"
+        [label]="'STUDENT_ATTENDANCE.CHILDREN.LIST' | translate"
+        (pick)="select($event)"
+      />
+    }
+
+
+    <!-- The selected child -->
+    @if (statusMessage(); as message) {
+
+      <!-- Not active: no record in the current term. The earlier terms on demand. -->
+      <app-state-card
+        type="empty"
+        [icon]="message.icon"
+        [title]="selectedCard()?.name ?? ''"
+        [message]="message.key | translate"
+      >
+        <button actions mat-stroked-button type="button" (click)="showPastTerms()">
+          <mat-icon aria-hidden="true">history</mat-icon>
+          {{ 'STUDENT_ATTENDANCE.CHILDREN.SHOW_PAST' | translate }}
+        </button>
+      </app-state-card>
+
+    } @else if (attendanceLoading()) {
+
+      <app-state-card
+        type="loading"
+        [message]="'STUDENT_ATTENDANCE.LOADING' | translate"
+      />
+
+    } @else if (attendanceError()) {
+
+      <app-state-card
+        type="error"
+        [message]="attendanceError()"
+        [showRetry]="attendanceRetryable()"
+        (retry)="retryAttendance()"
+      />
+
+    } @else if (selectedAttendance()) {
+
+      @if (term(); as term) {
+        <app-term-attendance
+          [records]="selectedAttendance()!.records"
+          [summaries]="selectedAttendance()!.summaries"
+          [term]="term"
+          [weeklyDaysOff]="weeklyDaysOff()"
+        />
+      } @else {
+        <!-- No record in any term: a child who is not active (earlier
+             terms asked for), or no current term at all -->
+        <app-state-card
+          type="empty"
+          icon="event_busy"
+          [message]="(isSelectedActive() ? 'STUDENT_ATTENDANCE.NO_TERM' : 'STUDENT_ATTENDANCE.CHILDREN.NO_PAST') | translate"
+        />
+      }
+
+    }
+
+  }
+
+</div>

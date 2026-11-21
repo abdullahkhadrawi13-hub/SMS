@@ -3,9 +3,10 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 
 import { attendanceAccessGuard } from '../../core/guards/attendance-access-guard';
 import { roleMatchGuard } from '../../core/guards/role-match-guard';
+import { UserRole } from '../../core/models/user-role';
 import { ATTENDANCE_STAFF_ROLES } from '../../core/services/attendance-access';
 
-// Two routes share the same path (/attendance).
+// Three routes share the same path (/attendance).
 // The router takes the first one that matches the role of the user.
 export const ATTENDANCE_ROUTES: Routes = [
 
@@ -33,13 +34,28 @@ export const ATTENDANCE_ROUTES: Routes = [
         .then(m => m.AttendancePage)
   },
 
-  // Student / Parent: they have no attendance endpoints yet.
-  // Temporary: shows "Coming Soon" until their pages are built.
+  // Student: «حضوري» (their own attendance, read only).
   {
     path: '',
+    canMatch: [roleMatchGuard],
+    data: {
+      roles: [UserRole.Student]
+    },
     loadComponent: () =>
-      import('../../shared/components/coming-soon/coming-soon')
-        .then(m => m.ComingSoon)
+      import('./student-attendance/my-attendance/my-attendance')
+        .then(m => m.MyAttendance)
+  },
+
+  // Parent: «حضور أبنائي» (their children's attendance, read only).
+  {
+    path: '',
+    canMatch: [roleMatchGuard],
+    data: {
+      roles: [UserRole.Parent]
+    },
+    loadComponent: () =>
+      import('./student-attendance/children-attendance/children-attendance')
+        .then(m => m.ChildrenAttendance)
   }
 
 ];

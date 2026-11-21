@@ -1,0 +1,65 @@
+<div class="student-attendance-page">
+
+  <!-- Page Header: title, the current term, the class and the term list -->
+  <app-page-header
+    [title]="'STUDENT_ATTENDANCE.MY_TITLE' | translate"
+    [subtitle]="currentTermLabel() ? ('STUDENT_ATTENDANCE.TERM_LABEL' | translate: currentTermLabel()) : ''"
+  >
+
+    <!-- (Each projected element is the only root of its own @if, so it
+         reaches the [actions] slot of app-page-header.) -->
+    @if (ready() && classSection(); as classSection) {
+      <span actions class="class-chip">
+        <mat-icon aria-hidden="true">school</mat-icon>
+        {{ 'SHARED.CLASS_SECTION' | translate: classSection }}
+      </span>
+    }
+
+    <!-- Earlier terms: only when there is more than one term -->
+    @if (ready() && termOptions().length > 1) {
+      <app-attendance-term-select
+        actions
+        [options]="termOptions()"
+        [value]="termId()"
+        (valueChange)="termId.set($event)"
+      />
+    }
+
+  </app-page-header>
+
+
+  @if (loading()) {
+    <app-state-card
+      type="loading"
+      [message]="'STUDENT_ATTENDANCE.LOADING' | translate"
+    />
+  }
+
+  @else if (errorMessage()) {
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      [showRetry]="errorRetryable()"
+      (retry)="load()"
+    />
+  }
+
+  <!-- No current term and no record in any term -->
+  @else if (!term()) {
+    <app-state-card
+      type="empty"
+      icon="event_busy"
+      [message]="'STUDENT_ATTENDANCE.NO_TERM' | translate"
+    />
+  }
+
+  @else if (term(); as term) {
+    <app-term-attendance
+      [records]="records()"
+      [summaries]="summaries()"
+      [term]="term"
+      [weeklyDaysOff]="weeklyDaysOff()"
+    />
+  }
+
+</div>

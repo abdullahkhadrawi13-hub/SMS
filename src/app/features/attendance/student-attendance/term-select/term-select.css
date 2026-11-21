@@ -1,0 +1,19 @@
+:host {
+  display: block;
+
+  width: 280px;
+  max-width: 100%;
+}
+
+/* Phone: the whole width, 44px to touch */
+@media (max-width: 719.98px) {
+
+  :host {
+    width: 100%;
+  }
+
+  .field-box {
+    height: var(--h-touch);
+  }
+
+}

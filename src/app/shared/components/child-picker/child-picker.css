@@ -1,0 +1,125 @@
+/* ================================
+   Child picker (moved from «علامات أبنائي», same look)
+   Colours and sizes from src/tokens.css only. Logical properties only.
+   ================================ */
+
+:host {
+  display: block;
+}
+
+.children {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+
+  gap: var(--sp-3);
+
+  margin-block-end: var(--sp-4);
+}
+
+.child-card {
+  display: flex;
+  align-items: center;
+
+  gap: var(--sp-3);
+
+  padding: var(--sp-3);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+
+  background: var(--surface);
+  color: inherit;
+
+  font: inherit;
+  text-align: start;
+
+  cursor: pointer;
+
+  transition: border-color var(--dur) ease, background-color var(--dur) ease;
+}
+
+.child-card:hover {
+  border-color: var(--control);
+}
+
+.child-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 2px border: the padding goes down by 1px so the card does not grow */
+.child-card.selected {
+  padding: 11px;
+
+  border: 2px solid var(--accent);
+
+  background: var(--accent-soft);
+}
+
+.child-avatar {
+  width: 40px;
+  height: 40px;
+
+  font-size: var(--fs-14);
+}
+
+.child-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.child-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 4px 6px;
+
+  font-size: var(--fs-14);
+  font-weight: 600;
+
+  color: var(--text);
+}
+
+.child-class {
+  font-size: var(--fs-12);
+
+  color: var(--muted);
+}
+
+
+/* ================================
+   Phone: one row that scrolls sideways
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .children {
+    display: flex;
+
+    overflow-x: auto;
+
+    scroll-snap-type: x mandatory;
+
+    padding-block-end: 6px;
+  }
+
+  .child-card {
+    flex: 0 0 220px;
+
+    scroll-snap-align: start;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .child-card {
+    transition: none;
+  }
+
+}
