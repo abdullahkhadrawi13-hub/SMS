@@ -11,8 +11,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 
-import { MatIconModule } from '@angular/material/icon';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
 import {
@@ -43,8 +41,8 @@ import {
 // The student's Attendance page («حضوري»). Route: /attendance (Student).
 //
 // Three requests together:
-//   GET /api/dashboard/student/me      the class, the section and the current
-//                                      term (also before any day is recorded)
+//   GET /api/dashboard/student/me      the current term (also before any
+//                                      day is recorded)
 //   GET /api/attendance/me             every record, every term
 //   GET /api/attendance/summary/me     the counts per term
 // and GET /api/schoolsettings/school for the weekly days off (never an error).
@@ -54,7 +52,6 @@ import {
 @Component({
   selector: 'app-my-attendance',
   imports: [
-    MatIconModule,
     TranslatePipe,
     PageHeader,
     StateCard,
@@ -83,7 +80,7 @@ export class MyAttendance implements OnInit {
   readonly errorMessage = signal('');
   readonly errorRetryable = signal(true);
 
-  // The data is on the page (the header shows the class and the term list).
+  // The data is on the page (the header shows the term list).
   readonly ready = computed(() => !this.loading() && !this.errorMessage());
 
 
@@ -106,22 +103,6 @@ export class MyAttendance implements OnInit {
   readonly currentTermLabel = computed(() => {
     const current = this.card()?.currentTerm;
     return current ? getTermLabelParams(current, this.isArabic()) : null;
-  });
-
-  readonly classSection = computed(() => {
-
-    const card = this.card();
-
-    if (!card || !(card.classNameAr || card.classNameEn)) {
-      return null;
-    }
-
-    const isArabic = this.isArabic();
-
-    return {
-      class: isArabic ? card.classNameAr || card.classNameEn : card.classNameEn || card.classNameAr,
-      section: isArabic ? card.sectionAr || card.sectionEn : card.sectionEn || card.sectionAr,
-    };
   });
 
 

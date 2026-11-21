@@ -1,19 +1,10 @@
 <div class="student-attendance-page">
 
-  <!-- Page Header: title, the current term, the class and the term list -->
+  <!-- Page Header: title, the current term and the term list -->
   <app-page-header
     [title]="'STUDENT_ATTENDANCE.MY_TITLE' | translate"
     [subtitle]="currentTermLabel() ? ('STUDENT_ATTENDANCE.TERM_LABEL' | translate: currentTermLabel()) : ''"
   >
-
-    <!-- (Each projected element is the only root of its own @if, so it
-         reaches the [actions] slot of app-page-header.) -->
-    @if (ready() && classSection(); as classSection) {
-      <span actions class="class-chip">
-        <mat-icon aria-hidden="true">school</mat-icon>
-        {{ 'SHARED.CLASS_SECTION' | translate: classSection }}
-      </span>
-    }
 
     <!-- Earlier terms: only when there is more than one term -->
     @if (ready() && termOptions().length > 1) {

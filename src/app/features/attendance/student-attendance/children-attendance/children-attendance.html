@@ -1,7 +1,7 @@
 <div class="student-attendance-page">
 
-  <!-- Page Header: title, the current term (and "pick a child"),
-       the class (one child) and the term list -->
+  <!-- Page Header: title, the current term (and "pick a child")
+       and the term list -->
   <app-page-header [title]="'STUDENT_ATTENDANCE.CHILDREN_TITLE' | translate">
 
     @if (currentTermLabel() || hasManyChildren()) {
@@ -13,14 +13,6 @@
         @if (hasManyChildren()) {
           {{ 'STUDENT_ATTENDANCE.CHILDREN.PICK' | translate }}
         }
-      </span>
-    }
-
-    <!-- One child: no cards, the class is next to the title -->
-    @if (singleChildClass(); as classSection) {
-      <span actions class="class-chip">
-        <mat-icon aria-hidden="true">school</mat-icon>
-        {{ 'SHARED.CLASS_SECTION' | translate: classSection }}
       </span>
     }
 

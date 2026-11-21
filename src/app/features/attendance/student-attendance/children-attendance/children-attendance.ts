@@ -58,8 +58,8 @@ interface ChildAttendance {
 
 // The parent's Attendance page («حضور أبنائي»). Route: /attendance (Parent).
 //
-//   1. GET /api/dashboard/parent/me → the children (one card each), their
-//      class and the current term (also before any day is recorded).
+//   1. GET /api/dashboard/parent/me → the children (one card each, with
+//      their class) and the current term (also before any day is recorded).
 //   2. Picking a child → GET /api/attendance/by-student/{id} and
 //      GET /api/attendance/summary/by-student/{id}, together. Each child is
 //      loaded once while the page is open.
@@ -217,13 +217,6 @@ export class ChildrenAttendance implements OnInit {
   readonly term = computed(() =>
     this.termOptions().find(t => t.academicTermId === this.termId()) ?? null
   );
-
-  readonly singleChildClass = computed(() => {
-    const child = this.selectedChild();
-    return !this.hasManyChildren() && child
-      ? this.getClassSection(child, this.isArabic())
-      : null;
-  });
 
 
   ngOnInit(): void {
