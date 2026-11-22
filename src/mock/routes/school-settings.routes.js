@@ -23,7 +23,7 @@ const MAX_FAILED_SUBJECTS = 50;
 // RULES (SMS API Reference - section 12)
 // =====================================================
 //
-// 1. Both endpoints are Admin only.
+// 1. Every endpoint is Admin only, except GET /api/schoolsettings/school.
 //    No token: 401. Any other role: 403. (Both without a body.)
 // 2. GET  /api/schoolsettings/attendance-officer
 //    "data" is the teacherId itself (a number), or null when
@@ -42,6 +42,9 @@ const MAX_FAILED_SUBJECTS = 50;
 //    must be between 1 and 50." (a validation error: data is an array
 //    of the field messages). Returns the saved value in data.
 //    The rollover preview (rollover.routes.js) uses the new value at once.
+// 7. GET  /api/schoolsettings/school: every signed-in user (PR #51).
+// 8. PUT  /api/schoolsettings/school: Admin only. Every field each time;
+//    see validateSchoolInfo() for the rules. Returns the saved information.
 //
 // =====================================================
 // ASSUMPTIONS
@@ -119,6 +122,111 @@ function getCurrentUser(req) {
 }
 
 
+// The validation error shape: messageEn starts with "Validation failed:",
+// and data lists the English field messages.
+function sendValidationError(res, fieldMessages) {
+  sendError(
+    res,
+    400,
+    `فشل التحقق: ${fieldMessages.join(' ')}`,
+    `Validation failed: ${fieldMessages.join(' ')}`,
+    fieldMessages
+  );
+}
+
+
+// Spaces removed at the start and end, one space between words
+// (the backend saves text the same way).
+function cleanText(value) {
+  return typeof value === 'string'
+    ? value.trim().replace(/\s+/g, ' ')
+    : value;
+}
+
+
+// PUT /api/schoolsettings/school rules (API Reference, section 12):
+// names required, at most 100; phone optional (null to clear; "" is
+// invalid), at most 20, a phone number; address optional, at most 200
+// ("" or spaces → null); weeklyDaysOff required, 0–6, not all 7.
+function validateSchoolInfo(body) {
+
+  const fieldErrors = [];
+
+  const schoolNameAr = cleanText(body.schoolNameAr);
+  const schoolNameEn = cleanText(body.schoolNameEn);
+
+  if (!schoolNameAr) {
+    fieldErrors.push('School name in Arabic is required.');
+  } else if (schoolNameAr.length > 100) {
+    fieldErrors.push('School name in Arabic cannot exceed 100 characters.');
+  }
+
+  if (!schoolNameEn) {
+    fieldErrors.push('School name in English is required.');
+  } else if (schoolNameEn.length > 100) {
+    fieldErrors.push('School name in English cannot exceed 100 characters.');
+  }
+
+  let phoneNumber = body.phoneNumber ?? null;
+
+  if (phoneNumber !== null) {
+    phoneNumber = cleanText(String(phoneNumber));
+
+    if (phoneNumber.length > 20) {
+      fieldErrors.push('Phone number cannot exceed 20 characters.');
+    } else if (!/^\+?[0-9 -]{7,}$/.test(phoneNumber)) {
+      // ASSUMPTION: the real backend's phone rule is not known exactly.
+      fieldErrors.push('Invalid phone number.');
+    }
+  }
+
+  let address = cleanText(body.address ?? '');
+
+  if (address.length > 200) {
+    fieldErrors.push('Address cannot exceed 200 characters.');
+  }
+
+  if (address === '') {
+    address = null;
+  }
+
+  if (!Array.isArray(body.weeklyDaysOff)) {
+    fieldErrors.push('weeklyDaysOff is required (send [] for no days off).');
+  }
+
+  if (fieldErrors.length) {
+    return { fieldErrors };
+  }
+
+  const days = body.weeklyDaysOff;
+
+  if (days.some(day => !Number.isInteger(day) || day < 0 || day > 6)) {
+    return {
+      daysError: {
+        ar: 'كل يوم عطلة يجب أن يكون رقمًا من 0 (الأحد) إلى 6 (السبت).',
+        en: 'Each day off must be a number from 0 (Sunday) to 6 (Saturday).'
+      }
+    };
+  }
+
+  // A day sent twice counts once; always in order.
+  const weeklyDaysOff = [...new Set(days)].sort((a, b) => a - b);
+
+  if (weeklyDaysOff.length === 7) {
+    return {
+      daysError: {
+        ar: 'لا يمكن أن تكون كل أيام الأسبوع عطلة.',
+        en: 'Every day of the week cannot be a day off.'
+      }
+    };
+  }
+
+  return {
+    school: { schoolNameAr, schoolNameEn, phoneNumber, address, weeklyDaysOff }
+  };
+}
+
+
 // =====================================================
 // School Settings Routes
 // =====================================================
@@ -179,7 +287,7 @@ async function handleSchoolSettings(req, res, pathname) {
   // =====================================================
   // GET /api/schoolsettings/school (PR #51)
   // The school information and weekly days off
-  // (every signed-in user). PUT is not in the mock yet.
+  // (every signed-in user). PUT is below (Admin).
   // =====================================================
 
   if (
@@ -369,6 +477,51 @@ async function handleSchoolSettings(req, res, pathname) {
       data: {
         failedSubjectsToRepeat: value
       }
+    });
+
+    return;
+  }
+
+
+  // =====================================================
+  // PUT /api/schoolsettings/school (PR #51)
+  // Save the school information: every field, every time
+  // (Admin)
+  // =====================================================
+
+  if (
+    req.method === 'PUT' &&
+    pathname === '/api/schoolsettings/school'
+  ) {
+
+    let body;
+
+    try {
+      body = await readBody(req);
+    } catch {
+      sendError(res, 400, 'الطلب غير صالح.', 'Invalid request body.');
+      return;
+    }
+
+    const result = validateSchoolInfo(body);
+
+    if (result.fieldErrors) {
+      sendValidationError(res, result.fieldErrors);
+      return;
+    }
+
+    if (result.daysError) {
+      sendError(res, 400, result.daysError.ar, result.daysError.en);
+      return;
+    }
+
+    schoolSettings.school = result.school;
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم حفظ معلومات المدرسة بنجاح.',
+      messageEn: 'School information saved successfully.',
+      data: { ...result.school, weeklyDaysOff: [...result.school.weeklyDaysOff] }
     });
 
     return;

@@ -1,0 +1,272 @@
+<div class="school-info-page">
+
+  <!-- Page Header (with the back link to Settings) -->
+  <app-page-header
+    [title]="'SCHOOL_INFO.HEADER.TITLE' | translate"
+    [subtitle]="'SCHOOL_INFO.HEADER.SUBTITLE' | translate"
+    backLink="/settings"
+    [backLabel]="'SCHOOL_INFO.HEADER.BACK' | translate"
+  >
+    <!-- The AssistantPrincipal sees the page read-only -->
+    @if (!canManage()) {
+      <span badge class="read-only-badge">
+        {{ 'SCHOOL_INFO.HEADER.READ_ONLY' | translate }}
+      </span>
+    }
+  </app-page-header>
+
+
+  <!-- Error -->
+  @if (errorMessage()) {
+
+    <app-state-card
+      type="error"
+      [message]="errorMessage() | translate"
+      (retry)="load()"
+    />
+
+  }
+
+  <!-- Loading -->
+  @else if (isLoading()) {
+
+    <app-state-card
+      type="loading"
+      [message]="'SCHOOL_INFO.STATE.LOADING' | translate"
+    />
+
+  }
+
+  <!-- Page Content -->
+  @else {
+
+    <!-- Nothing saved yet: the names are empty and the days off are the default -->
+    @if (isNotSaved()) {
+      <div class="fd-note info page-note" role="note">
+        <mat-icon aria-hidden="true">info</mat-icon>
+        <span>
+          {{ (canManage() ? 'SCHOOL_INFO.NOTE.NOT_SAVED' : 'SCHOOL_INFO.NOTE.NOT_SAVED_READ_ONLY') | translate }}
+        </span>
+      </div>
+    }
+
+    <!-- Read-only (AssistantPrincipal): the whole form is disabled, with no
+         example text in the empty fields, so nothing looks like a value. -->
+    <form class="info-card" [formGroup]="form" novalidate>
+
+      <!-- ===== Name and contact ===== -->
+      <section class="info-section" aria-labelledby="si-contact-title">
+
+        <div class="section-intro">
+          <h2 id="si-contact-title" class="section-title">
+            {{ 'SCHOOL_INFO.CONTACT.TITLE' | translate }}
+          </h2>
+
+          <p class="section-description">
+            {{ 'SCHOOL_INFO.CONTACT.DESCRIPTION' | translate }}
+          </p>
+
+          <p class="section-uses">
+            <mat-icon aria-hidden="true">group</mat-icon>
+            <span>{{ 'SCHOOL_INFO.CONTACT.USES' | translate }}</span>
+          </p>
+        </div>
+
+        <div class="fields">
+
+          <!-- Name in Arabic -->
+          <div class="field">
+            <label class="field-label label-row" for="si-schoolNameAr">
+              {{ 'SCHOOL_INFO.CONTACT.NAME_AR' | translate }}
+              <span class="fd-lang-tag" aria-hidden="true">ع</span>
+            </label>
+
+            <div class="field-box" [class.is-invalid]="isFieldInvalid('schoolNameAr')">
+              <input
+                id="si-schoolNameAr"
+                formControlName="schoolNameAr"
+                [maxlength]="nameMaxLength"
+                [placeholder]="canManage() ? ('SCHOOL_INFO.CONTACT.NAME_AR_PLACEHOLDER' | translate) : ''"
+                [attr.aria-invalid]="isFieldInvalid('schoolNameAr')"
+                [attr.aria-describedby]="describedBy('schoolNameAr')"
+                dir="rtl"
+                autocomplete="off"
+              />
+            </div>
+
+            @if (isFieldInvalid('schoolNameAr')) {
+              <div class="field-error" id="si-schoolNameAr-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>{{ errorKey('schoolNameAr') | translate }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Name in English -->
+          <div class="field">
+            <label class="field-label label-row" for="si-schoolNameEn">
+              {{ 'SCHOOL_INFO.CONTACT.NAME_EN' | translate }}
+              <span class="fd-lang-tag" lang="en" aria-hidden="true">EN</span>
+            </label>
+
+            <div class="field-box" [class.is-invalid]="isFieldInvalid('schoolNameEn')">
+              <input
+                id="si-schoolNameEn"
+                formControlName="schoolNameEn"
+                [maxlength]="nameMaxLength"
+                [placeholder]="canManage() ? ('SCHOOL_INFO.CONTACT.NAME_EN_PLACEHOLDER' | translate) : ''"
+                [attr.aria-invalid]="isFieldInvalid('schoolNameEn')"
+                [attr.aria-describedby]="describedBy('schoolNameEn')"
+                dir="ltr"
+                autocomplete="off"
+              />
+            </div>
+
+            @if (isFieldInvalid('schoolNameEn')) {
+              <div class="field-error" id="si-schoolNameEn-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>{{ errorKey('schoolNameEn') | translate }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Phone (optional) -->
+          <div class="field">
+            <label class="field-label label-row" for="si-phoneNumber">
+              {{ 'SCHOOL_INFO.CONTACT.PHONE' | translate }}
+              <span class="optional">{{ 'SCHOOL_INFO.CONTACT.OPTIONAL' | translate }}</span>
+            </label>
+
+            <div class="field-box" [class.is-invalid]="isFieldInvalid('phoneNumber')">
+              <mat-icon class="field-icon" aria-hidden="true">call</mat-icon>
+              <input
+                id="si-phoneNumber"
+                formControlName="phoneNumber"
+                type="tel"
+                inputmode="tel"
+                [maxlength]="phoneMaxLength"
+                [placeholder]="canManage() ? '+962 6 555 1234' : ''"
+                [attr.aria-invalid]="isFieldInvalid('phoneNumber')"
+                [attr.aria-describedby]="describedBy('phoneNumber', canManage())"
+                (input)="onPhoneInput($event)"
+                dir="ltr"
+                autocomplete="off"
+              />
+            </div>
+
+            @if (isFieldInvalid('phoneNumber')) {
+              <div class="field-error" id="si-phoneNumber-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>{{ errorKey('phoneNumber') | translate }}</span>
+              </div>
+            } @else if (canManage()) {
+              <div class="field-help" id="si-phoneNumber-help">
+                {{ 'SCHOOL_INFO.CONTACT.PHONE_HELP' | translate }}
+              </div>
+            }
+          </div>
+
+          <!-- Address (optional), the whole width -->
+          <div class="field wide">
+            <label class="field-label label-row" for="si-address">
+              {{ 'SCHOOL_INFO.CONTACT.ADDRESS' | translate }}
+              <span class="optional">{{ 'SCHOOL_INFO.CONTACT.OPTIONAL' | translate }}</span>
+            </label>
+
+            <div class="field-box">
+              <mat-icon class="field-icon" aria-hidden="true">location_on</mat-icon>
+              <input
+                id="si-address"
+                formControlName="address"
+                [maxlength]="addressMaxLength"
+                [placeholder]="canManage() ? ('SCHOOL_INFO.CONTACT.ADDRESS_PLACEHOLDER' | translate) : ''"
+                dir="auto"
+                autocomplete="off"
+              />
+            </div>
+
+            @if (canManage()) {
+              <div class="field-count" dir="ltr" aria-hidden="true">
+                {{ formValue().address.length }} / {{ addressMaxLength }}
+              </div>
+            }
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ===== Weekly days off ===== -->
+      <section class="info-section" aria-labelledby="si-days-title">
+
+        <div class="section-intro">
+          <h2 id="si-days-title" class="section-title">
+            {{ 'SCHOOL_INFO.DAYS_OFF.TITLE' | translate }}
+          </h2>
+
+          <p class="section-description">
+            {{ 'SCHOOL_INFO.DAYS_OFF.DESCRIPTION' | translate }}
+          </p>
+
+          <p class="section-uses">
+            <mat-icon aria-hidden="true">calendar_month</mat-icon>
+            <span>{{ 'SCHOOL_INFO.DAYS_OFF.USES' | translate }}</span>
+          </p>
+        </div>
+
+        <div class="days-area">
+
+          <app-school-days-off
+            [days]="daysOff()"
+            [disabled]="!canManage()"
+            [invalid]="everyDayOff()"
+            [describedBy]="everyDayOff() ? 'si-days-error' : null"
+            (dayToggle)="onDayToggle($event)"
+          />
+
+          @if (everyDayOff()) {
+            <div class="field-error days-error" id="si-days-error">
+              <mat-icon aria-hidden="true">error</mat-icon>
+              <span>{{ 'SCHOOL_INFO.VALIDATION.EVERY_DAY_OFF' | translate }}</span>
+            </div>
+          }
+
+          <!-- "العطلة: الجمعة والسبت · 5 أيام دوام", read out after each tick -->
+          <p class="days-summary" role="status" aria-live="polite">
+            @if (daysSummary(); as summary) {
+              {{ 'SCHOOL_INFO.DAYS_OFF.SUMMARY_LABEL' | translate }}
+              <b>{{ summary.names }}</b>
+              · {{ summary.workKey | translate: { count: summary.workDays } }}
+            } @else if (daysOff().length === 0) {
+              {{ 'SCHOOL_INFO.DAYS_OFF.SUMMARY_NONE' | translate }}
+            }
+          </p>
+
+        </div>
+
+      </section>
+
+    </form>
+
+
+    <!-- Save Bar (shared): shown only while something is changed -->
+    @if (canManage() && (hasChanges() || isSaving())) {
+
+      <app-save-bar
+        [title]="'SCHOOL_INFO.SAVE_BAR.TITLE' | translate"
+        [hint]="'SCHOOL_INFO.SAVE_BAR.HINT' | translate"
+        [error]="saveErrorKey() ? (saveErrorKey()! | translate: { count: shownErrorCount() }) : null"
+        [undoLabel]="'SCHOOL_INFO.SAVE_BAR.UNDO' | translate"
+        [saveLabel]="'SCHOOL_INFO.SAVE_BAR.SAVE' | translate"
+        [savingLabel]="'SCHOOL_INFO.SAVE_BAR.SAVING' | translate"
+        [saving]="isSaving()"
+        (undo)="undo()"
+        (save)="save()"
+      ></app-save-bar>
+
+    }
+
+  }
+
+</div>

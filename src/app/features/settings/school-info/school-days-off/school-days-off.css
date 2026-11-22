@@ -1,0 +1,169 @@
+/* ================================
+   Weekly days off
+   7 checkbox tiles. A ticked day takes the "chosen" look of the site
+   (like an active filter): light blue, blue border, "✓ Day off" under it.
+   Colours and sizes come from src/tokens.css (no hex here).
+   ================================ */
+
+:host {
+  display: block;
+}
+
+.days-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* The same look as a field label (styles.css → .field-label) */
+.days-legend {
+  margin-block-end: 6px;
+  padding: 0;
+
+  color: var(--muted);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+
+
+/* ================================
+   One tile
+   ================================ */
+
+.day-option {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+
+.day-option input {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  opacity: 0;
+  cursor: pointer;
+}
+
+.day-face {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 56px;
+  padding-inline: var(--sp-1);
+
+  border: 1px solid var(--control);
+  border-radius: var(--r-control);
+  background: var(--surface);
+
+  color: var(--text);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+
+  pointer-events: none;
+
+  transition:
+    background-color var(--dur),
+    border-color var(--dur),
+    color var(--dur);
+}
+
+.day-name {
+  max-width: 100%;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "✓ عطلة": always one line high, empty on a school day */
+.day-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+
+  min-height: 16px;
+
+  color: var(--accent-ink);
+  font-size: var(--fs-11);
+  font-weight: 600;
+}
+
+.day-tag mat-icon {
+  width: 14px;
+  height: 14px;
+
+  font-size: 14px;
+}
+
+.day-option:hover input:not(:disabled) + .day-face {
+  background: var(--hover);
+}
+
+/* Ticked: a day off */
+.day-option input:checked + .day-face {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.day-option input:focus-visible + .day-face {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Every day ticked: the red border of a wrong field */
+.days.is-invalid .day-face {
+  border-color: var(--bad);
+}
+
+
+/* ================================
+   Read-only (the AssistantPrincipal)
+   The days off keep their blue, the others go grey like a disabled field.
+   ================================ */
+
+.day-option input:disabled {
+  cursor: default;
+}
+
+.day-option input:disabled:not(:checked) + .day-face {
+  border-color: var(--border);
+  background: var(--raised);
+  color: var(--faint);
+}
+
+
+/* ================================
+   Phone (under 720px): 4 + 3 tiles, 52px high
+   ================================ */
+
+@media (max-width: 719.98px) {
+
+  .days {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .day-face {
+    height: 52px;
+  }
+
+}

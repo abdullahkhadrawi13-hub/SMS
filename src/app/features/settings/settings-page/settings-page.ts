@@ -46,6 +46,15 @@ export class SettingsPage {
   private readonly allOptions: SettingsOption[] = [
 
     {
+      title: 'SETTINGS.OPTIONS.SCHOOL_INFO.TITLE',
+      description: 'SETTINGS.OPTIONS.SCHOOL_INFO.DESCRIPTION',
+      icon: 'apartment',
+      route: 'school',
+      visible: this.permissions.canViewSchoolInfo,
+      readOnly: computed(() => !this.permissions.canManageSchoolInfo())
+    },
+
+    {
       title: 'SETTINGS.OPTIONS.ACADEMIC_YEARS.TITLE',
       description: 'SETTINGS.OPTIONS.ACADEMIC_YEARS.DESCRIPTION',
       icon: 'calendar_month',
