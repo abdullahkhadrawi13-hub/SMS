@@ -40,8 +40,8 @@ interface CalendarCell extends CalendarDay {
 
 
 // The month calendar of one term (Sunday first).
-//   present     ✓ in green, on a white day (so the month is not all green)
-//   absent      ✕ on a light red day: the only coloured days
+//   present     ✓ in green, on a very light green day (lighter than the red)
+//   absent      ✕ on a light red day: the ones that stand out
 //   unrecorded  a dashed day with "—": neither present nor absent
 //   off         a grey day (the school's weekly days off)
 //   today       the number in a navy circle

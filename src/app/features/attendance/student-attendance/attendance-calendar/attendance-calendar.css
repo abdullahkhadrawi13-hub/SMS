@@ -1,7 +1,8 @@
 /* ================================
    Attendance calendar: one month, Sunday first.
-   Only the absent days are coloured (light red); a present day is a
-   white day with a small green ✓, so the month is not all green.
+   A present day is a very light green (--ok-soft) with a green ✓, and an
+   absent day light red with a ✕. The green is lighter than the red, so
+   the absent days still stand out (also without telling red from green).
    Colours and sizes from src/tokens.css only. Logical properties only.
    ================================ */
 
@@ -148,34 +149,49 @@
   display: none;
 }
 
-/* present: a white day, a green ✓ */
-.day.is-present .day-mark {
+/* Each kind of day, and its swatch in the key (.swatch, below), share
+   one rule, so the key always matches the days. */
+
+/* present: a very light green day, a green ✓ */
+.day.is-present,
+.swatch.is-present {
+  border-color: var(--ok-soft-line);
+  background: var(--ok-soft);
+}
+
+.day.is-present .day-mark,
+.swatch.is-present {
   color: var(--ok-ink);
 }
 
-/* absent: the only coloured day */
-.day.is-absent {
+/* absent: light red, darker than the green, so it stands out */
+.day.is-absent,
+.swatch.is-absent {
   border-color: var(--bad-line);
   background: var(--bad-bg);
 }
 
-.day.is-absent .day-mark {
+.day.is-absent .day-mark,
+.swatch.is-absent {
   color: var(--bad-ink);
 }
 
 /* unrecorded: dashed, "—" */
-.day.is-unrecorded {
+.day.is-unrecorded,
+.swatch.is-unrecorded {
   border-style: dashed;
   border-color: var(--control);
 }
 
-.day.is-unrecorded .day-mark {
+.day.is-unrecorded .day-mark,
+.swatch.is-unrecorded {
   color: var(--faint);
   font-weight: 400;
 }
 
 /* weekly day off: grey, no word (the legend says it) */
-.day.is-off {
+.day.is-off,
+.swatch.is-off {
   border-color: var(--raised);
   background: var(--raised);
 }
@@ -289,26 +305,7 @@
   font-size: 13px;
 }
 
-.swatch.is-present {
-  color: var(--ok-ink);
-}
-
-.swatch.is-absent {
-  border-color: var(--bad-line);
-  background: var(--bad-bg);
-  color: var(--bad-ink);
-}
-
-.swatch.is-unrecorded {
-  border-style: dashed;
-  border-color: var(--control);
-  color: var(--faint);
-}
-
-.swatch.is-off {
-  border-color: var(--raised);
-  background: var(--raised);
-}
+/* The colours of each swatch: with the day's own rule, above */
 
 
 /* ================================
