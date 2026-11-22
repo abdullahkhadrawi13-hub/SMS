@@ -52,6 +52,34 @@
   font-size: 18px;
 }
 
+/* A weekly day off: a small grey chip after the day in words */
+.day-off-chip {
+  display: inline-flex;
+  align-items: center;
+
+  gap: var(--sp-1);
+
+  height: 24px;
+  padding-inline: var(--sp-2);
+
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+
+  background: var(--raised);
+  color: var(--muted);
+
+  font-size: var(--fs-12);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.day-off-chip mat-icon {
+  width: 15px;
+  height: 15px;
+
+  font-size: 15px;
+}
+
 
 /* ---------- Phone (under 720px) ---------- */
 

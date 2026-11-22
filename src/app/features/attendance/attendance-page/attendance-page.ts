@@ -27,6 +27,7 @@ import {
   AttendanceSheetTarget,
   AttendanceTab
 } from '../shared/attendance-shared';
+import { AttendanceDaysOff } from '../shared/attendance-days-off';
 
 import { AttendanceAccessService } from '../../../core/services/attendance-access';
 import { Language } from '../../../core/services/language';
@@ -43,6 +44,9 @@ import { Language } from '../../../core/services/language';
 // (?classId= &sectionId= &date=, see record-tab).
 // The three tabs stay alive while switching ([hidden], not @if), so the
 // unsaved marks of the sheet and the absentees search are not lost.
+//
+// AttendanceDaysOff (the school's weekly days off) is provided here, so the
+// page asks for it once and the record tab and the day bar share it.
 @Component({
   selector: 'app-attendance-page',
   imports: [
@@ -55,6 +59,7 @@ import { Language } from '../../../core/services/language';
     MatTabsModule,
     TranslatePipe
   ],
+  providers: [AttendanceDaysOff],
   templateUrl: './attendance-page.html',
   styleUrl: './attendance-page.css',
 })

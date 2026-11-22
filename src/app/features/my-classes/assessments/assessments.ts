@@ -34,6 +34,7 @@ export interface AssessmentFormData {
   // Edit mode only.
   assessment?: Assessment;
 
-  // Add mode: the order of the new assessment (after the last one).
-  nextOrder: number;
+  // Called on a 409 (someone saved at the same moment): the page loads its
+  // list again behind the dialog, which stays open with what was typed.
+  reloadList: () => void;
 }

@@ -50,7 +50,7 @@ import {
   WEEK_DAYS,
   isSameAsSaved,
   notEveryDayOffValidator,
-  phoneDigitsValidator,
+  phoneLengthValidator,
   toFormValue,
   toSaveRequest,
 } from '../school-info';
@@ -132,7 +132,7 @@ export class SchoolInfoPage implements LeaveConfirmation {
   readonly form = this.fb.nonNullable.group({
     schoolNameAr: ['', [requiredTextValidator, Validators.pattern(SCHOOL_NAME_AR)]],
     schoolNameEn: ['', [requiredTextValidator, Validators.pattern(SCHOOL_NAME_EN)]],
-    phoneNumber: ['', [Validators.pattern(SCHOOL_PHONE), phoneDigitsValidator]],
+    phoneNumber: ['', [Validators.pattern(SCHOOL_PHONE), phoneLengthValidator]],
     address: [''],
     weeklyDaysOff: this.fb.nonNullable.control<number[]>([], notEveryDayOffValidator),
   });
@@ -317,7 +317,7 @@ export class SchoolInfoPage implements LeaveConfirmation {
   // When a field shows its error (the same timing as the students form):
   //   - a wrong kind of character (English letters in the Arabic name,
   //     a letter in the phone) shows at once, while typing
-  //   - too few digits in the phone shows when the user leaves the field
+  //   - not 10 digits in the phone shows when the user leaves the field
   //   - an empty name says "required" only after pressing Save
   //   - after pressing Save every error shows until it is fixed
   isFieldInvalid(name: TextField): boolean {
@@ -351,7 +351,10 @@ export class SchoolInfoPage implements LeaveConfirmation {
       return 'SCHOOL_INFO.VALIDATION.ENGLISH_ONLY';
     }
 
-    return 'SCHOOL_INFO.VALIDATION.PHONE';
+    // The phone: a wrong character, or not 10 digits.
+    return control.hasError('pattern')
+      ? 'SCHOOL_INFO.VALIDATION.DIGITS_ONLY'
+      : 'SCHOOL_INFO.VALIDATION.PHONE';
   }
 
 

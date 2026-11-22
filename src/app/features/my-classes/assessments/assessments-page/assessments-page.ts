@@ -353,16 +353,15 @@ export class AssessmentsPage implements OnInit {
   // Actions (open components only)
   // =========================
 
+  // No order is sent: the backend puts the new assessment last (PR #42).
   openAddAssessment(group: ComponentGroup): void {
-
-    const lastOrder = Math.max(0, ...group.assessments.map(a => a.order));
 
     this.openForm({
       mode: 'add',
       teacherAssignmentId: this.teacherAssignmentId,
       component: group.component,
       componentName: group.componentName,
-      nextOrder: lastOrder + 1,
+      reloadList: () => this.reloadAssessments(),
     });
   }
 
@@ -375,7 +374,7 @@ export class AssessmentsPage implements OnInit {
       component: group.component,
       componentName: group.componentName,
       assessment,
-      nextOrder: assessment.order,
+      reloadList: () => this.reloadAssessments(),
     });
   }
 

@@ -332,6 +332,20 @@ button:focus-visible,
   font-size: 18px;
 }
 
+/* The school's weekly days off in the calendar (attendance page,
+   [dateClass] → 'is-day-off', 22 Nov 2026): a grey day, still pickable.
+   Here, not in a component file: the calendar opens in the overlay.
+   The selected day keeps the navy circle, today keeps its ring. */
+.mat-calendar-body-cell.is-day-off > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  background: var(--ground);
+  color: var(--faint);
+}
+
+.mat-calendar-body-cell.is-day-off:not(.mat-calendar-body-disabled):hover
+  > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  background: var(--track);
+}
+
 .field-help {
   color: var(--faint);
   font-size: var(--fs-12);

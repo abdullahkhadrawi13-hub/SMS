@@ -12,6 +12,7 @@ import {
   fromApiDate,
   toApiDate
 } from '../attendance-shared';
+import { AttendanceDaysOff } from '../attendance-days-off';
 
 // The day of the daily summary and of the absentees tab, on the page
 // background above their content: the date field, the "Today" button and
@@ -29,6 +30,10 @@ import {
 //   and the day in words.
 //
 // The date field look is shared: styles.css (.field-box.is-date).
+//
+// The school's weekly days off (AttendanceDaysOff, from the page) are grey
+// in the calendar but can still be picked; a day off gets a small
+// "عطلة أسبوعية" chip after the day in words (22 Nov 2026).
 @Component({
   selector: 'app-day-bar',
   imports: [
@@ -43,6 +48,7 @@ import {
 export class DayBar {
 
   private readonly language = inject(Language);
+  private readonly daysOff = inject(AttendanceDaysOff);
 
   // The selected day, and the last day that can be chosen (today).
   readonly date = input.required<string>();
@@ -57,6 +63,12 @@ export class DayBar {
   // The date picker works with Date objects.
   readonly dateValue = computed(() => fromApiDate(this.date()));
   readonly maxDateValue = computed(() => fromApiDate(this.maxDate()));
+
+  // [dateClass] of the calendar: the days off are grey.
+  readonly dateClass = this.daysOff.dateClass;
+
+  // The chip: only when the days off are known (not on the default).
+  readonly isDayOff = computed(() => this.daysOff.dayOff(this.date()) !== null);
 
   readonly isToday = computed(() => this.date() === this.maxDate());
 

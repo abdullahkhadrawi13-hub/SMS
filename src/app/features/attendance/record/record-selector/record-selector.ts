@@ -14,10 +14,15 @@ import {
   fromApiDate,
   toApiDate
 } from '../../shared/attendance-shared';
+import { AttendanceDaysOff } from '../../shared/attendance-days-off';
 
 // The three fields above the attendance sheet: class, section and date.
 // It only shows the selection and reports changes; the record tab owns
 // the data (and keeps the selection in the URL).
+//
+// The school's weekly days off (AttendanceDaysOff, from the page) are grey
+// in the calendar but can still be picked; when the chosen date is a day
+// off, a note under the fields says so (22 Nov 2026).
 @Component({
   selector: 'app-record-selector',
   imports: [
@@ -32,6 +37,7 @@ import {
 export class RecordSelector {
 
   private readonly language = inject(Language);
+  private readonly daysOff = inject(AttendanceDaysOff);
 
   // ===== Inputs (all data is owned and loaded by the record tab) =====
 
@@ -73,6 +79,27 @@ export class RecordSelector {
   private readonly isArabic = computed(
     () => this.language.currentDirection() === 'rtl'
   );
+
+  // [dateClass] of the calendar: the days off are grey.
+  readonly dateClass = this.daysOff.dateClass;
+
+  // The note when the chosen date is a known day off. Its wording follows
+  // the date, not the role: "اليوم الجمعة، وهو عطلة…" for today,
+  // "الجمعة عطلة أسبوعية…" for an earlier day.
+  readonly dayOffNote = computed(() => {
+    const day = this.daysOff.dayOff(this.date());
+
+    if (day === null) {
+      return null;
+    }
+
+    return {
+      key: this.date() === this.maxDate()
+        ? 'ATTENDANCE.RECORD_SELECTOR.DAY_OFF_TODAY'
+        : 'ATTENDANCE.RECORD_SELECTOR.DAY_OFF_PAST',
+      dayKey: `SCHOOL_INFO.DAYS.${day}`,
+    };
+  });
 
   // The locked date as text: "السبت، 10/10/2026" or "Saturday, 10/10/2026".
   readonly displayDate = computed(() =>
