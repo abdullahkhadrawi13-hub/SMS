@@ -39,6 +39,9 @@
 
   /* meaning: attendance, results, status */
   --ok-bg: #dcf3e5;   --ok-ink: #0f4a2b;   --ok-line: #b9e3c9;
+  /* a lighter green for the present days of the attendance calendar, so the
+     absent days (light red) stay the darker ones — chosen 22 Nov 2026 */
+  --ok-soft: #f0f9f3; --ok-soft-line: #d4eedd;
   --bad-bg: #fdeae7;  --bad-ink: #831c1e;  --bad: #c4242a;  --bad-line: #f3c6c0;
   --warn-bg: #fff6dd; --warn-ink: #7c4508; --warn-line: #f0d189;
   --gold-bg: #f7edd6; --gold-ink: #5c410b;
