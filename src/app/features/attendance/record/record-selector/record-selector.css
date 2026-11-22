@@ -53,6 +53,15 @@
   font-size: 18px;
 }
 
+/* A weekly day off: a calm blue note (the sheet still works),
+   not the warm "unsaved changes" one */
+.selector-note.is-day-off {
+  border-color: transparent;
+
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
 
 /* ---------- Phone (under 720px): one field per line ---------- */
 

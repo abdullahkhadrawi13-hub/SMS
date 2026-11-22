@@ -145,7 +145,7 @@
                 type="tel"
                 inputmode="tel"
                 [maxlength]="phoneMaxLength"
-                [placeholder]="canManage() ? '+962 6 555 1234' : ''"
+                [placeholder]="canManage() ? '0791234567' : ''"
                 [attr.aria-invalid]="isFieldInvalid('phoneNumber')"
                 [attr.aria-describedby]="describedBy('phoneNumber', canManage())"
                 (input)="onPhoneInput($event)"

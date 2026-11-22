@@ -51,6 +51,64 @@
   font-size: 18px;
 }
 
+/* ---------- Study information (Student) ---------- */
+
+/* A graduate's "Graduated from …" takes the whole row
+   (no column rule, no side padding). */
+.dd-item.pf-wide {
+  grid-column: 1 / -1;
+
+  padding-inline: 0;
+
+  border-inline-start: 0;
+}
+
+/* The load error: the note with "Try again" as a text link */
+.pf-study-error {
+  margin-block-start: 0;
+}
+
+.pf-retry {
+  min-height: 0;
+  padding: 0;
+
+  vertical-align: baseline;
+}
+
+/* Loading: a grey bar in place of each value */
+.pf-skeleton {
+  display: inline-block;
+
+  width: 72px;
+  height: 12px;
+
+  border-radius: var(--r-pill);
+
+  background: var(--rule);
+
+  animation: pf-pulse 1.2s ease-in-out infinite;
+}
+
+.pf-skeleton.is-long {
+  width: 96px;
+}
+
+.pf-skeleton.is-short {
+  width: 24px;
+}
+
+@keyframes pf-pulse {
+  50% { opacity: .5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .pf-skeleton {
+    animation: none;
+  }
+
+}
+
 /* Phone (under 720px): 44px for touch */
 @media (max-width: 719.98px) {
 

@@ -4,6 +4,7 @@ import {
   SaveSchoolInfoRequest,
   SchoolInfo,
 } from '../../../core/models/school-settings';
+import { PHONE_LENGTH } from '../../../shared/utils/form-validators';
 
 // Shared rules and helpers of the school information page (UI only).
 // API Reference, section 12: GET / PUT /api/schoolsettings/school.
@@ -14,7 +15,9 @@ import {
 // =====================================================
 
 export const SCHOOL_NAME_MAX_LENGTH = 100;
-export const SCHOOL_PHONE_MAX_LENGTH = 20;
+// The phone: exactly 10 digits, like the students form (22 Nov 2026;
+// the backend accepts up to 20 characters).
+export const SCHOOL_PHONE_MAX_LENGTH = PHONE_LENGTH;
 export const SCHOOL_ADDRESS_MAX_LENGTH = 200;
 
 // The 7 days, numbered like JavaScript Date.getDay(): 0 Sunday … 6 Saturday.
@@ -38,29 +41,23 @@ export const SCHOOL_NAME_AR = /^[ء-ْ٠-٩0-9\s.()،-]+$/;
 // English name: English letters, digits, spaces and . , ' & ( ) -
 export const SCHOOL_NAME_EN = /^[A-Za-z0-9\s.,'&()-]+$/;
 
-// Phone: an optional + at the start, then digits, spaces and hyphens
-// ("+962 6 555 1234"). Arabic digits never get here: they are turned
-// into English ones while typing (toEnglishDigits).
-export const SCHOOL_PHONE = /^\+?[0-9 -]*$/;
-
-// A phone number has at least this many digits (the spaces, hyphens
-// and + are not counted).
-export const SCHOOL_PHONE_MIN_DIGITS = 7;
+// Phone: digits only, like the students form (22 Nov 2026; before: an
+// optional + then digits, spaces and hyphens). Arabic digits never get
+// here: they are turned into English ones while typing (toEnglishDigits).
+// A wrong character shows its error at once (a pattern error).
+export const SCHOOL_PHONE = /^[0-9]*$/;
 
 
-// Too few digits in the phone number. An empty phone is fine (optional).
-export function phoneDigitsValidator(control: AbstractControl<string>): ValidationErrors | null {
+// Not exactly 10 digits (the input stops at 10, so: too few). Shown when
+// the user leaves the field. An empty phone is fine (optional).
+export function phoneLengthValidator(control: AbstractControl<string>): ValidationErrors | null {
   const value = control.value.trim();
 
-  if (value === '') {
+  if (value === '' || value.length === PHONE_LENGTH) {
     return null;
   }
 
-  const digits = value.replace(/\D/g, '').length;
-
-  return digits >= SCHOOL_PHONE_MIN_DIGITS
-    ? null
-    : { phoneDigits: { required: SCHOOL_PHONE_MIN_DIGITS, actual: digits } };
+  return { phoneLength: { required: PHONE_LENGTH, actual: value.length } };
 }
 
 

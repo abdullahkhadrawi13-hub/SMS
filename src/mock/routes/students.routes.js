@@ -7,6 +7,11 @@ const teacherAssignments = require('../data/teacher-assignments');
 const academicTerms = require('../data/academic-terms');
 
 const TEACHER_ROLE = 2;
+const STUDENT_ROLE = 3;
+
+// The "student" account (userId 4) has no student row of its own:
+// it is student 2, like in routes/dashboard.routes.js.
+const MOCK_STUDENT_LINKS = { 4: 2 };
 
 
 function sendJson(res, statusCode, body) {
@@ -141,6 +146,63 @@ function studentsRoutes(req, res) {
 
   if (!pathname.startsWith('/api/Students')) {
     return false;
+  }
+
+
+  // =====================================================
+  // GET /api/Students/me (Student, PR #47)
+  // The logged-in student's own profile: the same shape as {id}.
+  // 404 when the account has no student row; any other role 403.
+  // =====================================================
+
+  if (
+    req.method === 'GET' &&
+    /^\/api\/Students\/me$/i.test(pathname)
+  ) {
+
+    const currentUser = getCurrentUser(req);
+
+    if (currentUser?.role !== STUDENT_ROLE) {
+
+      sendJson(res, 403, {
+        success: false,
+        messageAr: 'ليس لديك صلاحية للوصول.',
+        messageEn: 'You do not have permission to access this.',
+        data: null
+      });
+
+      return true;
+    }
+
+    const linkedId = MOCK_STUDENT_LINKS[currentUser.userId];
+
+    const student =
+      students.find(item =>
+        linkedId !== undefined
+          ? item.studentId === linkedId
+          : item.userId === currentUser.userId
+      );
+
+    if (!student) {
+
+      sendJson(res, 404, {
+        success: false,
+        messageAr: 'الطالب غير موجود.',
+        messageEn: 'Student not found.',
+        data: null
+      });
+
+      return true;
+    }
+
+    sendJson(res, 200, {
+      success: true,
+      messageAr: 'تم جلب بيانات الطالب بنجاح',
+      messageEn: 'Student retrieved successfully',
+      data: toStudentDto(student)
+    });
+
+    return true;
   }
 
 

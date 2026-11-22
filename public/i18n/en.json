@@ -122,7 +122,17 @@
     "PASSWORD": "Password",
     "CHANGE_PASSWORD": "Change",
     "CHANGE_PASSWORD_LABEL": "Change password",
-    "EDIT_NOTE": "To change your name or phone number, contact the school administration."
+    "EDIT_NOTE": "To change your name or phone number, contact the school administration.",
+    "STUDY_INFO": "Study information",
+    "STUDY_INFO_DESCRIPTION": "Your class and section this term",
+    "STUDENT_NUMBER": "Student number",
+    "STUDENT_STATUS": "Student status",
+    "CLASS": "Class",
+    "SECTION": "Section",
+    "LAST_CLASS": "Last class",
+    "GRADUATED_FROM": "Graduated from {{class}} · Section {{section}}",
+    "STUDY_LOAD_FAILED": "The study information could not be loaded.",
+    "RETRY": "Try again"
   },
 
   "DASHBOARD": {
@@ -1753,7 +1763,8 @@
       "DATE": "Date",
       "OPEN_CALENDAR": "Open calendar",
       "TODAY": "Today",
-      "TODAY_ONLY": "Today only"
+      "TODAY_ONLY": "Today only",
+      "DAY_OFF": "Weekly day off"
     },
 
     "RECORD_SELECTOR": {
@@ -1765,7 +1776,9 @@
       "DATE": "Date",
       "OPEN_CALENDAR": "Open calendar",
       "LOCKED_HINT": "Save or reset your changes first to change the class, section or date.",
-      "TODAY_ONLY_HINT": "You can record attendance for today only."
+      "TODAY_ONLY_HINT": "You can record attendance for today only.",
+      "DAY_OFF_TODAY": "Today is {{day}}, a weekly day off in the school information. Record attendance only if today is a school day.",
+      "DAY_OFF_PAST": "{{day}} is a weekly day off in the school information. Record attendance only if this day was a school day."
     },
 
     "RECORD_SHEET": {
@@ -1919,7 +1932,7 @@
         "NAME_AR": "School name in Arabic",
         "NAME_EN": "School name in English",
         "PHONE": "Phone number",
-        "PHONE_HELP": "Digits only, may start with +",
+        "PHONE_HELP": "10 digits",
         "ADDRESS": "Address",
         "OPTIONAL": "(optional)",
         "NAME_AR_PLACEHOLDER": "مثال: مدرسة النور الثانوية",
@@ -1929,7 +1942,7 @@
       "DAYS_OFF": {
         "TITLE": "Weekly days off",
         "DESCRIPTION": "The days of the week with no school.",
-        "USES": "Shown in grey on the attendance calendar: My Attendance, My Children's Attendance and the student page's Attendance tab.",
+        "USES": "Shown in grey on the attendance calendars: My Attendance, My Children's Attendance, the student page's Attendance tab, and the date picker of the Attendance page.",
         "LEGEND": "Choose the days off",
         "DAY_OFF": "Day off",
         "SUMMARY_NONE": "No weekly days off · 7 school days",
@@ -1956,7 +1969,8 @@
         "REQUIRED": "This field is required.",
         "ARABIC_ONLY": "Write the name in Arabic letters.",
         "ENGLISH_ONLY": "Write the name in English letters.",
-        "PHONE": "Invalid phone number.",
+        "PHONE": "The phone number must have exactly 10 digits.",
+        "DIGITS_ONLY": "Digits only.",
         "EVERY_DAY_OFF": "Every day of the week cannot be a day off."
       },
       "SAVE_BAR": {

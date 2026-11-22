@@ -67,6 +67,17 @@ export class Students {
   }
 
 
+  // GET /api/students/me (Student, PR #47)
+  // The logged-in student's own profile: the same shape as getStudent().
+  // 404 when the account has no student row; any other role gets 403.
+  getMyProfile(): Observable<ApiResponse<Student>> {
+
+    return this.http.get<ApiResponse<Student>>(
+      `${this.apiUrl}/me`
+    );
+  }
+
+
   createStudent(
     data: CreateStudentRequest
   ): Observable<ApiResponse<Student>> {

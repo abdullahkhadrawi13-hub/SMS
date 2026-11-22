@@ -33,7 +33,7 @@
         <mat-icon aria-hidden="true">calendar_today</mat-icon>
       </button>
 
-      <mat-datepicker #datePicker></mat-datepicker>
+      <mat-datepicker #datePicker [dateClass]="dateClass()"></mat-datepicker>
 
     </div>
 
@@ -51,5 +51,14 @@
   }
 
   <span class="day-text">{{ displayDate() }}</span>
+
+  <!-- One of the school's weekly days off (a mark only) -->
+  @if (isDayOff()) {
+    <span class="day-off-chip">
+      <mat-icon aria-hidden="true">event_busy</mat-icon>
+
+      {{ 'ATTENDANCE.DAY_BAR.DAY_OFF' | translate }}
+    </span>
+  }
 
 </div>

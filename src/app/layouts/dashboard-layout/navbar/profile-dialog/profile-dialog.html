@@ -98,6 +98,110 @@
     </section>
 
 
+    <!-- ---------- Study information (Student only, GET /api/students/me) ---------- -->
+    @if (isStudent()) {
+      <section class="fd-section" aria-labelledby="pf-study-title" [attr.aria-busy]="studyLoading()">
+
+        <div class="fd-section-head">
+          <h3 id="pf-study-title">{{ 'PROFILE_DIALOG.STUDY_INFO' | translate }}</h3>
+          @if (!isGraduated() && !studyError()) {
+            <span class="fd-section-hint">· {{ 'PROFILE_DIALOG.STUDY_INFO_DESCRIPTION' | translate }}</span>
+          }
+        </div>
+
+        @if (studyError()) {
+
+          <!-- The request failed: only this section says so -->
+          <div class="fd-note info pf-study-error" role="alert">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>
+              {{ 'PROFILE_DIALOG.STUDY_LOAD_FAILED' | translate }}
+              <button type="button" class="pf-change pf-retry" (click)="loadStudyInfo()">
+                {{ 'PROFILE_DIALOG.RETRY' | translate }}
+              </button>
+            </span>
+          </div>
+
+        } @else if (studentInfo(); as info) {
+
+          <dl class="dd-list">
+
+            <div class="dd-item">
+              <dt>{{ 'PROFILE_DIALOG.STUDENT_NUMBER' | translate }}</dt>
+              <dd><bdi dir="ltr" class="tabular">{{ info.studentNumber }}</bdi></dd>
+            </div>
+
+            <div class="dd-item">
+              <dt>{{ 'PROFILE_DIALOG.STUDENT_STATUS' | translate }}</dt>
+              <dd><app-student-status [status]="info.studentStatus" /></dd>
+            </div>
+
+            @if (isGraduated()) {
+
+              <!-- A graduate: the class they graduated from, on one line -->
+              <div class="dd-item pf-wide">
+                <dt>{{ 'PROFILE_DIALOG.LAST_CLASS' | translate }}</dt>
+                <dd>
+                  {{ 'PROFILE_DIALOG.GRADUATED_FROM' | translate: { class: className(), section: sectionName() } }}
+                </dd>
+              </div>
+
+            } @else {
+
+              <div class="dd-item">
+                <dt>{{ 'PROFILE_DIALOG.CLASS' | translate }}</dt>
+                <dd>
+                  @if (className()) {
+                    {{ className() }}
+                  } @else {
+                    <span class="dd-missing">—</span>
+                  }
+                </dd>
+              </div>
+
+              <div class="dd-item">
+                <dt>{{ 'PROFILE_DIALOG.SECTION' | translate }}</dt>
+                <dd>
+                  @if (sectionName()) {
+                    {{ sectionName() }}
+                  } @else {
+                    <span class="dd-missing">—</span>
+                  }
+                </dd>
+              </div>
+
+            }
+
+          </dl>
+
+        } @else {
+
+          <!-- Loading: the four rows with grey bars -->
+          <dl class="dd-list" aria-hidden="true">
+            <div class="dd-item">
+              <dt>{{ 'PROFILE_DIALOG.STUDENT_NUMBER' | translate }}</dt>
+              <dd><span class="pf-skeleton is-long"></span></dd>
+            </div>
+            <div class="dd-item">
+              <dt>{{ 'PROFILE_DIALOG.STUDENT_STATUS' | translate }}</dt>
+              <dd><span class="pf-skeleton"></span></dd>
+            </div>
+            <div class="dd-item">
+              <dt>{{ 'PROFILE_DIALOG.CLASS' | translate }}</dt>
+              <dd><span class="pf-skeleton"></span></dd>
+            </div>
+            <div class="dd-item">
+              <dt>{{ 'PROFILE_DIALOG.SECTION' | translate }}</dt>
+              <dd><span class="pf-skeleton is-short"></span></dd>
+            </div>
+          </dl>
+
+        }
+
+      </section>
+    }
+
+
     <!-- ---------- Account (the role is in the header) ---------- -->
     <section class="fd-section" aria-labelledby="pf-account-title">
 

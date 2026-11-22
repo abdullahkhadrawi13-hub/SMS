@@ -53,21 +53,25 @@ export interface Assessment {
 
 // Body of POST /api/assessments.
 // Only under an open component of the assignment's subject plan.
+// order is optional (PR #42): left out, the backend puts the new assessment
+// after the last one of its component. The frontend leaves it out, so two
+// teachers adding at the same moment never ask for the same order.
 export interface CreateAssessmentRequest {
   teacherAssignmentId: number;
   subjectPlanComponentId: number;
   nameAr: string;
   nameEn: string;
   maxMark: number;
-  order: number;
+  order?: number;
 }
 
 
 // Body of PUT /api/assessments/{assessmentId}.
 // Teacher-added assessments only. The component never changes.
+// order is optional (PR #42): left out, the assessment keeps its place.
 export interface UpdateAssessmentRequest {
   nameAr: string;
   nameEn: string;
   maxMark: number;
-  order: number;
+  order?: number;
 }

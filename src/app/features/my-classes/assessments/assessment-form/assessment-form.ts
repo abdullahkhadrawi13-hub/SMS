@@ -44,8 +44,11 @@ import { AssessmentFormData } from '../assessments';
 
 // Add an assessment under an open component, or edit one the teacher added
 // (POST /api/assessments, PUT /api/assessments/{id}, API Reference section 9).
-// The order is not shown: a new assessment goes after the last one,
-// and an edited one keeps its place.
+// The order is not shown and not sent (PR #42): the backend puts a new
+// assessment after the last one, and an edited one keeps its place.
+// A 409 (someone saved at the same moment) shows the backend's message,
+// reloads the page's list behind the dialog, and keeps the dialog open
+// with what was typed, so pressing Save again works.
 // Both requests return the assessment; the dialog closes with it.
 //
 // The shared form dialog look (navy & gold, 13 Nov 2026), like the class
@@ -183,15 +186,11 @@ export class AssessmentForm {
     const assessment = this.data.assessment;
 
     const request = this.isEditMode && assessment
-      ? this.assessmentsService.updateAssessment(
-          assessment.assessmentId,
-          { ...body, order: assessment.order }
-        )
+      ? this.assessmentsService.updateAssessment(assessment.assessmentId, body)
       : this.assessmentsService.createAssessment({
           ...body,
           teacherAssignmentId: this.data.teacherAssignmentId,
           subjectPlanComponentId: this.data.component.subjectPlanComponentId,
-          order: this.data.nextOrder,
         });
 
     this.isSubmitting.set(true);
@@ -224,6 +223,11 @@ export class AssessmentForm {
           console.error('Failed to save assessment:', error);
 
           this.isSubmitting.set(false);
+
+          // 409: the list behind the dialog may be out of date.
+          if (error.status === 409) {
+            this.data.reloadList();
+          }
 
           this.actionResult.show(
             'error',

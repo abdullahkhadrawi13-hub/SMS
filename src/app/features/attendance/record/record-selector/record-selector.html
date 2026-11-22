@@ -140,7 +140,7 @@
             <mat-icon aria-hidden="true">calendar_today</mat-icon>
           </button>
 
-          <mat-datepicker #datePicker></mat-datepicker>
+          <mat-datepicker #datePicker [dateClass]="dateClass()"></mat-datepicker>
 
         </div>
 
@@ -149,6 +149,18 @@
     </div>
 
   </div>
+
+  <!-- The chosen date is one of the school's weekly days off.
+       A note only: the sheet still works (a make-up school day). -->
+  @if (dayOffNote(); as note) {
+    <p class="selector-note is-day-off" role="status">
+      <mat-icon aria-hidden="true">event_busy</mat-icon>
+
+      <span>
+        {{ note.key | translate: { day: (note.dayKey | translate) } }}
+      </span>
+    </p>
+  }
 
   <!-- Shown while the sheet has unsaved changes -->
   @if (locked()) {
