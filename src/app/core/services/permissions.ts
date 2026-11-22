@@ -147,6 +147,20 @@ export class Permissions {
 
   // ===== Settings =====
 
+  // The school information page (Settings → School information):
+  // Admin and AssistantPrincipal open it. Every signed-in user can read
+  // the information (GET /api/schoolsettings/school), but only these two
+  // see the page.
+  readonly canViewSchoolInfo = computed(
+    () => this.isAdmin() || this.isAssistantPrincipal()
+  );
+
+  // Save the school information (PUT /api/schoolsettings/school): Admin only.
+  // The AssistantPrincipal sees the page read-only.
+  readonly canManageSchoolInfo = computed(
+    () => this.isAdmin()
+  );
+
   // Choose the attendance officer (Settings → Attendance officer): Admin only.
   readonly canManageAttendanceOfficer = computed(
     () => this.isAdmin()

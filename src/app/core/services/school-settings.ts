@@ -3,7 +3,11 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiResponse } from '../models/api-response';
-import { PromotionSettings, SchoolInfo } from '../models/school-settings';
+import {
+  PromotionSettings,
+  SaveSchoolInfoRequest,
+  SchoolInfo,
+} from '../models/school-settings';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -41,6 +45,18 @@ export class SchoolSettingsService {
   getSchoolInfo(): Observable<ApiResponse<SchoolInfo>> {
     return this.http.get<ApiResponse<SchoolInfo>>(
       `${this.apiUrl}/school`
+    );
+  }
+
+  // PUT /api/schoolsettings/school (Admin)
+  // Saves the school information: every field is sent each time.
+  // Returns the saved information (same shape as GET).
+  updateSchoolInfo(
+    body: SaveSchoolInfoRequest
+  ): Observable<ApiResponse<SchoolInfo>> {
+    return this.http.put<ApiResponse<SchoolInfo>>(
+      `${this.apiUrl}/school`,
+      body
     );
   }
 

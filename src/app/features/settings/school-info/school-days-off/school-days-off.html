@@ -1,0 +1,44 @@
+<!-- A real fieldset of checkboxes: the legend names the group,
+     and a disabled fieldset disables every tile (read-only). -->
+<fieldset class="days-fieldset" [disabled]="disabled()">
+
+  <legend class="days-legend">
+    {{ 'SCHOOL_INFO.DAYS_OFF.LEGEND' | translate }}
+  </legend>
+
+  <div class="days" [class.is-invalid]="invalid()">
+
+    @for (day of weekDays; track day) {
+
+      <label class="day-option">
+
+        <!-- Hidden, but still reached by the keyboard and screen readers -->
+        <input
+          type="checkbox"
+          [checked]="isOff(day)"
+          [attr.aria-invalid]="invalid() || null"
+          [attr.aria-describedby]="describedBy()"
+          (change)="toggle(day, $event)"
+        />
+
+        <span class="day-face">
+
+          <span class="day-name">{{ 'SCHOOL_INFO.DAYS.' + day | translate }}</span>
+
+          <!-- "✓ عطلة" under a ticked day; the empty line keeps every tile the same height -->
+          <span class="day-tag">
+            @if (isOff(day)) {
+              <mat-icon aria-hidden="true">check</mat-icon>
+              {{ 'SCHOOL_INFO.DAYS_OFF.DAY_OFF' | translate }}
+            }
+          </span>
+
+        </span>
+
+      </label>
+
+    }
+
+  </div>
+
+</fieldset>

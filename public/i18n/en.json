@@ -1873,10 +1873,14 @@
   "SETTINGS": {
     "HEADER": {
       "TITLE": "Settings",
-      "SUBTITLE": "General school settings: years and terms, the attendance officer and student rollover."
+      "SUBTITLE": "General school settings: school information, years and terms, the attendance officer and student rollover."
     },
     "OPTIONS": {
       "READ_ONLY": "View only",
+      "SCHOOL_INFO": {
+        "TITLE": "School Information",
+        "DESCRIPTION": "The school's name, phone, address and weekly days off"
+      },
       "ACADEMIC_YEARS": {
         "TITLE": "Academic Years & Terms",
         "DESCRIPTION": "Manage academic years, the terms of each year and the current term"
@@ -1891,6 +1895,89 @@
       }
     }
   },
+    "SCHOOL_INFO": {
+      "HEADER": {
+        "BACK": "Settings",
+        "TITLE": "School Information",
+        "SUBTITLE": "The school's name and contact details, and its weekly days off.",
+        "READ_ONLY": "View only"
+      },
+      "STATE": {
+        "LOADING": "Loading the school information…"
+      },
+      "ERROR": {
+        "LOAD_FAILED": "Could not load the school information."
+      },
+      "NOTE": {
+        "NOT_SAVED": "The school information has not been saved yet. Until you save it, the days off are the default ones (Friday and Saturday).",
+        "NOT_SAVED_READ_ONLY": "The administrator has not saved the school information yet. The days off are the default ones (Friday and Saturday)."
+      },
+      "CONTACT": {
+        "TITLE": "Name and contact",
+        "DESCRIPTION": "The school's official name in both languages, its phone and its address.",
+        "USES": "Every user can read it: staff, teachers, students and parents.",
+        "NAME_AR": "School name in Arabic",
+        "NAME_EN": "School name in English",
+        "PHONE": "Phone number",
+        "PHONE_HELP": "Digits only, may start with +",
+        "ADDRESS": "Address",
+        "OPTIONAL": "(optional)",
+        "NAME_AR_PLACEHOLDER": "مثال: مدرسة النور الثانوية",
+        "NAME_EN_PLACEHOLDER": "e.g. Al Noor Secondary School",
+        "ADDRESS_PLACEHOLDER": "City, street"
+      },
+      "DAYS_OFF": {
+        "TITLE": "Weekly days off",
+        "DESCRIPTION": "The days of the week with no school.",
+        "USES": "Shown in grey on the attendance calendar: My Attendance, My Children's Attendance and the student page's Attendance tab.",
+        "LEGEND": "Choose the days off",
+        "DAY_OFF": "Day off",
+        "SUMMARY_NONE": "No weekly days off · 7 school days",
+        "SUMMARY_LABEL": "Days off:",
+        "AND": " and ",
+        "COMMA": ", ",
+        "WORK_DAYS": {
+          "ONE": "1 school day",
+          "TWO": "2 school days",
+          "FEW": "{{count}} school days",
+          "MANY": "{{count}} school days"
+        }
+      },
+      "DAYS": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday"
+      },
+      "VALIDATION": {
+        "REQUIRED": "This field is required.",
+        "ARABIC_ONLY": "Write the name in Arabic letters.",
+        "ENGLISH_ONLY": "Write the name in English letters.",
+        "PHONE": "Invalid phone number.",
+        "EVERY_DAY_OFF": "Every day of the week cannot be a day off."
+      },
+      "SAVE_BAR": {
+        "TITLE": "Unsaved changes",
+        "HINT": "Save so every user sees the new information.",
+        "ERRORS": {
+          "ONE": "Fix 1 error before saving.",
+          "TWO": "Fix 2 errors before saving.",
+          "FEW": "Fix {{count}} errors before saving.",
+          "MANY": "Fix {{count}} errors before saving."
+        },
+        "UNDO": "Undo",
+        "SAVE": "Save",
+        "SAVING": "Saving…"
+      },
+      "LEAVE": {
+        "TITLE": "Discard changes?",
+        "MESSAGE": "Your changes to the school information are not saved and will be lost if you leave now.",
+        "CONFIRM": "Discard and leave"
+      }
+    },
   "ACADEMIC_YEARS": {
     "HEADER": {
       "BACK": "Settings",

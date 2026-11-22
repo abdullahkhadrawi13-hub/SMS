@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { roleGuard } from '../../core/guards/role-guard';
+import { unsavedChangesGuard } from '../../core/guards/unsaved-changes-guard';
 import { UserRole } from '../../core/models/user-role';
 
 // /settings is open to Admin and AssistantPrincipal (roleGuard in app.routes.ts).
@@ -14,6 +15,17 @@ export const SETTINGS_ROUTES: Routes = [
     loadComponent: () =>
       import('./settings-page/settings-page')
         .then(m => m.SettingsPage)
+  },
+
+  // /settings/school : the school's names, phone, address and days off
+  // Admin: edit. AssistantPrincipal: read only.
+  // Leaving with unsaved changes asks first (unsavedChangesGuard).
+  {
+    path: 'school',
+    canDeactivate: [unsavedChangesGuard],
+    loadComponent: () =>
+      import('./school-info/school-info-page/school-info-page')
+        .then(m => m.SchoolInfoPage)
   },
 
   // /settings/academic-years

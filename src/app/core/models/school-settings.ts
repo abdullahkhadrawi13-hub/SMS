@@ -15,8 +15,8 @@ export interface PromotionSettings {
 
 
 // The school information (PR #51): GET /api/schoolsettings/school.
-// Every signed-in user can read it; only the Admin saves it (PUT, not
-// used by a screen yet).
+// Every signed-in user can read it; only the Admin saves it
+// (PUT, Settings → School information).
 //
 // weeklyDaysOff: day numbers like JavaScript Date.getDay()
 // (0 Sunday … 6 Saturday), always in order. [] = no days off.
@@ -29,6 +29,11 @@ export interface SchoolInfo {
   address: string | null;
   weeklyDaysOff: number[];
 }
+
+// What PUT /api/schoolsettings/school sends: every field, every time.
+// The same shape as SchoolInfo. An empty phone is sent as null, not ""
+// ("" is not a phone number: 400 "Invalid phone number.").
+export type SaveSchoolInfoRequest = SchoolInfo;
 
 // The backend's default, used when the school information cannot be read.
 export const DEFAULT_WEEKLY_DAYS_OFF: readonly number[] = [5, 6];
