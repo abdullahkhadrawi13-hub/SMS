@@ -94,7 +94,7 @@ button:focus-visible,
    primary button. */
 .mat-mdc-unelevated-button.btn-danger {
   --mat-button-filled-container-color: var(--bad);
-  --mat-button-filled-label-text-color: var(--on-primary);
+  --mat-button-filled-label-text-color: var(--on-bad);
 }
 
 /* ---------- Form fields ----------

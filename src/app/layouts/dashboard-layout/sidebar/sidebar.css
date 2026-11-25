@@ -68,7 +68,7 @@
   display: grid;
   place-items: center;
 
-  background: var(--surface);
+  background: var(--logo-plate);
   border-radius: var(--r-card);
 }
 

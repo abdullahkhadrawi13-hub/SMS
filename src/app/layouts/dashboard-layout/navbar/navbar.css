@@ -242,7 +242,7 @@
 .navbar.phone {
   --mat-toolbar-standard-height: var(--topbar-h-phone);
   --mat-toolbar-mobile-height: var(--topbar-h-phone);
-  --mat-toolbar-container-background-color: var(--primary);
+  --mat-toolbar-container-background-color: var(--side-bg);
   --mat-toolbar-container-text-color: var(--side-ink);
 
   /* the language button on navy (the same colours as the sidebar links) */
@@ -263,7 +263,7 @@
 
   padding-inline: var(--sp-1) var(--sp-2);
 
-  background: var(--primary);
+  background: var(--side-bg);
   border-block-end: 0;
 }
 
