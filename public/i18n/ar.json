@@ -104,7 +104,9 @@
     "LOGOUT": "تسجيل الخروج",
     "USER_MENU": "قائمة المستخدم",
     "OPEN_MENU": "فتح القائمة",
-    "CURRENT_TERM": "الفصل الحالي"
+    "CURRENT_TERM": "الفصل الحالي",
+    "THEME_DARK": "الوضع الداكن",
+    "THEME_LIGHT": "الوضع الفاتح"
   },
 
   "PROFILE_DIALOG": {
