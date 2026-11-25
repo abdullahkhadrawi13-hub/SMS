@@ -3,6 +3,8 @@
    The single source for colours, sizes and type in the app.
    Components use var(--...) only; no hex values in component files.
    Spec: "SMS — مواصفات تصميم الكحلي والذهبي" (5 Nov 2026)
+   Two themes: light in :root (the default), dark in
+   :root[data-theme="dark"] at the end of this file (25 Nov 2026).
    ========================================================== */
 
 :root {
@@ -23,6 +25,7 @@
   /* surfaces and text */
   --ground: #f2f3f6;  --surface: #ffffff; --raised: #f7f8fa; --hover: #f4f6f9;
   --border: #e0e3e9;  --rule: #eceef2;    --control: #c5cad4; --track: #e3e7ee;
+  --overlay: #ffffff; /* menus, select lists, date picker: what floats (one step lighter in dark) */
   --text: #121a2b;    --muted: #535d70;   --faint: #636c7e;
 
   /* brand */
@@ -36,6 +39,7 @@
   --nav-active-bg: #263a63; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
   --nav-group: #93a0bb; --nav-soon-ink: #8f9bb6; --soon-line: #33466e;
   --side-line: #2b3c62; /* a rule on the navy (the login panel's facts) */
+  --side-edge: none; /* the sidebar's edge against the page: none on the navy, a 1px rule in dark */
 
   /* meaning: attendance, results, status */
   --ok-bg: #dcf3e5;   --ok-ink: #0f4a2b;   --ok-line: #b9e3c9;
@@ -43,6 +47,7 @@
      absent days (light red) stay the darker ones — chosen 22 Nov 2026 */
   --ok-soft: #f0f9f3; --ok-soft-line: #d4eedd;
   --bad-bg: #fdeae7;  --bad-ink: #831c1e;  --bad: #c4242a;  --bad-line: #f3c6c0;
+  --on-bad: #ffffff;  /* the label of a red (danger) button */
   --warn-bg: #fff6dd; --warn-ink: #7c4508; --warn-line: #f0d189;
   --gold-bg: #f7edd6; --gold-ink: #5c410b;
   --chg: #d69a1c;     --chg-bg: #fff8e6;
@@ -92,6 +97,9 @@
   /* the dark layer behind the sidebar when it opens over the page (phone) */
   --scrim: rgba(12, 21, 40, .5);
 
+  /* the white plate behind the logo (a JPG with a white ground), in both themes */
+  --logo-plate: #ffffff;
+
   /* buttons (shared look in material-theme.scss and styles.css) */
   --btn-pad: 14px;          /* side padding of primary and secondary buttons */
   --btn-icon-offset: -2px;  /* pulls the 18px icon slightly towards the edge */
@@ -116,4 +124,87 @@
   /* motion */
   --dur: 150ms;
   --dur-switch: 350ms;   /* the theme switch: sun ↔ moon */
+}
+
+/* ==========================================================
+   Dark theme — Navy & Gold at night (proposal, 25 Nov 2026)
+   <html data-theme="dark"> is set by core/services/theme.ts.
+   Graphite tempered with the navy hue (OKLCH chroma under 0.02,
+   hue 260–265), not a navy ground. The gold stays the same gold.
+   The primary inverts: a light navy tint with navy text.
+   Every text pair holds 4.5:1, field borders and focus 3:1.
+   ========================================================== */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* surfaces and text */
+  --ground: #101216;  --surface: #171a1f; --raised: #1c1f25; --hover: #1f232a;
+  --border: #2a2e36;  --rule: #22262d;    --control: #676e7b; --track: #2a2e36;
+  --overlay: #1e2127;
+  --text: #eceef2;    --muted: #aab1be;   --faint: #8b93a1;
+  --state-icon: #6f7889;
+
+  /* brand */
+  --primary: #dde4f0; --primary-hover: #eef2f9; --on-primary: #15213b;
+  --mark: #c79a3c;    --gold-light: #e0b961;
+  --accent: #7ea6e0;  --accent-soft: #19243a; --accent-ink: #9ec2f2;
+
+  /* sidebar: the darkest step, no navy fill; the active item brightens, the gold icon stays */
+  --side-bg: #0b0d10; --side-ink: #eceef2; --side-muted: #8b93a1;
+  --nav-ink: #b9c0cc; --nav-icon: #858d9b; --nav-hover: #15181d;
+  --nav-active-bg: #1e2127; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
+  --nav-group: #8b93a1; --nav-soon-ink: #7f8795; --soon-line: #2c313a;
+  --side-line: #23272e;
+  --side-edge: 1px solid #23272e;
+
+  /* meaning: the hue on a dark tint of itself */
+  --ok-bg: #13291e;   --ok-ink: #86d9a6;   --ok-line: #22472f;
+  --ok-soft: #0f1d16; --ok-soft-line: #1b3125;
+  --bad-bg: #331619;  --bad-ink: #f4a3a3;  --bad: #d03c43;  --bad-line: #5c2a2e;
+  --on-bad: #ffffff;
+  --warn-bg: #2e2410; --warn-ink: #efc777; --warn-line: #5e4a1f;
+  --gold-bg: #2a2313; --gold-ink: #e8cb85;
+  --chg: #e0a63a;     --chg-bg: #2a2110;
+
+  /* roles: the Admin keeps the gold avatar with navy initials; the others
+     become a dark tint with light initials of the same hue (above 7:1) */
+  --role-admin-main: #e0b961;   --role-admin-soft: #2a2313;   --role-admin-dark: #15213b;
+  --role-ap-main: #1e2c42;      --role-ap-soft: #172131;      --role-ap-dark: #a9c6ee;
+  --role-teacher-main: #163329; --role-teacher-soft: #11241e; --role-teacher-dark: #8fd8bb;
+  --role-student-main: #2a2444; --role-student-soft: #1d1a2f; --role-student-dark: #c5b8f2;
+  --role-parent-main: #3a1f2b;  --role-parent-soft: #28161f;  --role-parent-dark: #f0b3c9;
+  --role-unknown-main: #262a31; --role-unknown-soft: #1c1f25; --role-unknown-dark: #c0c6d1;
+
+  --avatar-1-bg: #2a2444; --avatar-1-ink: #c5b8f2;
+  --avatar-2-bg: #163329; --avatar-2-ink: #8fd8bb;
+  --avatar-3-bg: #1e2c42; --avatar-3-ink: #a9c6ee;
+  --avatar-4-bg: #3a1f2b; --avatar-4-ink: #f0b3c9;
+  --avatar-5-bg: #2e2715; --avatar-5-ink: #e8cb85;
+  --avatar-6-bg: #262a31; --avatar-6-ink: #c0c6d1;
+
+  --rel-0-soft: #141c29; --rel-0-line: #253651;
+  --rel-1-soft: #20151b; --rel-1-line: #47283a;
+  --rel-2-soft: #1f1b10; --rel-2-line: #4a3d1d;
+
+  --band-a: #1c1f25; --band-b: #22262d;
+
+  /* unsaved-changes bar: still warm yellow, as a dark amber */
+  --save-bg: #2b2312; --save-line: #6e5726; --save-ink: #f6dc96; --save-muted: #dcc285;
+
+  /* on dark a shadow barely shows: floating things are lighter (--overlay),
+     and the shadows are black and deeper */
+  --shadow-pop: 0 12px 32px rgba(0, 0, 0, .55);
+  --shadow-save: 0 8px 24px rgba(0, 0, 0, .5);
+  --shadow-drawer: 0 0 32px rgba(0, 0, 0, .6);
+  --scrim: rgba(0, 0, 0, .62);
+
+  /* a filled button lightens on hover instead of darkening */
+  --shade: #ffffff;
+
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%238b93a1' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
+  --select-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%239ec2f2' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
+
+  /* the theme switch's night pill on the dark bars */
+  --tt-night-line-on-navy: #3a4152;
 }

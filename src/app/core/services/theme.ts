@@ -11,9 +11,8 @@ const STORAGE_KEY = 'theme';
 // الوضع الفاتح / الداكن، بنفس طريقة Language:
 // يُحفظ في sessionStorage فقط، فتحديث الصفحة يحافظ على الوضع،
 // وتشغيل جديد يبدأ بالوضع الافتراضي (لا يتبع إعداد الجهاز).
-//
-// ملاحظة: ألوان الوضع الداكن لم تُضف بعد إلى src/tokens.css،
-// فتبديل الوضع الآن يغيّر الأيقونة و data-theme على <html> فقط، لا الألوان.
+// الألوان نفسها في src/tokens.css: الفاتح في :root، والداكن في
+// :root[data-theme="dark"]. الخدمة تُحمَّل في app.ts، فصفحة الدخول تتبع الوضع أيضًا.
 @Injectable({
   providedIn: 'root'
 })
@@ -39,7 +38,7 @@ export class Theme {
     // حفظ الوضع المختار للجلسة الحالية فقط
     sessionStorage.setItem(STORAGE_KEY, theme);
 
-    // <html data-theme="light|dark">: منه ستأخذ tokens.css الألوان الداكنة لاحقًا
+    // <html data-theme="light|dark">: منه تأخذ tokens.css ألوان الوضع
     document.documentElement.dataset['theme'] = theme;
   }
 

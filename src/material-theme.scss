@@ -7,11 +7,13 @@
 
 html {
   height: 100%;
+  color-scheme: light;
   @include mat.theme(
     (
       color: (
         primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
+        theme-type: color-scheme,
       ),
       typography: (
         plain-family: (Cairo, system-ui, sans-serif),
@@ -40,15 +42,15 @@ html {
       on-surface-variant: var(--muted),
       surface-container-lowest: var(--surface),
       surface-container-low: var(--surface),
-      surface-container: var(--surface),
-      surface-container-high: var(--surface),
+      surface-container: var(--overlay),
+      surface-container-high: var(--overlay),
       surface-container-highest: var(--raised),
 
       outline: var(--control),
       outline-variant: var(--border),
 
       error: var(--bad),
-      on-error: var(--on-primary),
+      on-error: var(--on-bad),
       error-container: var(--bad-bg),
       on-error-container: var(--bad-ink),
     )
@@ -186,8 +188,7 @@ html {
 }
 
 body {
-  // Light theme only (no dark mode in this design).
-  color-scheme: light;
+  // color-scheme comes from <html> (light, or dark in tokens.css)
 
   background-color: var(--ground);
   color: var(--text);
