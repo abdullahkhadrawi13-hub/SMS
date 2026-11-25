@@ -1,11 +1,19 @@
 /* ==========================================================
-   SMS design tokens — Navy & Gold
+   SMS design tokens — Chalkboard & Gold (سبّورة وذهبي)
    The single source for colours, sizes and type in the app.
    Components use var(--...) only; no hex values in component files.
-   Spec: "SMS — مواصفات تصميم الكحلي والذهبي" (5 Nov 2026)
+
+   Two modes, the same token names:
+     :root                     light (the default)
+     html[data-theme="dark"]   dark (set by core/services/theme.ts)
+
+   Chosen 25 Nov 2026 to replace Navy & Gold, in both modes.
+   Every text colour reads at 4.5:1 or more on the surface it sits on.
    ========================================================== */
 
 :root {
+  color-scheme: light;
+
   /* type */
   --font: "Cairo", system-ui, sans-serif;
   --fs-11: 11px; --fs-12: 12px; --fs-13: 13px; --fs-14: 14px; --fs-16: 16px;
@@ -15,105 +23,209 @@
   --r-card: 10px; --r-control: 8px; --r-pill: 6px;
   --h-control: 36px; --h-touch: 44px; --row: 52px;
   --sidebar-w: 236px; --topbar-h: 56px;
-  --topbar-h-phone: 52px; /* the navy navbar under 720px */
+  --topbar-h-phone: 52px; /* the board-coloured navbar under 720px */
 
   /* spacing scale (4px base) */
   --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-6: 24px; --sp-8: 32px;
 
+  /* buttons (shared look in material-theme.scss and styles.css) */
+  --btn-pad: 14px;          /* side padding of primary and secondary buttons */
+  --btn-icon-offset: -2px;  /* pulls the 18px icon slightly towards the edge */
+
+  /* motion */
+  --dur: 150ms;
+  --dur-switch: 350ms;   /* the theme switch: sun ↔ moon */
+
   /* surfaces and text */
-  --ground: #f2f3f6;  --surface: #ffffff; --raised: #f7f8fa; --hover: #f4f6f9;
-  --border: #e0e3e9;  --rule: #eceef2;    --control: #c5cad4; --track: #e3e7ee;
-  --text: #121a2b;    --muted: #535d70;   --faint: #636c7e;
+  --ground: #f3f4f2;     --surface: #ffffff;    --raised: #f7f8f6;     --hover: #f1f3f0;
+  --border: #dfe3de;     --rule: #ebeee9;       --control: #c3c9c2;    --track: #e2e7e1;
+  --text: #161c19;       --muted: #4e5752;      --faint: #5c6560;
 
-  /* brand */
-  --primary: #15213b; --primary-hover: #0c1528; --on-primary: #ffffff;
-  --mark: #c79a3c;    --gold-light: #e0b961;
-  --accent: #2c5c9e;  --accent-soft: #e9eff8; --accent-ink: #1f4478;
+  /* brand: the board green for the primary button, gold for the small marks */
+  --primary: #284b3f;    --primary-hover: #1c382e; --on-primary: #ffffff;
+  --mark: #b08428;       --gold-light: #e0b961;  /* mark: progress, tab line, dot · gold-light: on the board */
+  --accent: #2f6a56;     --accent-soft: #e6efe9; --accent-ink: #234f40;
 
-  /* sidebar */
-  --side-bg: #15213b; --side-ink: #ffffff; --side-muted: #a9b4cc;
-  --nav-ink: #c9d1e2; --nav-icon: #98a5c0; --nav-hover: #1e2d4d;
-  --nav-active-bg: #263a63; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
-  --nav-group: #93a0bb; --nav-soon-ink: #8f9bb6; --soon-line: #33466e;
-  --side-line: #2b3c62; /* a rule on the navy (the login panel's facts) */
+  /* sidebar: the board, chalk-white text, a gold icon on the open page */
+  --side-bg: #1f302a;    --side-ink: #f4f1e8;   --side-muted: #b6c5bc;
+  --nav-ink: #d5dfd8;    --nav-icon: #a3b5aa;   --nav-hover: #283c35;
+  --nav-active-bg: #34514a; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
+  --nav-group: #a0b3a8;  --nav-soon-ink: #a6b8ad; --soon-line: #3d5a50;
+  --side-line: #2e453d;  /* a rule on the board (the login panel's facts, the phone bar) */
 
-  /* meaning: attendance, results, status */
-  --ok-bg: #dcf3e5;   --ok-ink: #0f4a2b;   --ok-line: #b9e3c9;
+  /* the school logo keeps its white tile in both modes */
+  --logo-bg: #ffffff;
+
+  /* things that float without a dark layer behind them (menus, the date
+     picker): white like the cards here, one step lighter in the dark mode */
+  --pop: #ffffff;        --pop-line: transparent;
+
+  /* meaning: attendance, results, status (the same meaning in both modes) */
+  --ok-bg: #dcf3e5;      --ok-ink: #0f4a2b;     --ok-line: #b9e3c9;
   /* a lighter green for the present days of the attendance calendar, so the
      absent days (light red) stay the darker ones — chosen 22 Nov 2026 */
-  --ok-soft: #f0f9f3; --ok-soft-line: #d4eedd;
-  --bad-bg: #fdeae7;  --bad-ink: #831c1e;  --bad: #c4242a;  --bad-line: #f3c6c0;
-  --warn-bg: #fff6dd; --warn-ink: #7c4508; --warn-line: #f0d189;
-  --gold-bg: #f7edd6; --gold-ink: #5c410b;
-  --chg: #d69a1c;     --chg-bg: #fff8e6;
+  --ok-soft: #f0f9f3;    --ok-soft-line: #d4eedd;
+  --bad-bg: #fdeae7;     --bad-ink: #831c1e;    --bad: #c4242a;        --bad-line: #f3c6c0;
+  --warn-bg: #fff6dd;    --warn-ink: #7c4508;   --warn-line: #f0d189;
+  /* graduated: its own gold, so it stays gold whatever the theme's mark is */
+  --gold-bg: #f7edd6;    --gold-ink: #5c410b;
+  --gold-line: #d9b25c;  --gold-icon: #a9781f;
+  /* transferred (منقول): blue, its own tokens for the same reason */
+  --moved-line: #2c5c9e; --moved-ink: #1f4478;
+  --chg: #d69a1c;        --chg-bg: #fff8e6;
 
   /* the big icon of an empty state (shared state-card) — chosen 6 Nov 2026 */
-  --state-icon: #7d89a2;
+  --state-icon: #7d8a83;
 
   /* roles: avatar background (main), light card (soft), initials and text (dark).
      Used by role-colors.ts (navbar avatar, user menu, profile dialog).
-     Every dark colour reads on its main and soft colour (contrast above 7:1). */
-  --role-admin-main: #e0b961;   --role-admin-soft: #f7edd6;   --role-admin-dark: #15213b;
-  --role-ap-main: #d6e2f3;      --role-ap-soft: #eef3fa;      --role-ap-dark: #1f4478;
+     Every dark colour reads on its main and soft colour (4.5:1 or more).
+     The Admin is gold with board-green initials. */
+  --role-admin-main: #e0b961; --role-admin-soft: #f7edd6; --role-admin-dark: #1f302a;
+  --role-ap-main: #d6e2f3; --role-ap-soft: #eef3fa; --role-ap-dark: #1f4478;
   --role-teacher-main: #cfe9df; --role-teacher-soft: #edf6f2; --role-teacher-dark: #134e3c;
   --role-student-main: #e2dbf4; --role-student-soft: #f3f0fa; --role-student-dark: #3d2f78;
-  --role-parent-main: #f3d9e2;  --role-parent-soft: #faeff3;  --role-parent-dark: #6e2340;
-  --role-unknown-main: #e3e7ee; --role-unknown-soft: #f2f3f6; --role-unknown-dark: #535d70;
+  --role-parent-main: #f3d9e2; --role-parent-soft: #faeff3; --role-parent-dark: #6e2340;
+  --role-unknown-main: #e2e7e1; --role-unknown-soft: #f3f4f2; --role-unknown-dark: #4e5752;
 
   /* person avatars in lists (students table): a light colour and dark initials.
-     Six pairs from the role colours above; a person keeps the same pair
-     everywhere (chosen by id). Every pair reads above 7:1 — chosen 8 Nov 2026 */
+     Six pairs; a person keeps the same pair everywhere (chosen by id) */
   --avatar-1-bg: #e2dbf4; --avatar-1-ink: #3d2f78;
   --avatar-2-bg: #cfe9df; --avatar-2-ink: #134e3c;
   --avatar-3-bg: #d6e2f3; --avatar-3-ink: #1f4478;
   --avatar-4-bg: #f3d9e2; --avatar-4-ink: #6e2340;
   --avatar-5-bg: #f7edd6; --avatar-5-ink: #5c410b;
-  --avatar-6-bg: #e3e7ee; --avatar-6-ink: #3b4456;
+  --avatar-6-bg: #e2e7e1; --avatar-6-ink: #3a433e;
 
-  /* relationship boxes (father / mother / guardian): a very light tint and
-     its border, from the same families as the relationship chips
-     (--avatar-3 / -4 / -5). Used by the absentees tab — added 12 Nov 2026 */
+  /* relationship boxes (father / mother / guardian) in the absentees tab */
   --rel-0-soft: #f3f7fc; --rel-0-line: #d6e2f3;
   --rel-1-soft: #fcf4f7; --rel-1-line: #f3d9e2;
   --rel-2-soft: #fcf7ea; --rel-2-line: #ecdcae;
 
-  /* grade sheet header: the plan components take these two neutral shades
-     in turn (spec: "كشف العلامات") — added 12 Nov 2026 */
-  --band-a: #f4f6f9; --band-b: #eaeef4;
+  /* grade sheet header: the plan components take these two neutral shades in turn */
+  --band-a: #f4f6f3;     --band-b: #e8ede7;
 
-  /* unsaved-changes bar (shared save-bar) — warm yellow, final (6 Nov 2026) */
-  --save-bg: #fff4d6; --save-line: #ecc76b; --save-ink: #5c3d07; --save-muted: #74500f;
+  /* unsaved-changes bar (shared save-bar) — warm yellow */
+  --save-bg: #fff4d6;    --save-line: #ecc76b;  --save-ink: #5c3d07;   --save-muted: #74500f;
 
   /* elevation: only for things that float above the page */
-  --shadow-pop: 0 12px 32px rgba(15, 23, 42, .16);
+  --shadow-pop: 0 12px 32px rgba(15, 28, 23, .15);
   --shadow-save: 0 8px 24px rgba(92, 61, 7, .14);
-  --shadow-drawer: 0 0 32px rgba(12, 21, 40, .28);  /* the sidebar over the page (phone) */
+  --shadow-drawer: 0 0 32px rgba(10, 22, 18, .3);  /* the sidebar over the page (phone) */
 
   /* the dark layer behind the sidebar when it opens over the page (phone) */
-  --scrim: rgba(12, 21, 40, .5);
+  --scrim: rgba(10, 22, 18, .5);
 
-  /* buttons (shared look in material-theme.scss and styles.css) */
-  --btn-pad: 14px;          /* side padding of primary and secondary buttons */
-  --btn-icon-offset: -2px;  /* pulls the 18px icon slightly towards the edge */
-  --shade: #000000;         /* the hover layer that darkens a filled button */
+  /* the hover layer that darkens a filled button */
+  --shade: #000000;
 
-  /* the arrow of a <select> drawn by CSS (the filter lists, the paginator's
-     "items per page"): the same expand_more as the forms' .field-chevron,
-     in --faint, and in --accent-ink for a filter that is on
-     — added 19 Nov 2026 (review report 3.2) */
-  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%23636c7e' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
-  --select-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%231f4478' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
+  /* the arrow of a <select> drawn by CSS: in --faint, and in --accent-ink for a filter that is on */
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%235c6560' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
+  --select-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%23234f40' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
 
-  /* theme switch in the navbar (shared theme-switcher): a sky with a sun
-     and two clouds in the light theme, a navy night with a moon and stars
-     in the dark. Flat colours only — added 25 Nov 2026 */
-  --tt-day: #cfe4f2;    --tt-day-line: #b3d2e8;
-  --tt-sun: #f7c948;    --tt-cloud: #ffffff;
-  --tt-night: #15213b;  --tt-night-line: #33466e;
-  --tt-night-line-on-navy: #4a5f8c;   /* the same switch on the navy phone navbar */
-  --tt-moon: #efe6cf;   --tt-crater: #d6c9a6;   --tt-star: #c9d1e2;
+  /* theme switch in the navbar (shared theme-switcher): a sky with a sun and two clouds,
+     or a night on the board with a moon and gold stars */
+  --tt-day: #cfe4f2;     --tt-day-line: #b3d2e8;
+  --tt-sun: #f7c948;     --tt-cloud: #ffffff;
+  --tt-night: #1f302a;   --tt-night-line: #3d5a50;
+  --tt-night-line-on-bar: #4d6b60;  /* the same switch on the phone bar */
+  --tt-moon: #efe6cf;    --tt-crater: #d6c9a6;  --tt-star: #e0b961;
+}
 
-  /* motion */
-  --dur: 150ms;
-  --dur-switch: 350ms;   /* the theme switch: sun ↔ moon */
+
+/* ==========================================================
+   Dark mode — the same tokens with dark values.
+   Near-black grounds with a hint of the board green (not navy, not slate),
+   the board stays the sidebar, gold marks lighter, and the primary button
+   a light chalk green with dark text.
+   ========================================================== */
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* surfaces and text */
+  --ground: #0f1211;     --surface: #171b1a;    --raised: #1e2321;     --hover: #1c211f;
+  --border: #2a302e;     --rule: #232927;       --control: #46504c;    --track: #2e3532;
+  --text: #eef2ef;       --muted: #b0bbb5;      --faint: #939e98;
+
+  /* brand: the board green for the primary button, gold for the small marks (lighter on the dark) */
+  --primary: #a7d4c0;    --primary-hover: #bfe2d2; --on-primary: #0f2a21;
+  --mark: #e0b961;       --gold-light: #e0b961;
+  --accent: #8cc9ae;     --accent-soft: #1a2a24; --accent-ink: #b5e0cd;
+
+  /* sidebar: the board, chalk-white text, a gold icon on the open page */
+  --side-bg: #14201c;    --side-ink: #f4f1e8;   --side-muted: #a8b7af;
+  --nav-ink: #c9d5ce;    --nav-icon: #91a39a;   --nav-hover: #1c2b26;
+  --nav-active-bg: #243a33; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
+  --nav-group: #8fa197;  --nav-soon-ink: #8d9f96; --soon-line: #2f4a41;
+  --side-line: #22342e;  /* a rule on the board (the login panel's facts, the phone bar) */
+
+  /* the school logo keeps its white tile in both modes */
+  --logo-bg: #ffffff;
+
+  /* menus and the date picker: lighter than the cards, with a thin edge */
+  --pop: #222926;        --pop-line: #333c38;
+
+  /* meaning: attendance, results, status (the same meaning in both modes) */
+  --ok-bg: #15291d;      --ok-ink: #86d9a6;     --ok-line: #2b5b40;
+  --ok-soft: #12201a;    --ok-soft-line: #1f3a2a;
+  --bad-bg: #351b1c;     --bad-ink: #ff9d96;    --bad: #f0645c;        --bad-line: #5e2b29;
+  --warn-bg: #2e2513;    --warn-ink: #f1c66f;   --warn-line: #5e4820;
+  --gold-bg: #2e2717;    --gold-ink: #ebcb88;
+  --gold-line: #7a6330;  --gold-icon: #e0b961;
+  --moved-line: #7aa3ff; --moved-ink: #b4caff;
+  --chg: #e3a63c;        --chg-bg: #2b2313;
+
+  /* the big icon of an empty state (shared state-card) */
+  --state-icon: #6e7a74;
+
+  /* roles: on the dark, a deep tint (main, soft) and light initials ("dark") */
+  --role-admin-main: #3d3218; --role-admin-soft: #2a2416; --role-admin-dark: #e9cd8a;
+  --role-ap-main: #1f3150; --role-ap-soft: #18233a; --role-ap-dark: #bcd0f3;
+  --role-teacher-main: #173a2f; --role-teacher-soft: #13281f; --role-teacher-dark: #a8dcc6;
+  --role-student-main: #2e2747; --role-student-soft: #211c33; --role-student-dark: #d2c8f6;
+  --role-parent-main: #43242f; --role-parent-soft: #2c1a21; --role-parent-dark: #f2c3d3;
+  --role-unknown-main: #2a302e; --role-unknown-soft: #1e2321; --role-unknown-dark: #c5cfca;
+
+  /* person avatars in lists: a deep tint and light initials */
+  --avatar-1-bg: #2e2747; --avatar-1-ink: #d2c8f6;
+  --avatar-2-bg: #173a2f; --avatar-2-ink: #a8dcc6;
+  --avatar-3-bg: #1f3150; --avatar-3-ink: #bcd0f3;
+  --avatar-4-bg: #43242f; --avatar-4-ink: #f2c3d3;
+  --avatar-5-bg: #3a2f1a; --avatar-5-ink: #efd49b;
+  --avatar-6-bg: #2a302e; --avatar-6-ink: #cbd4cf;
+
+  /* relationship boxes (father / mother / guardian) in the absentees tab */
+  --rel-0-soft: #161e2b; --rel-0-line: #2b3a55;
+  --rel-1-soft: #24171c; --rel-1-line: #4b2b38;
+  --rel-2-soft: #231e13; --rel-2-line: #4b3d20;
+
+  /* grade sheet header: the plan components take these two neutral shades in turn */
+  --band-a: #1c211f;     --band-b: #232a27;
+
+  /* unsaved-changes bar (shared save-bar) — warm yellow */
+  --save-bg: #2c2514;    --save-line: #6d5424;  --save-ink: #f5d894;   --save-muted: #dcc286;
+
+  /* elevation: only for things that float above the page */
+  --shadow-pop: 0 12px 32px rgba(0, 0, 0, .55);
+  --shadow-save: 0 8px 24px rgba(0, 0, 0, .5);
+  --shadow-drawer: 0 0 32px rgba(0, 0, 0, .6);  /* the sidebar over the page (phone) */
+
+  /* the dark layer behind the sidebar when it opens over the page (phone) */
+  --scrim: rgba(0, 0, 0, .6);
+
+  /* the hover layer that darkens a filled button */
+  --shade: #000000;
+
+  /* the arrow of a <select> drawn by CSS: in --faint, and in --accent-ink for a filter that is on */
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%23939e98' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
+  --select-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%23b5e0cd' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
+
+  /* theme switch in the navbar (shared theme-switcher): a sky with a sun and two clouds,
+     or a night on the board with a moon and gold stars */
+  --tt-day: #cfe4f2;     --tt-day-line: #b3d2e8;
+  --tt-sun: #f7c948;     --tt-cloud: #ffffff;
+  --tt-night: #14201c;   --tt-night-line: #2f4a41;
+  --tt-night-line-on-bar: #3d5a50;  /* the same switch on the phone bar */
+  --tt-moon: #efe6cf;    --tt-crater: #d6c9a6;  --tt-star: #e0b961;
 }

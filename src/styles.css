@@ -1920,12 +1920,19 @@ button.data-link {
   transform: scaleX(-1);
 }
 
+/* ---------- Menus ----------
+   A thin edge so a menu shows over a card in the dark mode (transparent in
+   the light mode, where the shadow is enough). */
+.mat-mdc-menu-panel {
+  border: 1px solid var(--pop-line);
+}
+
 /* ---------- User menu (navbar) ----------
    <mat-menu class="user-menu-panel"> in navbar.html. The menu panel opens
    outside the navbar component, so its own look lives here.
    mat-menu is limited to 280px by default; this menu is 320px. */
 .mat-mdc-menu-panel.user-menu-panel {
-  --mat-menu-container-color: var(--surface);
+  --mat-menu-container-color: var(--pop);
   --mat-menu-container-shape: var(--r-card);
   --mat-menu-container-elevation-shadow: var(--shadow-pop);
   --mat-menu-item-label-text-size: var(--fs-14);

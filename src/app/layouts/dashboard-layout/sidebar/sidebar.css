@@ -1,5 +1,5 @@
 /* ==========================================================
-   Sidebar — Navy & Gold
+   Sidebar — Chalkboard & Gold (light and dark)
    Colours and sizes come from src/tokens.css (no hex here).
    Logical properties only, so it works in RTL and LTR.
    ========================================================== */
@@ -68,7 +68,7 @@
   display: grid;
   place-items: center;
 
-  background: var(--surface);
+  background: var(--logo-bg);  /* white in both modes: the logo has a white background */
   border-radius: var(--r-card);
 }
 
@@ -184,7 +184,7 @@
   background: var(--nav-hover);
 }
 
-/* The global blue focus ring is hard to see on navy:
+/* The global focus ring is hard to see on the board:
    the sidebar uses the light gold one, drawn inside the link. */
 .link:focus-visible {
   outline: 2px solid var(--gold-light);
@@ -226,8 +226,10 @@
   color: var(--nav-active-icon);
 }
 
+/* its "قريبًا" tag in the active link's colour too, so it reads on any
+   active background */
 .link.soon.active .soon-tag {
-  color: var(--side-muted);
+  color: var(--nav-active-ink);
 }
 
 .soon-tag {

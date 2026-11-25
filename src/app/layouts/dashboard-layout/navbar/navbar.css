@@ -1,5 +1,5 @@
 /* ==========================================================
-   Navbar — Navy & Gold
+   Navbar — Chalkboard & Gold (light and dark)
    White bar, 56px, one 1px line under it. No shadow, no rounded corners.
    Colours and sizes come from src/tokens.css (no hex here).
    Logical properties only, so it works in RTL and LTR.
@@ -235,36 +235,39 @@
    Phone (under 720px)
    .phone is set from dashboard-layout (PHONE_QUERY), so the bar and the
    sidebar switch at the same width.
-   Navy bar, 52px: menu button at the start; theme icon, language icon and
-   avatar at the end. Every button is 44 × 44 for touch.
+   The bar takes the sidebar's colour (the board), 52px: menu button at the
+   start; theme icon, language icon and avatar at the end. Every button is
+   44 × 44 for touch.
    ============================== */
 
 .navbar.phone {
   --mat-toolbar-standard-height: var(--topbar-h-phone);
   --mat-toolbar-mobile-height: var(--topbar-h-phone);
-  --mat-toolbar-container-background-color: var(--primary);
+  /* the sidebar's colours, not --primary: in the dark mode the primary
+     button is light, and the bar must stay the same as the drawer it opens */
+  --mat-toolbar-container-background-color: var(--side-bg);
   --mat-toolbar-container-text-color: var(--side-ink);
 
-  /* the language button on navy (the same colours as the sidebar links) */
+  /* the language button on the board (the same colours as the sidebar links) */
   --lang-btn-ink: var(--nav-ink);
   --lang-btn-icon: var(--nav-ink);
   --lang-btn-hover-bg: var(--nav-hover);
   --lang-btn-hover-ink: var(--side-ink);
   --lang-btn-focus: var(--gold-light);
 
-  /* the theme switch on navy: the same hover and focus as the language
-     button, and a lighter edge so the night switch shows on the navy bar */
+  /* the theme switch on the board: the same hover and focus as the language
+     button, and a lighter edge so the night switch shows on the bar */
   --theme-btn-hover-bg: var(--nav-hover);
   --theme-btn-focus: var(--gold-light);
-  --theme-btn-night-line: var(--tt-night-line-on-navy);
+  --theme-btn-night-line: var(--tt-night-line-on-bar);
 
   height: var(--topbar-h-phone);
   gap: var(--sp-1);
 
   padding-inline: var(--sp-1) var(--sp-2);
 
-  background: var(--primary);
-  border-block-end: 0;
+  background: var(--side-bg);
+  border-block-end: 1px solid var(--side-line);
 }
 
 .menu-button {
@@ -323,7 +326,7 @@
   background: var(--nav-hover);
 }
 
-/* The blue focus ring is hard to see on navy: light gold, as in the sidebar */
+/* The focus ring is hard to see on the board: light gold, as in the sidebar */
 .navbar.phone .menu-button:focus-visible,
 .navbar.phone .user-button:focus-visible {
   outline: 2px solid var(--gold-light);

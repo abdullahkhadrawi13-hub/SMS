@@ -1,5 +1,6 @@
 /* ==========================================================
-   Auth layout: the navy panel + the form (login, first-login password).
+   Auth layout: the board panel + the form (login, first-login password).
+   The panel takes the sidebar's colours (--side-*), in light and dark.
    Colours and sizes come from src/tokens.css only.
    Spec: "SMS — مواصفات تصميم الكحلي والذهبي" → صفحة الدخول
    ========================================================== */
@@ -17,7 +18,7 @@
 
 
 /* ==============================
-   The navy panel
+   The board panel (the sidebar's colour)
    ============================== */
 
 .brand-panel {
@@ -52,7 +53,7 @@
   display: grid;
   place-items: center;
 
-  background: var(--surface);
+  background: var(--logo-bg);  /* white in both modes */
   border-radius: var(--r-card);
 }
 
@@ -162,10 +163,10 @@
 
 
 /* ==============================
-   The language button on the navy
+   The language button on the board
    ============================== */
 
-/* app-language-switcher is a plain button (not mat-button): recoloured on the navy
+/* app-language-switcher is a plain button (not mat-button): recoloured on the board
    through its variables (shared/components/language-switcher/language-switcher.css) */
 .panel-language {
   --lang-btn-ink: var(--side-ink);
@@ -211,7 +212,7 @@
 
 /* ==============================
    The phone (under 720px, like the rest of the app):
-   the panel becomes a navy top bar, 52px like the navbar
+   the panel becomes a top bar in the board colour, 52px like the navbar
    ============================== */
 
 @media (max-width: 719.98px) {

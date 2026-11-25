@@ -1,7 +1,10 @@
-// Angular Material theme — Navy & Gold.
+// Angular Material theme — Chalkboard & Gold (light and dark).
 // mat.theme() builds Material's --mat-sys-* variables; theme-overrides then
 // points the important ones at our own tokens (src/tokens.css), so Material
 // components (buttons, fields, tabs, dialogs, spinners...) follow the same colours.
+// theme-type: color-scheme makes the --mat-sys-* values we don't override follow
+// color-scheme (light in :root, dark under html[data-theme="dark"], tokens.css),
+// so menus, tooltips and the date picker turn dark with the rest.
 // Learn more: https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
@@ -12,6 +15,7 @@ html {
       color: (
         primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
+        theme-type: color-scheme,
       ),
       typography: (
         plain-family: (Cairo, system-ui, sans-serif),
@@ -40,8 +44,10 @@ html {
       on-surface-variant: var(--muted),
       surface-container-lowest: var(--surface),
       surface-container-low: var(--surface),
-      surface-container: var(--surface),
-      surface-container-high: var(--surface),
+      // menus, the date picker and other panels that float: --pop
+      // (white in light, a lighter step in dark so they stand out from the cards)
+      surface-container: var(--pop),
+      surface-container-high: var(--pop),
       surface-container-highest: var(--raised),
 
       outline: var(--control),
@@ -56,7 +62,7 @@ html {
 
   // ---------- Buttons ----------
   // One look for every Material button in the app (spec: "الأزرار").
-  //   mat-flat-button    -> primary (navy)
+  //   mat-flat-button    -> primary (board green)
   //   mat-stroked-button -> secondary (white with a border)
   //   mat-button         -> ghost (no background, no border)
   //   mat-icon-button    -> icon only (36 x 36)
@@ -186,9 +192,6 @@ html {
 }
 
 body {
-  // Light theme only (no dark mode in this design).
-  color-scheme: light;
-
   background-color: var(--ground);
   color: var(--text);
   font: var(--mat-sys-body-medium);
