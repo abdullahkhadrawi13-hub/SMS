@@ -1,0 +1,11 @@
+<button
+  type="button"
+  class="theme-button"
+  [class.compact]="compact()"
+  (click)="switchTheme()"
+  [attr.aria-label]="labelKey() | translate"
+  [matTooltip]="labelKey() | translate">
+
+  <mat-icon class="theme-icon" aria-hidden="true">{{ icon() }}</mat-icon>
+
+</button>

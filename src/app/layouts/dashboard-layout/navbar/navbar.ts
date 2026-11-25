@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { LanguageSwitcher } from '../../../shared/components/language-switcher/language-switcher';
+import { ThemeSwitcher } from '../../../shared/components/theme-switcher/theme-switcher';
 import { Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
 import { User } from '../../../core/services/user';
@@ -30,6 +31,7 @@ import { CurrentTermBadge } from './current-term-badge/current-term-badge';
     MatButtonModule,
     MatMenuModule,
     TranslatePipe,
+    ThemeSwitcher,
     LanguageSwitcher,
     CurrentTermBadge
   ],

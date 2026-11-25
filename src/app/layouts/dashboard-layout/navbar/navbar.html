@@ -2,9 +2,9 @@
 
   <!-- The logo and the system name are in the sidebar.
        Everything here sits at the end of the bar, in this order:
-       current term → language → user.
+       current term → theme → language → user.
        On the phone (under 720px) the bar is navy: the menu button at the
-       start, then the language icon and the avatar at the end. -->
+       start, then the theme icon, the language icon and the avatar at the end. -->
 
   @if (phone()) {
     <button
@@ -24,6 +24,8 @@
   @if (showCurrentTerm() && !phone()) {
     <app-current-term-badge />
   }
+
+  <app-theme-switcher [compact]="phone()" />
 
   <app-language-switcher [compact]="phone()" />
 

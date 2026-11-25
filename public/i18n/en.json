@@ -104,7 +104,9 @@
     "LOGOUT": "Logout",
     "USER_MENU": "User menu",
     "OPEN_MENU": "Open menu",
-    "CURRENT_TERM": "Current term"
+    "CURRENT_TERM": "Current term",
+    "THEME_DARK": "Dark mode",
+    "THEME_LIGHT": "Light mode"
   },
 
   "PROFILE_DIALOG": {

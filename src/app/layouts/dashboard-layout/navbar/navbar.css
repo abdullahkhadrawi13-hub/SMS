@@ -235,8 +235,8 @@
    Phone (under 720px)
    .phone is set from dashboard-layout (PHONE_QUERY), so the bar and the
    sidebar switch at the same width.
-   Navy bar, 52px: menu button at the start; language icon and avatar at
-   the end. Every button is 44 × 44 for touch.
+   Navy bar, 52px: menu button at the start; theme icon, language icon and
+   avatar at the end. Every button is 44 × 44 for touch.
    ============================== */
 
 .navbar.phone {
@@ -251,6 +251,12 @@
   --lang-btn-hover-bg: var(--nav-hover);
   --lang-btn-hover-ink: var(--side-ink);
   --lang-btn-focus: var(--gold-light);
+
+  /* the theme button on navy (the same colours as the language button) */
+  --theme-btn-ink: var(--nav-ink);
+  --theme-btn-hover-bg: var(--nav-hover);
+  --theme-btn-hover-ink: var(--side-ink);
+  --theme-btn-focus: var(--gold-light);
 
   height: var(--topbar-h-phone);
   gap: var(--sp-1);
