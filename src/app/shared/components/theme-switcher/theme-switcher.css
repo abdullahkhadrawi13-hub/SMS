@@ -1,38 +1,41 @@
 /* ==========================================================
-   Theme button — a transparent icon button (moon / sun).
-   The same look as the language button. Colours come from src/tokens.css.
-   A parent can recolour it with the --theme-btn-* variables
-   (the navbar does this on navy on the phone).
+   Theme switch — light: a sky with a sun and two clouds;
+   dark: a navy night with a moon and four stars.
+   Flat colours from src/tokens.css (--tt-*), no gradient, no shadow.
+
+   Everything is driven by [aria-checked] on the button:
+   false = light theme, true = dark theme.
+   The sun/moon moves with inset-inline-start, so it starts on the right
+   in Arabic and on the left in English with no extra RTL rule.
+
+   A parent can change --theme-btn-hover-bg, --theme-btn-focus and
+   --theme-btn-night-line (the navbar does this on navy on the phone).
    ========================================================== */
 
+/* The button is only the hit area: 36px high (44px compact) */
 .theme-button {
-  width: var(--h-control);
   height: var(--h-control);
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-grid;
+  place-items: center;
 
   flex-shrink: 0;
   box-sizing: border-box;
-  padding: 0;
+  padding-block: 0;
+  padding-inline: var(--sp-1);
 
   border: 0;
   border-radius: var(--r-control);
 
   background: transparent;
-  color: var(--theme-btn-ink, var(--muted));
 
   cursor: pointer;
 
-  transition:
-    background-color var(--dur) ease,
-    color var(--dur) ease;
+  transition: background-color var(--dur) ease;
 }
 
 .theme-button:hover {
   background: var(--theme-btn-hover-bg, var(--hover));
-  color: var(--theme-btn-hover-ink, var(--text));
 }
 
 .theme-button:focus-visible {
@@ -40,18 +43,191 @@
   outline-offset: 2px;
 }
 
-.theme-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
+
+/* ==============================
+   The pill (56 × 28): the sky or the night
+   overflow: hidden cuts the clouds and the stars as they move out.
+   ============================== */
+
+.pill {
+  position: relative;
+  display: block;
+
+  width: 56px;
+  height: 28px;
+
+  overflow: hidden;
+  border-radius: 999px;
+
+  background: var(--tt-day);
+  box-shadow: inset 0 0 0 1px var(--tt-day-line);   /* the edge, inside the pill */
+
+  transition:
+    background-color var(--dur-switch) ease,
+    box-shadow var(--dur-switch) ease;
 }
 
 
 /* ==============================
-   Compact: 44 × 44 to touch (phone navbar)
+   The knob (22px): the sun, then the moon
+   ============================== */
+
+.knob {
+  position: absolute;
+  z-index: 1;
+
+  inset-block-start: 3px;
+  inset-inline-start: 3px;
+
+  width: 22px;
+  height: 22px;
+
+  border-radius: 50%;
+  background: var(--tt-sun);
+
+  transition:
+    inset-inline-start var(--dur-switch) cubic-bezier(.4, .1, .2, 1),
+    background-color var(--dur-switch) ease;
+}
+
+/* the moon's craters: hidden on the sun */
+.crater {
+  position: absolute;
+
+  border-radius: 50%;
+  background: var(--tt-crater);
+
+  opacity: 0;
+  transition: opacity 250ms ease 100ms;
+}
+
+.crater-a { width: 28%; height: 28%; inset-block-start: 22%; inset-inline-start: 22%; }
+.crater-b { width: 18%; height: 18%; inset-block-start: 58%; inset-inline-start: 52%; }
+.crater-c { width: 13%; height: 13%; inset-block-start: 30%; inset-inline-start: 64%; }
+
+
+/* ==============================
+   Clouds: one oval + two round bumps (::before, ::after)
+   ============================== */
+
+.cloud {
+  position: absolute;
+
+  height: 5px;
+  border-radius: 999px;
+  background: var(--tt-cloud);
+
+  transition:
+    transform var(--dur-switch) ease,
+    opacity 250ms ease;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+
+  border-radius: 50%;
+  background: var(--tt-cloud);
+}
+
+.cloud::before {
+  width: 45%;
+  height: 150%;
+  inset-block-end: 30%;
+  inset-inline-start: 18%;
+}
+
+.cloud::after {
+  width: 35%;
+  height: 120%;
+  inset-block-end: 35%;
+  inset-inline-start: 50%;
+}
+
+.cloud-a { width: 16px; inset-block-start: 9px;  inset-inline-end: 6px; }
+.cloud-b { width: 12px; inset-block-start: 18px; inset-inline-end: 17px; }
+
+
+/* ==============================
+   Stars: hidden above the pill in the light theme
+   ============================== */
+
+.star {
+  position: absolute;
+
+  width: 2px;
+  height: 2px;
+
+  border-radius: 50%;
+  background: var(--tt-star);
+
+  opacity: 0;
+  transform: translateY(-6px);
+
+  transition:
+    opacity 300ms ease,
+    transform var(--dur-switch) ease;
+}
+
+.star-1 { inset-block-start: 7px;  inset-inline-start: 9px; }
+.star-2 { inset-block-start: 15px; inset-inline-start: 16px; }
+.star-3 { inset-block-start: 9px;  inset-inline-start: 24px; }
+.star-4 { inset-block-start: 20px; inset-inline-start: 7px; }
+
+
+/* ==============================
+   Dark theme: aria-checked="true"
+   ============================== */
+
+.theme-button[aria-checked="true"] .pill {
+  background: var(--tt-night);
+  box-shadow: inset 0 0 0 1px var(--theme-btn-night-line, var(--tt-night-line));
+}
+
+/* the knob goes to the end and becomes the moon: 56 - 22 - 3 = 31px */
+.theme-button[aria-checked="true"] .knob {
+  inset-inline-start: calc(100% - 25px);
+  background: var(--tt-moon);
+}
+
+.theme-button[aria-checked="true"] .crater {
+  opacity: 1;
+}
+
+/* the clouds go down, out of the pill */
+.theme-button[aria-checked="true"] .cloud {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+/* the stars come down after the clouds have gone */
+.theme-button[aria-checked="true"] .star {
+  opacity: 1;
+  transform: none;
+  transition-delay: 120ms;
+}
+
+
+/* ==============================
+   Compact: a 44px touch area (phone navbar)
    ============================== */
 
 .theme-button.compact {
-  width: var(--h-touch);
   height: var(--h-touch);
+}
+
+
+/* ==============================
+   Reduced motion: switch at once
+   ============================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .pill,
+  .knob,
+  .crater,
+  .cloud,
+  .star {
+    transition: none;
+  }
 }
