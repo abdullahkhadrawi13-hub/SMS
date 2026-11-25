@@ -105,8 +105,7 @@
     "USER_MENU": "User menu",
     "OPEN_MENU": "Open menu",
     "CURRENT_TERM": "Current term",
-    "THEME_DARK": "Dark mode",
-    "THEME_LIGHT": "Light mode"
+    "THEME_DARK": "Dark mode"
   },
 
   "PROFILE_DIALOG": {

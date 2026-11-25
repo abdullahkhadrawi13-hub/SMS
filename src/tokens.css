@@ -104,6 +104,16 @@
   --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%23636c7e' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
   --select-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%231f4478' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
 
+  /* theme switch in the navbar (shared theme-switcher): a sky with a sun
+     and two clouds in the light theme, a navy night with a moon and stars
+     in the dark. Flat colours only — added 25 Nov 2026 */
+  --tt-day: #cfe4f2;    --tt-day-line: #b3d2e8;
+  --tt-sun: #f7c948;    --tt-cloud: #ffffff;
+  --tt-night: #15213b;  --tt-night-line: #33466e;
+  --tt-night-line-on-navy: #4a5f8c;   /* the same switch on the navy phone navbar */
+  --tt-moon: #efe6cf;   --tt-crater: #d6c9a6;   --tt-star: #c9d1e2;
+
   /* motion */
   --dur: 150ms;
+  --dur-switch: 350ms;   /* the theme switch: sun ↔ moon */
 }

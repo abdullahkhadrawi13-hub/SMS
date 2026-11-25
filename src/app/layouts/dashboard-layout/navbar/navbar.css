@@ -252,11 +252,11 @@
   --lang-btn-hover-ink: var(--side-ink);
   --lang-btn-focus: var(--gold-light);
 
-  /* the theme button on navy (the same colours as the language button) */
-  --theme-btn-ink: var(--nav-ink);
+  /* the theme switch on navy: the same hover and focus as the language
+     button, and a lighter edge so the night switch shows on the navy bar */
   --theme-btn-hover-bg: var(--nav-hover);
-  --theme-btn-hover-ink: var(--side-ink);
   --theme-btn-focus: var(--gold-light);
+  --theme-btn-night-line: var(--tt-night-line-on-navy);
 
   height: var(--topbar-h-phone);
   gap: var(--sp-1);

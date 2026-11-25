@@ -1,11 +1,36 @@
+<!-- A switch (role="switch"): aria-checked says whether the dark theme is on,
+     and the CSS draws the sky or the night from that same attribute.
+     The label stays "الوضع الداكن"; the state is read from aria-checked. -->
 <button
   type="button"
+  role="switch"
   class="theme-button"
   [class.compact]="compact()"
+  [attr.aria-checked]="isDark()"
   (click)="switchTheme()"
-  [attr.aria-label]="labelKey() | translate"
-  [matTooltip]="labelKey() | translate">
+  [attr.aria-label]="'NAVBAR.THEME_DARK' | translate"
+  [matTooltip]="'NAVBAR.THEME_DARK' | translate">
 
-  <mat-icon class="theme-icon" aria-hidden="true">{{ icon() }}</mat-icon>
+  <!-- The drawing: decoration only, hidden from screen readers -->
+  <span class="pill" aria-hidden="true">
+
+    <!-- light theme: two clouds -->
+    <span class="cloud cloud-a"></span>
+    <span class="cloud cloud-b"></span>
+
+    <!-- dark theme: four stars -->
+    <span class="star star-1"></span>
+    <span class="star star-2"></span>
+    <span class="star star-3"></span>
+    <span class="star star-4"></span>
+
+    <!-- the sun in the light theme, the moon (with its craters) in the dark -->
+    <span class="knob">
+      <span class="crater crater-a"></span>
+      <span class="crater crater-b"></span>
+      <span class="crater crater-c"></span>
+    </span>
+
+  </span>
 
 </button>
