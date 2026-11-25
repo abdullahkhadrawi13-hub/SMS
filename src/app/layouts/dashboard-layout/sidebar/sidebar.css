@@ -16,8 +16,6 @@
   padding: var(--sp-4) var(--sp-3);
 
   background: var(--side-bg);
-  /* no line on the navy (light); a 1px rule against the page in dark */
-  border-inline-end: var(--side-edge);
 
   /* the menu scrolls on its own when it is taller than the screen */
   overflow-y: auto;

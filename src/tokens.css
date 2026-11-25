@@ -39,7 +39,6 @@
   --nav-active-bg: #263a63; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
   --nav-group: #93a0bb; --nav-soon-ink: #8f9bb6; --soon-line: #33466e;
   --side-line: #2b3c62; /* a rule on the navy (the login panel's facts) */
-  --side-edge: none; /* the sidebar's edge against the page: none on the navy, a 1px rule in dark */
 
   /* meaning: attendance, results, status */
   --ok-bg: #dcf3e5;   --ok-ink: #0f4a2b;   --ok-line: #b9e3c9;
@@ -130,7 +129,8 @@
    Dark theme — Navy & Gold at night (proposal, 25 Nov 2026)
    <html data-theme="dark"> is set by core/services/theme.ts.
    Graphite tempered with the navy hue (OKLCH chroma under 0.02,
-   hue 260–265), not a navy ground. The gold stays the same gold.
+   hue 260–265), not a navy ground; the sidebar is a darker navy.
+   The gold stays the same gold.
    The primary inverts: a light navy tint with navy text.
    Every text pair holds 4.5:1, field borders and focus 3:1.
    ========================================================== */
@@ -150,13 +150,16 @@
   --mark: #c79a3c;    --gold-light: #e0b961;
   --accent: #7ea6e0;  --accent-soft: #19243a; --accent-ink: #9ec2f2;
 
-  /* sidebar: the darkest step, no navy fill; the active item brightens, the gold icon stays */
-  --side-bg: #0b0d10; --side-ink: #eceef2; --side-muted: #8b93a1;
-  --nav-ink: #b9c0cc; --nav-icon: #858d9b; --nav-hover: #15181d;
-  --nav-active-bg: #1e2127; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
-  --nav-group: #8b93a1; --nav-soon-ink: #7f8795; --soon-line: #2c313a;
-  --side-line: #23272e;
-  --side-edge: 1px solid #23272e;
+  /* sidebar ("night navy"): the day navy, darker and quieter, so the frame
+     stays navy without glowing next to the page. The same colours are used
+     by the phone navbar and the login panel. The colour alone separates it
+     from the grey page (no line); the active item is a lighter navy with
+     the gold icon, as in light */
+  --side-bg: #111a2c; --side-ink: #eef1f6; --side-muted: #9ca8c0;
+  --nav-ink: #c0c9db; --nav-icon: #8a97b2; --nav-hover: #18233a;
+  --nav-active-bg: #20304f; --nav-active-ink: #ffffff; --nav-active-icon: #e0b961;
+  --nav-group: #8a97b2; --nav-soon-ink: #8592ad; --soon-line: #2a3a5c;
+  --side-line: #22304b;
 
   /* meaning: the hue on a dark tint of itself */
   --ok-bg: #13291e;   --ok-ink: #86d9a6;   --ok-line: #22472f;
@@ -205,6 +208,6 @@
   --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%238b93a1' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
   --select-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%239ec2f2' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
 
-  /* the theme switch's night pill on the dark bars */
-  --tt-night-line-on-navy: #3a4152;
+  /* the theme switch's night pill on the night-navy phone navbar */
+  --tt-night-line-on-navy: #3a4c72;
 }
