@@ -20,7 +20,9 @@
 
   gap: var(--sp-2) var(--sp-3);
 
-  padding: var(--sp-6) var(--sp-6) var(--sp-2);
+  /* Bottom 4px, not 8px: the other 4px is the content's own padding
+     (see .mat-mdc-dialog-content below) */
+  padding: var(--sp-6) var(--sp-6) var(--sp-1);
 }
 
 .result-icon {
@@ -96,7 +98,14 @@
   grid-column: 2;
 
   margin: 0;
-  padding: 0;
+
+  /* 4px at the bottom, like the global dialog fix in styles.css
+     ("Dialogs: title and content"): Cairo is taller than our line-height,
+     so with no padding the last line sticks out of the scrolling box by a
+     fraction of a pixel and an empty scrollbar shows. The 4px is taken
+     back from .result-body, so the space under the text stays the same.
+     A long message still scrolls (Material's max-height on the content). */
+  padding: 0 0 var(--sp-1);
 }
 
 .result p {
@@ -129,7 +138,7 @@
 @media (max-width: 719.98px) {
 
   .result-body {
-    padding: 20px var(--sp-4) var(--sp-2);
+    padding: 20px var(--sp-4) var(--sp-1);
   }
 
   .result .mat-mdc-dialog-actions {
