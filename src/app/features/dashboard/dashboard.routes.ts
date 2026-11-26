@@ -1,17 +1,14 @@
 import { Routes } from '@angular/router';
 
-import { AdminDashboard } from './admin/admin-dashboard/admin-dashboard';
-import { AssistantPrincipalDashboard } from './assistant-principal/assistant-principal-dashboard/assistant-principal-dashboard';
-import { TeacherDashboard } from './teacher/teacher-dashboard/teacher-dashboard';
-import { StudentDashboard } from './student/student-dashboard/student-dashboard';
-import { ParentDashboard } from './parent/parent-dashboard/parent-dashboard';
-
 import { roleGuard } from '../../core/guards/role-guard';
 import { dashboardRedirectGuard } from '../../core/guards/dashboard-redirect-guard';
 import { UserRole } from '../../core/models/user-role';
 
 // هذه المسارات أبناء لـ 'dashboard' (معرّف في app.routes.ts)
 // الـ Layout والـ authGuard صاروا في الأب، فما بنكررهم هون
+//
+// كل لوحة بـ loadComponent (مثل باقي الأقسام بـ loadChildren):
+// كل دور ينزّل لوحته فقط عند فتحها، بدل الخمس لوحات مع أول فتح للموقع.
 export const DASHBOARD_ROUTES: Routes = [
 
   {
@@ -22,7 +19,9 @@ export const DASHBOARD_ROUTES: Routes = [
 
   {
     path: 'admin',
-    component: AdminDashboard,
+    loadComponent: () =>
+      import('./admin/admin-dashboard/admin-dashboard')
+        .then(m => m.AdminDashboard),
     canActivate: [roleGuard],
     data: {
       roles: [UserRole.Admin]
@@ -31,7 +30,9 @@ export const DASHBOARD_ROUTES: Routes = [
 
   {
     path: 'assistant-principal',
-    component: AssistantPrincipalDashboard,
+    loadComponent: () =>
+      import('./assistant-principal/assistant-principal-dashboard/assistant-principal-dashboard')
+        .then(m => m.AssistantPrincipalDashboard),
     canActivate: [roleGuard],
     data: {
       roles: [UserRole.AssistantPrincipal]
@@ -40,7 +41,9 @@ export const DASHBOARD_ROUTES: Routes = [
 
   {
     path: 'teacher',
-    component: TeacherDashboard,
+    loadComponent: () =>
+      import('./teacher/teacher-dashboard/teacher-dashboard')
+        .then(m => m.TeacherDashboard),
     canActivate: [roleGuard],
     data: {
       roles: [UserRole.Teacher]
@@ -49,7 +52,9 @@ export const DASHBOARD_ROUTES: Routes = [
 
   {
     path: 'student',
-    component: StudentDashboard,
+    loadComponent: () =>
+      import('./student/student-dashboard/student-dashboard')
+        .then(m => m.StudentDashboard),
     canActivate: [roleGuard],
     data: {
       roles: [UserRole.Student]
@@ -58,7 +63,9 @@ export const DASHBOARD_ROUTES: Routes = [
 
   {
     path: 'parent',
-    component: ParentDashboard,
+    loadComponent: () =>
+      import('./parent/parent-dashboard/parent-dashboard')
+        .then(m => m.ParentDashboard),
     canActivate: [roleGuard],
     data: {
       roles: [UserRole.Parent]
