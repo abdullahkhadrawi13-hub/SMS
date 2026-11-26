@@ -1121,6 +1121,162 @@ html {
   font-weight: 400;
 }
 
+/* ---------- The open list of a <select> (computer only) ----------
+   The browser's own list is drawn outside the page: it does not grow
+   with the page zoom, and it takes neither Cairo nor our colours.
+   With appearance: base-select the list is part of the page, like the
+   user menu (Chrome / Edge 135+, Safari 27). A browser without it
+   (Firefox for now) keeps its own list, as before.
+
+   Phones keep their own list too (bottom sheet / wheel): only a mouse
+   or a trackpad (pointer: fine) gets this one.
+
+   Both kinds of select take it: .field-box.is-select > select (forms)
+   and .filter-select (list filters). Their own arrow stays (the chevron
+   icon / the background image), so the browser's ::picker-icon goes.
+
+   ::picker(select) rules stay on their own: in a browser that does not
+   know it, a selector list with it would drop the whole rule. */
+@media (pointer: fine) {
+  @supports (appearance: base-select) {
+
+    /* base-select makes the select a flex box: centre its text in the
+       36px (it would sit at the top otherwise).
+       A text longer than the field no longer stops at its edge by itself:
+       cut it where the arrow starts (the content box), as the browser's
+       select did. (Without overflow-clip-margin it is cut at the edge.) */
+    .field-box.is-select > select,
+    .filter-select {
+      appearance: base-select;
+
+      align-items: center;
+      padding-block: 0;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+      overflow: clip;
+      overflow-clip-margin: content-box;
+    }
+
+    .field-box.is-select > select::picker-icon,
+    .filter-select::picker-icon {
+      display: none;
+    }
+
+    /* While its list is open the field keeps its focus look (the focus
+       moves into the list, so :focus / :focus-within alone would drop it). */
+    .filter-select:open {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .field-box.is-select:has(> select:open) {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    /* The list: under the field (above it when there is no room below),
+       at least as wide as the field, 8 options before it scrolls. */
+    .field-box.is-select > select::picker(select),
+    .filter-select::picker(select) {
+      appearance: base-select;
+
+      box-sizing: border-box;
+      max-block-size: calc(8 * 36px + 2 * var(--sp-1) + 2px);
+      margin-block: var(--sp-1);
+      padding: var(--sp-1);
+
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+
+      background: var(--overlay);
+      box-shadow: var(--shadow-pop);
+      color: var(--text);
+
+      font: 400 var(--fs-14) / 1.6 var(--font);
+
+      overflow-y: auto;
+    }
+
+    /* The field's box is 1px wider than the select on each side
+       (its border): the list lines up with the box, not the select. */
+    .field-box.is-select > select::picker(select) {
+      min-inline-size: calc(anchor-size(self-inline) + 2px);
+      margin-inline: -1px;
+    }
+
+    /* One option: 36px, with the check mark at the end (so the texts of
+       all the options stay in one column). */
+    .field-box.is-select > select option,
+    .filter-select option {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+
+      min-block-size: 36px;
+      padding-inline: 10px;
+
+      border-radius: var(--r-pill);
+
+      background: none;
+      color: var(--text);
+
+      font-weight: 400;
+      white-space: nowrap;
+
+      cursor: pointer;
+    }
+
+    .field-box.is-select > select option:hover,
+    .filter-select option:hover {
+      background: var(--overlay-hover);
+    }
+
+    .field-box.is-select > select option:focus-visible,
+    .filter-select option:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+
+      background: var(--overlay-hover);
+    }
+
+    /* The chosen one: bold, with a check mark (not colour alone) */
+    .field-box.is-select > select option:checked,
+    .filter-select option:checked {
+      font-weight: 600;
+    }
+
+    .field-box.is-select > select option::checkmark,
+    .filter-select option::checkmark {
+      order: 1;
+      margin-inline-start: auto;
+
+      width: 18px;
+      height: 18px;
+
+      content: "";
+      background: var(--accent);
+      mask: var(--check-mark) center / 18px 18px no-repeat;
+    }
+
+    /* A disabled option is the hint at the top of a form list
+       ("اختر الصف"): grey, and never marked as chosen. */
+    .field-box.is-select > select option:disabled,
+    .filter-select option:disabled {
+      color: var(--faint);
+      font-weight: 400;
+
+      cursor: default;
+    }
+
+    .field-box.is-select > select option:disabled::checkmark,
+    .filter-select option:disabled::checkmark {
+      visibility: hidden;
+    }
+  }
+}
+
 /* The number of results (after a search or a filter) */
 .list-results {
   margin: var(--sp-2) 0 0;
