@@ -119,11 +119,18 @@ export class AttendancePage {
     });
 
     // The tab follows the URL: /attendance, ?tab=summary or ?tab=absentees.
-    // (A tab click only changes the URL; this shows the tab.)
+    // (A tab click only changes the URL; this shows the tab, also on
+    // "Back" / "Forward".)
     this.route.queryParamMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(params => {
-        this.showTab(this.toAllowedTab(params.get('tab')));
+        const tab = this.toAllowedTab(params.get('tab'));
+
+        // Only when the tab changed (the record tab's class, section and
+        // date are in the URL too; they do not reload the other tabs).
+        if (tab !== this.activeTab()) {
+          this.showTab(tab);
+        }
       });
   }
 
@@ -147,9 +154,8 @@ export class AttendancePage {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab: tab === 'record' ? null : tab },
-      queryParamsHandling: 'merge',
-      // Replace: a tab is not a new step for the browser's "Back".
-      replaceUrl: true
+      // A new step for the browser's "Back": back to the previous tab.
+      queryParamsHandling: 'merge'
     });
   }
 

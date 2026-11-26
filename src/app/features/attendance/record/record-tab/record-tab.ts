@@ -279,7 +279,9 @@ export class RecordTab implements OnInit {
   }
 
   // Writes the selection to the URL (the other parameters, like ?tab=, stay).
-  private syncUrl(): void {
+  // addStep: the user chose a class, section or date: a new step for the
+  // browser's "Back". Otherwise (a fix of the URL) the current step changes.
+  private syncUrl(addStep = false): void {
 
     this.router.navigate([], {
       relativeTo: this.route,
@@ -289,8 +291,7 @@ export class RecordTab implements OnInit {
         this.date()
       ),
       queryParamsHandling: 'merge',
-      // Replace: choosing a section is not a new step for "Back".
-      replaceUrl: true
+      replaceUrl: !addStep
     });
   }
 
@@ -427,7 +428,7 @@ export class RecordTab implements OnInit {
 
     // No section is selected now, so this clears the sheet
     this.loadSheet();
-    this.syncUrl();
+    this.syncUrl(true);
 
     if (classId !== null) {
       this.loadSections(classId);
@@ -437,7 +438,7 @@ export class RecordTab implements OnInit {
   onSectionChange(sectionId: number | null): void {
     this.sectionId.set(sectionId);
     this.loadSheet();
-    this.syncUrl();
+    this.syncUrl(true);
   }
 
   onDateChange(date: string): void {
@@ -449,7 +450,7 @@ export class RecordTab implements OnInit {
 
     this.date.set(date);
     this.loadSheet();
-    this.syncUrl();
+    this.syncUrl(true);
   }
 
   // "Retry" on the error card: load again whatever is missing.
@@ -510,8 +511,8 @@ export class RecordTab implements OnInit {
         tab: null,
         ...this.toQueryParams(target.classId, target.sectionId, date)
       },
-      queryParamsHandling: 'merge',
-      replaceUrl: true
+      // A new step for "Back": back to the tab it came from.
+      queryParamsHandling: 'merge'
     });
 
     return true;

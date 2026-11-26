@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatDialog } from '@angular/material/dialog';
 
-import { forkJoin, map, Observable, of, Subscription } from 'rxjs';
+import { forkJoin, map, Observable, of, skip, Subscription } from 'rxjs';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -346,8 +346,17 @@ export class GradesPage implements OnInit, LeaveConfirmation {
   readonly hasChanges = computed(() => this.draftStats().changes > 0);
 
 
-  // Starts writing the address once the first choice is restored.
+  // Starts writing the address once the first choice is restored
+  // (false again while a choice from "Back" / "Forward" is restored).
   private readonly urlReady = signal(false);
+
+  // The user picked a term, class, section or subject: the next write of
+  // the address is a new step for the browser's "Back". Every other write
+  // (the address the page opened with, a fix after loading) replaces it.
+  private addStepOnNextWrite = false;
+
+  // "Leave without saving?" is open for a "Back" inside the page.
+  private isAskingToLeaveChoice = false;
 
   // Running requests. A new request cancels the previous one,
   // so an old response never replaces a newer choice.
@@ -358,28 +367,127 @@ export class GradesPage implements OnInit, LeaveConfirmation {
 
   constructor() {
 
-    // Keep the address up to date (replaceUrl: no new history entry per choice).
+    // Keep the address up to date.
     effect(() => {
 
       if (!this.urlReady()) {
         return;
       }
 
-      const queryParams = this.mode() === 'teacher'
-        ? { assignmentId: this.assignmentId() }
-        : {
-          termId: this.termId(),
-          classId: this.classId(),
-          sectionId: this.sectionId(),
-          assignmentId: this.assignmentId(),
-        };
+      const urlTree = this.choiceUrl();
 
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams,
-        replaceUrl: true,
-      });
+      const addStep = this.addStepOnNextWrite;
+      this.addStepOnNextWrite = false;
+
+      // Already the address (e.g. after "Back"): nothing to write.
+      if (this.router.serializeUrl(urlTree) !== this.router.url) {
+        this.router.navigateByUrl(urlTree, { replaceUrl: !addStep });
+      }
     });
+
+    // "Back" / "Forward" inside the page: the choice of that step.
+    // (The first value is the address the page opened with: ngOnInit.)
+    this.route.queryParamMap
+      .pipe(skip(1), takeUntilDestroyed())
+      .subscribe(() => this.syncWithUrl());
+  }
+
+
+  // The address of the choice on the screen.
+  private choiceUrl() {
+
+    const queryParams = this.mode() === 'teacher'
+      ? { assignmentId: this.assignmentId() }
+      : {
+        termId: this.termId(),
+        classId: this.classId(),
+        sectionId: this.sectionId(),
+        assignmentId: this.assignmentId(),
+      };
+
+    return this.router.createUrlTree([], { relativeTo: this.route, queryParams });
+  }
+
+
+  // =========================
+  // "Back" / "Forward" inside the page
+  // =========================
+
+  private syncWithUrl(): void {
+
+    // Still loading, the address is the one on the screen, or the
+    // question is already open.
+    if (
+      !this.urlReady()
+      || this.router.serializeUrl(this.choiceUrl()) === this.router.url
+      || this.isAskingToLeaveChoice
+    ) {
+      return;
+    }
+
+    if (!this.hasChanges()) {
+      this.applyUrlChoice();
+      return;
+    }
+
+    // Unsaved marks: the same question as leaving the page.
+    this.isAskingToLeaveChoice = true;
+
+    (this.canLeave() as Observable<boolean>).subscribe(leave => {
+
+      this.isAskingToLeaveChoice = false;
+
+      if (leave) {
+        this.applyUrlChoice();
+        return;
+      }
+
+      // Stay: the address goes back to the sheet on the screen.
+      this.router.navigateByUrl(this.choiceUrl(), { replaceUrl: true });
+    });
+  }
+
+
+  // Shows the choice of the address (its lists are loaded again when needed).
+  private applyUrlChoice(): void {
+
+    if (this.mode() === 'teacher') {
+
+      const assignmentId = this.readId('assignmentId');
+
+      if (
+        assignmentId !== null
+        && this.assignments().some(a => a.teacherAssignmentId === assignmentId)
+      ) {
+        this.openAssignment(assignmentId);
+      } else {
+        this.assignmentId.set(null);
+        this.clearSheet();
+      }
+
+      return;
+    }
+
+    // No writes of the address until the choice is back on the screen.
+    this.urlReady.set(false);
+
+    const termId = this.readId('termId');
+    const classId = this.readId('classId');
+
+    if (this.terms().some(t => t.academicTermId === termId)) {
+      this.termId.set(termId);
+    }
+
+    this.classId.set(
+      this.classes().some(c => c.schoolClassId === classId) ? classId : null
+    );
+
+    this.sectionId.set(null);
+    this.sections.set([]);
+    this.assignmentId.set(null);
+    this.clearSheet();
+
+    this.restoreStaffChoice(this.readId('sectionId'), this.readId('assignmentId'));
   }
 
 
@@ -470,7 +578,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
           this.urlReady.set(true);
 
           if (chosen !== null) {
-            this.onAssignmentChange(chosen);
+            this.openAssignment(chosen);
           }
         },
 
@@ -607,7 +715,7 @@ export class GradesPage implements OnInit, LeaveConfirmation {
           );
 
           if (assignmentId !== null && exists) {
-            this.onAssignmentChange(assignmentId);
+            this.openAssignment(assignmentId);
           }
         },
 
@@ -626,7 +734,11 @@ export class GradesPage implements OnInit, LeaveConfirmation {
   }
 
 
+  // ===== The user's choice (a new step for "Back") =====
+
   onTermChange(termId: number): void {
+
+    this.addStepOnNextWrite = true;
 
     this.termId.set(termId);
 
@@ -640,6 +752,8 @@ export class GradesPage implements OnInit, LeaveConfirmation {
 
   onClassChange(classId: number): void {
 
+    this.addStepOnNextWrite = true;
+
     this.classId.set(classId);
 
     this.sectionId.set(null);
@@ -652,6 +766,8 @@ export class GradesPage implements OnInit, LeaveConfirmation {
 
   onSectionChange(sectionId: number): void {
 
+    this.addStepOnNextWrite = true;
+
     this.sectionId.set(sectionId);
 
     this.assignmentId.set(null);
@@ -660,6 +776,14 @@ export class GradesPage implements OnInit, LeaveConfirmation {
 
   // Both modes: a subject was chosen → its sheet.
   onAssignmentChange(assignmentId: number): void {
+
+    this.addStepOnNextWrite = true;
+
+    this.openAssignment(assignmentId);
+  }
+
+  // A subject's sheet (chosen by the user, or restored from the address).
+  private openAssignment(assignmentId: number): void {
 
     this.assignmentId.set(assignmentId);
     this.loadSheet();
