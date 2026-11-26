@@ -20,6 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../../core/services/language';
+import { DialogHistory } from '../../../core/services/dialog-history';
 import { GradeSheet, GradeSheetMark } from '../../../core/models/student-grade';
 import {
   FULL_WEIGHT,
@@ -120,6 +121,7 @@ export class GradesSheet {
   private readonly language = inject(Language);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly bottomSheet = inject(MatBottomSheet);
+  private readonly dialogHistory = inject(DialogHistory);
 
   // Passed to the bottom sheet, so it can use the page's GradeHistoryCache.
   private readonly viewContainerRef = inject(ViewContainerRef);
@@ -523,12 +525,16 @@ export class GradesSheet {
       return;
     }
 
-    this.bottomSheet.open<GradeHistorySheet, GradeHistoryTarget>(GradeHistorySheet, {
+    const sheetRef = this.bottomSheet.open<GradeHistorySheet, GradeHistoryTarget>(GradeHistorySheet, {
       data: target,
       panelClass: 'grade-history-sheet',
       direction: this.language.currentDirection(),
       viewContainerRef: this.viewContainerRef,
+      // The browser's Back button closes it, not the page (DialogHistory).
+      closeOnNavigation: false,
     });
+
+    this.dialogHistory.trackBottomSheet(sheetRef);
   }
 
 

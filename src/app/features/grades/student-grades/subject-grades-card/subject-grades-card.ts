@@ -18,6 +18,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { StudentGradesSubject } from '../../../../core/models/student-grades-report';
 import { Language } from '../../../../core/services/language';
+import { DialogHistory } from '../../../../core/services/dialog-history';
 import { formatNumber } from '../../../subjects/shared/subjects-shared';
 
 import { GradeHistoryTarget } from '../../grades';
@@ -103,6 +104,7 @@ export class SubjectGradesCard {
 
   private readonly language = inject(Language);
   private readonly bottomSheet = inject(MatBottomSheet);
+  private readonly dialogHistory = inject(DialogHistory);
 
   // Passed to the bottom sheet, so it finds the parent's GradeHistoryCache.
   private readonly viewContainerRef = inject(ViewContainerRef);
@@ -199,11 +201,15 @@ export class SubjectGradesCard {
       return;
     }
 
-    this.bottomSheet.open<GradeHistorySheet, GradeHistoryTarget>(GradeHistorySheet, {
+    const sheetRef = this.bottomSheet.open<GradeHistorySheet, GradeHistoryTarget>(GradeHistorySheet, {
       data: target,
       panelClass: 'grade-history-sheet',
       direction: this.language.currentDirection(),
       viewContainerRef: this.viewContainerRef,
+      // The browser's Back button closes it, not the page (DialogHistory).
+      closeOnNavigation: false,
     });
+
+    this.dialogHistory.trackBottomSheet(sheetRef);
   }
 }
