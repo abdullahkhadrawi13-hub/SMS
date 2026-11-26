@@ -21,6 +21,7 @@ import { pluralKey } from '../../../../shared/utils/plural';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { SectionStatusFilter, isEmptySection } from '../../shared/classes-sections-shared';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 
 // One row of the list: what the table (or the phone list) shows for a section.
@@ -59,6 +60,7 @@ interface SectionRowView {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatProgressBarModule,
     TranslatePipe,
     StateCard,

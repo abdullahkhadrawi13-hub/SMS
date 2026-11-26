@@ -30,6 +30,7 @@ import {
   StudentGradesViewer,
   SubjectResult,
 } from '../student-grades';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 
 // Same breakpoint as the grade sheet: the history opens as a bottom sheet.
@@ -93,6 +94,7 @@ interface CardView {
   imports: [
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatTooltipModule,
     TranslatePipe,
     GradeHistory,

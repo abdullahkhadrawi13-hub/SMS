@@ -2,7 +2,7 @@ import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalE
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
-import { provideRouter, withViewTransitions } from '@angular/router';
+import { provideRouter, withRouterConfig, withViewTransitions } from '@angular/router';
 
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -26,7 +26,13 @@ export const appConfig: ApplicationConfig = {
 
     provideRouter(
       routes,
-      withViewTransitions()
+      withViewTransitions(),
+
+      // "Back" that is cancelled (e.g. "Stay" on the grades page's
+      // "Leave without saving?"): the browser goes back to where it was,
+      // so the step "Back" was going to is still there for the next "Back".
+      // (The default, 'replace', overwrote that step with the current page.)
+      withRouterConfig({ canceledNavigationResolution: 'computed' })
     ),
 
     provideHttpClient(withInterceptors([authInterceptor])),

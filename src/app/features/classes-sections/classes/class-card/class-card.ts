@@ -13,6 +13,7 @@ import { Language } from '../../../../core/services/language';
 import { pluralKey } from '../../../../shared/utils/plural';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { getClassCounts, isEmptySection } from '../../shared/classes-sections-shared';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 
 // One card of the classes page (spec: البطاقات): a white card with a thin
@@ -32,6 +33,7 @@ import { getClassCounts, isEmptySection } from '../../shared/classes-sections-sh
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     TranslatePipe,
     StatusBadge,
   ],

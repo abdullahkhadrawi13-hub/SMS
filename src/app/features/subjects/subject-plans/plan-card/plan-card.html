@@ -95,6 +95,7 @@
     <a
       class="text-link open-link"
       [routerLink]="['/subjects/plans', plan().subjectPlanId]"
+      [state]="{ fromPlansTab: true }"
     >
       {{
         !plan().isComplete && canManage()

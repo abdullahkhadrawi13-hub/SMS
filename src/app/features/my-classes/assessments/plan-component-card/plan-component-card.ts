@@ -12,6 +12,7 @@ import { Assessment } from '../../../../core/models/assessment';
 
 import { formatNumber } from '../../../subjects/shared/subjects-shared';
 import { ComponentGroup } from '../assessments';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 
 // One component of the subject plan, with the section's assessments under it.
@@ -26,6 +27,7 @@ import { ComponentGroup } from '../assessments';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatTooltipModule,
     TranslatePipe,
   ],

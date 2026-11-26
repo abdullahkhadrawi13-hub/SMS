@@ -22,6 +22,7 @@ import { Permissions } from '../../../core/services/permissions';
 import { ChangePassword } from '../../../features/auth/change-password/change-password';
 import { ProfileDialog, PROFILE_DIALOG_CHANGE_PASSWORD } from './profile-dialog/profile-dialog';
 import { CurrentTermBadge } from './current-term-badge/current-term-badge';
+import { MenuBackClose } from '../../../shared/directives/menu-back-close';
 
 @Component({
   selector: 'app-navbar',
@@ -30,6 +31,7 @@ import { CurrentTermBadge } from './current-term-badge/current-term-badge';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
+    MenuBackClose,
     TranslatePipe,
     ThemeSwitcher,
     LanguageSwitcher,

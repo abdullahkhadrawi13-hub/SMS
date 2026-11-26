@@ -21,6 +21,7 @@ import {
 } from '../../../shared/utils/person-name';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
+import { MenuBackClose } from '../../../shared/directives/menu-back-close';
 
 // One teacher as the list shows it: the API data plus the names
 // in the language of the page (computed once, not on every change check).
@@ -41,6 +42,7 @@ export interface TeacherRow extends TeacherListDto {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatPaginatorModule,
     MatProgressBarModule,
     MatTableModule,
