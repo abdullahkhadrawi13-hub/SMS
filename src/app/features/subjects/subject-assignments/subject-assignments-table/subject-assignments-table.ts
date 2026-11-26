@@ -22,6 +22,7 @@ import {
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 
 // A subject with a plan for the class but no teacher in the section.
@@ -45,6 +46,7 @@ export interface MissingPlanSubject {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatProgressBarModule,
     MatTableModule,
     TranslatePipe,

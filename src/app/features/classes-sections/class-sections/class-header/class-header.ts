@@ -13,6 +13,7 @@ import { pluralKey } from '../../../../shared/utils/plural';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { getClassCounts } from '../../shared/classes-sections-shared';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 
 // The header of a class page (replaces the old coloured banner):
@@ -26,6 +27,7 @@ import { getClassCounts } from '../../shared/classes-sections-shared';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     TranslatePipe,
     PageHeader,
     StatusBadge,

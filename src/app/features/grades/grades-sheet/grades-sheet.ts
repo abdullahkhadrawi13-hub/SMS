@@ -46,6 +46,7 @@ import {
 import { GradeHistory } from '../grade-history/grade-history';
 import { GradeHistorySheet } from '../grade-history-sheet/grade-history-sheet';
 import { StateCard } from '../../../shared/components/state-card/state-card';
+import { MenuBackClose } from '../../../shared/directives/menu-back-close';
 
 
 // Who is looking at the sheet (changes the notes above the table).
@@ -108,6 +109,7 @@ const TOUCH_SCREEN = '(hover: none)';
   imports: [
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatTooltipModule,
     TranslatePipe,
     GradeHistory,

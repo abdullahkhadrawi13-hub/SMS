@@ -23,6 +23,7 @@ import {
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { StudentStatusBadge } from '../../../shared/components/student-status/student-status';
+import { MenuBackClose } from '../../../shared/directives/menu-back-close';
 
 // One student as the list shows it: the API data plus the names
 // in the language of the page (computed once, not on every change check).
@@ -45,6 +46,7 @@ export interface StudentRow extends Student {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatPaginatorModule,
     MatProgressBarModule,
     MatTableModule,

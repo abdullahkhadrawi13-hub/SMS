@@ -13,6 +13,7 @@ import { SubjectDto } from '../../../../core/models/subject';
 import { Language } from '../../../../core/services/language';
 import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 
 // The general subjects list: a table on the computer, two-line items on the phone.
@@ -24,6 +25,7 @@ import { StatusBadge } from '../../../../shared/components/status-badge/status-b
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatProgressBarModule,
     MatTableModule,
     TranslatePipe,

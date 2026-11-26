@@ -24,6 +24,7 @@ import {
   GradesStatus
 } from '../academic-years';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 // One academic year: a header that opens / closes the card,
 // and the table of its terms (a two-line list on the phone).
@@ -46,6 +47,7 @@ import { StatusBadge } from '../../../../shared/components/status-badge/status-b
     MatDividerModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatProgressSpinnerModule,
     MatTableModule,
     MatTooltipModule,

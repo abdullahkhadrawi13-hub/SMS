@@ -7,11 +7,11 @@ import {
   signal,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgTemplateOutlet } from '@angular/common';
+import { Location, NgTemplateOutlet } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -23,7 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { map, Observable } from 'rxjs';
+import { filter, map, Observable, take } from 'rxjs';
 
 import { ApiMessageService } from '../../../../core/services/api-message';
 import { Language } from '../../../../core/services/language';
@@ -58,6 +58,7 @@ import { StateCard } from '../../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { PHONE_QUERY } from '../../../../layouts/dashboard-layout/dashboard-layout';
 import { getAvatarTone, getInitialsFromFullName } from '../../../../shared/utils/person-name';
+import { MenuBackClose } from '../../../../shared/directives/menu-back-close';
 
 
 // One component row of the table, with its names.
@@ -81,6 +82,12 @@ interface PlanSection {
 }
 
 
+
+
+// The history state plan-card passes when it opens this page.
+export interface PlanDetailsNavigationState {
+  fromPlansTab?: boolean;
+}
 
 
 // The page of one subject plan: /subjects/plans/:planId
@@ -107,6 +114,7 @@ interface PlanSection {
     MatDialogModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatProgressSpinnerModule,
     MatTableModule,
     MatTooltipModule,
@@ -123,6 +131,13 @@ export class PlanDetailsPage implements OnInit {
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
+
+  // true = opened from a plan card of the plans tab in this visit
+  // (plan-card passes it), so the tab is the step before this page.
+  private readonly fromPlansTab =
+    (this.location.getState() as PlanDetailsNavigationState | null)
+      ?.fromPlansTab === true;
   private readonly plansService = inject(SubjectPlansService);
   private readonly assignmentsService = inject(TeacherAssignmentsService);
   private readonly apiMessageService = inject(ApiMessageService);
@@ -580,13 +595,13 @@ export class PlanDetailsPage implements OnInit {
                 return;
               }
 
-              // Back to the Subjects page first, then the message on it:
-              // the browser's Back button then closes the message there
-              // (DialogHistory), not the deleted plan's page.
+              // Back to the plans tab first, then the message on it: the
+              // browser's Back button then closes the message there
+              // (DialogHistory). The deleted plan's page does not stay in
+              // the history, so a later "Back" does not open it again.
               const message = this.apiMessageService.getMessage(response);
 
-              this.router
-                .navigate(['/subjects'], { queryParams: backParams })
+              this.leaveDeletedPlan(backParams)
                 .then(() => this.actionResult.show('success', message));
             },
 
@@ -607,6 +622,31 @@ export class PlanDetailsPage implements OnInit {
   // =========================
   // Helpers
   // =========================
+
+  // After deleting the plan: opened from the plans tab → back over this
+  // page's step to it; otherwise (a link, a refresh) → the plans tab
+  // in place of this page. Resolves once the plans tab shows.
+  private leaveDeletedPlan(backParams: Record<string, unknown>): Promise<unknown> {
+
+    if (!this.fromPlansTab) {
+      return this.router.navigate(['/subjects'], {
+        queryParams: backParams,
+        replaceUrl: true,
+      });
+    }
+
+    return new Promise(resolve => {
+      this.router.events
+        .pipe(
+          filter(event => event instanceof NavigationEnd),
+          take(1)
+        )
+        .subscribe(resolve);
+
+      this.location.back();
+    });
+  }
+
 
   // Opens the confirmation dialog and runs the action when confirmed.
   private confirm(data: ConfirmDialogData, action: () => void): void {

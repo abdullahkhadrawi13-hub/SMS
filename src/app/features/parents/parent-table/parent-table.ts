@@ -29,6 +29,7 @@ import { pluralKey } from '../../../shared/utils/plural';
 import { StateCard } from '../../../shared/components/state-card/state-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { getListSeparator } from '../parents';
+import { MenuBackClose } from '../../../shared/directives/menu-back-close';
 
 
 // How many children are shown as chips in the "Children" column.
@@ -73,6 +74,7 @@ export interface ParentRow extends ParentDto {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MenuBackClose,
     MatPaginatorModule,
     MatProgressBarModule,
     MatTableModule,
