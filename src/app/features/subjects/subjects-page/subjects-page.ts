@@ -7,7 +7,8 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { MatIconModule } from '@angular/material/icon';
@@ -85,27 +86,72 @@ export class SubjectsPage implements OnInit {
 
   constructor() {
 
-    // Keep the address up to date (replaceUrl: no new history entry per click).
-    // It starts after the lists are loaded, so the term and class from the
-    // address are not cleared while the page is still loading.
+    // Keep the address up to date. It starts after the lists are loaded,
+    // so the term and class from the address are not cleared while the
+    // page is still loading.
+    //   - the first time it only fixes the address the page opened with
+    //     (no new step for the browser's "Back")
+    //   - after that, every tab, term or class the user picks is a new step,
+    //     so "Back" goes back to the previous one (syncWithUrl() shows it)
     effect(() => {
 
       if (!this.selection.isReady()) {
         return;
       }
 
-      const queryParams = {
-        tab: this.activeTab(),
-        termId: this.selection.termId(),
-        classId: this.selection.classId(),
-      };
-
-      this.router.navigate([], {
+      const urlTree = this.router.createUrlTree([], {
         relativeTo: this.route,
-        queryParams,
-        replaceUrl: true,
+        queryParams: {
+          tab: this.activeTab(),
+          termId: this.selection.termId(),
+          classId: this.selection.classId(),
+        },
       });
+
+      // Already the address (e.g. after "Back"): nothing to write.
+      if (this.router.serializeUrl(urlTree) !== this.router.url) {
+        this.router.navigateByUrl(urlTree, { replaceUrl: !this.wroteUrl });
+      }
+
+      this.wroteUrl = true;
     });
+
+    // "Back" / "Forward": the tab, term and class of that step.
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed())
+      .subscribe(params => this.syncWithUrl(params));
+  }
+
+
+  // The address was written once (see the effect in the constructor).
+  private wroteUrl = false;
+
+
+  // Shows the tab, term and class of the address, once the lists are
+  // loaded (before that, ngOnInit() passes them to selection.load()).
+  private syncWithUrl(params: ParamMap): void {
+
+    if (!this.selection.isReady()) {
+      return;
+    }
+
+    const tab = params.get('tab') as SubjectsTab | null;
+
+    this.activeTab.set(tab && SUBJECTS_TABS.includes(tab) ? tab : 'plans');
+
+    const termId = this.readId(params.get('termId'));
+
+    if (this.selection.terms().some(t => t.academicTermId === termId)) {
+      this.selection.selectTerm(termId!);
+    }
+
+    const classId = this.readId(params.get('classId'));
+
+    if (classId !== null && this.selection.classes().some(c => c.schoolClassId === classId)) {
+      this.selection.selectClass(classId);
+    } else {
+      this.selection.classId.set(null);
+    }
   }
 
 

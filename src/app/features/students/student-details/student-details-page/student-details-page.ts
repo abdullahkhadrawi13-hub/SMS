@@ -42,8 +42,11 @@ export type StudentDetailsTab = 'details' | 'attendance' | 'grades' | 'parents';
 
 // Sent by the students list when it opens this page (router "state"),
 // so "Back" can return to the list with the same search, filter and page.
+// tabSteps: how many tab clicks since the page opened (each one is a step
+// of the browser's "Back"), so "Back to Students" goes back over all of them.
 interface StudentDetailsNavigationState {
   fromStudentsList?: boolean;
+  tabSteps?: number;
 }
 
 // The student's page: /students/:id
@@ -144,7 +147,7 @@ export class StudentDetailsPage {
         this.loadStudent();
       });
 
-    // ?tab=... — on open, on refresh and on every tab click.
+    // ?tab=... — on open, on refresh, on every tab click and on "Back" / "Forward".
     this.route.queryParamMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(params => {
@@ -253,10 +256,11 @@ export class StudentDetailsPage {
       relativeTo: this.route,
       queryParams: { tab: tab === 'details' ? null : tab },
       queryParamsHandling: 'merge',
-      // Replace: a tab is not a new step for the browser's "Back".
-      replaceUrl: true,
-      // Keep "Back" returning to the list after a tab click.
-      state: { fromStudentsList: this.fromStudentsList }
+      // A new step for the browser's "Back": back to the previous tab.
+      state: {
+        fromStudentsList: this.fromStudentsList,
+        tabSteps: this.tabSteps() + 1
+      } satisfies StudentDetailsNavigationState
     });
   }
 
@@ -272,7 +276,8 @@ export class StudentDetailsPage {
     event.preventDefault();
 
     if (this.fromStudentsList) {
-      this.location.back();
+      // Over the tab steps too, to the list itself.
+      this.location.historyGo(-(this.tabSteps() + 1));
     } else {
       this.router.navigate(['/students']);
     }
@@ -280,6 +285,13 @@ export class StudentDetailsPage {
 
   retry(): void {
     this.loadStudent();
+  }
+
+  // The tab clicks before the step shown now (0 on the first tab opened).
+  private tabSteps(): number {
+    const state = this.location.getState() as StudentDetailsNavigationState | null;
+
+    return state?.tabSteps ?? 0;
   }
 
   // The tab from the URL, or "details" when it is unknown

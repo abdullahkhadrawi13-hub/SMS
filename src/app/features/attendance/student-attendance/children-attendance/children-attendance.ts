@@ -10,7 +10,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, skip, Subscription } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -223,10 +223,33 @@ export class ChildrenAttendance implements OnInit {
 
     this.loadChildren();
 
+    // "Back" / "Forward": the child of that step.
+    // (The first value is the address the page opened with: loadChildren.)
+    this.route.queryParamMap
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        // No ?child=: the child the page opened with.
+        const studentId = params.has('child')
+          ? Number(params.get('child'))
+          : this.openedWithChildId;
+
+        if (
+          studentId !== null
+          && studentId !== this.selectedId()
+          && this.children().some(c => c.studentId === studentId)
+        ) {
+          this.select(studentId, false);
+        }
+      });
+
     loadWeeklyDaysOff(this.schoolSettingsService)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(days => this.weeklyDaysOff.set(days));
   }
+
+
+  // The child shown when the page opened (for "Back" to a step with no ?child=).
+  private openedWithChildId: number | null = null;
 
 
   // GET /api/dashboard/parent/me
@@ -263,6 +286,7 @@ export class ChildrenAttendance implements OnInit {
             ?? children[0];
 
           if (first) {
+            this.openedWithChildId = first.studentId;
             this.select(first.studentId, false);
           }
         },
@@ -278,8 +302,10 @@ export class ChildrenAttendance implements OnInit {
   }
 
 
-  // Picks a child (and keeps it in ?child=). The attendance is loaded for
-  // an active child, or a child whose earlier terms were asked for, once.
+  // Picks a child (and keeps it in ?child=, a new step for the browser's
+  // "Back"). The attendance is loaded for an active child, or a child whose
+  // earlier terms were asked for, once.
+  // updateUrl false: the child already comes from the address.
   select(studentId: number, updateUrl = true): void {
 
     this.selectedId.set(studentId);
@@ -292,7 +318,6 @@ export class ChildrenAttendance implements OnInit {
         relativeTo: this.route,
         queryParams: { child: studentId },
         queryParamsHandling: 'merge',
-        replaceUrl: true,
       });
     }
 
