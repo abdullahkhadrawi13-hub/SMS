@@ -26,6 +26,7 @@
   --ground: #f2f3f6;  --surface: #ffffff; --raised: #f7f8fa; --hover: #f4f6f9;
   --border: #e0e3e9;  --rule: #eceef2;    --control: #c5cad4; --track: #e3e7ee;
   --overlay: #ffffff; /* menus, select lists, date picker: what floats (one step lighter in dark) */
+  --overlay-hover: #f4f6f9; /* an option under the mouse in an open <select> list (on --overlay) */
   --text: #121a2b;    --muted: #535d70;   --faint: #636c7e;
 
   /* brand */
@@ -111,6 +112,11 @@
   --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%23636c7e' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
   --select-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath fill='%231f4478' d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E");
 
+  /* the check mark of the chosen option in an open <select> list: a mask
+     (the shape only, the colour comes from --accent), the same "check"
+     icon as Material Symbols — added 26 Nov 2026 */
+  --check-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/%3E%3C/svg%3E");
+
   /* theme switch in the navbar (shared theme-switcher): a sky with a sun
      and two clouds in the light theme, a navy night with a moon and stars
      in the dark. Flat colours only — added 25 Nov 2026 */
@@ -141,7 +147,7 @@
   /* surfaces and text */
   --ground: #101216;  --surface: #171a1f; --raised: #1c1f25; --hover: #1f232a;
   --border: #2a2e36;  --rule: #22262d;    --control: #676e7b; --track: #2a2e36;
-  --overlay: #1e2127;
+  --overlay: #1e2127;  --overlay-hover: #282c34;
   --text: #eceef2;    --muted: #aab1be;   --faint: #8b93a1;
   --state-icon: #6f7889;
 
