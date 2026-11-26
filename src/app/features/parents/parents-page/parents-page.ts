@@ -2,6 +2,7 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { ActivatedRoute, NavigationEnd, ParamMap, Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 
@@ -19,6 +20,7 @@ import { PHONE_QUERY } from '../../../layouts/dashboard-layout/dashboard-layout'
 import { ParentsService } from '../../../core/services/parents';
 import { ApiMessageService } from '../../../core/services/api-message';
 import { Permissions } from '../../../core/services/permissions';
+import { ownHistoryDialogId } from '../../../core/services/dialog-history';
 import { ActionResult } from '../../../shared/services/action-result';
 import { ParentDto } from '../../../core/models/parent';
 
@@ -194,6 +196,9 @@ export class ParentsPage {
   // (Enter, then the 400ms timer for the same text).
   private lastSearch = '';
 
+  // The list part of the URL of the list shown (see listKey()).
+  private listInUrl = '';
+
   // The request in progress: a newer one cancels it,
   // so an old answer never replaces a newer list.
   private loadSubscription?: Subscription;
@@ -236,10 +241,14 @@ export class ParentsPage {
     // Opened from a link that already has the filter: show it on the phone too.
     this.filtersOpen.set(this.activeFilterCount() > 0);
 
-    // The add / edit form follows ?form=new and ?edit=5 in the URL.
+    // The list (page, filter, search) and the add / edit form
+    // (?form=new, ?edit=12) follow the URL, also on "Back" / "Forward".
     this.route.queryParamMap
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(params => this.syncFormWithUrl(params));
+      .subscribe(params => {
+        this.syncListWithUrl(params);
+        this.syncFormWithUrl(params);
+      });
 
     // Leaving the page (e.g. a second "Back" while "Discard changes?"
     // is open): the form does not stay open over the next page.
@@ -273,7 +282,39 @@ export class ParentsPage {
   }
 
 
-  private writeStateToUrl(): void {
+  // The list part of the URL, the same way readStateFromUrl() reads it
+  // (so ?page=1 and no page are the same list).
+  private listKey(params: ParamMap): string {
+
+    return JSON.stringify([
+      (params.get('search') ?? '').trim(),
+      ['true', 'false'].includes(params.get('isActive') ?? '') ? params.get('isActive') : null,
+      this.toPositiveNumber(params.get('page')) ?? 1,
+      this.toPositiveNumber(params.get('pageSize')) ?? 10
+    ]);
+
+  }
+
+
+  // "Back" / "Forward" to another page or filter of the list: show it.
+  // (After our own writeStateToUrl() the URL is already the list shown.)
+  private syncListWithUrl(params: ParamMap): void {
+
+    if (this.listKey(params) === this.listInUrl) {
+      return;
+    }
+
+    this.readStateFromUrl(params);
+
+    this.loadParents();
+
+  }
+
+
+  // addStep: a new step of the browser's Back button (another page,
+  // another filter). Otherwise the current step is replaced (the search
+  // while typing, the first load, a reload after saving).
+  private writeStateToUrl(addStep: boolean): void {
 
     const urlTree = this.router.createUrlTree([], {
       relativeTo: this.route,
@@ -286,13 +327,14 @@ export class ParentsPage {
       queryParamsHandling: 'merge'
     });
 
+    this.listInUrl = this.listKey(urlTree.queryParamMap);
+
     // Nothing changed (e.g. the first load): no navigation.
     if (this.router.serializeUrl(urlTree) === this.router.url) {
       return;
     }
 
-    // Replace, so every filter change does not add a step to "Back".
-    this.router.navigateByUrl(urlTree, { replaceUrl: true });
+    this.router.navigateByUrl(urlTree, { replaceUrl: !addStep });
 
   }
 
@@ -307,9 +349,9 @@ export class ParentsPage {
 
 
   // Loads parents using the current page, search and filter values.
-  loadParents(): void {
+  loadParents(addStep = false): void {
 
-    this.writeStateToUrl();
+    this.writeStateToUrl(addStep);
 
     this.lastSearch = this.search().trim();
 
@@ -417,7 +459,7 @@ export class ParentsPage {
     this.pageNumber.set(event.pageIndex + 1);
     this.pageSize.set(event.pageSize);
 
-    this.loadParents();
+    this.loadParents(true);
   }
 
 
@@ -428,7 +470,7 @@ export class ParentsPage {
 
     this.pageNumber.set(1);
 
-    this.loadParents();
+    this.loadParents(true);
   }
 
 
@@ -578,6 +620,9 @@ export class ParentsPage {
         // "Back" must not close it by itself: syncFormWithUrl() decides,
         // so "Discard changes?" can still be asked.
         closeOnNavigation: false,
+
+        // It handles "Back" itself (in the URL): DialogHistory leaves it.
+        id: ownHistoryDialogId('parent-form'),
 
         data: parentId !== undefined ? { parentId } : {}
       }

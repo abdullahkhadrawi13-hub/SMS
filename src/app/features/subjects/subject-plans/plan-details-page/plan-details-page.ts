@@ -580,9 +580,14 @@ export class PlanDetailsPage implements OnInit {
                 return;
               }
 
-              this.actionResult.show('success', this.apiMessageService.getMessage(response));
+              // Back to the Subjects page first, then the message on it:
+              // the browser's Back button then closes the message there
+              // (DialogHistory), not the deleted plan's page.
+              const message = this.apiMessageService.getMessage(response);
 
-              this.router.navigate(['/subjects'], { queryParams: backParams });
+              this.router
+                .navigate(['/subjects'], { queryParams: backParams })
+                .then(() => this.actionResult.show('success', message));
             },
 
             error: (error: HttpErrorResponse) => {

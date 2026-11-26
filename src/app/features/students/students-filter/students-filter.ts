@@ -17,6 +17,9 @@ export interface StudentFilterValues {
   classId: number | null;
   sectionId: number | null;
   isActive: boolean | null;
+  // A value from the URL that is not in the lists was cleared (not the
+  // user's choice): the page fixes the URL without a new "Back" step.
+  fromUrlFix?: boolean;
 }
 
 export const EMPTY_STUDENT_FILTER: StudentFilterValues = {
@@ -196,7 +199,7 @@ export class StudentsFilter {
         const classId = this.classId();
 
         if (classId && !this.classes().some(c => c.schoolClassId === classId)) {
-          this.emit({ classId: null, sectionId: null });
+          this.emit({ classId: null, sectionId: null, fromUrlFix: true });
           return;
         }
 
@@ -262,7 +265,7 @@ export class StudentsFilter {
     const sectionId = this.sectionId();
 
     if (sectionId && !this.sections().some(s => s.sectionId === sectionId)) {
-      this.emit({ sectionId: null });
+      this.emit({ sectionId: null, fromUrlFix: true });
     }
 
   }
