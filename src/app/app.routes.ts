@@ -27,6 +27,10 @@ export const routes: Routes = [
   {
     path: '',
     component: AuthLayout,
+
+    // read by core/services/view-transitions.ts: login → dashboard = signin
+    data: { layout: 'auth' },
+
     children: [
 
       {
@@ -53,6 +57,9 @@ export const routes: Routes = [
     path: '',
     component: DashboardLayout,
     canActivate: [authGuard, mustChangePasswordGuard],
+
+    // read by core/services/view-transitions.ts: dashboard → login = signout
+    data: { layout: 'dashboard' },
 
     children: [
 

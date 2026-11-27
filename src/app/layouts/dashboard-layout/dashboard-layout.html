@@ -17,6 +17,7 @@
          button opens it. It closes on the backdrop, on Escape (both built
          into mat-sidenav) and when a link is clicked. -->
     <mat-sidenav
+      #sidenav
       class="sidebar-container"
       position="start"
       [mode]="isPhone() ? 'over' : 'side'"
@@ -24,7 +25,13 @@
       (openedChange)="sidebarOpened.set($event)"
       [autoFocus]="isPhone() ? 'first-tabbable' : false">
 
-      <app-sidebar (linkClick)="onSidebarLinkClick()"></app-sidebar>
+      <!-- The phone: the sidebar closes first, then the page opens
+           (holdNavigation + navigateAfterClose). -->
+      <app-sidebar
+        [holdNavigation]="isPhone()"
+        (linkClick)="onSidebarLinkClick()"
+        (navigateAfterClose)="closeThenNavigate($event)">
+      </app-sidebar>
 
     </mat-sidenav>
 

@@ -1,4 +1,4 @@
-import { Component, computed, inject, output } from '@angular/core';
+import { Component, DestroyRef, ElementRef, computed, inject, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -39,9 +39,52 @@ export class Sidebar {
   private userService = inject(User);
   private attendanceAccess = inject(AttendanceAccessService);
 
+  constructor() {
+
+    // Listened to on the way down (capture), before the link's own
+    // routerLink sees the click: on the phone the click stops here.
+    // A click with Ctrl / Shift / the middle button (a new tab) is left alone.
+    const host: HTMLElement = inject(ElementRef).nativeElement;
+
+    const onClick = (event: MouseEvent) => {
+
+      if (!this.holdNavigation()) {
+        return;
+      }
+
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+        return;
+      }
+
+      const link = (event.target as Element).closest<HTMLElement>('a[data-route]');
+
+      if (!link) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.navigateAfterClose.emit(link.dataset['route']!);
+    };
+
+    host.addEventListener('click', onClick, true);
+
+    inject(DestroyRef).onDestroy(() =>
+      host.removeEventListener('click', onClick, true)
+    );
+  }
+
   // A link was clicked: on the phone, dashboard-layout closes the sidebar.
   // (Also when the link is the page already open, where no navigation happens.)
   readonly linkClick = output<void>();
+
+  // The phone: a link does not open its page by itself. The sidebar sends
+  // the link's address here instead, and dashboard-layout closes the
+  // sidebar first, then opens the page (so the page's motion does not
+  // start under a sidebar that is still sliding away).
+  readonly holdNavigation = input(false);
+  readonly navigateAfterClose = output<string>();
 
   // The groups of the current user, each with its visible links.
   // A group with no visible link is left out, heading and all.

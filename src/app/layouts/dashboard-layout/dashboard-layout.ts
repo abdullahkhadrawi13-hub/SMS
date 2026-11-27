@@ -1,10 +1,10 @@
 import { Component, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { Navbar } from './navbar/navbar';
 import { Sidebar } from './sidebar/sidebar';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Language } from '../../core/services/language';
@@ -33,12 +33,15 @@ export class DashboardLayout implements OnInit {
 
   private readonly attendanceAccess = inject(AttendanceAccessService);
   private readonly breakpoints = inject(BreakpointObserver);
+  private readonly router = inject(Router);
 
   // true when the screen is narrower than 720px.
   readonly isPhone = signal(this.breakpoints.isMatched(PHONE_QUERY));
 
   // Computer: always open. Phone: closed until the menu button is pressed.
   readonly sidebarOpened = signal(!this.isPhone());
+
+  private readonly sidenav = viewChild.required<MatSidenav>('sidenav');
 
   // The page area (<main>), where "تخطَّ إلى المحتوى" sends the focus.
   private readonly mainContent = viewChild.required<ElementRef<HTMLElement>>('mainContent');
@@ -78,6 +81,14 @@ export class DashboardLayout implements OnInit {
   skipToContent(event: Event): void {
     event.preventDefault();
     this.mainContent().nativeElement.focus();
+  }
+
+  // The phone: a link in the sidebar. The sidebar closes (--dur-drawer),
+  // then the page opens with its own motion. The link of the page already
+  // open only closes the sidebar (the router ignores the same address).
+  async closeThenNavigate(route: string): Promise<void> {
+    await this.sidenav().close();
+    this.router.navigateByUrl(route);
   }
 
   // A link in the sidebar was clicked. On the phone the sidebar closes,

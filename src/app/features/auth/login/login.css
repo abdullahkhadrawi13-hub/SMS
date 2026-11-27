@@ -27,3 +27,12 @@
   font-size: 18px;
   color: var(--faint);
 }
+
+
+/* Not an error: the session ended (here after a 401, authInterceptor).
+   The red .form-alert (auth-form.css) in the warm yellow. */
+.form-alert.warn {
+  background: var(--warn-bg);
+  border-color: var(--warn-line);
+  color: var(--warn-ink);
+}

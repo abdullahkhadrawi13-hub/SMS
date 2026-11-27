@@ -46,6 +46,7 @@
                 class="link"
                 [class.soon]="link.soon"
                 [routerLink]="link.route"
+                [attr.data-route]="link.route"
                 routerLinkActive="active"
                 ariaCurrentWhenActive="page"
                 (click)="linkClick.emit()">

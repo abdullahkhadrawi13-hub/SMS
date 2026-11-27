@@ -51,7 +51,8 @@ export class LanguageSwitcher {
     LANGUAGE_NAMES[this.otherLanguage()]
   );
 
+  // With the motion of the language switch (Language.switchLanguage)
   switchLanguage(): void {
-    this.languageService.setLanguage(this.otherLanguage());
+    this.languageService.switchLanguage(this.otherLanguage());
   }
 }
