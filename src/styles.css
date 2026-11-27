@@ -2111,7 +2111,7 @@ button.data-link {
    core/services/view-transitions.ts writes the kind on
    <html data-vt="nav | signin | signout | lang | theme"> while it runs;
    each kind below names only the parts that move. The durations are
-   in tokens.css (--dur-page-in, --dur-lang, ...). Agreed 6 and 27 Nov 2026.
+   in tokens.css (--dur-page-in, --dur-lang-out, ...). Agreed 6 and 27 Nov 2026.
    ========================================================== */
 
 /* The root never animates: what did not change stays still.
@@ -2155,34 +2155,38 @@ html[data-vt="nav"]::view-transition-new(page) {
 }
 
 
-/* ---------- lang: the navy slides to the other side ----------
-   The sidebar (computer) or the login page's navy panel moves across;
-   the rest fades. On the phone the navy bar stays (it is full width). */
+/* ---------- lang: the navy fades here and appears there (option E) ----------
+   Nothing moves across the screen: the sidebar (computer) or the login
+   page's navy panel fades out where it is, and the new one fades in on the
+   other side; the rest fades with it. Chosen 27 Nov 2026 (previously the
+   sidebar slid across).
+   The old and the new navy get two different names, so each stays in its
+   own place: view-transitions.ts writes <html data-vt-phase="new"> just
+   before the new screen is drawn, so the old picture is taken as
+   "navy-old" and the new one as "navy-new".
+   On the phone the navy bar stays (it is full width). */
 
 @media (min-width: 720px) {
-  html[data-vt="lang"] .sidebar-container {
-    view-transition-name: sidebar;
+  html[data-vt="lang"]:not([data-vt-phase="new"]) .sidebar-container {
+    view-transition-name: navy-old;
+  }
+
+  html[data-vt="lang"][data-vt-phase="new"] .sidebar-container {
+    view-transition-name: navy-new;
   }
 }
 
-html[data-vt="lang"] .brand-panel {
-  view-transition-name: sidebar;
+html[data-vt="lang"]:not([data-vt-phase="new"]) .brand-panel {
+  view-transition-name: navy-old;
+}
+
+html[data-vt="lang"][data-vt-phase="new"] .brand-panel {
+  view-transition-name: navy-new;
 }
 
 html[data-vt="lang"] .main-area,
 html[data-vt="lang"] .auth-main {
   view-transition-name: app-main;
-}
-
-html[data-vt="lang"]::view-transition-group(sidebar) {
-  z-index: 2;
-  animation-duration: var(--dur-lang);
-  animation-timing-function: var(--ease-move);
-}
-
-html[data-vt="lang"]::view-transition-old(sidebar),
-html[data-vt="lang"]::view-transition-new(sidebar) {
-  animation-duration: var(--dur-lang);
 }
 
 /* mat-sidenav moves the page's margin to the other side with its own
@@ -2191,16 +2195,32 @@ html[data-vt="lang"] .mat-drawer-transition .mat-drawer-content {
   transition: none;
 }
 
+/* nothing slides: every part stays where it is drawn */
+html[data-vt="lang"]::view-transition-group(navy-old),
+html[data-vt="lang"]::view-transition-group(navy-new),
 html[data-vt="lang"]::view-transition-group(app-main) {
   animation: none;
 }
 
+html[data-vt="lang"]::view-transition-group(navy-old),
+html[data-vt="lang"]::view-transition-group(navy-new) {
+  z-index: 2;
+}
+
+html[data-vt="lang"]::view-transition-old(navy-old) {
+  animation: vt-fade-out var(--dur-lang-out) ease-in both;
+}
+
+html[data-vt="lang"]::view-transition-new(navy-new) {
+  animation: vt-fade-in var(--dur-lang-in) ease-out calc(var(--dur-lang-out) * .7) both;
+}
+
 html[data-vt="lang"]::view-transition-old(app-main) {
-  animation: vt-fade-out calc(var(--dur-lang) * .4) ease-in both;
+  animation: vt-fade-out calc(var(--dur-lang-out) * .8) ease-in both;
 }
 
 html[data-vt="lang"]::view-transition-new(app-main) {
-  animation: vt-fade-in calc(var(--dur-lang) * .6) ease-out calc(var(--dur-lang) * .3) both;
+  animation: vt-fade-in calc(var(--dur-lang-in) * .9) ease-out calc(var(--dur-lang-out) * .6) both;
 }
 
 
