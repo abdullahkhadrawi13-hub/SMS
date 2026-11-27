@@ -2155,7 +2155,7 @@ html[data-vt="nav"]::view-transition-new(page) {
 }
 
 
-/* ---------- lang: the navy fades here and appears there (option E) ----------
+/* ---------- lang: the navy fades here and appears there (option E; folds on the computer, option F below) ----------
    Nothing moves across the screen: the sidebar (computer) or the login
    page's navy panel fades out where it is, and the new one fades in on the
    other side; the rest fades with it. Chosen 27 Nov 2026 (previously the
@@ -2213,6 +2213,42 @@ html[data-vt="lang"]::view-transition-old(navy-old) {
 
 html[data-vt="lang"]::view-transition-new(navy-new) {
   animation: vt-fade-in var(--dur-lang-in) ease-out calc(var(--dur-lang-out) * .7) both;
+}
+
+/* option F (on test, 27 Nov 2026): on the computer the navy folds instead
+   of fading — the old one folds towards its outer edge, then the new one
+   unfolds from the outer edge of the other side. On the phone the login
+   page's navy bar is full width, so it keeps the fade above.
+   <html dir> is already the new direction while this runs:
+   dir="rtl" = to Arabic, so the old navy was on the left and the new one
+   is on the right. */
+@keyframes vt-fold-out {
+  to { transform: scaleX(0); }
+}
+
+@keyframes vt-fold-in {
+  from { transform: scaleX(0); }
+}
+
+@media (min-width: 720px) {
+
+  html[data-vt="lang"]::view-transition-old(navy-old) {
+    animation: vt-fold-out var(--dur-lang-out) cubic-bezier(.4, 0, 1, 1) both;
+  }
+
+  html[data-vt="lang"]::view-transition-new(navy-new) {
+    animation: vt-fold-in var(--dur-lang-in) cubic-bezier(0, 0, .2, 1) var(--dur-lang-out) both;
+  }
+
+  html[data-vt="lang"][dir="rtl"]::view-transition-old(navy-old),
+  html[data-vt="lang"][dir="ltr"]::view-transition-new(navy-new) {
+    transform-origin: left;
+  }
+
+  html[data-vt="lang"][dir="ltr"]::view-transition-old(navy-old),
+  html[data-vt="lang"][dir="rtl"]::view-transition-new(navy-new) {
+    transform-origin: right;
+  }
 }
 
 html[data-vt="lang"]::view-transition-old(app-main) {
