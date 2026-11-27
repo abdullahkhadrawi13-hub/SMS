@@ -55,6 +55,12 @@ export class Language {
       await firstValueFrom(this.setLanguage(language));
       this.appRef.tick();
 
+      // جولة رسم ثانية: mat-sidenav ينقل هامش المحتوى إلى الجهة الأخرى بعد
+      // الجولة الأولى. بدونها كانت الصفحة تُلتقط في مكانها القديم ثم "تقفز"
+      // إليه في نهاية الحركة (مثل refresh)
+      await new Promise(resolve => setTimeout(resolve));
+      this.appRef.tick();
+
     });
 
     if (focused?.isConnected && this.document.activeElement !== focused) {

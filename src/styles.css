@@ -2116,10 +2116,11 @@ button.data-link {
 
 /* The root never animates: what did not change stays still.
    (The group too: otherwise it keeps every transition alive for
-   the browser's default 250ms, even "none".) */
-::view-transition-group(root),
-::view-transition-old(root),
-::view-transition-new(root) {
+   the browser's default 250ms, even "none".)
+   Only the theme fades the root (below). */
+html:not([data-vt="theme"])::view-transition-group(root),
+html:not([data-vt="theme"])::view-transition-old(root),
+html:not([data-vt="theme"])::view-transition-new(root) {
   animation: none;
 }
 
@@ -2182,6 +2183,12 @@ html[data-vt="lang"]::view-transition-group(sidebar) {
 html[data-vt="lang"]::view-transition-old(sidebar),
 html[data-vt="lang"]::view-transition-new(sidebar) {
   animation-duration: var(--dur-lang);
+}
+
+/* mat-sidenav moves the page's margin to the other side with its own
+   400ms motion: here it moves at once, before the new screen is taken */
+html[data-vt="lang"] .mat-drawer-transition .mat-drawer-content {
+  transition: none;
 }
 
 html[data-vt="lang"]::view-transition-group(app-main) {
@@ -2332,14 +2339,15 @@ html[data-vt="signout"]::view-transition-new(panel-main) {
 }
 
 
-/* ---------- theme: the whole screen fades (option B) ---------- */
+/* ---------- theme: the whole screen fades (option B) ----------
+   The browser's own crossfade, only shorter: it keeps the old and the
+   new picture adding up to a solid screen. A hand-made fade (vt-fade-*)
+   loses that, and the navy sidebar flashed half way. */
 
-html[data-vt="theme"]::view-transition-old(root) {
-  animation: vt-fade-out var(--dur-theme-fade) ease both;
-}
-
+html[data-vt="theme"]::view-transition-group(root),
+html[data-vt="theme"]::view-transition-old(root),
 html[data-vt="theme"]::view-transition-new(root) {
-  animation: vt-fade-in var(--dur-theme-fade) ease both;
+  animation-duration: var(--dur-theme-fade);
 }
 
 
