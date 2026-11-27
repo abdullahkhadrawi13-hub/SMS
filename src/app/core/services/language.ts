@@ -1,5 +1,8 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { ApplicationRef, DOCUMENT, Injectable, inject, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable, firstValueFrom } from 'rxjs';
+
+import { ViewTransitions } from './view-transitions';
 
 type AppLanguage = 'ar' | 'en';
 
@@ -15,6 +18,9 @@ const STORAGE_KEY = 'language';
 export class Language {
 
   private translate = inject(TranslateService);
+  private viewTransitions = inject(ViewTransitions);
+  private appRef = inject(ApplicationRef);
+  private document = inject(DOCUMENT);
 
    currentDirection = signal<'ltr' | 'rtl'>('ltr');
 
@@ -35,10 +41,31 @@ export class Language {
     }
   }
 
-  setLanguage(language: AppLanguage) {
+  // زر اللغة (app-language-switcher): نفس setLanguage لكن بحركة:
+  // الشريط الجانبي (أو اللوحة الكحلية في صفحة الدخول) ينزلق إلى الجهة الأخرى
+  // والباقي يتلاشى (core/services/view-transitions.ts).
+  async switchLanguage(language: AppLanguage): Promise<void> {
 
-    // تغيير اللغة
-    this.translate.use(language);
+    // الزر الذي ضُغط (لوحة المفاتيح): يبقى التركيز عليه بعد التبديل
+    const focused = this.document.activeElement as HTMLElement | null;
+
+    await this.viewTransitions.run('lang', async () => {
+
+      // الشاشة الجديدة تُلتقط بعد تحميل ملف الترجمة ورسم الصفحة باللغة الجديدة
+      await firstValueFrom(this.setLanguage(language));
+      this.appRef.tick();
+
+    });
+
+    if (focused?.isConnected && this.document.activeElement !== focused) {
+      focused.focus({ focusVisible: true } as FocusOptions);
+    }
+  }
+
+  setLanguage(language: AppLanguage): Observable<unknown> {
+
+    // تغيير اللغة (يحمّل ملف الترجمة إذا لم يكن محمّلًا)
+    const loaded = this.translate.use(language);
 
     // حفظ اللغة المختارة للجلسة الحالية فقط
     sessionStorage.setItem(STORAGE_KEY, language);
@@ -53,6 +80,8 @@ export class Language {
 
     // تحديد اللغة على مستوى HTML
     document.documentElement.lang = language;
+
+    return loaded;
   }
 
   getCurrentLanguage() {

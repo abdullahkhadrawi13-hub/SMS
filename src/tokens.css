@@ -129,6 +129,17 @@
   /* motion */
   --dur: 150ms;
   --dur-switch: 350ms;   /* the theme switch: sun ↔ moon */
+
+  /* View Transitions (styles.css, core/services/view-transitions.ts)
+     — agreed 6 and 27 Nov 2026 */
+  --dur-page-out: 120ms;    /* a page: the old one goes out (faster) */
+  --dur-page-in: 250ms;     /* a page: the new one comes in */
+  --dur-lang: 450ms;        /* the language: the sidebar slides across */
+  --dur-sign-in: 560ms;     /* login → dashboard */
+  --dur-sign-out: 340ms;    /* dashboard → login (faster than signing in) */
+  --dur-theme-fade: 200ms;  /* light ↔ dark: the whole screen fades */
+  --dur-drawer: 200ms;      /* the phone sidebar closes before a page opens */
+  --ease-move: cubic-bezier(.4, 0, .2, 1);  /* something that moves or resizes */
 }
 
 /* ==========================================================

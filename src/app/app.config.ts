@@ -18,6 +18,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { AppDirectionality } from './core/services/app-directionality';
 import { DialogHistory } from './core/services/dialog-history';
+import { ViewTransitions } from './core/services/view-transitions';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,7 +27,12 @@ export const appConfig: ApplicationConfig = {
 
     provideRouter(
       routes,
-      withViewTransitions(),
+      // The motion between pages (core/services/view-transitions.ts):
+      // none on the first load, none when only the query params change.
+      withViewTransitions({
+        skipInitialTransition: true,
+        onViewTransitionCreated: info => inject(ViewTransitions).onRouterTransition(info)
+      }),
 
       // "Back" that is cancelled (e.g. "Stay" on the grades page's
       // "Leave without saving?"): the browser goes back to where it was,

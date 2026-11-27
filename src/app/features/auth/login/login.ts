@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { Auth } from '../../../core/services/auth';
 import { User } from '../../../core/services/user';
@@ -41,6 +42,7 @@ export class Login {
   private auth = inject(Auth);
   private user = inject(User);
   private router = inject(Router);
+  private location = inject(Location);
   private apiMessageService = inject(ApiMessageService);
 
   loginId = '';
@@ -58,6 +60,13 @@ export class Login {
 
   // رسالة الباك اند للأخطاء غير المتوقعة (400 / 500)
   serverMessage = signal('');
+
+  // وصلنا هنا لأن الجلسة انتهت (401 من authInterceptor، مع state.sessionExpired):
+  // رسالة تشرح السبب، تختفي عند أول ضغطة على "دخول"
+  // (يُقرأ من history.state: الرابط يتحدّث قبل إنشاء الصفحة، فيصلها هناك)
+  sessionExpired = signal(
+    (this.location.getState() as { sessionExpired?: boolean } | null)?.sessionExpired === true
+  );
 
 
   // ---------- القفل بعد محاولات كثيرة (429) ----------
@@ -112,6 +121,7 @@ export class Login {
 
     this.submitted.set(true);
     this.error.set('');
+    this.sessionExpired.set(false);
 
     if (this.isLocked()) {
       return;

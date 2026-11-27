@@ -95,6 +95,13 @@
   border: 0;
 }
 
+/* The phone: the sidebar closes in --dur-drawer (Material: 400ms), so a
+   link's page does not wait long (dashboard-layout.ts closeThenNavigate).
+   Opening keeps Material's motion. */
+.layout-container.mat-drawer-transition .sidebar-container:not(.mat-drawer-opened) {
+  transition-duration: var(--dur-drawer);
+}
+
 
 /* ==============================
    Main Area

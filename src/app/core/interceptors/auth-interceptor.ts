@@ -38,8 +38,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401 && !isLoginRequest) {
         auth.logout();
 
+        // sessionExpired: the login page says why it is open
         if (!router.url.startsWith('/login')) {
-          router.navigate(['/login']);
+          router.navigate(['/login'], { state: { sessionExpired: true } });
         }
       }
 

@@ -2106,6 +2106,243 @@ button.data-link {
   }
 }
 
+/* ==========================================================
+   View Transitions — the motion between two states of the app
+   core/services/view-transitions.ts writes the kind on
+   <html data-vt="nav | signin | signout | lang | theme"> while it runs;
+   each kind below names only the parts that move. The durations are
+   in tokens.css (--dur-page-in, --dur-lang, ...). Agreed 6 and 27 Nov 2026.
+   ========================================================== */
+
+/* The root never animates: what did not change stays still.
+   (The group too: otherwise it keeps every transition alive for
+   the browser's default 250ms, even "none".) */
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+}
+
+
+/* ---------- nav: only the page changes ----------
+   The sidebar and the navbar stay (they are in the root). The old page
+   goes out faster than the new one comes in; nothing moves up. */
+
+html[data-vt="nav"] .content-area,
+html[data-vt="nav"] .auth-content {
+  view-transition-name: page;
+}
+
+html[data-vt="nav"]::view-transition-group(page) {
+  animation: none;
+}
+
+html[data-vt="nav"]::view-transition-old(page) {
+  animation: vt-fade-out var(--dur-page-out) ease-in both;
+}
+
+html[data-vt="nav"]::view-transition-new(page) {
+  animation: vt-fade-in var(--dur-page-in) ease-out both;
+}
+
+
+/* ---------- lang: the navy slides to the other side ----------
+   The sidebar (computer) or the login page's navy panel moves across;
+   the rest fades. On the phone the navy bar stays (it is full width). */
+
+@media (min-width: 720px) {
+  html[data-vt="lang"] .sidebar-container {
+    view-transition-name: sidebar;
+  }
+}
+
+html[data-vt="lang"] .brand-panel {
+  view-transition-name: sidebar;
+}
+
+html[data-vt="lang"] .main-area,
+html[data-vt="lang"] .auth-main {
+  view-transition-name: app-main;
+}
+
+html[data-vt="lang"]::view-transition-group(sidebar) {
+  z-index: 2;
+  animation-duration: var(--dur-lang);
+  animation-timing-function: var(--ease-move);
+}
+
+html[data-vt="lang"]::view-transition-old(sidebar),
+html[data-vt="lang"]::view-transition-new(sidebar) {
+  animation-duration: var(--dur-lang);
+}
+
+html[data-vt="lang"]::view-transition-group(app-main) {
+  animation: none;
+}
+
+html[data-vt="lang"]::view-transition-old(app-main) {
+  animation: vt-fade-out calc(var(--dur-lang) * .4) ease-in both;
+}
+
+html[data-vt="lang"]::view-transition-new(app-main) {
+  animation: vt-fade-in calc(var(--dur-lang) * .6) ease-out calc(var(--dur-lang) * .3) both;
+}
+
+
+/* ---------- signin / signout: the navy block (option B) ----------
+   The login page's navy panel and the sidebar are one block ("navy"):
+   it stays solid and changes size with nothing in it. Its content
+   fades out first; the sidebar links appear last.
+   On the phone the block is the navy top bar → the navy navbar. */
+
+html[data-vt^="sign"] .brand-panel {
+  view-transition-name: navy;
+}
+
+html[data-vt^="sign"] .brand-panel > .brand {
+  view-transition-name: panel-brand;
+}
+
+html[data-vt^="sign"] .brand-panel > .brand-main {
+  view-transition-name: panel-main;
+}
+
+html[data-vt^="sign"] .auth-main {
+  view-transition-name: auth-form;
+}
+
+html[data-vt^="sign"] .main-area {
+  view-transition-name: app-main;
+}
+
+@media (min-width: 720px) {
+
+  html[data-vt^="sign"] .sidebar-container {
+    view-transition-name: navy;
+  }
+
+  html[data-vt^="sign"] app-sidebar .sidebar {
+    view-transition-name: side-content;
+  }
+}
+
+/* the phone: the navbar's buttons are taken out of the navy block, so it
+   stays empty too; they appear last, like the sidebar links */
+@media (max-width: 719.98px) {
+
+  html[data-vt^="sign"] .navbar.phone {
+    view-transition-name: navy;
+  }
+
+  html[data-vt^="sign"] .navbar.phone .menu-button {
+    view-transition-name: bar-menu;
+  }
+
+  html[data-vt^="sign"] .navbar.phone .theme-button {
+    view-transition-name: bar-theme;
+  }
+
+  html[data-vt^="sign"] .navbar.phone .language-button {
+    view-transition-name: bar-lang;
+  }
+
+  html[data-vt^="sign"] .navbar.phone .user-button {
+    view-transition-name: bar-user;
+  }
+}
+
+/* only the new block is drawn, stretched to the size of the moment */
+html[data-vt^="sign"]::view-transition-group(navy) {
+  z-index: 1;
+  animation-timing-function: var(--ease-move);
+}
+
+html[data-vt^="sign"]::view-transition-old(navy) {
+  animation: none;
+  opacity: 0;
+}
+
+html[data-vt^="sign"]::view-transition-new(navy) {
+  animation: none;
+  block-size: 100%;
+}
+
+html[data-vt^="sign"]::view-transition-group(side-content),
+html[data-vt^="sign"]::view-transition-group(panel-brand),
+html[data-vt^="sign"]::view-transition-group(panel-main),
+html[data-vt^="sign"]::view-transition-group(bar-menu),
+html[data-vt^="sign"]::view-transition-group(bar-theme),
+html[data-vt^="sign"]::view-transition-group(bar-lang),
+html[data-vt^="sign"]::view-transition-group(bar-user) {
+  z-index: 2;
+}
+
+/* signin (--dur-sign-in) */
+html[data-vt="signin"]::view-transition-group(navy) {
+  animation-duration: var(--dur-sign-in);
+}
+
+html[data-vt="signin"]::view-transition-old(panel-brand),
+html[data-vt="signin"]::view-transition-old(panel-main),
+html[data-vt="signin"]::view-transition-old(auth-form) {
+  animation: vt-fade-out calc(var(--dur-sign-in) * .25) ease-in both;
+}
+
+html[data-vt="signin"]::view-transition-new(app-main) {
+  animation: vt-fade-in calc(var(--dur-sign-in) * .35) ease-out calc(var(--dur-sign-in) * .45) both;
+}
+
+html[data-vt="signin"]::view-transition-new(side-content),
+html[data-vt="signin"]::view-transition-new(bar-menu),
+html[data-vt="signin"]::view-transition-new(bar-theme),
+html[data-vt="signin"]::view-transition-new(bar-lang),
+html[data-vt="signin"]::view-transition-new(bar-user) {
+  animation: vt-fade-in calc(var(--dur-sign-in) * .3) ease-out calc(var(--dur-sign-in) * .7) both;
+}
+
+/* signout (--dur-sign-out, faster) */
+html[data-vt="signout"]::view-transition-group(navy) {
+  animation-duration: var(--dur-sign-out);
+}
+
+html[data-vt="signout"]::view-transition-old(side-content),
+html[data-vt="signout"]::view-transition-old(bar-menu),
+html[data-vt="signout"]::view-transition-old(bar-theme),
+html[data-vt="signout"]::view-transition-old(bar-lang),
+html[data-vt="signout"]::view-transition-old(bar-user),
+html[data-vt="signout"]::view-transition-old(app-main) {
+  animation: vt-fade-out calc(var(--dur-sign-out) * .3) ease-in both;
+}
+
+html[data-vt="signout"]::view-transition-new(auth-form) {
+  animation: vt-fade-in calc(var(--dur-sign-out) * .45) ease-out calc(var(--dur-sign-out) * .45) both;
+}
+
+html[data-vt="signout"]::view-transition-new(panel-brand),
+html[data-vt="signout"]::view-transition-new(panel-main) {
+  animation: vt-fade-in calc(var(--dur-sign-out) * .4) ease-out calc(var(--dur-sign-out) * .6) both;
+}
+
+
+/* ---------- theme: the whole screen fades (option B) ---------- */
+
+html[data-vt="theme"]::view-transition-old(root) {
+  animation: vt-fade-out var(--dur-theme-fade) ease both;
+}
+
+html[data-vt="theme"]::view-transition-new(root) {
+  animation: vt-fade-in var(--dur-theme-fade) ease both;
+}
+
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -55,6 +55,17 @@
       </div>
     </div>
 
+  } @else if (sessionExpired()) {
+
+    <!-- The session ended (401): not an error of the user, so the warm yellow -->
+    <div class="form-alert warn" role="status">
+      <mat-icon aria-hidden="true">timer_off</mat-icon>
+      <div>
+        <strong>{{ 'LOGIN.SESSION_EXPIRED_TITLE' | translate }}</strong>
+        {{ 'LOGIN.SESSION_EXPIRED' | translate }}
+      </div>
+    </div>
+
   }
 
 

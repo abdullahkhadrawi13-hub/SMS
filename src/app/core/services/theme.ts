@@ -1,4 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+
+import { ViewTransitions } from './view-transitions';
 
 export type AppTheme = 'light' | 'dark';
 
@@ -17,6 +19,8 @@ const STORAGE_KEY = 'theme';
   providedIn: 'root'
 })
 export class Theme {
+
+  private readonly viewTransitions = inject(ViewTransitions);
 
   readonly currentTheme = signal<AppTheme>(DEFAULT_THEME);
 
@@ -42,7 +46,10 @@ export class Theme {
     document.documentElement.dataset['theme'] = theme;
   }
 
+  // The switch in the navbar: the whole screen fades to the other theme
+  // (--dur-theme-fade, core/services/view-transitions.ts).
   toggleTheme(): void {
-    this.setTheme(this.currentTheme() === 'dark' ? 'light' : 'dark');
+    const next: AppTheme = this.currentTheme() === 'dark' ? 'light' : 'dark';
+    this.viewTransitions.run('theme', () => this.setTheme(next));
   }
 }

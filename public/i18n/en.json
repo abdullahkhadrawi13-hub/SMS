@@ -26,6 +26,8 @@
     "NETWORK_ERROR": "Couldn't reach the server. Check your connection and try again.",
     "LOCKED_TITLE": "Too many failed attempts.",
     "LOCKED_MESSAGE": "Sign-in is paused for this account on this device for 5 minutes. Try again when the time is up.",
+    "SESSION_EXPIRED_TITLE": "Your session has ended",
+    "SESSION_EXPIRED": "Log in again to continue.",
     "TRY_AGAIN_IN": "Try again in {{time}}",
     "FORGOT_PASSWORD": "Forgot your password? Ask the school administration to reset it."
   },
