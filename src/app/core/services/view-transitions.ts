@@ -19,7 +19,8 @@ import { ActivatedRouteSnapshot, ViewTransitionInfo } from '@angular/router';
 //   signout  dashboard → login (logout, end of session): the same, back,
 //            and faster than signin.
 //   lang     the language button: the sidebar (the navy panel on the
-//            login page) slides to the other side, the rest fades.
+//            login page) fades out where it is and fades in on the other
+//            side; the rest fades. Nothing slides (option E, 27 Nov 2026).
 //   theme    the light / dark switch: a short fade of the whole screen.
 //   none     nothing moves (see below).
 //
@@ -32,7 +33,7 @@ import { ActivatedRouteSnapshot, ViewTransitionInfo } from '@angular/router';
 //   page that adds ?termId= as soon as it opens) ends that fade at once:
 //   the browser runs one transition at a time.
 //
-// The durations are in src/tokens.css (--dur-page-in, --dur-lang, ...).
+// The durations are in src/tokens.css (--dur-page-in, --dur-lang-out, ...).
 //
 // The router calls onRouterTransition() (app.config.ts, withViewTransitions).
 // The Language and Theme services call run().
@@ -65,9 +66,20 @@ export class ViewTransitions {
       return;
     }
 
+    const root = this.document.documentElement;
+
+    // <html data-vt-phase="new"> while the new screen is drawn and taken,
+    // so styles.css can give a part one name in the old picture and
+    // another in the new one (the language: "navy-old" / "navy-new").
+    // Cleared first: a transition cut short must not leave it behind.
+    delete root.dataset['vtPhase'];
+
     // A transition still running is skipped by the browser (it jumps to
     // its end) when a new one starts: two quick clicks never get stuck.
-    const transition = this.document.startViewTransition(update);
+    const transition = this.document.startViewTransition(() => {
+      root.dataset['vtPhase'] = 'new';
+      return update();
+    });
 
     this.track(kind, transition);
 
@@ -139,6 +151,7 @@ export class ViewTransitions {
         if (this.active === transition) {
           this.active = null;
           delete root.dataset['vt'];
+          delete root.dataset['vtPhase'];
         }
       });
   }

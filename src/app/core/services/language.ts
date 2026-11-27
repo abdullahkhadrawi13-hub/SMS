@@ -42,8 +42,8 @@ export class Language {
   }
 
   // زر اللغة (app-language-switcher): نفس setLanguage لكن بحركة:
-  // الشريط الجانبي (أو اللوحة الكحلية في صفحة الدخول) ينزلق إلى الجهة الأخرى
-  // والباقي يتلاشى (core/services/view-transitions.ts).
+  // الشريط الجانبي (أو اللوحة الكحلية في صفحة الدخول) يتلاشى في مكانه
+  // ويظهر في الجهة الأخرى، والباقي يتلاشى (core/services/view-transitions.ts).
   async switchLanguage(language: AppLanguage): Promise<void> {
 
     // الزر الذي ضُغط (لوحة المفاتيح): يبقى التركيز عليه بعد التبديل

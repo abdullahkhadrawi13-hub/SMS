@@ -134,7 +134,8 @@
      — agreed 6 and 27 Nov 2026 */
   --dur-page-out: 120ms;    /* a page: the old one goes out (faster) */
   --dur-page-in: 250ms;     /* a page: the new one comes in */
-  --dur-lang: 450ms;        /* the language: the sidebar slides across */
+  --dur-lang-out: 200ms;    /* the language: the old navy fades out where it is */
+  --dur-lang-in: 260ms;     /* the language: the new navy fades in on the other side */
   --dur-sign-in: 560ms;     /* login → dashboard */
   --dur-sign-out: 340ms;    /* dashboard → login (faster than signing in) */
   --dur-theme-fade: 200ms;  /* light ↔ dark: the whole screen fades */
